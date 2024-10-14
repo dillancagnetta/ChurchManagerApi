@@ -19,6 +19,16 @@
 
 > set AWS_REGION=us-east-1
 
+**Powershell Commands**
+```Powershell
+dotnet tool update --global dotnet-ef --version 6.0.1
+
+$Env:AWS_ACCESS_KEY_ID = "hello"
+$Env:AWS_SECRET_ACCESS_KEY = "hello"
+$Env:AWS_REGION = "us-east-1"
+
+dotnet ef database update --project src\Infrastructure\ChurchManager.Infrastructure.Persistence\ChurchManager.Infrastructure.Persistence.csproj --startup-project src\API\ChurchManager.Api\ChurchManager.Api.csproj --context ChurchManager.Infrastructure.Persistence.Contexts.ChurchManagerDbContext
+```
 
 2. Run all the docker commands in the `docker containers` file in the root directory.
 
