@@ -19,7 +19,7 @@ namespace ChurchManager.Features.Groups.Commands.NewGroup
         public string Description { get; set; }
         public string Address { get; set; }
         public bool? IsOnline { get; set; }
-        public DateTime MeetingTime { get; set; }
+        public string MeetingTime { get; set; }
         public DateTime? Start { get; set; }
         public DateTime? End { get; set; }
         public string Recurrence { get; set; }
@@ -44,7 +44,7 @@ namespace ChurchManager.Features.Groups.Commands.NewGroup
 
         public async Task<ApiResponse> Handle(AddGroupCommand command, CancellationToken ct)
         {
-            var weeklyTimeOfDay = _dateTime.ConvertFromUtc(command.MeetingTime).TimeOfDay;
+            var weeklyTimeOfDay = TimeSpan.Parse(command.MeetingTime);
 
             //Repeat daily for 5 days
             var rrule = new RecurrencePattern(command.Recurrence);

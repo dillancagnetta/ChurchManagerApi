@@ -10,7 +10,7 @@ SELECT
        COALESCE(SUM(c."FemalesCount"), 0)::INT AS "TotalFemales",
        COALESCE(SUM(c."ChildrenCount"), 0)::INT AS "TotalChildren"
      , (COALESCE(SUM(c."ChildrenCount"), 0) / nullif(lag(c."ChildrenCount"), 0))
-FROM "Churches"."ChurchAttendance" AS c
+FROM "ChurchAttendance" AS c
 WHERE (c."AttendanceDate" >= '2020-09-1') AND (c."AttendanceDate" <= '2020-12-31')
 GROUP BY date_part('year', c."AttendanceDate")::INT, date_part('month', c."AttendanceDate")::INT
 ORDER BY date_part('year', c."AttendanceDate")::INT DESC, date_part('month', c."AttendanceDate")::INT DESC
@@ -21,7 +21,7 @@ WITH cte AS (
         date_part('year', "AttendanceDate") AS Year,
         date_part('month', "AttendanceDate") AS Month,
 		COALESCE(SUM("AttendanceCount"), 0) AS TotalAttendance
-   FROM "Churches"."ChurchAttendance"
+   FROM "ChurchAttendance"
 	GROUP BY Year, Month
 	ORDER BY Year, Month
 )
@@ -43,7 +43,7 @@ WITH cte AS (
         date_part('year', "AttendanceDate") AS Year,
         date_part('month', "AttendanceDate") AS Month,
 		COALESCE(SUM("AttendanceCount"), 0) AS TotalAttendance
-   FROM "Churches"."ChurchAttendance"
+   FROM "ChurchAttendance"
 	GROUP BY Year, Month
 	ORDER BY Year, Month
 ), cte2 AS (
@@ -75,7 +75,7 @@ WITH cte AS (
         date_part('month', "AttendanceDate") AS Month,
         "ChurchId" AS ChurchId,
 		COALESCE(SUM("AttendanceCount"), 0) AS TotalAttendance
-   FROM "Churches"."ChurchAttendance"
+   FROM "ChurchAttendance"
 	GROUP BY Year, Month, "ChurchId"
 	ORDER BY Year, Month
 ), cte2 AS (
@@ -112,7 +112,7 @@ WITH cte AS (
 		COALESCE(SUM("MalesCount"), 0) AS TotalMales,
 		COALESCE(SUM("FemalesCount"), 0) AS TotalFemales,
 		COALESCE(SUM("ChildrenCount"), 0) AS TotalChildren
-   FROM "Churches"."ChurchAttendance"
+   FROM "ChurchAttendance"
 	GROUP BY Year, Month, "ChurchId"
 	ORDER BY Year , Month
 ), cte2 AS (
@@ -182,7 +182,7 @@ BEGIN
             date_part('year', "AttendanceDate") AS Year,
             date_part('month', "AttendanceDate") AS Month,
             COALESCE(SUM("AttendanceCount"), 0) AS TotalAttendance
-       FROM "Churches"."ChurchAttendance"
+       FROM "ChurchAttendance"
         GROUP BY Year, Month
         ORDER BY Year, Month
     )
@@ -192,7 +192,7 @@ BEGIN
        TotalAttendance::NUMERIC,
        LAG(TotalAttendance, 1) OVER (
           ORDER BY Year
-       )::NUMERIC  ASprevious_year_attendance
+       )::NUMERIC  AS previous_year_attendance
     FROM
        cte;
 

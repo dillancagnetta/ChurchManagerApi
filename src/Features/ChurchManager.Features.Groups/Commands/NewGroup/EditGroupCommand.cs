@@ -32,7 +32,7 @@ namespace ChurchManager.Features.Groups.Commands.NewGroup
             var group = await _dbRepository.Queryable("GroupType", "Schedule")
                 .SingleOrDefaultAsync(x => x.Id == command.GroupId, ct);
 
-            var weeklyTimeOfDay = _dateTime.ConvertFromUtc(command.MeetingTime).TimeOfDay;
+            var weeklyTimeOfDay = TimeSpan.Parse(command.MeetingTime);
 
             //Repeat daily for 5 days
             var rrule = new RecurrencePattern(command.Recurrence);

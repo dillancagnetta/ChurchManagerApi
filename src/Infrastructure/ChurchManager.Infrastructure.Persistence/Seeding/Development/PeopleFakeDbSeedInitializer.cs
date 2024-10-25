@@ -25,6 +25,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         private readonly IServiceScopeFactory _scopeFactory;
         private ChurchManagerDbContext _dbContext;
         private ITenant _tenant;
+        private Random _random = new Random();
 
         public PeopleFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
 
@@ -164,6 +165,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         {
             var faker = new Faker("en");
             string lastName = faker.Name.LastName();
+            Gender gender = faker.PickRandom(Genders);
 
             var fullName = new Faker<FullName>()
                 .RuleFor(u => u.FirstName, (f, u) => f.Name.FirstName())
@@ -173,11 +175,11 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 
             var testPeople = new Faker<Person>()
                 .RuleFor(p => p.FullName, f => fullName)
-                .RuleFor(p => p.PhotoUrl, f => f.Internet.Avatar())
+                .RuleFor(p => p.PhotoUrl, f => GeneratePhotoUrl(gender))
                 .RuleFor(p => p.Occupation, f => f.Commerce.Department())
                 .RuleFor(p => p.ReceivedHolySpirit, f => f.PickRandom(true, false))
                 .RuleFor(p => p.ConnectionStatus, f => f.PickRandom(ConnectionStatuses))
-                .RuleFor(p => p.Gender, f => f.PickRandom(Genders))
+                .RuleFor(p => p.Gender, f => gender)
                 .RuleFor(p => p.AgeClassification, f => f.PickRandom(AgeClassifications))
                 .RuleFor(p => p.Email, f => EmailFaker())
                 .RuleFor(p => p.ChurchId, f => f.PickRandom(Churches))
@@ -197,6 +199,18 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             });
 
             return people;
+        }
+
+        private string GeneratePhotoUrl(Gender gender)
+        {
+            // https://randomuser.me/api/portraits/med/men/75.jpg
+            var imageIndex = _random.Next(1, 100);
+            string photoGender = gender == Gender.Unknown ? null : gender == Gender.Female ? "women" : "men";
+            if (photoGender == null)
+            {
+                return null;
+            }
+            return  $"https://randomuser.me/api/portraits/med/{photoGender}/{imageIndex}.jpg";
         }
 
 
@@ -225,7 +239,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                     .RuleFor(u => u.ChurchId, f => church)
                     .RuleFor(u => u.Family, f => family)
                     .RuleFor(p => p.FullName, f => momFullName)
-                    .RuleFor(p => p.PhotoUrl, f => f.Internet.Avatar())
+                    .RuleFor(p => p.PhotoUrl, f => GeneratePhotoUrl(Gender.Female))
                     .RuleFor(p => p.ConnectionStatus, f => f.PickRandom(ConnectionStatuses))
                     .RuleFor(p => p.Gender, f => Gender.Female)
                     .RuleFor(p => p.AgeClassification, f => AgeClassification.Adult)
@@ -238,7 +252,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                     .RuleFor(u => u.ChurchId, f => church )
                     .RuleFor(u => u.Family, f => family )
                     .RuleFor(p => p.FullName, f => dadFullName)
-                    .RuleFor(p => p.PhotoUrl, f => f.Internet.Avatar())
+                    .RuleFor(p => p.PhotoUrl, f => GeneratePhotoUrl(Gender.Male))
                     .RuleFor(p => p.ConnectionStatus, f => f.PickRandom(ConnectionStatuses))
                     .RuleFor(p => p.Gender, f => Gender.Male)
                     .RuleFor(p => p.AgeClassification, f => AgeClassification.Adult)
