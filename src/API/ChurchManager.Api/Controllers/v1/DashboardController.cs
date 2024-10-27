@@ -19,9 +19,10 @@ namespace ChurchManager.Api.Controllers.v1
         }
 
         [HttpGet("church-attendance")]
-        public async Task<IActionResult> ChurchAttendance([FromQuery] DateTime from, DateTime to, CancellationToken token)
+        public async Task<IActionResult> ChurchAttendance([FromQuery] DateTime from, DateTime to, int? churchId, CancellationToken token)
         {
-            var attendances = await _attendanceDbRepository.DashboardChurchAttendanceAsync(from, to);
+            var attendances =
+                await _attendanceDbRepository.DashboardChurchAttendanceAsync(from, to, churchId);
             return Ok(attendances);
         }
 

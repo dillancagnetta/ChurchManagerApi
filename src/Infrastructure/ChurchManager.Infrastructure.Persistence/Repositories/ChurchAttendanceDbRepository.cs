@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.Churches.Repositories;
@@ -16,9 +17,17 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
         {
         }
 
-        public async Task<IEnumerable<ChurchAttendanceAnnualBreakdownVm>> DashboardChurchAttendanceAsync(DateTime from, DateTime to)
+        public async Task<IEnumerable<ChurchAttendanceAnnualBreakdownVm>> DashboardChurchAttendanceAsync(
+            DateTime from, DateTime to, int? churchId = null)
         {
-            var raw = await Queryable()
+            var query =  Queryable();
+
+            if (churchId.HasValue && churchId.Value > 0)
+            {
+                query = query.Where(x => x.ChurchId == churchId.Value);
+            }
+            
+                var raw = await query
                 .Where(x => x.AttendanceDate >= from && x.AttendanceDate <= to)
                 .Select(x => new
                 {

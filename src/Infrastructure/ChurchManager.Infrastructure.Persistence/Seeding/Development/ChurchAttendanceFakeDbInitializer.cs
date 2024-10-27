@@ -13,7 +13,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
     public class ChurchAttendanceFakeDbInitializer : IInitializer
     {
         public int OrderNumber => 5;
-
+        
         private readonly IServiceScopeFactory _scopeFactory;
 
         public ChurchAttendanceFakeDbInitializer(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
@@ -25,14 +25,18 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 
             if (!await dbContext.ChurchAttendance.AnyAsync())
             {
-                var attendances = GenerateChurchAttendances(1000);
-                await dbContext.ChurchAttendance.AddRangeAsync(attendances);
+                var attendances = new List<ChurchAttendance>(10000); 
+                for (int churchId = 1; churchId < 10; churchId++)
+                {
+                    attendances.AddRange(GenerateChurchAttendances(1000, churchId));
+                    await dbContext.ChurchAttendance.AddRangeAsync(attendances);
+                }
 
                 await dbContext.SaveChangesAsync();
             }
         }
 
-        private IList<ChurchAttendance> GenerateChurchAttendances(int count)
+        private IList<ChurchAttendance> GenerateChurchAttendances(int count, int churchId)
         {
             var faker = new Faker();
             var random = new Random();
@@ -53,7 +57,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 churchAttendances.Add( new ChurchAttendance
                 {
                     ChurchAttendanceTypeId = random.Next(1, 3),  // will generate 1 to 2 only
-                    ChurchId = 1,
+                    ChurchId = churchId,
                     AttendanceDate = attendance.attendancedate,
                     AttendanceCount = attendance.males + attendance.females + attendance.children,
                     ChildrenCount = attendance.children,
