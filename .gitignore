@@ -329,3 +329,4 @@ ASALocalRun/
 .mfractor/
 
 logs/
+src/API/ChurchManager.Api/Properties/launchSettings.json
