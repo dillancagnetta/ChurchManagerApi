@@ -58,15 +58,19 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
             
             var connectionStatus = await query.GroupBy(p => p.ConnectionStatus)
                 .Select(g => new { name = g.Key.Value, count = g.Count() })
-                .ToListAsync(default);
+                .ToListAsync(cancellationToken);
             
             var gender = await query.GroupBy(p => p.Gender)
                 .Select(g => new { name = g.Key.Value, count = g.Count() })
-                .ToListAsync(default);
+                .ToListAsync(cancellationToken);
             
             var age = await query.GroupBy(p => p.AgeClassification)
                 .Select(g => new { name = g.Key.Value, count = g.Count() })
-                .ToListAsync(default);
+                .ToListAsync(cancellationToken);
+            
+            connectionStatus = connectionStatus.OrderBy(x => x.name).ToList();
+            gender = gender.OrderBy(x => x.name).ToList();
+            age = age.OrderBy(x => x.name).ToList();
             
             return new { connectionStatus, gender, age };
         }
