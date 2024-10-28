@@ -1,4 +1,5 @@
-﻿using ChurchManager.Features.Profile.Queries.RetrieveProfile;
+﻿using ChurchManager.Features.Profile.Commands.IncrementProfileViewed;
+using ChurchManager.Features.Profile.Queries.RetrieveProfile;
 using ChurchManager.SharedKernel.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,8 +34,11 @@ namespace ChurchManager.Api.Controllers.v1
         // v1/profiles/person/{{personId}}
         [HttpGet("person/{personId}")]
         public async Task<IActionResult> GetUserProfileByPerson(int personId, [FromQuery] bool condensed, CancellationToken token)
-        {
+        { 
             var response = await Mediator.Send(new ProfileByPersonIdQuery(personId, condensed), token);
+            // Increment counter
+            Mediator.Send(new IncrementProfileViewedCommand(personId), token);
+            
             return Ok(response);
         }
 

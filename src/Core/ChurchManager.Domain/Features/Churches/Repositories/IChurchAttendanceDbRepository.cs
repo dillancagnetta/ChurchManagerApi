@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ChurchManager.Domain.Shared;
+﻿using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 
 namespace ChurchManager.Domain.Features.Churches.Repositories

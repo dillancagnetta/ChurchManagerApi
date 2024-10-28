@@ -98,6 +98,5 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
                     Data = x
                 });
         }
-
     }
 }

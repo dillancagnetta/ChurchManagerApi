@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using ChurchManager.Domain.Common;
+﻿using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Queries;
 using ChurchManager.Domain.Features.People.Repositories;
@@ -46,6 +45,30 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
         public IQueryable<Person> Queryable(PersonQueryOptions personQueryOptions)
         {
             return this.Queryable(null, personQueryOptions);
+        }
+
+        public async Task<dynamic> DashboardChurchConnectionStatusBreakdown(int? churchId = null, CancellationToken cancellationToken = default)
+        {
+            var query = Queryable(false).AsNoTracking();
+            
+            if (churchId.HasValue && churchId.Value > 0)
+            {
+                query = query.Where(x => x.ChurchId == churchId.Value);
+            }
+            
+            var connectionStatus = await query.GroupBy(p => p.ConnectionStatus)
+                .Select(g => new { name = g.Key.Value, count = g.Count() })
+                .ToListAsync(default);
+            
+            var gender = await query.GroupBy(p => p.Gender)
+                .Select(g => new { name = g.Key.Value, count = g.Count() })
+                .ToListAsync(default);
+            
+            var age = await query.GroupBy(p => p.AgeClassification)
+                .Select(g => new { name = g.Key.Value, count = g.Count() })
+                .ToListAsync(default);
+            
+            return new { connectionStatus, gender, age };
         }
 
         private IQueryable<Person> Queryable(string[] includes, PersonQueryOptions personQueryOptions)

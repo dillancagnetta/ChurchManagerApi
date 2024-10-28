@@ -180,6 +180,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 .RuleFor(p => p.ReceivedHolySpirit, f => f.PickRandom(true, false))
                 .RuleFor(p => p.ConnectionStatus, f => f.PickRandom(ConnectionStatuses))
                 .RuleFor(p => p.Gender, f => gender)
+                .RuleFor(p => p.Source, f => faker.PickRandom(Sources))
                 .RuleFor(p => p.AgeClassification, f => f.PickRandom(AgeClassifications))
                 .RuleFor(p => p.Email, f => EmailFaker())
                 .RuleFor(p => p.ChurchId, f => f.PickRandom(Churches))
@@ -318,6 +319,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 
         private string[] Languages => new[] { "English", "Afrikaans", "Xhosa", "IsiZulu" };
 
+        private string[] Sources => new[] { "Church", "Cell", "Outreach"};
         private Gender[] Genders => new[] { Gender.Male, Gender.Female, Gender.Unknown };
 
         private ConnectionStatus[] ConnectionStatuses => new[] { ConnectionStatus.Member, ConnectionStatus.FirstTimer, ConnectionStatus.NewConvert };

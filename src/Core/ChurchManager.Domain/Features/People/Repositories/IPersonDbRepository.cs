@@ -9,5 +9,6 @@ namespace ChurchManager.Domain.Features.People.Repositories
         IQueryable<Person> FindPersons(PersonMatchQuery searchParameters, bool includeDeceased = false);
         IQueryable<Person> Queryable(bool includeDeceased);
         IQueryable<Person> Queryable(PersonQueryOptions personQueryOptions);
+        Task<dynamic> DashboardChurchConnectionStatusBreakdown(int? churchId = null, CancellationToken cancellationToken = default);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Domain.Features.Churches.Repositories;
+using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.SharedKernel.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,16 @@ namespace ChurchManager.Api.Controllers.v1
     {
         private readonly ICognitoCurrentUser _currentUser;
         private readonly IChurchAttendanceDbRepository _attendanceDbRepository;
+        private readonly IPersonDbRepository _personDbRepository;
 
-        public DashboardController(ICognitoCurrentUser currentUser, IChurchAttendanceDbRepository attendanceDbRepository)
+        public DashboardController(
+            ICognitoCurrentUser currentUser,
+            IChurchAttendanceDbRepository attendanceDbRepository,
+            IPersonDbRepository personDbRepository)
         {
             _currentUser = currentUser;
             _attendanceDbRepository = attendanceDbRepository;
+            _personDbRepository = personDbRepository;
         }
 
         [HttpGet("church-attendance")]
@@ -30,6 +36,13 @@ namespace ChurchManager.Api.Controllers.v1
         public async Task<IActionResult> ChurchAttendanceBreakdown([FromQuery] DateTime from, DateTime to, CancellationToken token)
         {
             var breakdown = await _attendanceDbRepository.DashboardChurchAttendanceBreakdownAsync(from, to);
+            return Ok(breakdown);
+        }
+        
+        [HttpGet("church-people-connectionstatus-breakdown")]
+        public async Task<IActionResult> ChurchConnectionStatusBreakdown([FromQuery] int? churchId, CancellationToken token)
+        {
+            var breakdown = await _personDbRepository.DashboardChurchConnectionStatusBreakdown(churchId);
             return Ok(breakdown);
         }
     }
