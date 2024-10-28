@@ -6,6 +6,7 @@ using ChurchManager.Features.Groups.Queries.BrowsePersonsGroups;
 using ChurchManager.Features.Groups.Queries.GroupMembers;
 using ChurchManager.Features.Groups.Queries.GroupPerformanceMetrics;
 using ChurchManager.Features.Groups.Queries.GroupRoles;
+using ChurchManager.Features.Groups.Queries.GroupsAutocomplete;
 using ChurchManager.Features.Groups.Queries.GroupsForChurch;
 using ChurchManager.Features.Groups.Queries.GroupsForPerson;
 using ChurchManager.Features.Groups.Queries.GroupsWithChildren;
@@ -163,6 +164,12 @@ namespace ChurchManager.Api.Controllers.v1
         public async Task<IActionResult> GroupPerformanceMetrics([FromBody] GroupPerformanceMetricsQuery query, CancellationToken token) {
             var response = await Mediator.Send(query, token);
             return Ok(response);
+        }
+        
+        [HttpGet("autocomplete")]
+        public async Task<IActionResult> Autocomplete([FromQuery] GroupsAutocompleteQuery query, CancellationToken token)
+        {
+            return Ok(await Mediator.Send(query, token));
         }
     }
 }

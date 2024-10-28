@@ -18,4 +18,6 @@ namespace ChurchManager.Domain.Shared
         {
         }
     }
+    
+    public record GroupsAutocompleteViewModel(int? Id, string Label, string GroupType) : AutocompleteResult(Id, Label);
 }

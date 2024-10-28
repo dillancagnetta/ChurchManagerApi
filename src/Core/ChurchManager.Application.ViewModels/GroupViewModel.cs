@@ -19,9 +19,13 @@ namespace ChurchManager.Application.ViewModels
         public string Name { get; set; }
         public string Description { get; set; }
         public bool TakesAttendance { get; set; }
+        public string GroupTerm { get; set; }
+        public bool IsSystem { get; set; }
+        public string IconCssClass { get; set; }
 
         public GroupTypeViewModel(GroupType entity) 
-            => (Name, Description, TakesAttendance) = (entity.Name, entity.Description, entity.TakesAttendance);
+            => (Name, Description, TakesAttendance, GroupTerm, IsSystem, IconCssClass) 
+                = (entity.Name, entity.Description, entity.TakesAttendance, entity.GroupTerm, entity.IsSystem, entity.IconCssClass);
     }
 
     public record GroupMemberViewModel : RecordStatusViewModel
