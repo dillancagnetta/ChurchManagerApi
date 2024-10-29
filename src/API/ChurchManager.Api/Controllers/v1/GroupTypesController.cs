@@ -19,11 +19,11 @@ namespace ChurchManager.Api.Controllers.v1
 {
     [ApiVersion("1.0")]
     [Authorize]
-    public class GroupsTypesController : BaseApiController
+    public class GroupTypesController : BaseApiController
     {
         private readonly ICognitoCurrentUser _currentUser;
 
-        public GroupsTypesController(ICognitoCurrentUser currentUser)
+        public GroupTypesController(ICognitoCurrentUser currentUser)
         {
             _currentUser = currentUser;
         }
