@@ -20,8 +20,8 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         int personId = 2;
 
         // Cell Group Type
-        private readonly GroupType _sectionGroupType = new() { Name = "Section", Description = "Group Section", IconCssClass = "heroicons_outline:collection" };
-        private readonly GroupType _cellGroupType = new() { Name = "Cell", Description = "Cell Ministry", IconCssClass = "heroicons_outline:share" };
+        private readonly GroupType _sectionGroupType = new() { Name = "Section", Description = "Group Section", IconCssClass = "heroicons_outline:volume-up" };
+        private readonly GroupType _cellGroupType = new() { Name = "Cell", Description = "Cell Ministry", IconCssClass = "heroicons_outline:volume-off" };
 
         private GroupTypeRole _cellLeaderRole;
         private GroupTypeRole _cellAssistantRole;
