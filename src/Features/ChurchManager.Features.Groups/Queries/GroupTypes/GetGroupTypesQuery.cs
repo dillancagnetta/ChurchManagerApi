@@ -8,7 +8,7 @@ using ChurchManager.Application.ViewModels;
 
 namespace ChurchManager.Features.Groups.Queries.GroupTypes;
 
-public class GetGroupTypesQuery : IRequest<ApiResponse>
+public record GetGroupTypesQuery : IRequest<ApiResponse>
 {
     public string? Name { get; set; }  = null;
     public string? Description { get; set; } = null;

@@ -8,7 +8,7 @@ namespace ChurchManager.Features.Groups.Commands.AddGroupMember
 {
     public record AddGroupMemberCommand : IRequest<ApiResponse>
     {
-        public int GroupId { get; set; }
+        public int GroupId { get; set; }    
         public int PersonId { get; set; }
         public int GroupRoleId { get; set; }
         public string CommunicationPreference { get; set; }

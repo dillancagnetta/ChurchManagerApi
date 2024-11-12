@@ -1,16 +1,5 @@
-﻿using ChurchManager.Features.Groups.Commands.AddGroupMember;
-using ChurchManager.Features.Groups.Commands.GroupAttendanceRecord;
-using ChurchManager.Features.Groups.Commands.NewGroup;
-using ChurchManager.Features.Groups.Commands.RemoveGroupMember;
-using ChurchManager.Features.Groups.Queries.BrowsePersonsGroups;
-using ChurchManager.Features.Groups.Queries.GroupMembers;
-using ChurchManager.Features.Groups.Queries.GroupPerformanceMetrics;
-using ChurchManager.Features.Groups.Queries.GroupRoles;
-using ChurchManager.Features.Groups.Queries.GroupsForChurch;
-using ChurchManager.Features.Groups.Queries.GroupsForPerson;
-using ChurchManager.Features.Groups.Queries.GroupsWithChildren;
+﻿using ChurchManager.Features.Groups.Commands.GroupTypes.Crud;
 using ChurchManager.Features.Groups.Queries.GroupTypes;
-using ChurchManager.Features.Groups.Queries.GrroupsByGroupType;
 using ChurchManager.SharedKernel.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,13 +18,33 @@ namespace ChurchManager.Api.Controllers.v1
         }
        
         [HttpPost("browse")]
-        public async Task<IActionResult> GetGroupTypes([FromBody] GetGroupTypesQuery query, CancellationToken token)
+        public async Task<IActionResult> BrowseGroupTypes([FromBody] GetGroupTypesQuery query, CancellationToken token)
         {
             return Ok(await Mediator.Send(query, token));
         }
+            
+        [HttpGet("{groupTypeId}")]
+        public async Task<IActionResult> GetGroupTypeById(int groupTypeId, CancellationToken token)
+        {
+            return Ok(await Mediator.Send(new GetGroupTypeQuery(groupTypeId), token));
+        }
         
-
-
-       
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] AddGroupTypeCommand cmd, CancellationToken token)
+        {
+            return Accepted(await Mediator.Send(cmd, token));
+        }
+        
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] EditGroupTypeCommand cmd, CancellationToken token)
+        {
+            return Accepted(await Mediator.Send(cmd, token));
+        }
+        
+        [HttpDelete("{groupTypeId}")]
+        public async Task<IActionResult> Delete(int groupTypeId, CancellationToken token)
+        {
+            return Ok(await Mediator.Send(new DeleteGroupTypeCommand(groupTypeId), token));
+        }
     }
 }
