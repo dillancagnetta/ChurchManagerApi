@@ -8,7 +8,7 @@ namespace ChurchManager.Features.Groups.Commands.GroupTypes.Crud;
 
 public record EditGroupTypeCommand : IRequest<ApiResponse>
 {
-    [Required] public int GroupTypeId { get; set; }
+    [Required] public int Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public string GroupTerm { get; set; }
@@ -29,7 +29,7 @@ public class GroupTypeEditedHandler : IRequestHandler<EditGroupTypeCommand, ApiR
     
     public async Task<ApiResponse> Handle(EditGroupTypeCommand cmd, CancellationToken cts)
     {
-        var entity = await _repository.GetByIdAsync(cmd.GroupTypeId, cts);
+        var entity = await _repository.GetByIdAsync(cmd.Id, cts);
 
         entity.Name = cmd.Name;
         entity.Description = cmd.Description;
