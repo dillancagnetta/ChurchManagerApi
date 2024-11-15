@@ -58,7 +58,6 @@ namespace ChurchManager.Domain.Features.Missions
         [Required]
         public Attendance Attendance { get; set; } = new();
         
-        [Required]
         public Money Offering { get; set; }
 
         public string Notes { get; set; }

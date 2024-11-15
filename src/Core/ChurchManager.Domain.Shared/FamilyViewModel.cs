@@ -9,5 +9,7 @@
         public string Country { get; set; }
         public string Province { get; set; }
         public string PostalCode { get; set; }
+
+        public IEnumerable<PersonViewModelBasic> FamilyMembers { get; set; }
     }
 }

@@ -8,19 +8,22 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
+#nullable disable
+
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ChurchManagerDbContext))]
-    [Migration("20211020104106_Missions")]
-    partial class Missions
+    [Migration("20241115135134_InitialDbMigration")]
+    partial class InitialDbMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.4")
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("ChurchManager.Domain.Common.UserLogin", b =>
                 {
@@ -28,12 +31,18 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime?>("InactiveDateTime")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Password")
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
                     b.Property<int>("PersonId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("RecordStatus")
+                        .HasColumnType("text");
 
                     b.Property<string>("RefreshToken")
                         .HasColumnType("text");
@@ -65,8 +74,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .HasMaxLength(200)
@@ -112,8 +122,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AttendanceCount")
                         .HasColumnType("integer");
@@ -165,8 +176,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .HasMaxLength(100)
@@ -186,8 +198,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .HasMaxLength(100)
@@ -216,8 +229,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Auth")
                         .HasColumnType("text");
@@ -248,8 +262,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Category")
                         .HasMaxLength(100)
@@ -294,8 +309,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CompletionDate")
                         .HasColumnType("timestamp without time zone");
@@ -351,8 +367,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("AllowMultiple")
                         .HasColumnType("boolean");
@@ -405,8 +422,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .HasColumnType("text");
@@ -478,8 +496,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AttendanceCount")
                         .HasColumnType("integer");
@@ -525,8 +544,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -549,8 +569,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CommunicationPreference")
                         .HasMaxLength(20)
@@ -589,8 +610,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("AttendanceDate")
                         .HasColumnType("timestamp without time zone");
@@ -641,8 +663,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .HasMaxLength(100)
@@ -678,8 +701,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("CanEdit")
                         .HasColumnType("boolean");
@@ -721,8 +745,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .HasMaxLength(100)
@@ -762,8 +787,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Category")
                         .HasMaxLength(200)
@@ -821,6 +847,10 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("StartDateTime")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("Stream")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<string>("Type")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
@@ -840,8 +870,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("InactiveDateTime")
                         .HasColumnType("timestamp without time zone");
@@ -866,8 +897,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("ActionDate")
                         .HasColumnType("timestamp without time zone");
@@ -924,8 +956,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Caption")
                         .HasColumnType("text");
@@ -973,8 +1006,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CssClass")
                         .HasColumnType("text");
@@ -1000,8 +1034,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ConnectionId")
                         .HasMaxLength(50)
@@ -1034,8 +1069,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AgeClassification")
                         .HasColumnType("text");
@@ -1053,6 +1089,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<int?>("FamilyId")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("FirstVisitDate")
@@ -1106,8 +1143,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CountryCode")
                         .HasColumnType("text");
@@ -1149,7 +1187,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("GroupsId");
 
-                    b.ToTable("GroupsFeatures");
+                    b.ToTable("GroupsFeatures", (string)null);
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Common.UserLogin", b =>
@@ -1261,34 +1299,10 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("ChurchManager.Domain.Common.Money", "Offering", b1 =>
-                        {
-                            b1.Property<int>("GroupAttendanceId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer")
-                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                            b1.Property<decimal>("Amount")
-                                .HasColumnType("numeric");
-
-                            b1.Property<string>("Currency")
-                                .HasMaxLength(5)
-                                .HasColumnType("character varying(5)");
-
-                            b1.HasKey("GroupAttendanceId");
-
-                            b1.ToTable("GroupAttendance");
-
-                            b1.WithOwner()
-                                .HasForeignKey("GroupAttendanceId");
-                        });
-
                     b.OwnsOne("ChurchManager.Domain.Features.Groups.AttendanceReview", "AttendanceReview", b1 =>
                         {
                             b1.Property<int>("GroupAttendanceId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer")
-                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                                .HasColumnType("integer");
 
                             b1.Property<string>("Feedback")
                                 .HasColumnType("text");
@@ -1308,7 +1322,28 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("GroupAttendanceId");
                         });
 
-                    b.Navigation("AttendanceReview");
+                    b.OwnsOne("ChurchManager.Domain.Common.Money", "Offering", b1 =>
+                        {
+                            b1.Property<int>("GroupAttendanceId")
+                                .HasColumnType("integer");
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("numeric");
+
+                            b1.Property<string>("Currency")
+                                .HasMaxLength(5)
+                                .HasColumnType("character varying(5)");
+
+                            b1.HasKey("GroupAttendanceId");
+
+                            b1.ToTable("GroupAttendance");
+
+                            b1.WithOwner()
+                                .HasForeignKey("GroupAttendanceId");
+                        });
+
+                    b.Navigation("AttendanceReview")
+                        .IsRequired();
 
                     b.Navigation("Group");
 
@@ -1338,9 +1373,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.OwnsOne("ChurchManager.Domain.Features.Groups.ArchiveStatus", "ArchiveStatus", b1 =>
                         {
                             b1.Property<int>("GroupMemberId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer")
-                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                                .HasColumnType("integer");
 
                             b1.Property<DateTime?>("ArchivedDateTime")
                                 .HasColumnType("timestamp without time zone");
@@ -1356,7 +1389,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("GroupMemberId");
                         });
 
-                    b.Navigation("ArchiveStatus");
+                    b.Navigation("ArchiveStatus")
+                        .IsRequired();
 
                     b.Navigation("Group");
 
@@ -1415,9 +1449,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.OwnsOne("ChurchManager.Domain.Features.Missions.Attendance", "Attendance", b1 =>
                         {
                             b1.Property<int>("MissionId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer")
-                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                                .HasColumnType("integer");
 
                             b1.Property<int?>("AttendanceCount")
                                 .HasColumnType("integer");
@@ -1439,11 +1471,34 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("MissionId");
                         });
 
-                    b.Navigation("Attendance");
+                    b.OwnsOne("ChurchManager.Domain.Common.Money", "Offering", b1 =>
+                        {
+                            b1.Property<int>("MissionId")
+                                .HasColumnType("integer");
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("numeric");
+
+                            b1.Property<string>("Currency")
+                                .HasMaxLength(5)
+                                .HasColumnType("character varying(5)");
+
+                            b1.HasKey("MissionId");
+
+                            b1.ToTable("Mission");
+
+                            b1.WithOwner()
+                                .HasForeignKey("MissionId");
+                        });
+
+                    b.Navigation("Attendance")
+                        .IsRequired();
 
                     b.Navigation("Church");
 
                     b.Navigation("Group");
+
+                    b.Navigation("Offering");
 
                     b.Navigation("Person");
                 });
@@ -1453,9 +1508,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.OwnsOne("ChurchManager.Domain.Features.People.Address", "Address", b1 =>
                         {
                             b1.Property<int>("FamilyId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer")
-                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                                .HasColumnType("integer");
 
                             b1.Property<string>("City")
                                 .HasColumnType("text");
@@ -1480,7 +1533,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("FamilyId");
                         });
 
-                    b.Navigation("Address");
+                    b.Navigation("Address")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.People.FollowUp", b =>
@@ -1536,14 +1590,14 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.HasOne("ChurchManager.Domain.Features.People.Family", "Family")
                         .WithMany("FamilyMembers")
-                        .HasForeignKey("FamilyId");
+                        .HasForeignKey("FamilyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.OwnsOne("ChurchManager.Domain.Features.People.Baptism", "BaptismStatus", b1 =>
                         {
                             b1.Property<int>("PersonId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer")
-                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                                .HasColumnType("integer");
 
                             b1.Property<DateTime?>("BaptismDate")
                                 .HasColumnType("timestamp without time zone");
@@ -1562,9 +1616,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.OwnsOne("ChurchManager.Domain.Features.People.BirthDate", "BirthDate", b1 =>
                         {
                             b1.Property<int>("PersonId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer")
-                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                                .HasColumnType("integer");
 
                             b1.Property<int?>("BirthDay")
                                 .HasColumnType("integer");
@@ -1586,9 +1638,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.OwnsOne("ChurchManager.Domain.Features.People.DeceasedStatus", "DeceasedStatus", b1 =>
                         {
                             b1.Property<int>("PersonId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer")
-                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                                .HasColumnType("integer");
 
                             b1.Property<DateTime?>("DeceasedDate")
                                 .HasColumnType("timestamp without time zone");
@@ -1607,9 +1657,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.OwnsOne("ChurchManager.Domain.Features.People.Email", "Email", b1 =>
                         {
                             b1.Property<int>("PersonId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer")
-                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                                .HasColumnType("integer");
 
                             b1.Property<string>("Address")
                                 .HasColumnType("text");
@@ -1628,9 +1676,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.OwnsOne("ChurchManager.Domain.Features.People.FullName", "FullName", b1 =>
                         {
                             b1.Property<int>("PersonId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("integer")
-                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                                .HasColumnType("integer");
 
                             b1.Property<string>("FirstName")
                                 .HasColumnType("text");
@@ -1662,19 +1708,24 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("PersonId");
                         });
 
-                    b.Navigation("BaptismStatus");
+                    b.Navigation("BaptismStatus")
+                        .IsRequired();
 
-                    b.Navigation("BirthDate");
+                    b.Navigation("BirthDate")
+                        .IsRequired();
 
                     b.Navigation("Church");
 
-                    b.Navigation("DeceasedStatus");
+                    b.Navigation("DeceasedStatus")
+                        .IsRequired();
 
-                    b.Navigation("Email");
+                    b.Navigation("Email")
+                        .IsRequired();
 
                     b.Navigation("Family");
 
-                    b.Navigation("FullName");
+                    b.Navigation("FullName")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.People.PhoneNumber", b =>
