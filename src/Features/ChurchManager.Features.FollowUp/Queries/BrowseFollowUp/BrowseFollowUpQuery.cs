@@ -44,7 +44,8 @@ namespace ChurchManager.Features.FollowUp.Queries.BrowseFollowUp
 
             var spec = new BrowseFollowUpSpecification(
                 query, 
-                query.Person?.Id,
+                // When viewing own profile there is no Id in the URL so we set it here
+                query.Person?.Id ??  _currentUser.PersonId, 
                 assignedPersonId, 
                 query.Types, 
                 query.Severity,

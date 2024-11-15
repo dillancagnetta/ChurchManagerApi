@@ -3,10 +3,11 @@ using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Features.People.Queries.GetFamily
 {
-    public record GetFamilyQuery(int FamilyId) : IRequest<ApiResponse>;
+    public record GetFamilyQuery(int FamilyId, bool IncludePeople = false) : IRequest<ApiResponse>;
 
     public class GetFamilyHandler : IRequestHandler<GetFamilyQuery, ApiResponse>
     {
@@ -19,7 +20,17 @@ namespace ChurchManager.Features.People.Queries.GetFamily
 
         public async Task<ApiResponse> Handle(GetFamilyQuery query, CancellationToken ct)
         {
-            var family = await _dbRepository.GetByIdAsync(query.FamilyId, ct) ?? throw new ArgumentNullException(nameof(query.FamilyId));
+            var qry = _dbRepository.Queryable().AsNoTracking();
+
+            if (query.IncludePeople)
+            {
+                qry.Include(x => x.FamilyMembers);
+            }
+            
+            var family = await qry.FirstOrDefaultAsync(x => x.Id == query.FamilyId, ct)
+                         ?? throw new ArgumentNullException(nameof(query.FamilyId));
+            
+            //var family = await _dbRepository.GetByIdAsync(query.FamilyId, ct) ?? throw new ArgumentNullException(nameof(query.FamilyId));
 
             // Strip Family from name
             var index = family.Name.IndexOf("Family", StringComparison.InvariantCultureIgnoreCase);

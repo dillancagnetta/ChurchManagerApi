@@ -18,11 +18,10 @@ namespace ChurchManager.Api.Controllers.v1
         }
 
         [HttpGet("{familyId}")]
-        public async Task<IActionResult> GetFamily(int familyId, CancellationToken token)
+        public async Task<IActionResult> GetFamily(int familyId, [FromQuery] bool includePeople, CancellationToken token)
         {
-            return Ok(await Mediator.Send(new GetFamilyQuery(familyId), token));
+            return Ok(await Mediator.Send(new GetFamilyQuery(familyId, includePeople), token));
         }
-
 
         [HttpPost("add-person")]
         public async Task<IActionResult> AddPersonToFamily([FromBody] AddPersonToFamilyCommand command, CancellationToken token)

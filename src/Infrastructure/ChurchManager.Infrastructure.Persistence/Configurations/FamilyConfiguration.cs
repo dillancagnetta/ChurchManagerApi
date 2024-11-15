@@ -16,6 +16,12 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
                     v => new RecordStatus(v));
 
             builder.HasIndex(x => x.Name);
+            
+            builder
+                .HasMany(f => f.FamilyMembers)
+                .WithOne(p => p.Family)
+                .HasForeignKey(p => p.FamilyId)
+                .IsRequired(true); // false If FamilyId is nullable
         }
     }
 }

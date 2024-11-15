@@ -12,6 +12,7 @@ using CodeBoss.Extensions;
 using CodeBoss.MultiTenant;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Address = ChurchManager.Domain.Features.People.Address;
 using Person = ChurchManager.Domain.Features.People.Person;
 
 namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
@@ -66,7 +67,8 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 
         private async Task SeedMyDetails()
        {
-            var cagnettaFamily = new Family {Name = "Cagnetta Family", Language = "English"};
+            var faker = new Faker("en");
+            var cagnettaFamily = new Family {Name = "Cagnetta Family", Language = "English", Address = GenerateAddress(faker)};
             await _dbContext.SaveChangesAsync();
 
             // Add me as the first Person i.e. with Id 1
@@ -194,7 +196,8 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             {
                 var familyFaker = new Faker<Family>()
                     .RuleFor(u => u.Name, f => $"{x.FullName.LastName} Family")
-                    .RuleFor(u => u.Language, f => faker.PickRandom(Languages));
+                    .RuleFor(u => u.Language, f => faker.PickRandom(Languages))
+                    .RuleFor(u => u.Address, f => GenerateAddress(faker));
 
                 x.Family = familyFaker.Generate();
             });
@@ -214,6 +217,17 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             return  $"https://randomuser.me/api/portraits/med/{photoGender}/{imageIndex}.jpg";
         }
 
+        private Address GenerateAddress(Faker faker)
+        {
+            return new Address
+            {
+                City = faker.Address.City(),
+                Country = "South Africa",
+                PostalCode = faker.Address.ZipCode(),
+                Province = faker.PickRandom(Provinces),
+                Street = faker.Address.StreetAddress()
+            };
+        }
 
         private IEnumerable<Person> GenerateFamilyData(int howManyChildren)
         {
@@ -232,7 +246,8 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 
             var familyFaker = new Faker<Family>()
                 .RuleFor(u => u.Name, f => $"{lastName} Family")
-                .RuleFor(u => u.Language, f => faker.PickRandom(Languages));
+                .RuleFor(u => u.Language, f => faker.PickRandom(Languages))
+                .RuleFor(u => u.Address, f => GenerateAddress(faker));
 
             var family = familyFaker.Generate();
 
@@ -318,6 +333,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         private int[] Churches => new[] { 1, 2 };
 
         private string[] Languages => new[] { "English", "Afrikaans", "Xhosa", "IsiZulu" };
+        private string[] Provinces => new[] { "Western Cape", "Eastern Cape", "Free State", "Gauteng", "Northern Cape"};
 
         private string[] Sources => new[] { "Church", "Cell", "Outreach"};
         private Gender[] Genders => new[] { Gender.Male, Gender.Female, Gender.Unknown };

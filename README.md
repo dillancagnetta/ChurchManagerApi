@@ -36,7 +36,7 @@ dotnet ef database update --project src\Infrastructure\ChurchManager.Infrastruct
 
 ### Database
 
-*Migrations*
+*Migrations Visual Studio*
 
 1. In `Package manager console` change to `ChurchManager.Infrastructure.Persistence` project
 
@@ -45,6 +45,11 @@ dotnet ef database update --project src\Infrastructure\ChurchManager.Infrastruct
 
 3. 
 	- `Update-Database -Context ChurchManagerDbContext -StartupProject ChurchManager.Api`
+
+*Migrations Powershell/Rider*
+
+1. In Root directory run
+	- `dotnet ef migrations add LinkFamilyToPerson -c ChurchManagerDbContext -o Migrations -s ..\..\API\ChurchManager.Api\ChurchManager.Api.csproj`
 
 #### Troubleshooting
 

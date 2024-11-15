@@ -15,8 +15,8 @@ namespace ChurchManager.Domain.Features.People.Specifications
             string address)
         {
             Query.AsNoTracking();
-
-
+            Query.Include(x => x.Address);
+            
             // Name Filter
             if(!name.IsNullOrEmpty())
             {
