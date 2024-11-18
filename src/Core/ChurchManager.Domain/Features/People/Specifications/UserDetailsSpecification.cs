@@ -13,6 +13,7 @@ namespace ChurchManager.Domain.Features.People.Specifications
 
             Query.Select(x => new UserDetails
             {
+                PersonId = x.Id,
                 UserLoginId = x.UserLoginId,
                 FirstName = x.FullName.FirstName,
                 LastName = x.FullName.LastName,

@@ -28,6 +28,7 @@ namespace ChurchManager.Domain.Features.People.Specifications
                 PostalCode = x.Address.PostalCode,
                 Street = x.Address.Street,
                 Province = x.Address.Province,
+                Language = x.Language,
                 FamilyMembers = x.FamilyMembers.Select(x => new ChurchManager.Domain.Shared.PersonViewModelBasic
                 {
                     PersonId   = x.Id,

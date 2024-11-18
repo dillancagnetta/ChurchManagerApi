@@ -26,6 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Features\History\Queries\" />
 		<Folder Include="Features\Missions\Repositories\" />
 		<Folder Include="Features\Missions\Queries\" />
 	</ItemGroup>

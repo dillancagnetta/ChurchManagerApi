@@ -2,6 +2,7 @@
 using ChurchManager.Domain.Features.Communication.Services;
 using ChurchManager.Domain.Features.Discipleship.Repositories;
 using ChurchManager.Domain.Features.Groups.Repositories;
+using ChurchManager.Domain.Features.History;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;
@@ -9,6 +10,7 @@ using ChurchManager.Infrastructure.Persistence.Repositories;
 using ChurchManager.Infrastructure.Persistence.Seeding;
 using ChurchManager.Infrastructure.Persistence.Seeding.Development;
 using ChurchManager.Infrastructure.Persistence.Seeding.Production;
+using ChurchManager.Infrastructure.Persistence.Triggers;
 using ChurchManager.Persistence.Shared;
 using CodeBoss.AspNetCore.Startup;
 using Convey;
@@ -31,8 +33,13 @@ namespace ChurchManager.Infrastructure.Persistence
             //services.AddDbContext<ChurchManagerDbContext>(options =>
             //   options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
             //       x => x.MigrationsAssembly("ChurchManager.Infrastructure.Persistence")));
-            services.AddDbContext<ChurchManagerDbContext>(options => { });
-
+            services.AddDbContext<ChurchManagerDbContext>(options => 
+                // Add Triggers
+                options.UseTriggers(triggerOptions => {
+                    triggerOptions.AddTrigger<PersonTrigger>();
+                    //triggerOptions.AddTrigger<SendEmailTrigger>();
+            }));
+            
             // Database Health Check 
             services
                 .AddHealthChecks()
@@ -95,6 +102,7 @@ namespace ChurchManager.Infrastructure.Persistence
             services.AddScoped<IPersonDbRepository, PersonDbRepository>();
             services.AddScoped<IGroupDbRepository, GroupDbRepository>();
             services.AddScoped<IGroupMemberAttendanceDbRepository, GroupMemberAttendanceDbRepository>();
+            services.AddScoped<IHistoryDbRepository, HistoryDbRepository>();
             services.AddScoped<IPushSubscriptionsService, PushSubscriptionsService>();
 
             #endregion

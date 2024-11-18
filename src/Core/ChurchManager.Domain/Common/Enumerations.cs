@@ -31,4 +31,24 @@ namespace ChurchManager.Domain.Common
 
         public static implicit operator CommunicationType(string value) => new(value);
     }
+
+    public class HistoryVerb : Enumeration<HistoryVerb, string>
+    {
+        public HistoryVerb(string value) => Value = value;
+
+        public static HistoryVerb Add = new("Add");
+        public static HistoryVerb Modify = new("Modify");
+        public static HistoryVerb Delete = new("Delete");
+        public static HistoryVerb Registered = new("Registered");
+        public static HistoryVerb Process = new("Process");
+        public static HistoryVerb Matched = new("Matched");
+        public static HistoryVerb Unmatched = new("Unmatched");
+        public static HistoryVerb Login = new("Login");
+        public static HistoryVerb Merge = new("Merge");
+        public static HistoryVerb AddedToGroup = new("AddedToGroup");
+        public static HistoryVerb RemovedFromGroup = new("RemovedFromGroup");
+        public static HistoryVerb StepAdded = new("StepAdded");
+
+        public static implicit operator HistoryVerb(string value) => new(value);
+    }
 }

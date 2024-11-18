@@ -27,6 +27,12 @@ namespace ChurchManager.Domain.Features.People.Specifications
                         EF.Functions.ILike(person.FullName.FirstName, $"%{query.SearchTerm}%") ||
                         EF.Functions.ILike(person.FullName.LastName, $"%{query.SearchTerm}%"));
             }
+            
+            // Church, 0 is for searching all Churches
+            if (query.ChurchId.HasValue && query.ChurchId > 0)
+            {
+                Query.Where(x => x.ChurchId == query.ChurchId.Value);
+            }
 
             // Connection Status
             if (query.ConnectionStatus.Any())

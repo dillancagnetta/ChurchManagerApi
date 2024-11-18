@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using ChurchManager.Domain;
 using ChurchManager.Domain.Features.People;
-using ChurchManager.Domain.Shared;
-using PersonViewModelBasic = ChurchManager.Domain.Shared.PersonViewModelBasic;
+using PersonViewModelBasic = ChurchManager.Domain.PersonViewModelBasic;
 
 namespace ChurchManager.Application.ViewModels
 {

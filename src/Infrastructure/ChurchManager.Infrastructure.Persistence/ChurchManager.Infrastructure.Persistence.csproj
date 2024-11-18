@@ -19,6 +19,7 @@
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
 		<PackageReference Include="Convey" Version="1.0.531" />
 		<PackageReference Include="Convey.CQRS.Queries" Version="1.0.531" />
+		<PackageReference Include="EntityFrameworkCore.Triggered" Version="3.2.2" />
 		<PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="6.1.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.1" />

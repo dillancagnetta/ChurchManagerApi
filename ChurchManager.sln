@@ -90,6 +90,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChurchManager.Infrastructur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChurchManager.Persistence.Shared", "src\Infrastructure\ChurchManager.Persistence.Shared\ChurchManager.Persistence.Shared.csproj", "{72E00EBA-F609-4A76-9C0D-854DCA27D54C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchManager.Features.History", "src\Features\ChurchManager.Features.History\ChurchManager.Features.History.csproj", "{42FE2282-1494-4B7F-8FA1-53F04F8B573F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -208,6 +210,10 @@ Global
 		{72E00EBA-F609-4A76-9C0D-854DCA27D54C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72E00EBA-F609-4A76-9C0D-854DCA27D54C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72E00EBA-F609-4A76-9C0D-854DCA27D54C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42FE2282-1494-4B7F-8FA1-53F04F8B573F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42FE2282-1494-4B7F-8FA1-53F04F8B573F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42FE2282-1494-4B7F-8FA1-53F04F8B573F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42FE2282-1494-4B7F-8FA1-53F04F8B573F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -241,6 +247,7 @@ Global
 		{F3C14DEE-8818-4B96-B3B7-585A9DB60810} = {D4173B5E-3368-41B7-A208-72DD77CE12C5}
 		{C499785D-BF2F-4F21-BBB7-436C63CD48DF} = {D4173B5E-3368-41B7-A208-72DD77CE12C5}
 		{72E00EBA-F609-4A76-9C0D-854DCA27D54C} = {D4173B5E-3368-41B7-A208-72DD77CE12C5}
+		{42FE2282-1494-4B7F-8FA1-53F04F8B573F} = {4E57F1DC-B09A-46B9-81A2-D6325F089A7C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FFB97C3E-0578-455B-ABD1-9C774B9BDEAC}
