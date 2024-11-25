@@ -45,4 +45,10 @@
 		<ProjectReference Include="..\..\Infrastructure\ChurchManager.Infrastructure.Persistence\ChurchManager.Infrastructure.Persistence.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Update="TestReport.rdl">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
 </Project>
