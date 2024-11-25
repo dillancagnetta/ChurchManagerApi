@@ -1,49 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="AWSSDK.SimpleEmailV2" Version="3.7.0.52" />
-		<PackageReference Include="Bugsnag.AspNet.Core" Version="2.2.1" />
-		<PackageReference Include="CloudinaryDotNet" Version="1.15.2" />
-		<PackageReference Include="DotLiquid" Version="2.2.518" />
-		<PackageReference Include="Flagsmith" Version="3.0.0" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
-		<PackageReference Include="WebPush" Version="1.0.11" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="MassTransit.RabbitMQ" Version="7.3.1" />
-		<PackageReference Include="MassTransit.SignalR" Version="7.3.1" />
-		<PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="OpenTelemetry" Version="1.2.0-rc2" />
-		<PackageReference Include="OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta2" />
-		<PackageReference Include="OpenTelemetry.Exporter.Jaeger" Version="1.2.0-alpha4" />
-		<PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.0.0-rc9" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="CodeBoss" Version="0.1.25" />
-		<PackageReference Include="CodeBoss.AspNetCore" Version="0.1.25" />
-		<PackageReference Include="CodeBoss.MultiTenant" Version="0.1.25" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\ChurchManager.Infrastructure\ChurchManager.Infrastructure.csproj" />
-		<ProjectReference Include="..\..\Core\ChurchManager.Domain\ChurchManager.Domain.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="Email\Templates\FollowUpAssignment.liquid">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
-
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.SimpleEmailV2" />
+    <PackageReference Include="Bugsnag.AspNet.Core" />
+    <PackageReference Include="CloudinaryDotNet" />
+    <PackageReference Include="DotLiquid" />
+    <PackageReference Include="Flagsmith" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    <PackageReference Include="WebPush" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MassTransit.RabbitMQ" />
+    <PackageReference Include="MassTransit.SignalR" />
+    <PackageReference Include="MassTransit.AspNetCore" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="OpenTelemetry" />
+    <PackageReference Include="OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore" />
+    <PackageReference Include="OpenTelemetry.Exporter.Jaeger" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CodeBoss" />
+    <PackageReference Include="CodeBoss.AspNetCore" />
+    <PackageReference Include="CodeBoss.MultiTenant" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChurchManager.Infrastructure\ChurchManager.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\Core\ChurchManager.Domain\ChurchManager.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Email\Templates\FollowUpAssignment.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>

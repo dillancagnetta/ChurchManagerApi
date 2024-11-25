@@ -15,5 +15,6 @@ public class ReportsController: BaseApiController
         report.DataSources.Add(new ReportDataSource("source", dataSource));
         report.SetParameters(new[] { new ReportParameter("Parameter1", "Parameter value") });
         byte[] pdf = report.Render("PDF");*/
+        return Ok();
     }
 }

@@ -1,45 +1,38 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<Compile Remove="Specifications\**" />
-		<EmbeddedResource Remove="Specifications\**" />
-		<None Remove="Specifications\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="11.0.1" />
-		<PackageReference Include="Ardalis.Specification" Version="6.0.1" />
-		<PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="6.0.1" />
-		<PackageReference Include="Bogus" Version="34.0.1" />
-		<PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
-		<PackageReference Include="Convey" Version="1.0.531" />
-		<PackageReference Include="Convey.CQRS.Queries" Version="1.0.531" />
-		<PackageReference Include="EntityFrameworkCore.Triggered" Version="3.2.2" />
-		<PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="6.1.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.1" />
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3" />
-		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.15" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="CodeBoss.AspNetCore" Version="0.1.25" />
-		<PackageReference Include="CodeBoss.MultiTenant" Version="0.1.25" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\Core\ChurchManager.Application.Abstractions\ChurchManager.Application.Abstractions.csproj" />
-		<ProjectReference Include="..\..\Core\ChurchManager.Domain\ChurchManager.Domain.csproj" />
-		<ProjectReference Include="..\ChurchManager.Infrastructure.Shared\ChurchManager.Infrastructure.Shared.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Migrations\" />
-	</ItemGroup>
-
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Specifications\**" />
+    <EmbeddedResource Remove="Specifications\**" />
+    <None Remove="Specifications\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" />
+    <PackageReference Include="Ardalis.Specification" />
+    <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" />
+    <PackageReference Include="Bogus" />
+    <PackageReference Include="BCrypt.Net-Next" />
+    <PackageReference Include="Convey" />
+    <PackageReference Include="Convey.CQRS.Queries" />
+    <PackageReference Include="EntityFrameworkCore.Triggered" />
+    <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="System.Linq.Dynamic.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CodeBoss.AspNetCore" />
+    <PackageReference Include="CodeBoss.MultiTenant" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\ChurchManager.Application.Abstractions\ChurchManager.Application.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Core\ChurchManager.Domain\ChurchManager.Domain.csproj" />
+    <ProjectReference Include="..\ChurchManager.Infrastructure.Shared\ChurchManager.Infrastructure.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
 </Project>
