@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Http;
 
 namespace ChurchManager.Features.People.Commands.EditPhoto
 {
-    public record EditPhotoCommand(int PersonId, IFormFile File) : IRequest;
+    public record EditPhotoCommand(int PersonId, IFormFile File) : IRequest<Unit>;
 
-    public class EditPhotoHandler : IRequestHandler<EditPhotoCommand>
+    public class EditPhotoHandler : IRequestHandler<EditPhotoCommand, Unit>
     {
         private readonly IPhotoService _photos;
         private readonly IPersonDbRepository _dbRepository;

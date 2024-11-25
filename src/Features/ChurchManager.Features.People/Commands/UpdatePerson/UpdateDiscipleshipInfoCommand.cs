@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Features.People.Commands.UpdatePerson
 {
-    public record UpdateDiscipleshipInfoCommand : IRequest
+    public record UpdateDiscipleshipInfoCommand : IRequest<Unit>
     {
         public int PersonId { get; set; }
         public bool? ReceivedHolySpirit { get; set; }
@@ -17,7 +17,7 @@ namespace ChurchManager.Features.People.Commands.UpdatePerson
         public DateTime? FoundationSchoolDate { get; set; }
     }
 
-    public class UpdateDiscipleshipInfoHandler : IRequestHandler<UpdateDiscipleshipInfoCommand>
+    public class UpdateDiscipleshipInfoHandler : IRequestHandler<UpdateDiscipleshipInfoCommand, Unit>
     {
         private readonly IPersonDbRepository _dbRepository;
         private readonly IGenericDbRepository<DiscipleshipStep> _stepsDbRepository;

@@ -2,7 +2,6 @@
 using ChurchManager.Infrastructure.Shared.Tests;
 using CodeBoss.AspNetCore.DependencyInjection;
 using MassTransit;
-using MassTransit.Definition;
 using MassTransit.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,7 +33,7 @@ namespace ChurchManager.Infrastructure.Shared._DependencyInjection
 
             });
 
-            services.AddMassTransitHostedService();
+            // services.AddMassTransitHostedService();
 
             #endregion
         }

@@ -4,11 +4,11 @@ using MediatR;
 
 namespace ChurchManager.Features.Communication.Commands
 {
-    public record SendWebPushNotificationCommand(int PersonId, string Payload) : IRequest
+    public record SendWebPushNotificationCommand(int PersonId, string Payload) : IRequest<Unit>
     {
     }
 
-    public class SendWebPushHandler : IRequestHandler<SendWebPushNotificationCommand>
+    public class SendWebPushHandler : IRequestHandler<SendWebPushNotificationCommand, Unit>
     {
         private readonly IPushNotificationService _push;
 

@@ -6,12 +6,12 @@ using MediatR;
 
 namespace ChurchManager.Features.People.Commands.AddPersonToFamily
 {
-    public record AddPersonToFamilyCommand : IRequest
+    public record AddPersonToFamilyCommand : IRequest<Unit>
     {
         public FamilyMember FamilyMember { get; set; }
     }
 
-    public class AddPersonToFamilyHandler : IRequestHandler<AddPersonToFamilyCommand>
+    public class AddPersonToFamilyHandler : IRequestHandler<AddPersonToFamilyCommand, Unit>
     {
         private readonly IPersonDbRepository _dbRepository;
 

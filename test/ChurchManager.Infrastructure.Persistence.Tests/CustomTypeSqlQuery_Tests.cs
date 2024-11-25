@@ -62,7 +62,7 @@ namespace ChurchManager.Infrastructure.Persistence.Tests
     {
         public double? Year { get; set; }
         public double? Month { get; set; }
-        [CanBeNull] public string Group { get; set; }
+        public string Group { get; set; }
         public Int64 Attendance { get; set; }
     }
 }

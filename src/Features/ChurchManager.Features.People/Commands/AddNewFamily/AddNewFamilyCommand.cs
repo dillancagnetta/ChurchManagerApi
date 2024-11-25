@@ -9,14 +9,14 @@ using Microsoft.Extensions.Logging;
 
 namespace ChurchManager.Features.People.Commands.AddNewFamily
 {
-    public record AddNewFamilyCommand : IRequest
+    public record AddNewFamilyCommand : IRequest<Unit>
     {
         public string FamilyName { get; set; }
         public IEnumerable<FamilyMember> Members { get; set; }
         public Address Address { get; set; }
     }
 
-    public class AddNewFamilyHandler : IRequestHandler<AddNewFamilyCommand>
+    public class AddNewFamilyHandler : IRequestHandler<AddNewFamilyCommand, Unit>
     {
         private readonly IPersonDbRepository _dbRepository;
         private readonly IDomainEventPublisher _eventPublisher;

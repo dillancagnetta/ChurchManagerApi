@@ -3,12 +3,13 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MassTransit.AspNetCore" />
     <PackageReference Include="MassTransit.Extensions.DependencyInjection" />
     <PackageReference Include="MassTransit.RabbitMQ" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" VersionOverride="6.10.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     <!-- FIX: System.IO.FileNotFoundException: Could not load file or assembly 'Newtonsoft.Json 12.0.0 -->
     <!--<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />-->
   </ItemGroup>

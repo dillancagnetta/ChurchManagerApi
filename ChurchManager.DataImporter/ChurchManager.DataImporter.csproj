@@ -1,13 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="DotNetCore.NPOI" />
+    <PackageReference Include="CodeBoss" VersionOverride="8.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" VersionOverride="8.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\Core\ChurchManager.Domain\ChurchManager.Domain.csproj" />

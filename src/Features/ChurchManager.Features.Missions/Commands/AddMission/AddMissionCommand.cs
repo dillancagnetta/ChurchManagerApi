@@ -6,7 +6,7 @@ using MediatR;
 
 namespace ChurchManager.Features.Missions.Commands.AddMission
 {
-    public record AddMissionCommand : IRequest
+    public record AddMissionCommand : IRequest<Unit>
     {
         [Required, MaxLength(50)]
         public string Name { get; set; }
@@ -50,7 +50,7 @@ namespace ChurchManager.Features.Missions.Commands.AddMission
         public string Notes { get; set; }
     }
 
-    public class AddMissionHandler : IRequestHandler<AddMissionCommand>
+    public class AddMissionHandler : IRequestHandler<AddMissionCommand, Unit>
     {
         private readonly IGenericDbRepository<Mission> _dbRepository;
 

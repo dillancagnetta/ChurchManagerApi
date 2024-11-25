@@ -7,7 +7,7 @@ using BirthDate = ChurchManager.Features.People.Commands.AddNewFamily.BirthDate;
 
 namespace ChurchManager.Features.People.Commands.UpdatePerson
 {
-    public record UpdateGeneralInfoCommand : IRequest
+    public record UpdateGeneralInfoCommand : IRequest<Unit>
     {
         public int PersonId { get; set; }
         public string Occupation { get; set; }
@@ -17,7 +17,7 @@ namespace ChurchManager.Features.People.Commands.UpdatePerson
         public BirthDate BirthDate { get; set; }
     }
 
-    public class UpdateGeneralInfoCommandHandler : IRequestHandler<UpdateGeneralInfoCommand>
+    public class UpdateGeneralInfoCommandHandler : IRequestHandler<UpdateGeneralInfoCommand, Unit>
     {
         private readonly IPersonDbRepository _dbRepository;
 
