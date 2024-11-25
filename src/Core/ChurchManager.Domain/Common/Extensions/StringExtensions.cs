@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace ChurchManager.Domain.Common.Extensions
 {
     public static class StringExtensions

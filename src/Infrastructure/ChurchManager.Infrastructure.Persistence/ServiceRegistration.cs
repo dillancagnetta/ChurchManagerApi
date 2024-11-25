@@ -37,6 +37,10 @@ namespace ChurchManager.Infrastructure.Persistence
                 // Add Triggers
                 options.UseTriggers(triggerOptions => {
                     triggerOptions.AddTrigger<PersonTrigger>();
+                    triggerOptions.AddTrigger<FollowUpTrigger>();
+                    triggerOptions.AddTrigger<GroupTrigger>();
+                    triggerOptions.AddTrigger<GroupMemberTrigger>();
+                    triggerOptions.AddTrigger<GroupMemberAttendanceTrigger>();
                     //triggerOptions.AddTrigger<SendEmailTrigger>();
             }));
             
