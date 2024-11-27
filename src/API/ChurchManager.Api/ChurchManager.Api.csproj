@@ -6,8 +6,8 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MassTransit.AspNetCore" />
-    <PackageReference Include="MassTransit.Extensions.DependencyInjection" />
+<!--    <PackageReference Include="MassTransit.AspNetCore" />
+    <PackageReference Include="MassTransit.Extensions.DependencyInjection" />-->
     <PackageReference Include="MassTransit.RabbitMQ" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     <!-- FIX: System.IO.FileNotFoundException: Could not load file or assembly 'Newtonsoft.Json 12.0.0 -->

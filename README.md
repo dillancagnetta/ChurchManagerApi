@@ -97,3 +97,19 @@ docker tag church-manager-ui:latest 977844596384.dkr.ecr.us-east-1.amazonaws.com
 `docker push 977844596384.dkr.ecr.us-east-1.amazonaws.com/frontend-angular:local`
 
 
+## Reporting
+
+https://odbc.postgresql.org/
+
+https://postgresblog.blogspot.com/
+
+> install 32bit driver
+> Create ODBC DSN
+> In ReportBuilder from Microsoft: set
+
+Connection String
+```Driver={PostgreSQL UNICODE};Server=localhost;Port=5432;Database=churchmanager_db;Schema=public;Uid=postgres;Pwd=*****;```
+
+
+
+
