@@ -51,7 +51,8 @@ dotnet ef database update --project src\Infrastructure\ChurchManager.Infrastruct
 1. cd into `Persistence` directory `cd src\Infrastructure\ChurchManager.Infrastructure.Persistence`
 2. 
    - `dotnet ef migrations add LinkFamilyToPerson -c ChurchManagerDbContext -o Migrations -s ..\..\API\ChurchManager.Api\ChurchManager.Api.csproj`
-
+3. cd back to root: ` cd ../../..`
+   - `dotnet ef database update --project src\Infrastructure\ChurchManager.Infrastructure.Persistence\ChurchManager.Infrastructure.Persistence.csproj --startup-project src\API\ChurchManager.Api\ChurchManager.Api.csproj --context ChurchManager.Infrastructure.Persistence.Contexts.ChurchManagerDbContext`
 #### Troubleshooting
 
 `Cannot delete because connections are not closed`
@@ -60,6 +61,10 @@ dotnet ef database update --project src\Infrastructure\ChurchManager.Infrastruct
 	- `SELECT * FROM pg_stat_activity WHERE pg_stat_activity.datname='churchmanager_db';`  shows open connections
 	- `SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'churchmanager_db';`   close open connections
 	- `DROP DATABASE churchmanager_db;`
+
+`Unable to create a 'DbContext' of type 'ChurchManagerDbContext'`
+- check that the environment variables are set as per step 1
+- logs should have values here and not empty: `AWS_ACCESS_KEY_ID : []  AWS_REGION  : []`
 
 ## Environment settings
 

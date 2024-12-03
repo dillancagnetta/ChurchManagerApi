@@ -6,6 +6,7 @@ using ChurchManager.Infrastructure.Mapper;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using ChurchViewModel = ChurchManager.Domain.Shared.ChurchViewModel;
 
 namespace ChurchManager.Features.Churches.Queries.RetrieveChurches
 {

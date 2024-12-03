@@ -17,5 +17,7 @@ public class HistoryConfiguration: IEntityTypeConfiguration<History>
         
         builder.HasIndex(o => o.EntityType);
         builder.HasIndex(o => o.EntityId);
+        builder.HasIndex(o => o.RelatedEntityId);
+        builder.HasIndex(o => o.RelatedEntityType);
     }
 }

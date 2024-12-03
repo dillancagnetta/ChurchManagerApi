@@ -34,6 +34,8 @@ namespace ChurchManager.Domain.Features.Churches
         /// Note that this does not include Archived GroupMembers
         /// </summary>
         public virtual ChurchGroup ChurchGroup { get; set; }
+        
+        public virtual Person LeaderPerson { get; set; }
 
         #endregion
     }

@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Persistence.Shared;
+using Codeboss.Types;
 
 namespace ChurchManager.Domain.Features.Churches
 {
     [Table("ChurchGroup")]
 
-    public class ChurchGroup : Entity<int>
+    public class ChurchGroup : Entity<int>, IAggregateRoot<int>
     {
         [Required, MaxLength(50)]
         public string Name { get; set; }
@@ -30,6 +31,8 @@ namespace ChurchManager.Domain.Features.Churches
         /// </summary>
         public virtual ICollection<Church> Churches { get; set; } = new Collection<Church>();
 
+        public virtual Person LeaderPerson { get; set; }
+        
         #endregion
     }
 }
