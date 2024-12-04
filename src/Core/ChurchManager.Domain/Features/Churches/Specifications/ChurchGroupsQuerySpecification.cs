@@ -3,6 +3,7 @@ using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Shared;
 using CodeBoss.Extensions;
 using Microsoft.EntityFrameworkCore;
+using PersonViewModel = ChurchManager.Domain.Shared.PersonViewModelBasic;
 
 namespace ChurchManager.Domain.Features.Churches.Specifications;
 
@@ -28,24 +29,29 @@ public class ChurchGroupsQuerySpecification: Specification<ChurchGroup, ChurchGr
             Id = x.Id,
             Name = x.Name,  
             Description = x.Description,
-            LeaderPerson = x.LeaderPersonId.HasValue ? ToAutoCompletePerson(x.LeaderPerson) : null,
+            LeaderPerson = x.LeaderPersonId.HasValue ? ToBasicPerson(x.LeaderPerson) : null,
             Churches = x.Churches.Select(c => new ChurchViewModel
             { 
                 Id = c.Id,
                 Name = c.Name,
                 Description = c.Description,
                 ShortCode = c.ShortCode,
-                LeaderPerson = c.LeaderPersonId.HasValue ? ToAutoCompletePerson(c.LeaderPerson) : null,
+                LeaderPerson = c.LeaderPersonId.HasValue ? ToBasicPerson(c.LeaderPerson) : null,
             })
         });
     }
     
-    private static PeopleAutocompleteViewModel ToAutoCompletePerson(Person person)
+    private static PersonViewModel ToBasicPerson(Person person)
     {
-        return new PeopleAutocompleteViewModel(
-            person.Id,
-            $"{person.FullName.FirstName} {person.FullName.LastName}",
-            person.PhotoUrl,
-            person.ConnectionStatus);
+        return new PersonViewModel
+        {
+            PersonId = person.Id,
+            Gender = person.Gender,
+            FirstName = person.FullName.FirstName,
+            LastName = person.FullName.LastName,
+            AgeClassification = person.AgeClassification,
+            Age = person.BirthDate.Age,
+            PhotoUrl = person.PhotoUrl
+        };
     }
 }
