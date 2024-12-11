@@ -4,7 +4,7 @@ using MediatR;
 
 namespace ChurchManager.Features.Groups.Commands.GroupAttendanceRecord
 {
-    public record GroupAttendanceRecordCommand : IRequest
+    public record GroupAttendanceRecordCommand : IRequest<Unit>
     {
         [Required] public int GroupId { get; set; }
 
@@ -17,7 +17,7 @@ namespace ChurchManager.Features.Groups.Commands.GroupAttendanceRecord
         public decimal? Offering { get; set; }
     }
 
-    public class GroupAttendanceHandler : IRequestHandler<GroupAttendanceRecordCommand>
+    public class GroupAttendanceHandler : IRequestHandler<GroupAttendanceRecordCommand, Unit>
     {
         private readonly IGroupAttendanceAppService _appService;
 

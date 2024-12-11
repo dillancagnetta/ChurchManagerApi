@@ -6,9 +6,9 @@ using MediatR;
 
 namespace ChurchManager.Features.People.Commands.DeletePhoto
 {
-    public record DeletePhotoCommand(int PersonId) : IRequest;
+    public record DeletePhotoCommand(int PersonId) : IRequest<Unit>;
 
-    public class DeletePhotoHandler : IRequestHandler<DeletePhotoCommand>
+    public class DeletePhotoHandler : IRequestHandler<DeletePhotoCommand, Unit>
     {
         private readonly IPhotoService _photos;
         private readonly IPersonDbRepository _dbRepository;

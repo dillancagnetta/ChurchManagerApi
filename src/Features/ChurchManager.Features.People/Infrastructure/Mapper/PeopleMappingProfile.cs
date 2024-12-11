@@ -6,6 +6,7 @@ using ChurchManager.Infrastructure.Mapper;
 using Convey.CQRS.Queries;
 using GroupMemberViewModel = ChurchManager.Domain.Shared.GroupMemberViewModel;
 using PersonViewModelBasic = ChurchManager.Domain.PersonViewModelBasic;
+using PersonViewModelShared = ChurchManager.Domain.Shared.PersonViewModelBasic;
 
 namespace ChurchManager.Features.People.Infrastructure.Mapper
 {
@@ -34,6 +35,19 @@ namespace ChurchManager.Features.People.Infrastructure.Mapper
                     opt => opt.MapFrom(src => src.Id))
                 ;
 
+            CreateMap<Person, PersonViewModelShared>()
+                .ForMember(d => d.FirstName,
+                    opt => opt.MapFrom(src => src.FullName.FirstName))
+                .ForMember(d => d.LastName,
+                    opt => opt.MapFrom(src => src.FullName.LastName))
+                .ForMember(d => d.PhotoUrl,
+                    opt => opt.MapFrom(src => src.PhotoUrl))
+                .ForMember(d => d.PersonId,
+                    opt => opt.MapFrom(src => src.Id))
+                .ForMember(d => d.AgeClassification,
+                    o => o.MapFrom(src =>
+                        src.AgeClassification == null ? AgeClassification.Unknown.Value : src.AgeClassification.Value))
+                ;
 
             CreateMap<PagedResult<Person>, PagedResult<PersonViewModel>>()
                 .ForMember(d => d.Items,

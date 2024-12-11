@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -19,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 		.github\workflows\release.yml = .github\workflows\release.yml
 		ChurchManager.rest = ChurchManager.rest
+		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{F839B0EA-9799-4939-AA57-FB1272B9912A}"
@@ -90,7 +91,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChurchManager.Infrastructur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChurchManager.Persistence.Shared", "src\Infrastructure\ChurchManager.Persistence.Shared\ChurchManager.Persistence.Shared.csproj", "{72E00EBA-F609-4A76-9C0D-854DCA27D54C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchManager.Features.History", "src\Features\ChurchManager.Features.History\ChurchManager.Features.History.csproj", "{42FE2282-1494-4B7F-8FA1-53F04F8B573F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChurchManager.Features.History", "src\Features\ChurchManager.Features.History\ChurchManager.Features.History.csproj", "{42FE2282-1494-4B7F-8FA1-53F04F8B573F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

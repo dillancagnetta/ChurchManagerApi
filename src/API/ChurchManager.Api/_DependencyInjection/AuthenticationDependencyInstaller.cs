@@ -59,7 +59,7 @@ namespace ChurchManager.Api._DependencyInjection
             // pull token from  query string; web sockets don't support headers so fall back to query is required
             var accessToken = context.Request.Query["access_token"];
 
-            if(IsHubPath() && !accessToken.IsNullOrEmpty())
+            if(IsHubPath() && !EnumerableExtensions.IsNullOrEmpty(accessToken))
             {
                 context.Token = accessToken;
             }

@@ -7,14 +7,14 @@ using MediatR;
 
 namespace ChurchManager.Features.Groups.Commands.GroupAttendanceFeedback
 {
-    public record SubmitGroupAttendanceFeedbackCommand : IRequest
+    public record SubmitGroupAttendanceFeedbackCommand : IRequest<Unit>
     {
         [Required] public int AttendanceId { get; set; }
 
         public string Feedback { get; set; }
     }
 
-    public class GroupAttendanceFeedbackHandler : IRequestHandler<SubmitGroupAttendanceFeedbackCommand>
+    public class GroupAttendanceFeedbackHandler : IRequestHandler<SubmitGroupAttendanceFeedbackCommand, Unit>
     {
         private readonly ICognitoCurrentUser _currentUser;
         private readonly IGroupAttendanceDbRepository _dbRepository;

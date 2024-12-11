@@ -1,12 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 using ChurchManager.Infrastructure.Abstractions;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Persistence.Shared;
 using CodeBoss.MultiTenant;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Infrastructure.Persistence.Contexts
@@ -21,8 +17,8 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts
         public ChurchManagerDbContext(
             DbContextOptions<ChurchManagerDbContext> options,
             [NotNull] ITenantProvider tenantProvider,
-            [CanBeNull] IDomainEventPublisher events = null,
-            [CanBeNull] ITenantCurrentUser currentUser = null) : base(options)
+            IDomainEventPublisher events = null,
+            ITenantCurrentUser currentUser = null) : base(options)
         {
             _events = events;
             _tenantProvider = tenantProvider;

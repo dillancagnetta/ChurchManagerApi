@@ -3,7 +3,7 @@ using MediatR;
 
 namespace ChurchManager.Features.People.Commands.UpdatePerson
 {
-    public record UpdateConnectionInfoCommand : IRequest
+    public record UpdateConnectionInfoCommand : IRequest<Unit>
     {
         public int PersonId { get; set; }
         public int ChurchId { get; set; }
@@ -12,7 +12,7 @@ namespace ChurchManager.Features.People.Commands.UpdatePerson
         public string Source { get; set; }
     }
 
-    public class UpdateConnectionInfoHandler : IRequestHandler<UpdateConnectionInfoCommand>
+    public class UpdateConnectionInfoHandler : IRequestHandler<UpdateConnectionInfoCommand, Unit>
     {
         private readonly IPersonDbRepository _dbRepository;
 

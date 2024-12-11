@@ -143,7 +143,8 @@ namespace ChurchManager.Infrastructure
         private static void AddMediator(this IServiceCollection services, AppTypeSearcher typeSearcher)
         {
             var assemblies = typeSearcher.GetAssemblies().ToArray();
-            services.AddMediatR(assemblies);
+            services.AddMediatR(cfg=>cfg.RegisterServicesFromAssemblies(assemblies));
+            //services.AddMediatR(assemblies);
         }
 
         /// <summary>

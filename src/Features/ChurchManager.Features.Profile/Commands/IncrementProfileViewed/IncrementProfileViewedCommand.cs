@@ -3,9 +3,9 @@ using MediatR;
 
 namespace ChurchManager.Features.Profile.Commands.IncrementProfileViewed;
 
-public record IncrementProfileViewedCommand(int PersonId): IRequest;
+public record IncrementProfileViewedCommand(int PersonId): IRequest<Unit>;
 
-public class IncrementProfileViewedHandler : IRequestHandler<IncrementProfileViewedCommand>
+public class IncrementProfileViewedHandler : IRequestHandler<IncrementProfileViewedCommand, Unit>
 {
     private readonly IPersonDbRepository _dbRepository;
 

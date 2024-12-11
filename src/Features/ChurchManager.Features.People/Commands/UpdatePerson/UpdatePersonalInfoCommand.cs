@@ -4,7 +4,7 @@ using MediatR;
 
 namespace ChurchManager.Features.People.Commands.UpdatePerson
 {
-    public record UpdatePersonalInfoCommand : IRequest
+    public record UpdatePersonalInfoCommand : IRequest<Unit>
     {
         public int PersonId { get; set; }
         public string FirstName { get; set; }
@@ -14,7 +14,7 @@ namespace ChurchManager.Features.People.Commands.UpdatePerson
         public string AgeClassification { get; set; }
     }
 
-    public class UpdatePersonalInfoCommandHandler : IRequestHandler<UpdatePersonalInfoCommand>
+    public class UpdatePersonalInfoCommandHandler : IRequestHandler<UpdatePersonalInfoCommand, Unit>
     {
         private readonly IPersonDbRepository _dbRepository;
 

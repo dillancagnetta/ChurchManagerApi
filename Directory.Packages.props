@@ -1,0 +1,74 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <NoWarn>$(NoWarn);NU1507</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Amazon.Extensions.Configuration.SystemsManager" Version="3.0.0" />
+    <PackageVersion Include="Ardalis.GuardClauses" Version="5.0.0" />
+    <PackageVersion Include="Ardalis.Specification" Version="8.0.0" />
+    <PackageVersion Include="Ardalis.Specification.EntityFrameworkCore" Version="8.0.0" />
+    <PackageVersion Include="AutoFixture" Version="4.18.1" />
+    <PackageVersion Include="AutoMapper" Version="13.0.1" />
+    <PackageVersion Include="AWSSDK.SimpleEmailV2" Version="3.7.0.52" />
+    <PackageVersion Include="BCrypt.Net-Next" Version="4.0.2" />
+    <PackageVersion Include="Bogus" Version="34.0.1" />
+    <PackageVersion Include="Bugsnag.AspNet.Core" Version="2.2.1" />
+    <PackageVersion Include="CloudinaryDotNet" Version="1.15.2" />
+    <PackageVersion Include="CodeBoss" Version="8.0.2" />
+    <PackageVersion Include="CodeBoss.AspNetCore" Version="8.0.2" />
+    <PackageVersion Include="CodeBoss.Extensions" Version="8.0.2" />
+    <PackageVersion Include="CodeBoss.MultiTenant" Version="8.0.2" />
+    <PackageVersion Include="Convey" Version="1.1.448" />
+    <PackageVersion Include="Convey.CQRS.Queries" Version="1.1.448" />
+    <PackageVersion Include="Convey.Logging" Version="1.1.448" />
+    <PackageVersion Include="coverlet.collector" Version="3.1.0" />
+    <PackageVersion Include="DotLiquid" Version="2.2.518" />
+    <PackageVersion Include="DotNetCore.NPOI" Version="1.2.3" />
+    <PackageVersion Include="EntityFrameworkCore.Triggered" Version="3.2.2" />
+    <PackageVersion Include="Flagsmith" Version="5.4.3" />
+    <PackageVersion Include="FluentValidation" Version="11.11.0" />
+    <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+    <PackageVersion Include="Ical.Net" Version="4.2.0" />
+    <PackageVersion Include="LinqKit.Microsoft.EntityFrameworkCore" Version="8.1.7" />
+    <PackageVersion Include="MassTransit" Version="8.3.2" />
+    <!--    <PackageVersion Include="MassTransit.AspNetCore" Version="7.3.1" />
+    <PackageVersion Include="MassTransit.Extensions.DependencyInjection" Version="7.3.1" />-->
+    <PackageVersion Include="MassTransit.RabbitMQ" Version="8.3.2" />
+    <PackageVersion Include="MassTransit.SignalR" Version="8.3.2" />
+    <PackageVersion Include="MediatR" Version="12.4.1" />
+    <!--<PackageVersion Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />-->
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.11" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.8.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="8.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+    <PackageVersion Include="OpenTelemetry" Version="1.10.0" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Jaeger" Version="1.5.1" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.8.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.1" />
+    <PackageVersion Include="OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta2" />
+    <PackageVersion Include="ReportViewerCore.NETCore" Version="15.1.25" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.0.0" />
+    <PackageVersion Include="System.Data.Odbc" Version="9.0.0" />
+    <PackageVersion Include="System.Data.SqlClient" Version="4.9.0" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.2.1" />
+    <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.4.9" />
+    <PackageVersion Include="Wangkanai.Detection" Version="8.14.0" />
+    <PackageVersion Include="WebPush" Version="1.0.12" />
+    <PackageVersion Include="xunit" Version="2.4.1" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.3" />
+  </ItemGroup>
+</Project>

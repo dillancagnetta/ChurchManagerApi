@@ -27,6 +27,7 @@ namespace ChurchManager.Infrastructure.Shared.FeatureFlags
 
                 var client = new FlagsmithClient(config);
 
+                services.AddSingleton<IFlagsmithClient>(client);
                 services.AddSingleton<IFeatureFlagClient, FlagsmithFeatureClient>();
             }
         }

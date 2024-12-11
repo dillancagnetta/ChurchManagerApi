@@ -1,5 +1,6 @@
 ﻿using ChurchManager.Domain.Shared;
 
+/*
 namespace ChurchManager.Application.ViewModels
 {
     public record ChurchViewModel : SelectItemViewModel
@@ -7,3 +8,4 @@ namespace ChurchManager.Application.ViewModels
         public string ShortCode { get; set; }
     }
 }
+*/

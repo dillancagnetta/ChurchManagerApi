@@ -6,16 +6,23 @@ namespace ChurchManager.Infrastructure.Shared.FeatureFlags
 {
     public class FlagsmithFeatureClient : IFeatureFlagClient
     {
-        public async Task<bool?> HasFeatureFlag(string featureId, string identity = null)
-        {
-            var featureEnabled = await FlagsmithClient.instance.HasFeatureFlag(featureId, identity);
+        private readonly IFlagsmithClient _client;
 
+        public FlagsmithFeatureClient(IFlagsmithClient client)
+        {
+            _client = client;
+        }
+        public async Task<bool?> IsFeatureEnabledAsync(string featureId, string identity = null)
+        {
+            var flags = await _client.GetEnvironmentFlags();
+            var featureEnabled = await flags.IsFeatureEnabled(featureId);
             return featureEnabled.IsTruthy();
         }
 
-        public async Task<string> GetFeatureValue(string featureId, string identity = null)
+        public async Task<string> GetFeatureValueAsync(string featureId, string identity = null)
         {
-            return await FlagsmithClient.instance.GetFeatureValue(featureId, identity);
+            var flags = await _client.GetEnvironmentFlags();
+            return await flags.GetFeatureValue(featureId);
         }
     }
 }

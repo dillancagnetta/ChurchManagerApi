@@ -5,18 +5,18 @@ using MediatR;
 
 namespace ChurchManager.Features.Communication.Commands
 {
-    public record SubscribeToWebPushCommand(PushSubscription Subscription) : IRequest
+    public record SubscribeToWebPushCommand(PushSubscription Subscription) : IRequest<Unit>
     {
         public string Device { get; set; }
         public string UniqueIdentification { get; set; }
     }
 
-    public record UnsubscribeToWebPushCommand(PushSubscription Subscription) : IRequest;
+    public record UnsubscribeToWebPushCommand(PushSubscription Subscription) : IRequest<Unit>;
 
-    public record RemoveSubscriptionsToWebPushCommand(string Device, string UniqueIdentification, int PersonId) : IRequest;
+    public record RemoveSubscriptionsToWebPushCommand(string Device, string UniqueIdentification, int PersonId) : IRequest<Unit>;
 
 
-    public class WebPushSubscriptionHandler : IRequestHandler<SubscribeToWebPushCommand>
+    public class WebPushSubscriptionHandler : IRequestHandler<SubscribeToWebPushCommand, Unit>
     {
         private readonly ICognitoCurrentUser _currentUser;
         private readonly IPushSubscriptionsService _push;
@@ -35,7 +35,7 @@ namespace ChurchManager.Features.Communication.Commands
         }
     }
 
-    public class WebPushUnsubscribeHandler : IRequestHandler<UnsubscribeToWebPushCommand>
+    public class WebPushUnsubscribeHandler : IRequestHandler<UnsubscribeToWebPushCommand, Unit>
     {
         private readonly IPushSubscriptionsService _push;
 
@@ -52,7 +52,7 @@ namespace ChurchManager.Features.Communication.Commands
         }
     }
 
-    public class WebPushRemoveSubscriptionHandler : IRequestHandler<RemoveSubscriptionsToWebPushCommand>
+    public class WebPushRemoveSubscriptionHandler : IRequestHandler<RemoveSubscriptionsToWebPushCommand, Unit>
     {
         private readonly IPushSubscriptionsService _push;
 

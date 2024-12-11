@@ -24,7 +24,7 @@ namespace ChurchManager.Infrastructure.Shared.Email
         public async Task<OperationResult> SendEmailAsync(string toAddress, string subject, string htmlBody)
         {
             // Change to your from email
-            string senderAddress = "connect@codeboss.tech";
+            string senderAddress = "connect@codeboss.co.za";
             // Change to your region
             using var client = new AmazonSimpleEmailServiceV2Client(_awsAccessKeyId, _awsSecretAccessKey, RegionEndpoint.USEast1);
             var sendRequest = new SendEmailRequest
