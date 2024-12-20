@@ -74,7 +74,8 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<PeopleFakeDbSeedInitializer>();
                     services.AddInitializer<GroupsFakeDbSeedInitializer>();
                     services.AddInitializer<ChurchAttendanceFakeDbInitializer>();
-                    services.AddInitializer<GroupAttendanceFakeDbSeedInitializer>();
+                    //services.AddInitializer<GroupAttendanceFakeDbSeedInitializer>();
+                    services.AddInitializer<GroupMemberAttendanceFakeDbSeedInitializer>();
                     services.AddInitializer<FollowUpFakeDbSeedInitializer>();
                     services.AddInitializer<MissionsFakeDbSeedInitializer>();
                 }
@@ -88,7 +89,8 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<PeopleFakeDbSeedInitializer>();
                     services.AddInitializer<GroupsFakeDbSeedInitializer>();
                     services.AddInitializer<ChurchAttendanceFakeDbInitializer>();
-                    services.AddInitializer<GroupAttendanceFakeDbSeedInitializer>();
+                    //services.AddInitializer<GroupAttendanceFakeDbSeedInitializer>();
+                    services.AddInitializer<GroupMemberAttendanceFakeDbSeedInitializer>();
                     services.AddInitializer<FollowUpFakeDbSeedInitializer>();
                     services.AddInitializer<MissionsFakeDbSeedInitializer>();
                 }

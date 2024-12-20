@@ -9,7 +9,7 @@ SELECT
     COUNT ("ReceivedHolySpiritCount") as holyspirit
 FROM
     "GroupAttendance"
-JOIN "Group" G on G."Id" = "GroupAttendance"."GroupId"
+JOIN "Group" G on G.""Id"" = "GroupAttendance"."GroupId"
 WHERE "AttendanceDate" BETWEEN '2020-10-29' AND '2021-03-16'
 GROUP BY
     ROLLUP (

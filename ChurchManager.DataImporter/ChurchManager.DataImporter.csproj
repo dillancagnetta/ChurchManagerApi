@@ -3,12 +3,13 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <CodeBossVersion>8.0.3</CodeBossVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="DotNetCore.NPOI" />
-    <PackageReference Include="CodeBoss" VersionOverride="8.0.2" />
+    <PackageReference Include="CodeBoss" VersionOverride="$(CodeBossVersion)" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" VersionOverride="8.0.1" />
   </ItemGroup>
   <ItemGroup>

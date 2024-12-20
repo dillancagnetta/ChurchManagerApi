@@ -47,6 +47,12 @@ namespace ChurchManager.Domain.Features.Groups
         public DayOfWeek? WeeklyDayOfWeek { get; set; }
 
         public TimeSpan? WeeklyTimeOfDay { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the meeting frequence e.g. WEEKLY
+        /// </summary>
+        [MaxLength(100)]
+        public string Frequency { get; set; }
 
         #region Methods
 
