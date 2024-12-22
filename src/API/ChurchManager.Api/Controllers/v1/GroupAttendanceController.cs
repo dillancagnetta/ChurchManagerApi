@@ -2,6 +2,7 @@
 using ChurchManager.Features.Groups.Queries.GroupAttendanceRecordSubmissions;
 using ChurchManager.Features.Groups.Queries.GroupMemberAttendance;
 using ChurchManager.Features.Groups.Queries.Reports.AttendanceReportGrid;
+using ChurchManager.Features.Groups.Queries.Reports.MemberAttendanceGrid;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,6 +36,13 @@ namespace ChurchManager.Api.Controllers.v1
 
         [HttpGet("members-attendance")]
         public async Task<IActionResult> GroupMembersAttendance([FromQuery] GroupMembersAttendanceQuery query, CancellationToken token)
+        {
+            var data = await Mediator.Send(query, token);
+            return Ok(data);
+        }
+        
+        [HttpGet("members-attendance-report")]
+        public async Task<IActionResult> GroupMembersAttendanceReport([FromQuery] MemberAttendanceGridQuery query, CancellationToken token)
         {
             var data = await Mediator.Send(query, token);
             return Ok(data);
