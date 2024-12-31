@@ -78,4 +78,18 @@ public static class PeriodExtensions
                 return sixMonthsAgo;
         }
     }
+    
+    public static DateTime GetReportPeriodStartDateFrom(this ReportPeriodType period, DateTime start)
+    {
+        return period switch
+        {
+            ReportPeriodType.Day => start.AddDays(-1),
+            ReportPeriodType.Week => start.AddDays(-7),
+            ReportPeriodType.Month => start.AddMonths(-1),
+            ReportPeriodType.ThreeMonths => start.AddMonths(-3),
+            ReportPeriodType.SixMonths => start.AddMonths(-6),
+            ReportPeriodType.OneYear => start.AddYears(-1),
+            _ => throw new ArgumentException($"Unsupported period type: {period}")
+        };
+    }
 }

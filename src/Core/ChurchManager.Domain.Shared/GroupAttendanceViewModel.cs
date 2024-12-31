@@ -56,3 +56,21 @@ public record GroupMemberAttendanceTrackViewModel
     public bool IsNewConvert { get; set; }
     public bool ReceivedHolySpirit { get; set; }
 }
+
+public record PeriodComparisonResultsViewModel
+{
+    public string MetricName { get; set; } 
+    public int RecentCount { get; set; }
+    public int PreviousCount { get; set; }
+    public int AbsoluteChange { get; set; }
+    public decimal PercentageChange { get; set; }
+    
+}
+
+public record GroupAttendanceMetricsComparisonViewModel
+{
+    public string ReportPeriod { get; set; }
+    public PeriodComparisonResultsViewModel NewConvertMetric { get; set; }
+    public PeriodComparisonResultsViewModel FirstTimersMetric { get; set; }
+    public PeriodComparisonResultsViewModel HolySpiritMetric { get; set; }
+}

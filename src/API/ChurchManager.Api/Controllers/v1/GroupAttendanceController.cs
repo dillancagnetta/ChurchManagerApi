@@ -1,6 +1,7 @@
 ﻿using ChurchManager.Features.Groups.Commands.DeleteGroupAttendanceRecord;
 using ChurchManager.Features.Groups.Queries.GroupAttendanceRecordSubmissions;
 using ChurchManager.Features.Groups.Queries.GroupMemberAttendance;
+using ChurchManager.Features.Groups.Queries.Reports.AttendanceMetricsComparison;
 using ChurchManager.Features.Groups.Queries.Reports.AttendanceReportGrid;
 using ChurchManager.Features.Groups.Queries.Reports.MemberAttendanceGrid;
 using Microsoft.AspNetCore.Authorization;
@@ -43,6 +44,13 @@ namespace ChurchManager.Api.Controllers.v1
         
         [HttpGet("members-attendance-report")]
         public async Task<IActionResult> GroupMembersAttendanceReport([FromQuery] MemberAttendanceGridQuery query, CancellationToken token)
+        {
+            var data = await Mediator.Send(query, token);
+            return Ok(data);
+        }
+        
+        [HttpGet("attendance-metrics-comparison")]
+        public async Task<IActionResult> GroupAttendanceMetricsComparison([FromQuery] AttendanceMetricsComparisonQuery query, CancellationToken token)
         {
             var data = await Mediator.Send(query, token);
             return Ok(data);
