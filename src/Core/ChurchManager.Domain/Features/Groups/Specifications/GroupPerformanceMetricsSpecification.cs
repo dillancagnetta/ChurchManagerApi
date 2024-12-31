@@ -16,11 +16,8 @@ namespace ChurchManager.Domain.Features.Groups.Specifications
 
             // Date Filters
             var (from, to) = period.ToDateRange();
-            if (from is not null && to is not null) // All Time is set to null
-            {
-                Query.Where(g => g.AttendanceDate >= from);
-                Query.Where(g => g.AttendanceDate <= to);
-            }
+            Query.Where(g => g.AttendanceDate >= from);
+            Query.Where(g => g.AttendanceDate <= to);
 
             Query.Select(x => new GroupMemberAttendanceTrackViewModel
             {

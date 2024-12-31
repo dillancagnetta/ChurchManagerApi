@@ -19,19 +19,18 @@ namespace ChurchManager.Features.Groups.Queries.GroupPerformanceMetrics
     public class GroupPerformanceMetricsHandler : IRequestHandler<GroupPerformanceMetricsQuery, ApiResponse>
     {
         private readonly IGroupMemberAttendanceDbRepository _dbRepository;
-        private readonly IGroupDbRepository _groupDbRepository;
+        private readonly IGroupAttendanceDbRepository _groupAttendanceDb;
         private readonly IGroupMemberDbRepository _groupMemberDb;
         private readonly IMediator _mediator;
 
         public GroupPerformanceMetricsHandler(
             IGroupMemberAttendanceDbRepository dbRepository,
-            IGroupAttendanceDbRepository groupAttendanceDbRepository,
-            IGroupDbRepository groupDbRepository,
+            IGroupAttendanceDbRepository groupAttendanceDb,
             IGroupMemberDbRepository groupMemberDbRepository,
             IMediator mediator)
         {
             _dbRepository = dbRepository;
-            _groupDbRepository = groupDbRepository;
+            _groupAttendanceDb = groupAttendanceDb;
             _groupMemberDb = groupMemberDbRepository;
             _mediator = mediator;
         }
@@ -42,17 +41,9 @@ namespace ChurchManager.Features.Groups.Queries.GroupPerformanceMetrics
             var avgAttendanceRate = (await _mediator.Send(new GroupsAverageAttendanceRateQuery([query.GroupId], query.Period), ct));
 
             #region Metrics
-
-            var spec = new GroupPerformanceMetricsSpecification(query.GroupId, query.Period);
-            var results = await _dbRepository.ListAsync<GroupMemberAttendanceTrackViewModel>(spec, ct);
-
-            var firstTimerCount = results.Count(x => x.IsFirstTime == true);
-            var newConvertCount = results.Count(x => x.IsNewConvert == true);
-            var holySpiritCount = results.Count(x => x.ReceivedHolySpirit == true);
+            
+            var (newConvertCount, firstTimerCount, holySpiritCount) = await _groupAttendanceDb.PeopleStatisticsAsync([query.GroupId], query.Period, ct);
             var (members, leaders) = (await _groupMemberDb.PeopleAndLeadersInGroupAsync(query.GroupId, ct));
-            //var membersCount = (await _groupDbRepository.Queryable("Members").SingleOrDefaultAsync(x => x.Id == query.GroupId, ct))?.Members?.Count ?? 0;
-            //var membersCount = (await _groupDbRepository.GroupMembersCountAsync(query.GroupId, includeLeaders: true, ct));
-
             var metrics = new
             {
                 firstTimerCount,

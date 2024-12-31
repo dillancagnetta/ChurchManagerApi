@@ -1,5 +1,6 @@
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Groups;
+using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.History;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Repositories;
@@ -15,15 +16,18 @@ public class GroupMemberTrigger : IAfterSaveTrigger<GroupMember>
 
     private readonly IHistoryDbRepository _dbRepository;
     private readonly IPersonDbRepository _personDbRepository;
+    private readonly IGroupTypeRoleDbRepository _groupRoleDb;
     private readonly ILogger<GroupMemberTrigger> _logger;
 
     public GroupMemberTrigger(
         IHistoryDbRepository dbRepository,
         IPersonDbRepository personDbRepository,
+        IGroupTypeRoleDbRepository groupRoleDb,
         ILogger<GroupMemberTrigger> logger)
     {
         _dbRepository = dbRepository;
         _personDbRepository = personDbRepository;
+        _groupRoleDb = groupRoleDb;
         _logger = logger;
     }
     public async Task AfterSave(ITriggerContext<GroupMember> context, CancellationToken cts)
@@ -34,7 +38,8 @@ public class GroupMemberTrigger : IAfterSaveTrigger<GroupMember>
         var groupMemberString = nameof(GroupMember).SplitCase();
         var groupRoleString = nameof(GroupMember.GroupRole).SplitCase();
         
-        var person = await _personDbRepository.GetByIdAsync(entity.PersonId);
+        var person = await _personDbRepository.GetByIdAsync(entity.PersonId, cts);
+        var groupRole = await _groupRoleDb.GetByIdAsync(entity.GroupRoleId, cts);
         var fullName = person!.FullName.ToString();
         
         string category = string.Empty;
@@ -44,11 +49,16 @@ public class GroupMemberTrigger : IAfterSaveTrigger<GroupMember>
         if (context.ChangeType == ChangeType.Added)
         {
             HistoryChanges.AddChange( HistoryVerb.Add, HistoryChangeType.Record, groupMemberString).SetNewValue( fullName );
-            History.EvaluateChange( HistoryChanges, groupRoleString, null, entity.GroupRole.Name);
+            History.EvaluateChange( HistoryChanges, groupRoleString, null, groupRole.Name);
+            
+            // Group member is a leader
+            if (groupRole.IsLeader)
+            {
+                History.EvaluateChange( HistoryChanges, nameof(groupRole.IsLeader), false, true);
+            }
 
             category = $"Add {groupMemberString}";
             caption = $"{person.FullName} added to Group";
-
         }
         
         /* Specific Properties */
@@ -56,6 +66,8 @@ public class GroupMemberTrigger : IAfterSaveTrigger<GroupMember>
         {
             History.EvaluateChange( HistoryChanges, nameof(entity.FirstVisitDate), null, entity.FirstVisitDate);
         }
+
+       
         
         /* Modified */
         if (context.ChangeType == ChangeType.Modified)
@@ -65,7 +77,13 @@ public class GroupMemberTrigger : IAfterSaveTrigger<GroupMember>
             
             if (context.UnmodifiedEntity?.GroupRoleId != entity.GroupRoleId)
             {
-                HistoryChanges.AddChange( HistoryVerb.Modify, HistoryChangeType.Property, "Group Role").SetNewValue( entity.GroupRoleId.ToString() );
+                HistoryChanges.AddChange( HistoryVerb.Modify, HistoryChangeType.Property, "Group Role").SetNewValue( groupRole.Name );
+                
+                // Group member is a leader
+                if (groupRole.IsLeader)
+                {
+                    History.EvaluateChange( HistoryChanges, nameof(groupRole.IsLeader), false, true);
+                }
             }
         }
         

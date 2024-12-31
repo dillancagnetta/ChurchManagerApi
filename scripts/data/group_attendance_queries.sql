@@ -63,3 +63,6 @@ FROM "GroupMemberAttendance"
 WHERE EXTRACT(YEAR FROM "AttendanceDate") = 2024
 AND "ReceivedHolySpirit" = true
 ;
+
+
+SELECT * FROM "GroupMemberAttendance" WHERE "GroupMemberId" = 33 ORDER BY "AttendanceDate" DESC LIMIT 5

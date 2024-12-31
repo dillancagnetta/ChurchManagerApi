@@ -60,12 +60,9 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
             }
             
             var (startDate, endDate) = period.ToDateRange();
-            if (startDate is not null && endDate is not null) // All Time is set to null
-            {
-                queryable = queryable.Where(x => 
-                    x.AttendanceDate >= startDate &&
-                    x.AttendanceDate <= endDate);
-            }
+            queryable = queryable.Where(x => 
+                x.AttendanceDate >= startDate &&
+                x.AttendanceDate <= endDate);
             
             var averageAttendanceRate = await queryable
                 .GroupBy(gma => new { gma.GroupId, gma.Group.Name, gma.AttendanceDate })                .Select(g => new

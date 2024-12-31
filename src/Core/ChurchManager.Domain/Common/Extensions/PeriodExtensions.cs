@@ -2,7 +2,7 @@
 
 public static class PeriodExtensions
 {
-     public static (DateTime? Start, DateTime? End) ToDateRange(this PeriodType period)
+    public static (DateTime Start, DateTime End) ToDateRange(this PeriodType period)
     {
         switch (period)
         {
@@ -40,17 +40,42 @@ public static class PeriodExtensions
                 var thisYearStart = new DateTime(DateTime.UtcNow.Year, 1, 1);
                 var thisYearEnd = thisYearStart.AddYears(1).AddTicks(-1);
                 return (thisYearStart, thisYearEnd);
-            
+
             case PeriodType.LastYear:
                 var start = new DateTime(DateTime.UtcNow.Year, 1, 1).AddYears(-1);
                 var end = start.AddYears(1).AddTicks(-1);
                 return (start, end);
 
             case PeriodType.AllTime:
-                return (null, null);
+                return (DateTime.MinValue, DateTime.MaxValue);
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(period), period, null);
+        }
+    }
+
+    public static DateTime GetStartDate(this ReportPeriod period)
+    {
+        switch (period)
+        {
+            case ReportPeriod.Week:
+                return DateTime.UtcNow.AddDays(-7);
+
+            case ReportPeriod.Month:
+                return DateTime.UtcNow.AddMonths(-1);
+
+            case ReportPeriod.Quarter:
+                return DateTime.UtcNow.AddMonths(-3);
+
+            case ReportPeriod.SemiAnnual:
+                return DateTime.UtcNow.AddMonths(-6);
+
+            case ReportPeriod.Annual:
+                return DateTime.UtcNow.AddYears(-1);
+            
+            default:
+                var sixMonthsAgo = DateTime.UtcNow.AddMonths(-6);
+                return sixMonthsAgo;
         }
     }
 }

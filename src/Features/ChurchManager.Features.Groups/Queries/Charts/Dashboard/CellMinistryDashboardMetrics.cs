@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Features.Groups.Repositories;
+﻿using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -14,17 +15,20 @@ namespace ChurchManager.Features.Groups.Queries.Charts.Dashboard
         private readonly IGroupDbRepository _dbRepository;
         private readonly IGroupMemberDbRepository _groupMemberDbRepository;
         private readonly IGroupMemberAttendanceDbRepository _groupMemberAttendanceDbRepository;
+        private readonly IGroupAttendanceDbRepository _groupAttendanceDb;
         private readonly IGroupTypeDbRepository _groupTypeRepo;
 
         public CellMinistryDashboardMetricsHandler(
             IGroupDbRepository dbRepository,
             IGroupMemberDbRepository groupMemberDbRepository,
             IGroupMemberAttendanceDbRepository groupMemberAttendanceDbRepository,
+            IGroupAttendanceDbRepository groupAttendanceDb,
             IGroupTypeDbRepository groupTypeRepo)
         {
             _dbRepository = dbRepository;
             _groupMemberDbRepository = groupMemberDbRepository;
             _groupMemberAttendanceDbRepository = groupMemberAttendanceDbRepository;
+            _groupAttendanceDb = groupAttendanceDb;
             _groupTypeRepo = groupTypeRepo;
         }
 
@@ -44,7 +48,7 @@ namespace ChurchManager.Features.Groups.Queries.Charts.Dashboard
 
             var (peopleCount, leadersCount) = await _groupMemberDbRepository.PeopleAndLeadersInGroupsAsync(cellGroupType.Id, ct);
 
-            var (newConvertsCount, firstTimersCount, holySpiritCount) = await _groupMemberAttendanceDbRepository.PeopleStatisticsAsync(cellGroups.Select(x => x.Id));
+            var (newConvertsCount, firstTimersCount, holySpiritCount) = await _groupAttendanceDb.PeopleStatisticsAsync(cellGroups.Select(x => x.Id), PeriodType.ThisYear, ct);
 
             return new ApiResponse(new
             {

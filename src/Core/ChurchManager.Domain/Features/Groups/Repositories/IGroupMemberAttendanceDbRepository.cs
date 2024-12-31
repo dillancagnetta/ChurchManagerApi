@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using ChurchManager.Infrastructure.Abstractions.Persistence;
-using System.Threading.Tasks;
-using ChurchManager.Domain.Common;
+﻿using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Shared;
+using ChurchManager.Infrastructure.Abstractions.Persistence;
 
 namespace ChurchManager.Domain.Features.Groups.Repositories
 {

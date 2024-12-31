@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.Groups.Specifications;
@@ -38,22 +39,8 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
                 .AsNoTracking()
                 .Where(x => x.DidNotOccur == null || x.DidNotOccur.Value != true);
 
-            switch (reportPeriod)
-            {
-                case ReportPeriod.Month:
-                    var monthAgo = DateTime.UtcNow.AddMonths(-1);
-                    var now = DateTime.UtcNow;
-                    queryable = queryable.Where(x => 
-                        x.AttendanceDate >= monthAgo &&
-                        x.AttendanceDate <= now);
-                    break;
-
-                default:
-                    var sixMonthsAgo = DateTime.UtcNow.AddMonths(-6);
-                    queryable = queryable.Where(x =>
-                        x.AttendanceDate >= sixMonthsAgo);
-                    break;
-            }
+            var startDate = reportPeriod.GetStartDate();
+            queryable = queryable.Where(x => x.AttendanceDate >= startDate);
 
             if (groupId.HasValue)
             {
@@ -84,6 +71,30 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
                     })
                 .OrderBy(x => x.Week)
                 .ToListAsync(ct);
+        }
+
+        public async Task<(int newConvertsCount, int firstTimersCount, int holySpiritCount)> PeopleStatisticsAsync(IEnumerable<int> groupIds, PeriodType period = PeriodType.ThisYear,
+            CancellationToken ct = default)
+        {
+            var (startDate, endDate) = period.ToDateRange();
+        
+            // Optimised query: Group all results together and calculate sum in one go
+            var statistics = await Queryable()
+                .Where(x =>
+                    groupIds.Contains(x.GroupId) &&
+                    x.AttendanceDate >= startDate && x.AttendanceDate <= endDate)
+                .GroupBy(x => 1) // Group all results together
+                .Select(g => new
+                {
+                    NewConvertsCount = g.Sum(x => x.NewConvertCount ?? 0),
+                    FirstTimersCount = g.Sum(x => x.FirstTimerCount ?? 0),
+                    HolySpiritCount = g.Sum(x => x.ReceivedHolySpiritCount ?? 0)
+                })
+                .FirstOrDefaultAsync(ct);
+        
+            return statistics == null
+                ? (0, 0, 0)
+                : (statistics.NewConvertsCount, statistics.FirstTimersCount, statistics.HolySpiritCount);
         }
     }
 }

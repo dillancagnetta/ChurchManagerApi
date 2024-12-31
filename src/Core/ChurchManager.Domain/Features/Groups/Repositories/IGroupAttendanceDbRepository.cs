@@ -20,6 +20,9 @@ namespace ChurchManager.Domain.Features.Groups.Repositories
             DateTime? from, DateTime? to,
             CancellationToken ct = default);
 
-        Task<dynamic> WeeklyBreakdownForPeriodAsync(int? groupId, ReportPeriod reportPeriod, CancellationToken ct);
+        Task<dynamic> WeeklyBreakdownForPeriodAsync(int? groupId, ReportPeriod reportPeriod, CancellationToken ct = default);
+        
+        Task<(int newConvertsCount, int firstTimersCount, int holySpiritCount)> PeopleStatisticsAsync(IEnumerable<int> groupIds, PeriodType period = PeriodType.ThisYear, CancellationToken ct = default);
+
     }
 }
