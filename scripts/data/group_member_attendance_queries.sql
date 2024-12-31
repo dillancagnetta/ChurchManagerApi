@@ -243,7 +243,7 @@ CREATE OR REPLACE FUNCTION get_group_attendance_report(group_id_param integer)
                       "GroupId" integer,
                       "GroupMemberId" integer,
                       "PersonId" integer,
-                      "PersonFullName" text,
+                      "PersonName" text,
                       "PhotoUrl" text,
                       "Meeting1" boolean,
                       "Meeting2" boolean,

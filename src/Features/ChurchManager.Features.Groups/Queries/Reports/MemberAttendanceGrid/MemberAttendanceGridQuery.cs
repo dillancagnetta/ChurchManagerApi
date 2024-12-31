@@ -21,7 +21,7 @@ public class MemberAttendanceReportGridHandler : IRequestHandler<MemberAttendanc
     public async Task<ApiResponse> Handle(MemberAttendanceGridQuery query, CancellationToken ct)
     {
         var results = await _dbRepository.MemberAttendanceReportAsync(query.GroupId, ct);
-        
-        return new ApiResponse(results);
+        // Order by names
+        return new ApiResponse(results.OrderByDescending(x => x.PersonName));
     }
 }

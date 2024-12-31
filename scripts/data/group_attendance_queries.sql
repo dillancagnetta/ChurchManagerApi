@@ -30,5 +30,36 @@ SELECT * FROM "GroupAttendance" WHERE "GroupId" = 16;
 
 
 -- Day of the week
-SELECT EXTRACT(DOW FROM DATE '2016-01-01') -- The day of the week (0 - 6; Sunday is 0)
+SELECT EXTRACT(DOW FROM DATE '2016-01-01'); -- The day of the week (0 - 6; Sunday is 0)
 
+-- Calculates Group average attendance rate percentage
+WITH group_average_attendance_rate AS (
+    SELECT
+        gma."GroupId",
+        COUNT(DISTINCT gm."Id") as TotalMembers,
+        COUNT(DISTINCT CASE WHEN gma."DidAttend" = true THEN gma."Id" END) as MembersPresent
+    FROM "GroupMemberAttendance" gma
+             JOIN "GroupMember" gm ON gma."GroupId" = gm."GroupId"
+    WHERE gma."GroupId" = 2 -- Filter specific group
+    GROUP BY gma."GroupId", gma."AttendanceDate"
+)
+SELECT
+    "GroupId",
+    ROUND(AVG((MembersPresent::decimal / NULLIF(TotalMembers, 0)) * 100), 1) as AverageAttendanceRatePercent
+FROM group_average_attendance_rate
+GROUP BY "GroupId"
+ORDER BY "GroupId";
+
+
+SELECT "AttendanceDate", count(*) FROM "GroupMemberAttendance" gma
+         GROUP BY  "AttendanceDate"
+         ORDER BY "AttendanceDate" DESC LIMIT 100;
+
+SELECT
+    --*
+    count(*)
+FROM "GroupMemberAttendance"
+--WHERE "GroupId" = 3
+WHERE EXTRACT(YEAR FROM "AttendanceDate") = 2024
+AND "ReceivedHolySpirit" = true
+;

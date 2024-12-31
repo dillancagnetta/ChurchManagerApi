@@ -39,6 +39,7 @@ namespace ChurchManager.Domain.Common
         LastMonth = 60,
 
         ThisYear = 70,
+        LastYear = 80,
 
         AllTime = 100,
     }

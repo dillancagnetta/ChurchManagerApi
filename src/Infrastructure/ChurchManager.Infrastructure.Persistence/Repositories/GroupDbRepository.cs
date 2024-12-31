@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -82,6 +83,18 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
                 ;
 
             return await query.ToListAsync(ct);
+        }
+
+        public async Task<int> GroupMembersCountAsync(int groupId, bool includeLeaders = false, CancellationToken ct = default)
+        {
+            var membersCount = await Queryable()
+                .AsNoTracking()
+                .Where(x => x.Id == groupId)
+                .SelectMany(x => x.Members)
+                .Where(m => includeLeaders || !m.GroupRole.IsLeader)
+                .CountAsync(ct);
+        
+            return membersCount;
         }
 
         /// <summary>

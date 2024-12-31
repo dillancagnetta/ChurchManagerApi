@@ -4,7 +4,7 @@ public record MemberAttendanceReport
     public int GroupId { get; set; }
     public int GroupMemberId { get; set; }
     public int PersonId { get; set; }
-    public string PersonFullName { get; set; }
+    public string PersonName { get; set; }
     public string PhotoUrl { get; set; }
     public bool Meeting1 { get; set; }
     public bool Meeting2 { get; set; }

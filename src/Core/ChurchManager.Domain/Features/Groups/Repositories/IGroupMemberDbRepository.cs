@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using ChurchManager.Infrastructure.Abstractions.Persistence;
+﻿using ChurchManager.Infrastructure.Abstractions.Persistence;
 
 namespace ChurchManager.Domain.Features.Groups.Repositories
 {
@@ -8,6 +6,7 @@ namespace ChurchManager.Domain.Features.Groups.Repositories
     {
         IQueryable<GroupMember> GetByGroupId(int groupId);
         IQueryable<GroupMember> GetLeaders(int groupId);
-        Task<(int peopleCount, int leadersCount)> PeopleAndLeadersInGroupsAsync(int groupTypeId);
+        Task<(int peopleCount, int leadersCount)> PeopleAndLeadersInGroupsAsync(int groupTypeId, CancellationToken ct = default);
+        Task<(int peopleCount, int leadersCount)> PeopleAndLeadersInGroupAsync(int groupId, CancellationToken ct = default);
     }
 }

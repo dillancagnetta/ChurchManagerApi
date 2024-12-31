@@ -107,9 +107,11 @@ namespace ChurchManager.Infrastructure.Persistence
             services.AddScoped<IGroupTypeRoleDbRepository, GroupTypeRoleDbRepository>();
             services.AddScoped<IPersonDbRepository, PersonDbRepository>();
             services.AddScoped<IGroupDbRepository, GroupDbRepository>();
+            services.AddScoped<IGroupTypeDbRepository, GroupTypeDbRepository>();
             services.AddScoped<IGroupMemberAttendanceDbRepository, GroupMemberAttendanceDbRepository>();
             services.AddScoped<IHistoryDbRepository, HistoryDbRepository>();
             services.AddScoped<IPushSubscriptionsService, PushSubscriptionsService>();
+            services.AddScoped<ISqlQueryHandler, SqlQueryHandler>();
 
             #endregion
         }

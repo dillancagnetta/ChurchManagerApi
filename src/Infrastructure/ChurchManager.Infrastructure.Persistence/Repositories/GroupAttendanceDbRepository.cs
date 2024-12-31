@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using ChurchManager.Domain.Common;
+﻿using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.Groups.Specifications;
@@ -39,6 +35,7 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
         public  async Task<dynamic> WeeklyBreakdownForPeriodAsync(int? groupId, ReportPeriod reportPeriod, CancellationToken ct)
         {
             var queryable = Queryable()
+                .AsNoTracking()
                 .Where(x => x.DidNotOccur == null || x.DidNotOccur.Value != true);
 
             switch (reportPeriod)

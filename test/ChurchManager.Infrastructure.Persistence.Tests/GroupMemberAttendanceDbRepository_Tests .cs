@@ -1,4 +1,5 @@
 using AutoMapper;
+using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using ChurchManager.Infrastructure.Persistence.Repositories;
 using ChurchManager.Infrastructure.Persistence.Tests.Helpers;
@@ -38,11 +39,28 @@ namespace ChurchManager.Infrastructure.Persistence.Tests
                     .Select(x => x.Id)
                     .ToListAsync();
 
-                var sut = new GroupMemberAttendanceDbRepository(dbContext);
+                var sut = new GroupMemberAttendanceDbRepository(dbContext, null);
 
                 var statistics = await sut.PeopleStatisticsAsync(groups);
 
                 Assert.True(statistics.firstTimersCount >= 0);
+            }
+        }
+        
+        [Fact]
+        public async Task Should_return_raw_sql_results()
+        {
+            int groupId = 3;
+            
+            using (var dbContext = new ChurchManagerDbContext(_options, new LocalTenantProvider(), null))
+            {
+                var sut = new SqlQueryHandler(dbContext, null);
+                
+                var results = await sut.QueryAsync<MemberAttendanceReport>(
+                    "SELECT * FROM get_group_attendance_report(@p0)",
+                    new object[] { groupId }, CancellationToken.None);
+
+                Assert.True(results.Count >= 0);
             }
         }
 

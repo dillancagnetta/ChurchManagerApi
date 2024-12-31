@@ -1,13 +1,13 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Common;
-using CodeBoss.Extensions;
-using System;
+using ChurchManager.Domain.Common.Extensions;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Domain.Features.Groups.Specifications
 {
-    public class GroupPerformanceMetricsSpecification : Specification<GroupMemberAttendance>
+    public class GroupPerformanceMetricsSpecification : Specification<GroupMemberAttendance, GroupMemberAttendanceTrackViewModel>
     {
-        public GroupPerformanceMetricsSpecification(int groupId, PeriodType periodType)
+        public GroupPerformanceMetricsSpecification(int groupId, PeriodType period)
         {
             Query.AsNoTracking();
 
@@ -15,26 +15,23 @@ namespace ChurchManager.Domain.Features.Groups.Specifications
             Query.Where(g => g.GroupId == groupId);
 
             // Date Filters
-            DateTime from = DateTime.UtcNow;
-            DateTime to = DateTime.UtcNow.AddYears(-2);
-            switch (periodType)
+            var (from, to) = period.ToDateRange();
+            if (from is not null && to is not null) // All Time is set to null
             {
-                case PeriodType.ThisMonth:
-                    from = DateTime.UtcNow.StartOfMonth();
-                    to = DateTime.UtcNow.EndOfMonth();
-                    break;
-                case PeriodType.LastMonth:
-                    from = DateTime.UtcNow.AddMonths(-1).StartOfMonth();
-                    to = DateTime.UtcNow.AddMonths(-1).EndOfMonth();
-                    break;
-                case PeriodType.ThisYear:
-                    from = new DateTime(DateTime.UtcNow.Year, 1, 1);
-                    to = DateTime.UtcNow.EndOfMonth();
-                    break;
+                Query.Where(g => g.AttendanceDate >= from);
+                Query.Where(g => g.AttendanceDate <= to);
             }
 
-            Query.Where(g => g.AttendanceDate >= from);
-            Query.Where(g => g.AttendanceDate <= to);
+            Query.Select(x => new GroupMemberAttendanceTrackViewModel
+            {
+                GroupId = x.GroupId,
+                GroupMemberId = x.GroupMemberId,
+                AttendanceDate = x.AttendanceDate,
+                DidAttend = x.DidAttend.GetValueOrDefault(),
+                IsFirstTime = x.IsFirstTime.GetValueOrDefault(),
+                IsNewConvert = x.IsNewConvert.GetValueOrDefault(),
+                ReceivedHolySpirit = x.ReceivedHolySpirit.GetValueOrDefault(),
+            });
         }
     }
 }

@@ -1,82 +1,94 @@
-﻿using ChurchManager.Domain.Features.Groups;
+﻿using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Common.Extensions;
+using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.Groups.Repositories;
-using ChurchManager.Infrastructure.Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using ChurchManager.Domain.Shared;
+using ChurchManager.Infrastructure.Abstractions.Persistence;
+using ChurchManager.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories
 {
     public class GroupMemberAttendanceDbRepository : GenericRepositoryBase<GroupMemberAttendance>, IGroupMemberAttendanceDbRepository
     {
-        public GroupMemberAttendanceDbRepository(ChurchManagerDbContext dbContext) : base(dbContext)
+        private readonly ChurchManagerDbContext _dbContext;
+        private readonly ISqlQueryHandler _sqlQuery;
+
+        public GroupMemberAttendanceDbRepository(ChurchManagerDbContext dbContext, ISqlQueryHandler sqlQuery) : base(dbContext)
         {
+            _dbContext = dbContext;
+            _sqlQuery = sqlQuery;
         }
 
-        public async Task<(int newConvertsCount, int firstTimersCount, int holySpiritCount)> PeopleStatisticsAsync(IEnumerable<int> groupIds, DateTime startDate = default)
+        public async Task<(int newConvertsCount, int firstTimersCount, int holySpiritCount)> PeopleStatisticsAsync(IEnumerable<int> groupIds, PeriodType period = PeriodType.ThisYear, CancellationToken ct = default)
         {
-            if (startDate == default)
-            {
-                startDate = DateTime.UtcNow.AddMonths(-6);
-            }
+            var (startDate, endDate) = period.ToDateRange();
 
-            var query = Queryable()
+            var attendees = await Queryable()
                 .Where(x =>
                     groupIds.Contains(x.GroupId) &&
-                    x.AttendanceDate >= startDate);
+                    x.AttendanceDate >= startDate && x.AttendanceDate <= endDate)
+                .Select(x => new {x.IsNewConvert, x.IsFirstTime, x.ReceivedHolySpirit, x.Id})
+                .ToListAsync(ct);
 
-            var newConvertsCount = await query.CountAsync(x => x.IsNewConvert.HasValue && x.IsNewConvert.Value);
-            var firstTimersCount = await query.CountAsync(x => x.IsFirstTime.HasValue && x.IsFirstTime.Value);
-            var holySpiritCount = await query.CountAsync(x => x.ReceivedHolySpirit.HasValue && x.ReceivedHolySpirit.Value);
+            var newConvertsCount = attendees.Count(x => x.IsNewConvert.GetValueOrDefault());
+            var firstTimersCount = attendees.Count(x => x.IsFirstTime.GetValueOrDefault());
+            var holySpiritCount = attendees.Count(x => x.ReceivedHolySpirit.GetValueOrDefault());
 
             return (newConvertsCount, firstTimersCount, holySpiritCount);
         }
 
         public async Task<List<MemberAttendanceReport>> MemberAttendanceReportAsync(int groupId, CancellationToken ct = default)
         {
-            var connection = DbContext.Database.GetDbConnection();
-            var command = connection.CreateCommand();
-            command.CommandText = "SELECT * FROM get_group_attendance_report(@p0)";
-            var parameter = command.CreateParameter();
-            parameter.ParameterName = "@p0";
-            parameter.Value = groupId;
-            command.Parameters.Add(parameter);
-
-            try
-            {
-                await connection.OpenAsync(ct);
-                using var result = await command.ExecuteReaderAsync(ct);
-                var reports = new List<MemberAttendanceReport>();
+            return await _sqlQuery.QueryAsync<MemberAttendanceReport>(
+                "SELECT * FROM get_group_attendance_report(@p0)",
+                new object[] { groupId }, ct);
+        }
         
-                while (await result.ReadAsync(ct))
+        public async Task<List<GroupsAverageAttendanceRate>> GroupsAverageAttendanceRateAsync(
+            IEnumerable<int> groupIds, 
+            PeriodType period = PeriodType.AllTime,
+            CancellationToken ct = default)
+        {
+            var queryable = Queryable()
+                .Include(x => x.GroupMember)
+                .AsNoTracking();
+            
+            if (groupIds.Any())
+            {
+                queryable = queryable.Where(x => groupIds.Contains(x.GroupId));
+            }
+            
+            var (startDate, endDate) = period.ToDateRange();
+            if (startDate is not null && endDate is not null) // All Time is set to null
+            {
+                queryable = queryable.Where(x => 
+                    x.AttendanceDate >= startDate &&
+                    x.AttendanceDate <= endDate);
+            }
+            
+            var averageAttendanceRate = await queryable
+                .GroupBy(gma => new { gma.GroupId, gma.Group.Name, gma.AttendanceDate })                .Select(g => new
                 {
-                    reports.Add(new MemberAttendanceReport
-                    {
-                        GroupId = result.GetInt32(0),
-                        GroupMemberId = result.GetInt32(1),
-                        PersonId = result.GetInt32(2),
-                        PersonFullName = result.IsDBNull(3) ? null : result.GetString(3),
-                        PhotoUrl = result.IsDBNull(4) ? null : result.GetString(4),
-                        Meeting1 = result.GetBoolean(5),
-                        Meeting2 = result.GetBoolean(6),
-                        Meeting3 = result.GetBoolean(7),
-                        Meeting4 = result.GetBoolean(8),
-                        Meeting5 = result.GetBoolean(9),
-                        AttendanceRatePercent = result.GetDecimal(10)
-                    });
-                }
-        
-                return reports;
-            }
-            finally
-            {
-                if (connection.State == ConnectionState.Open)
-                    await connection.CloseAsync();
-            }
+                    g.Key.GroupId,
+                    g.Key.Name,
+                    TotalMembers = _dbContext.GroupMember
+                        .Count(gm => gm.GroupId == g.Key.GroupId),
+                    MembersPresent = g.Count(x => x.DidAttend == true)
+                })
+                .GroupBy(x => new { x.GroupId, x.Name })
+                .Select(g => new GroupsAverageAttendanceRate
+                {
+                    GroupId = g.Key.GroupId,
+                    GroupName = g.Key.Name,
+                    AverageAttendanceRatePercent = Math.Round(
+                        g.Average(x => x.MembersPresent * 100.0m / (x.TotalMembers == 0 ? 1 : x.TotalMembers)), 
+                        1
+                    )
+                })
+                .ToListAsync(ct);
+            
+            return averageAttendanceRate;
         }
     }
 }

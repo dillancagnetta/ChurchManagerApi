@@ -57,10 +57,12 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             var attendees = new List<GroupMemberAttendance>();
             var attendances = new List<GroupAttendance>();
             var attendedMembers = new HashSet<(int GroupId, int MemberId)>();
+            var newConverts = new HashSet<int>();
+            var receivedHolySpirit = new HashSet<int>();
             
             var members = group.Members.ToList();
             
-            foreach (var meetingDate in from.GetWeeklyDates(dayOfWeek))
+            foreach (var meetingDate in from.GetWeeklyDatesFrom(dayOfWeek, weeks:104))
             {
                 // Keep track of members who attended this meeting
                 var meetingAttendees = new List<GroupMemberAttendance>(members.Count());
@@ -68,12 +70,9 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 {
                     var didAttend = faker.Random.Bool();
                     var isFirstTime = !attendedMembers.Contains((group.Id, member.Id));
-                            
-                    if (didAttend)
-                    {
-                        attendedMembers.Add((group.Id, member.Id));
-                    }
-
+                    var hasHolySpirit = receivedHolySpirit.Contains(member.Id);
+                    var isConverted = newConverts.Contains(member.Id);
+                    
                     // Generate attendance for this member
                     var attendance = new GroupMemberAttendance
                     {
@@ -82,11 +81,19 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                         AttendanceDate = meetingDate,
                         DidAttend = didAttend,
                         IsFirstTime = isFirstTime && didAttend,
-                        // Received Holy Spirit on the first time attendance
-                        ReceivedHolySpirit = isFirstTime && didAttend && faker.Random.Bool(0.1f),
+                        // Received Holy Spirit randomly 
+                        ReceivedHolySpirit = didAttend && !hasHolySpirit && faker.Random.Bool(),
                         // New Convert on the first time attendance
-                        IsNewConvert = isFirstTime && didAttend && faker.Random.Bool(0.2f),
+                        IsNewConvert = didAttend && !isConverted && faker.Random.Bool(),
                     };
+                    
+                    // Track members for history
+                    if (didAttend)
+                    {
+                        attendedMembers.Add((group.Id, member.Id));
+                        if (attendance.IsNewConvert.Value) newConverts.Add(member.Id);
+                        if (attendance.ReceivedHolySpirit.Value) receivedHolySpirit.Add(member.Id);
+                    }
                     
                     meetingAttendees.Add(attendance);
                 }

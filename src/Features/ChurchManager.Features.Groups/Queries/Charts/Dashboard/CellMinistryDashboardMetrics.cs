@@ -1,6 +1,4 @@
-﻿using ChurchManager.Domain.Features.Groups;
-using ChurchManager.Domain.Features.Groups.Repositories;
-using ChurchManager.Infrastructure.Abstractions.Persistence;
+﻿using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -16,13 +14,13 @@ namespace ChurchManager.Features.Groups.Queries.Charts.Dashboard
         private readonly IGroupDbRepository _dbRepository;
         private readonly IGroupMemberDbRepository _groupMemberDbRepository;
         private readonly IGroupMemberAttendanceDbRepository _groupMemberAttendanceDbRepository;
-        private readonly IGenericDbRepository<GroupType> _groupTypeRepo;
+        private readonly IGroupTypeDbRepository _groupTypeRepo;
 
         public CellMinistryDashboardMetricsHandler(
             IGroupDbRepository dbRepository,
             IGroupMemberDbRepository groupMemberDbRepository,
             IGroupMemberAttendanceDbRepository groupMemberAttendanceDbRepository,
-            IGenericDbRepository<GroupType> groupTypeRepo)
+            IGroupTypeDbRepository groupTypeRepo)
         {
             _dbRepository = dbRepository;
             _groupMemberDbRepository = groupMemberDbRepository;
@@ -32,8 +30,7 @@ namespace ChurchManager.Features.Groups.Queries.Charts.Dashboard
 
         public async Task<ApiResponse> Handle(CellMinistryDashboardMetrics query, CancellationToken ct)
         {
-            // TODO: Make this a method as its used in another place as well
-            var cellGroupType = await _groupTypeRepo.Queryable().FirstOrDefaultAsync(x => x.Name == "Cell", ct);
+            var cellGroupType = await _groupTypeRepo.GetCellGroupTypeAsync(ct);
 
             // TODO: fix doing this sql here and in the 'GroupStatisticsAsync' method again
             var cellGroups = await _dbRepository.Queryable()
@@ -45,7 +42,7 @@ namespace ChurchManager.Features.Groups.Queries.Charts.Dashboard
             // TODO: create class/structs for these
             var (totalCellsCount, activeCellsCount, inActiveCellsCount, onlineCellsCount, openedCells, closedCells) = await _dbRepository.GroupStatisticsAsync(cellGroupType.Id, DateTime.UtcNow.AddMonths(-6), ct);
 
-            var (peopleCount, leadersCount) = await _groupMemberDbRepository.PeopleAndLeadersInGroupsAsync(cellGroupType.Id);
+            var (peopleCount, leadersCount) = await _groupMemberDbRepository.PeopleAndLeadersInGroupsAsync(cellGroupType.Id, ct);
 
             var (newConvertsCount, firstTimersCount, holySpiritCount) = await _groupMemberAttendanceDbRepository.PeopleStatisticsAsync(cellGroups.Select(x => x.Id));
 

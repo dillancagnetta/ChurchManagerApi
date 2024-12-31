@@ -2,6 +2,7 @@
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.Groups.Specifications;
+using ChurchManager.Domain.Shared;
 using ChurchManager.Features.Groups.Queries.GroupMemberAttendance;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
@@ -18,45 +19,53 @@ namespace ChurchManager.Features.Groups.Queries.GroupPerformanceMetrics
     public class GroupPerformanceMetricsHandler : IRequestHandler<GroupPerformanceMetricsQuery, ApiResponse>
     {
         private readonly IGroupMemberAttendanceDbRepository _dbRepository;
-        private readonly IGroupAttendanceDbRepository _groupAttendanceDbRepository;
         private readonly IGroupDbRepository _groupDbRepository;
+        private readonly IGroupMemberDbRepository _groupMemberDb;
         private readonly IMediator _mediator;
 
         public GroupPerformanceMetricsHandler(
             IGroupMemberAttendanceDbRepository dbRepository,
             IGroupAttendanceDbRepository groupAttendanceDbRepository,
             IGroupDbRepository groupDbRepository,
+            IGroupMemberDbRepository groupMemberDbRepository,
             IMediator mediator)
         {
             _dbRepository = dbRepository;
-            _groupAttendanceDbRepository = groupAttendanceDbRepository;
             _groupDbRepository = groupDbRepository;
+            _groupMemberDb = groupMemberDbRepository;
             _mediator = mediator;
         }
 
         public async Task<ApiResponse> Handle(GroupPerformanceMetricsQuery query, CancellationToken ct)
         {
-            var attendanceRecords = (await _mediator.Send(new GroupAttendanceQuery(query.GroupId, query.Period), ct)).Data as GroupMembersAttendanceAnalysisViewModel;
+            //var attendanceRecords = (await _mediator.Send(new GroupAttendanceQuery(query.GroupId, query.Period), ct)).Data as GroupMembersAttendanceAnalysisViewModel;
+            var avgAttendanceRate = (await _mediator.Send(new GroupsAverageAttendanceRateQuery([query.GroupId], query.Period), ct));
 
             #region Metrics
 
             var spec = new GroupPerformanceMetricsSpecification(query.GroupId, query.Period);
-            var results = await _dbRepository.ListAsync(spec, ct);
+            var results = await _dbRepository.ListAsync<GroupMemberAttendanceTrackViewModel>(spec, ct);
 
-            var firstTimerCount = results.Count(x => x.IsFirstTime.HasValue && x.IsFirstTime.Value);
-            var newConvertCount = results.Count(x => x.IsNewConvert.HasValue && x.IsNewConvert.Value);
-            var membersCount = (await _groupDbRepository.Queryable("Members").SingleOrDefaultAsync(x => x.Id == query.GroupId, ct))?.Members?.Count ?? 0;
+            var firstTimerCount = results.Count(x => x.IsFirstTime == true);
+            var newConvertCount = results.Count(x => x.IsNewConvert == true);
+            var holySpiritCount = results.Count(x => x.ReceivedHolySpirit == true);
+            var (members, leaders) = (await _groupMemberDb.PeopleAndLeadersInGroupAsync(query.GroupId, ct));
+            //var membersCount = (await _groupDbRepository.Queryable("Members").SingleOrDefaultAsync(x => x.Id == query.GroupId, ct))?.Members?.Count ?? 0;
+            //var membersCount = (await _groupDbRepository.GroupMembersCountAsync(query.GroupId, includeLeaders: true, ct));
 
             var metrics = new
             {
                 firstTimerCount,
                 newConvertCount,
-                membersCount
+                holySpiritCount,
+                membersCount = members + leaders,
+                assistantsCount = leaders > 1 ? leaders - 1 : 0, // subtract main leader from assistants
+                avgAttendanceRate = avgAttendanceRate.FirstOrDefault()?.AverageAttendanceRatePercent
             };
             
             #endregion
 
-            return new ApiResponse( new { metrics, attendanceRecords });
+            return new ApiResponse( new { metrics });
         }
     }
 }

@@ -3,7 +3,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
     <NoWarn>$(NoWarn);NU1507</NoWarn>
-    <CodeBossVersion>8.0.3</CodeBossVersion>
+    <CodeBossVersion>8.0.4</CodeBossVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Amazon.Extensions.Configuration.SystemsManager" Version="3.0.0" />
