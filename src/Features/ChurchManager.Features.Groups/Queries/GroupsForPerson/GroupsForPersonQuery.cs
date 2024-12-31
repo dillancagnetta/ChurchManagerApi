@@ -27,9 +27,9 @@ namespace ChurchManager.Features.Groups.Queries.GroupsForPerson
 
             var groups = await _groupDbRepository.ListAsync(spec, ct);
 
-            var viewModels = _mapper.Map<IEnumerable<GroupSummaryViewModel>>(groups);
+            //var viewModels = _mapper.Map<IEnumerable<GroupSummaryViewModel>>(groups);
 
-            return new ApiResponse(new GroupSummariesViewModel(viewModels));
+            return new ApiResponse(groups);
         }
     }
 }
