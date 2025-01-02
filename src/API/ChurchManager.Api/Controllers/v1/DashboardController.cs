@@ -53,5 +53,13 @@ namespace ChurchManager.Api.Controllers.v1
             var data = await _attendanceDbRepository.AttendanceMetricsComparisonAsync(query.ChurchId, query.PeriodType, token);
             return Ok(data);
         }
+        
+        [HttpGet("church-annual-conversion-rate-comparison")]
+        public async Task<IActionResult> ChurchYearlyConversionRateComparison(
+            [FromQuery] int? churchId, bool includeMonthlyBreakdown = false,CancellationToken token = default)
+        {
+            var data = await _attendanceDbRepository.YearlyConversionComparisonAsync(churchId, includeMonthlyBreakdown, token);
+            return Ok(data);
+        }
     }
 }

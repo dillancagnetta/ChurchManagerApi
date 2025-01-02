@@ -97,3 +97,29 @@ public record AttendanceMetricsComparisonViewModel
     public PeriodComparisonResultsViewModel FirstTimersMetric { get; set; }
     public PeriodComparisonResultsViewModel HolySpiritMetric { get; set; }
 }
+
+public record YearlyConversionMetrics
+{
+    public int Year { get; set; }
+    public int FirstTimers { get; set; }
+    public int NewConverts { get; set; }
+    public decimal ConversionPercentage { get; set; }
+    public List<MonthlyConversionMetrics> MonthlyBreakdown { get; set; }
+
+}
+
+public record YearlyConversionComparison
+{
+    public YearlyConversionMetrics CurrentYear { get; set; }
+    public YearlyConversionMetrics PreviousYear { get; set; }
+    public decimal ConversionRateChange { get; set; }
+}
+
+public class MonthlyConversionMetrics
+{
+    public int Month { get; set; }
+    public string MonthName { get; set; }
+    public int FirstTimers { get; set; }
+    public int NewConverts { get; set; }
+    public decimal ConversionPercentage { get; set; }
+}
