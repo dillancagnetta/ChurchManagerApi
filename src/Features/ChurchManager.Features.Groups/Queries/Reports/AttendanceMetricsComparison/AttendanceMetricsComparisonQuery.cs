@@ -23,3 +23,31 @@ public class AttendanceMetricsComparisonHandler : IRequestHandler<AttendanceMetr
         return new ApiResponse(result);
     }
 }
+
+/*
+ * ---------------------------------------------------------------
+ */
+ 
+public record GroupYearlyConversionRateComparisonQuery(int GroupTypeId, int? ChurchId = null, int? GroupId = null, bool IncludeMonthlyBreakdown = false) : IRequest<ApiResponse>;
+
+public class GroupYearlyConversionRateComparisonHandler : IRequestHandler<GroupYearlyConversionRateComparisonQuery, ApiResponse>
+{
+    private readonly IGroupAttendanceDbRepository _dbRepository;
+
+    public GroupYearlyConversionRateComparisonHandler(IGroupAttendanceDbRepository dbRepository)
+    {
+        _dbRepository = dbRepository;
+    }
+    
+    public async Task<ApiResponse> Handle(GroupYearlyConversionRateComparisonQuery query, CancellationToken cancellationToken)
+    {
+        var result = await _dbRepository.YearlyConversionComparisonAsync(
+            groupTypeId: query.GroupTypeId,
+            churchId: query.ChurchId,
+            groupId: query.GroupId,
+            includeMonthlyBreakdown: query.IncludeMonthlyBreakdown,
+            cancellationToken);
+        
+        return new ApiResponse(result);
+    }
+}

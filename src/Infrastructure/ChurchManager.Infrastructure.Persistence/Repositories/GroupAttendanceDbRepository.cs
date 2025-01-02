@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Common;
+﻿using System.Globalization;
+using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.Groups.Repositories;
@@ -151,4 +152,153 @@ public class GroupAttendanceDbRepository : GenericRepositoryBase<GroupAttendance
             HolySpiritMetric = holySpiritMetric,
         };
     }
+
+    public async Task<YearlyConversionComparison> YearlyConversionComparisonAsync(
+        int groupTypeId, 
+        int? churchId = null, 
+        int? groupId = null,
+        bool includeMonthlyBreakdown = false, 
+        CancellationToken ct = default)
+    {
+        var currentYear = DateTime.UtcNow.Year;
+        var startOfPreviousYear = new DateTime(currentYear - 1, 1, 1);
+
+        var queryable = Queryable()
+            .Include(x => x.Group)
+            .AsNoTracking();
+        
+        queryable = queryable.Where(x => x.Group.GroupTypeId == groupTypeId);
+        
+        if (groupId.HasValue)
+        {
+            queryable = queryable.Where(ga => ga.GroupId == groupId);
+        }
+        
+        if (churchId.HasValue)
+        {
+            queryable = queryable.Where(ga => ga.Group.ChurchId == churchId);
+        }
+        
+        if (includeMonthlyBreakdown)
+        {
+            // Group by year and month when breakdown is needed
+            var detailedResult = await queryable
+                .Where(ga => ga.AttendanceDate >= startOfPreviousYear
+                             && ga.RecordStatus == RecordStatus.Active)
+                .GroupBy(ga => new { Year = ga.AttendanceDate.Year, Month = ga.AttendanceDate.Month })
+                .Select(g => new MonthlyData(
+                    g.Key.Year,
+                    g.Key.Month,
+                    g.Sum(x => x.FirstTimerCount ?? 0),
+                    g.Sum(x => x.NewConvertCount ?? 0)
+                ))
+                .ToListAsync(ct);
+
+            var currentYearMetrics = CalculateYearlyMetricsWithBreakdown(
+                detailedResult.Where(x => x.Year == currentYear).ToList(),
+                currentYear
+            );
+
+            var previousYearMetrics = CalculateYearlyMetricsWithBreakdown(
+                detailedResult.Where(x => x.Year == currentYear - 1).ToList(),
+                currentYear - 1
+            );
+
+            return new YearlyConversionComparison
+            {
+                CurrentYear = currentYearMetrics,
+                PreviousYear = previousYearMetrics,
+                ConversionRateChange =
+                    currentYearMetrics.ConversionPercentage - previousYearMetrics.ConversionPercentage
+            };
+        }
+        else
+        {
+            // Simple yearly totals when breakdown is not needed
+            var yearlyResult = await queryable
+                .Where(ga => ga.AttendanceDate >= startOfPreviousYear
+                             && ga.RecordStatus == RecordStatus.Active)
+                .GroupBy(ga => ga.AttendanceDate.Year)
+                .Select(g => new
+                {
+                    Year = g.Key,
+                    FirstTimers = g.Sum(x => x.FirstTimerCount ?? 0),
+                    NewConverts = g.Sum(x => x.NewConvertCount ?? 0)
+                })
+                .ToListAsync(ct);
+
+            var currentYearMetrics = CalculateYearlyMetrics(
+                yearlyResult.FirstOrDefault(x => x.Year == currentYear),
+                currentYear
+            );
+
+            var previousYearMetrics = CalculateYearlyMetrics(
+                yearlyResult.FirstOrDefault(x => x.Year == currentYear - 1),
+                currentYear - 1
+            );
+
+            return new YearlyConversionComparison
+            {
+                CurrentYear = currentYearMetrics,
+                PreviousYear = previousYearMetrics,
+                ConversionRateChange =
+                    currentYearMetrics.ConversionPercentage - previousYearMetrics.ConversionPercentage
+            };
+        }
+    }
+    
+     private YearlyConversionMetrics CalculateYearlyMetrics(dynamic yearData, int year)
+    {
+        var firstTimers = yearData?.FirstTimers ?? 0;
+        var newConverts = yearData?.NewConverts ?? 0;
+
+        return new YearlyConversionMetrics
+        {
+            Year = year,
+            FirstTimers = firstTimers,
+            NewConverts = newConverts,
+            ConversionPercentage = firstTimers == 0
+                ? 0
+                : Math.Round((decimal)newConverts / firstTimers * 100, 1)
+        };
+    }
+
+    private YearlyConversionMetrics CalculateYearlyMetricsWithBreakdown(List<MonthlyData> yearData, int year)
+    {
+        var totalFirstTimers = yearData.Sum(x => x.FirstTimers);
+        var totalNewConverts = yearData.Sum(x => x.NewConverts);
+
+        var monthlyBreakdown = Enumerable.Range(1, 12)
+            .Select(month =>
+            {
+                var monthData = yearData.FirstOrDefault(x => x.Month == month);
+                var firstTimers = monthData?.FirstTimers ?? 0;
+                var newConverts = monthData?.NewConverts ?? 0;
+
+                return new MonthlyConversionMetrics
+                {
+                    Month = month,
+                    MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month),
+                    FirstTimers = firstTimers,
+                    NewConverts = newConverts,
+                    ConversionPercentage = firstTimers == 0
+                        ? 0
+                        : Math.Round((decimal)newConverts / firstTimers * 100, 1)
+                };
+            })
+            .ToList();
+
+        return new YearlyConversionMetrics
+        {
+            Year = year,
+            FirstTimers = totalFirstTimers,
+            NewConverts = totalNewConverts,
+            ConversionPercentage = totalFirstTimers == 0
+                ? 0
+                : Math.Round((decimal)totalNewConverts / totalFirstTimers * 100, 1),
+            MonthlyBreakdown = monthlyBreakdown
+        };
+    }
+    
+    private record MonthlyData(int Year, int Month, int FirstTimers, int NewConverts);
 }

@@ -55,5 +55,12 @@ namespace ChurchManager.Api.Controllers.v1
             var data = await Mediator.Send(query, token);
             return Ok(data);
         }
+        
+        [HttpGet("group-annual-conversion-rate-comparison")]
+        public async Task<IActionResult> GroupYearlyConversionRateComparison([FromQuery] GroupYearlyConversionRateComparisonQuery query,CancellationToken token = default)
+        {
+            var data = await Mediator.Send(query, token);
+            return Ok(data);
+        }
     }
 }
