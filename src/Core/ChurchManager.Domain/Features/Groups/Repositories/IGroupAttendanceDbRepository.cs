@@ -21,6 +21,6 @@ namespace ChurchManager.Domain.Features.Groups.Repositories
         
         Task<(int newConvertsCount, int firstTimersCount, int holySpiritCount)> PeopleStatisticsAsync(IEnumerable<int> groupIds, PeriodType period = PeriodType.ThisYear, CancellationToken ct = default);
 
-        Task<GroupAttendanceMetricsComparisonViewModel> GroupAttendanceMetricsComparisonAsync(int? GroupId = null, ReportPeriodType PeriodType = ReportPeriodType.SixMonths, CancellationToken ct = default);
+        Task<AttendanceMetricsComparisonViewModel> GroupAttendanceMetricsComparisonAsync(int? GroupId = null, ReportPeriodType PeriodType = ReportPeriodType.SixMonths, CancellationToken ct = default);
     }
 }

@@ -65,9 +65,32 @@ public record PeriodComparisonResultsViewModel
     public int AbsoluteChange { get; set; }
     public decimal PercentageChange { get; set; }
     
+    public static PeriodComparisonResultsViewModel Create(string metricName, int recentCount,
+        int previousCount)
+    {
+        var absoluteChange = recentCount - previousCount;
+        var percentageChange = CalculatePercentageChange(previousCount, recentCount);
+
+        return new PeriodComparisonResultsViewModel
+        {
+            MetricName = metricName,
+            RecentCount = recentCount,
+            PreviousCount = previousCount,
+            AbsoluteChange = absoluteChange,
+            PercentageChange = percentageChange
+        };
+    }
+    
+    private static decimal CalculatePercentageChange(int previous, int recent)
+    {
+        if (previous == 0)
+            return recent > 0 ? 100 : 0;
+
+        return Math.Round((decimal)(recent - previous) / previous * 100, 1);
+    }
 }
 
-public record GroupAttendanceMetricsComparisonViewModel
+public record AttendanceMetricsComparisonViewModel
 {
     public string ReportPeriod { get; set; }
     public PeriodComparisonResultsViewModel NewConvertMetric { get; set; }

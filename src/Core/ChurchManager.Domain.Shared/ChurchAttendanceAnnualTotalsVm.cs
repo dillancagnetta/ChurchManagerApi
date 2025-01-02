@@ -7,5 +7,6 @@
         public long TotalAttendance { get; set; }
         public long? TotalNewConverts { get; set; }
         public long? TotalFirstTimers { get; set; }
+        public long? TotalHolySpirit { get; set; }
     }
 }

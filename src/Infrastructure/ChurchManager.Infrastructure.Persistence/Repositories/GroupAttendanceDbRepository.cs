@@ -101,7 +101,7 @@ public class GroupAttendanceDbRepository : GenericRepositoryBase<GroupAttendance
             : (statistics.NewConvertsCount, statistics.FirstTimersCount, statistics.HolySpiritCount);
     }
 
-    public async Task<GroupAttendanceMetricsComparisonViewModel> GroupAttendanceMetricsComparisonAsync(
+    public async Task<AttendanceMetricsComparisonViewModel> GroupAttendanceMetricsComparisonAsync(
         int? GroupId = null, ReportPeriodType period = ReportPeriodType.SixMonths, CancellationToken ct = default)
     {
         var now = DateTime.UtcNow;
@@ -133,46 +133,22 @@ public class GroupAttendanceDbRepository : GenericRepositoryBase<GroupAttendance
 
         var recent = result.FirstOrDefault(x => x.IsRecent)?.NewConvertTotal ?? 0;
         var previous = result.FirstOrDefault(x => !x.IsRecent)?.NewConvertTotal ?? 0;
-        var newConvertMetric = CreateMetricViewModel("New Converts", recent, previous);
+        var newConvertMetric = PeriodComparisonResultsViewModel.Create("New Converts", recent, previous);
         
         recent = result.FirstOrDefault(x => x.IsRecent)?.FirstTimerTotal ?? 0;
         previous = result.FirstOrDefault(x => !x.IsRecent)?.FirstTimerTotal ?? 0;
-        var firstTimersMetric = CreateMetricViewModel("First Timers", recent, previous);
+        var firstTimersMetric = PeriodComparisonResultsViewModel.Create("First Timers", recent, previous);
         
         recent = result.FirstOrDefault(x => x.IsRecent)?.ReceivedHolySpiritTotal ?? 0;
         previous = result.FirstOrDefault(x => !x.IsRecent)?.ReceivedHolySpiritTotal ?? 0;
-        var holySpiritMetric = CreateMetricViewModel("First Timers", recent, previous);
+        var holySpiritMetric = PeriodComparisonResultsViewModel.Create("Holy Spirit", recent, previous);
 
-        return new GroupAttendanceMetricsComparisonViewModel
+        return new AttendanceMetricsComparisonViewModel
         {
             ReportPeriod = period.ConvertToString(),
             NewConvertMetric = newConvertMetric,
             FirstTimersMetric = firstTimersMetric,
             HolySpiritMetric = holySpiritMetric,
         };
-    }
-
-    private static PeriodComparisonResultsViewModel CreateMetricViewModel(string metricName, int recentCount,
-        int previousCount)
-    {
-        var absoluteChange = recentCount - previousCount;
-        var percentageChange = CalculatePercentageChange(previousCount, recentCount);
-
-        return new PeriodComparisonResultsViewModel
-        {
-            MetricName = metricName,
-            RecentCount = recentCount,
-            PreviousCount = previousCount,
-            AbsoluteChange = absoluteChange,
-            PercentageChange = percentageChange
-        };
-    }
-
-    private static decimal CalculatePercentageChange(int previous, int recent)
-    {
-        if (previous == 0)
-            return recent > 0 ? 100 : 0;
-
-        return Math.Round((decimal)(recent - previous) / previous * 100, 1);
     }
 }

@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Shared;
+﻿using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 
 namespace ChurchManager.Domain.Features.Churches.Repositories
@@ -8,5 +9,6 @@ namespace ChurchManager.Domain.Features.Churches.Repositories
         Task<IEnumerable<ChurchAttendanceAnnualBreakdownVm>> DashboardChurchAttendanceAsync(
             DateTime from, DateTime to, int? churchId = null);
         Task<dynamic> DashboardChurchAttendanceBreakdownAsync(DateTime from, DateTime to);
+        Task<AttendanceMetricsComparisonViewModel> AttendanceMetricsComparisonAsync(int? queryChurchId, ReportPeriodType queryPeriodType, CancellationToken ct);
     }
 }
