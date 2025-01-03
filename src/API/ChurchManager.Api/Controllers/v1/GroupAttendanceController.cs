@@ -62,5 +62,12 @@ namespace ChurchManager.Api.Controllers.v1
             var data = await Mediator.Send(query, token);
             return Ok(data);
         }
+        
+        [HttpPost("groups-average-attendance-rate")]
+        public async Task<IActionResult> AverageAttendanceRateForGroups([FromBody] GroupsAverageAttendanceRateQuery query,CancellationToken token = default)
+        {
+            var data = await Mediator.Send(query, token);
+            return Ok(data);
+        }
     }
 }

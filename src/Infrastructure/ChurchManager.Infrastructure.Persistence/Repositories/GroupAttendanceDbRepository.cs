@@ -246,8 +246,8 @@ public class GroupAttendanceDbRepository : GenericRepositoryBase<GroupAttendance
             };
         }
     }
-    
-     private YearlyConversionMetrics CalculateYearlyMetrics(dynamic yearData, int year)
+
+    private YearlyConversionMetrics CalculateYearlyMetrics(dynamic yearData, int year)
     {
         var firstTimers = yearData?.FirstTimers ?? 0;
         var newConverts = yearData?.NewConverts ?? 0;

@@ -105,10 +105,16 @@ public class GroupAttendance2Handler : IRequestHandler<GroupAttendanceQuery, Api
     
     
 /*
- * -------------------------------------------------------------------------------------------------------------
+ * ------------------GroupsAverageAttendanceRateQuery-------------------------------------------------------------------------------------------
  */
  
-public record GroupsAverageAttendanceRateQuery(IEnumerable<int> GroupIds, PeriodType Period) : IRequest<IEnumerable<GroupsAverageAttendanceRate>>;
+public record GroupsAverageAttendanceRateQuery(IEnumerable<int> GroupIds, PeriodType Period) : IRequest<IEnumerable<GroupsAverageAttendanceRate>>
+{
+    public int? ChurchId { get; set; }
+    public int? GroupTypeId { get; set; }
+    public IEnumerable<int> GroupIds { get; set; } = GroupIds;
+    public PeriodType Period { get; set; } = Period;
+}
 
 public class GroupsAverageAttendanceRateHandler : IRequestHandler<GroupsAverageAttendanceRateQuery, IEnumerable<GroupsAverageAttendanceRate>>
 {
@@ -121,8 +127,20 @@ public class GroupsAverageAttendanceRateHandler : IRequestHandler<GroupsAverageA
 
     public async Task<IEnumerable<GroupsAverageAttendanceRate>> Handle(GroupsAverageAttendanceRateQuery request, CancellationToken ct)
     {
-        var results = await _attendanceDbRepository.GroupsAverageAttendanceRateAsync(request.GroupIds, request.Period, ct);
-        
-        return results;
+        if (request.ChurchId is null)
+        {
+            var results = await _attendanceDbRepository.GroupsAverageAttendanceRateAsync(request.GroupIds, request.Period, ct);
+            return results;
+        }
+        else
+        {
+            // TODO: remove hardcoded group type id 
+            var results = await _attendanceDbRepository
+                .GroupsAverageAttendanceRateAsync(
+                    2,
+                    request.ChurchId,
+                    request.GroupIds, request.Period, ct);
+            return results;
+        }
     }
 }

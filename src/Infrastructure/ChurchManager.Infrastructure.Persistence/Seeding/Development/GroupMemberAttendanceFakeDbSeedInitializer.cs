@@ -30,7 +30,8 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 var groups = dbContext.Group
                     .Include(x => x.Members)
                     .Where(x => x.GroupTypeId == 2) // Cells Groups
-                    .AsQueryable().Take(10)
+                    .AsQueryable()
+                    //.Take(10) // Limit the number of groups for testing
                     .AsNoTracking();
 
                 var faker = new Faker();
@@ -80,11 +81,11 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                         GroupMemberId = member.Id,
                         AttendanceDate = meetingDate,
                         DidAttend = didAttend,
-                        IsFirstTime = isFirstTime && didAttend,
+                        IsFirstTime = faker.Random.Bool() && didAttend,
                         // Received Holy Spirit randomly 
-                        ReceivedHolySpirit = didAttend && !hasHolySpirit && faker.Random.Bool(),
+                        ReceivedHolySpirit = didAttend && faker.Random.Bool(),
                         // New Convert on the first time attendance
-                        IsNewConvert = didAttend && !isConverted && faker.Random.Bool(),
+                        IsNewConvert = didAttend && faker.Random.Bool(),
                     };
                     
                     // Track members for history
