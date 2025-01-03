@@ -27,8 +27,14 @@ public class AttendanceMetricsComparisonHandler : IRequestHandler<AttendanceMetr
 /*
  * ---------------------------------------------------------------
  */
- 
-public record GroupYearlyConversionRateComparisonQuery(int GroupTypeId, int? ChurchId = null, int? GroupId = null, bool IncludeMonthlyBreakdown = false) : IRequest<ApiResponse>;
+
+public record GroupYearlyConversionRateComparisonQuery : IRequest<ApiResponse>
+{
+    public int? GroupTypeId { get; set; }
+    public int? ChurchId { get; set; }
+    public int? GroupId { get; set; }
+    public bool IncludeMonthlyBreakdown { get; set; } = false;
+};
 
 public class GroupYearlyConversionRateComparisonHandler : IRequestHandler<GroupYearlyConversionRateComparisonQuery, ApiResponse>
 {
@@ -42,7 +48,7 @@ public class GroupYearlyConversionRateComparisonHandler : IRequestHandler<GroupY
     public async Task<ApiResponse> Handle(GroupYearlyConversionRateComparisonQuery query, CancellationToken cancellationToken)
     {
         var result = await _dbRepository.YearlyConversionComparisonAsync(
-            groupTypeId: query.GroupTypeId,
+            groupTypeId: query.GroupTypeId.Value,
             churchId: query.ChurchId,
             groupId: query.GroupId,
             includeMonthlyBreakdown: query.IncludeMonthlyBreakdown,
