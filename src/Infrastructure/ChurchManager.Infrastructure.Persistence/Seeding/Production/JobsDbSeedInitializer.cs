@@ -24,7 +24,7 @@ public class JobsDbSeedInitializer(IServiceScopeFactory scopeFactory) : IInitial
                 Name = nameof(NotifyWorstGroupMemberAttendanceJob).SplitCase(),
                 JobKey = Guid.NewGuid(),
                 Description = "Determine the worst attendees in a group and send a notification.",
-                CronExpression = "0/30 * * * * ?", // every 10 seconds
+                CronExpression = "0/30 * * * * ?",
                 IsActive = true,
                 JobParameters = new Dictionary<string, string>{ { "groupId", "2" } },
                 Assembly = typeof(NotifyWorstGroupMemberAttendanceJob).Assembly.FullName,
