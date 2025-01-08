@@ -1330,6 +1330,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<string>("LastStatusMessage")
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("LastSuccessfulRunDateTime")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)

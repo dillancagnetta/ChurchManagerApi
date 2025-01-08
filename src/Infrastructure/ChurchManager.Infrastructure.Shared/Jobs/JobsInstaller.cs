@@ -1,9 +1,11 @@
 ﻿using CodeBoss.AspNetCore.DependencyInjection;
 using CodeBoss.Jobs;
+using CodeBoss.Jobs.Abstractions;
 using Convey;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Quartz;
 
 namespace ChurchManager.Infrastructure.Shared.Jobs;
 
@@ -18,7 +20,8 @@ public class JobsInstaller : IDependencyInstaller
         
         if (options.Enabled)
         {
-            services.AddCodeBossJobs(configuration, typeof(CmServiceJobRepository), !environment.IsDevelopment());
+            services.AddSingleton<ICodeBossJobListener, CmJobListener>();
+            services.AddCodeBossJobs(configuration, typeof(CmServiceJobRepository), !environment.IsDevelopment(), registeredJobListener:true);
         }
     }
 }

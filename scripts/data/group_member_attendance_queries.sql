@@ -336,6 +336,5 @@ $$ LANGUAGE SQL;
 -- Test the function
 SELECT * FROM get_attendance_report(5);  -- for 8 weeks of attendance
 
-SELECT * FROM get_group_attendance_report(3);
 
 SELECT * FROM "Person"

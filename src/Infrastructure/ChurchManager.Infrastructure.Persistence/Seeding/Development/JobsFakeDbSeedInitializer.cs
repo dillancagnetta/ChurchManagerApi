@@ -35,7 +35,8 @@ public class JobsFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) : IIni
                 Description = "This is a test job.",
                 CronExpression = "0/10 * * * * ?", // every 10 seconds
                 IsActive = true,
-                JobParameters = new Dictionary<string, string>() { { "groupId", "3" } },
+                EnableHistory = true,
+                JobParameters = null,
                 Assembly = "ChurchManager.Infrastructure.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
                 Class = "ChurchManager.Infrastructure.Shared.Jobs.TestJobTwo"
             };

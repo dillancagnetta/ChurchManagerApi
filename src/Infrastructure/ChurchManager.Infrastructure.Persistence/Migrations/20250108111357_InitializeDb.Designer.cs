@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ChurchManagerDbContext))]
-    [Migration("20250107123745_Added_ServiceJobs")]
-    partial class Added_ServiceJobs
+    [Migration("20250108111357_InitializeDb")]
+    partial class InitializeDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1332,6 +1332,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("LastStatusMessage")
                         .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastSuccessfulRunDateTime")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()

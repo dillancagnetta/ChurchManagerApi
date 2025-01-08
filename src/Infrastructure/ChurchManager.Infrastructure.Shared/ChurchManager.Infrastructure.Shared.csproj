@@ -30,6 +30,9 @@
     <PackageReference Include="CodeBoss.Jobs" />
   </ItemGroup>
   <ItemGroup>
+<!--
+    <ProjectReference Include="..\..\..\..\Codeboss-Libs\src\CodeBoss.Jobs\src\CodeBoss.Jobs\CodeBoss.Jobs.csproj" />
+-->
     <ProjectReference Include="..\ChurchManager.Infrastructure.Persistence\ChurchManager.Infrastructure.Persistence.csproj" />
     <ProjectReference Include="..\ChurchManager.Infrastructure\ChurchManager.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Core\ChurchManager.Domain\ChurchManager.Domain.csproj" />
