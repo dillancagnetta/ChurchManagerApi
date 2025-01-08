@@ -44,6 +44,9 @@ namespace ChurchManager.Infrastructure.Persistence
                     //triggerOptions.AddTrigger<SendEmailTrigger>();
             }));
             
+            // Used in the CodeBoss Jobs
+            services.AddDbContextFactory<ChurchManagerDbContext>(options => {}, ServiceLifetime.Scoped);
+            
             // Database Health Check 
             services
                 .AddHealthChecks()
@@ -78,6 +81,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<GroupMemberAttendanceFakeDbSeedInitializer>();
                     services.AddInitializer<FollowUpFakeDbSeedInitializer>();
                     services.AddInitializer<MissionsFakeDbSeedInitializer>();
+                    services.AddInitializer<JobsFakeDbSeedInitializer>();
                 }
                 // Development / Test -  Seeding
                 else
@@ -93,6 +97,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<GroupMemberAttendanceFakeDbSeedInitializer>();
                     services.AddInitializer<FollowUpFakeDbSeedInitializer>();
                     services.AddInitializer<MissionsFakeDbSeedInitializer>();
+                    services.AddInitializer<JobsFakeDbSeedInitializer>();
                 }
             }
 

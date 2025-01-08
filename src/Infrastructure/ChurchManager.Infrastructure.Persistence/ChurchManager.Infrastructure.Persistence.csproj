@@ -28,11 +28,11 @@
   <ItemGroup>
     <PackageReference Include="CodeBoss.AspNetCore" />
     <PackageReference Include="CodeBoss.MultiTenant" />
+    <PackageReference Include="CodeBoss.Jobs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\ChurchManager.Application.Abstractions\ChurchManager.Application.Abstractions.csproj" />
     <ProjectReference Include="..\..\Core\ChurchManager.Domain\ChurchManager.Domain.csproj" />
-    <ProjectReference Include="..\ChurchManager.Infrastructure.Shared\ChurchManager.Infrastructure.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Migrations\" />
