@@ -84,7 +84,7 @@ public class CmJobListener(IServiceProvider serviceProvider, IDateTimeProvider d
         // determine if an error occurred
         if ( jobException == null )
         {
-            //job.LastSuccessfulRunDateTime = job.LastRunDateTime;
+            job.LastSuccessfulRunDateTime = job.LastRunDateTime;
             job.LastStatus = "Success";
 
             var result = codeBossJobInstance?.Result ?? context.Result as string;
