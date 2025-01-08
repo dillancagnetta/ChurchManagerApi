@@ -247,6 +247,43 @@ public class GroupAttendanceDbRepository : GenericRepositoryBase<GroupAttendance
         }
     }
 
+    public async Task<List<GroupMemberAttendanceRate>> TopWorstAttendeesAsync(int groupId, int top = 3, CancellationToken ct = default)
+    {
+        var result = await DbContext.Set<GroupMember>()
+            .AsNoTracking()
+            .Where(gm => gm.GroupId == groupId && gm.RecordStatus == RecordStatus.Active)
+            .Select(gm => new GroupMemberAttendanceRate
+            {
+                GroupMemberId = gm.Id,
+                MemberName = gm.Person.FullName.ToString(),
+                TotalMeetings = DbContext.Set<GroupAttendance>().Count(ga => ga.GroupId == groupId && ga.DidNotOccur != true && ga.RecordStatus == RecordStatus.Active),
+                AttendedMeetings = DbContext.Set<GroupMemberAttendance>()
+                    .Count(gma => gma.GroupMemberId == gm.Id && gma.DidAttend == true 
+                                                             && gma.GroupId == groupId 
+                                                             && gma.RecordStatus == RecordStatus.Active),
+            })
+            .Select(r => new GroupMemberAttendanceRate
+            {
+                GroupMemberId = r.GroupMemberId,
+                MemberName = r.MemberName,
+                TotalMeetings = r.TotalMeetings,
+                AttendedMeetings = r.AttendedMeetings,
+                AttendanceRatePercent = r.TotalMeetings == 0 ? 0 : (double)r.AttendedMeetings / r.TotalMeetings * 100
+            })
+            .OrderBy(r => r.AttendanceRatePercent)
+            .Take(top)
+            .ToListAsync(ct);
+    
+        // Perform rounding on the client-side
+        foreach (var item in result)
+        {
+            // Because Math.Round is not available in the server-side context, we round the percentage to 2 decimal places
+            item.AttendanceRatePercent = Math.Round(item.AttendanceRatePercent, 2);
+        }
+    
+        return result;
+    }
+
     private YearlyConversionMetrics CalculateYearlyMetrics(dynamic yearData, int year)
     {
         var firstTimers = yearData?.FirstTimers ?? 0;

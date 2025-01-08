@@ -14,6 +14,7 @@
   <ItemGroup>
     <PackageReference Include="CodeBoss.Extensions" />
     <PackageReference Include="CodeBoss.MultiTenant" />
+    <PackageReference Include="CodeBoss.Jobs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ChurchManager.Domain.Shared\ChurchManager.Domain.Shared.csproj" />

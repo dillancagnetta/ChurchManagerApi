@@ -82,6 +82,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<FollowUpFakeDbSeedInitializer>();
                     services.AddInitializer<MissionsFakeDbSeedInitializer>();
                     services.AddInitializer<JobsFakeDbSeedInitializer>();
+                    services.AddInitializer<JobsDbSeedInitializer>();
                 }
                 // Development / Test -  Seeding
                 else
@@ -98,6 +99,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<FollowUpFakeDbSeedInitializer>();
                     services.AddInitializer<MissionsFakeDbSeedInitializer>();
                     services.AddInitializer<JobsFakeDbSeedInitializer>();
+                    services.AddInitializer<JobsDbSeedInitializer>();
                 }
             }
 

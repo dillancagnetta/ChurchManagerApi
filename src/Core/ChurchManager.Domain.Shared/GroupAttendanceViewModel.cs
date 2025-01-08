@@ -123,3 +123,13 @@ public class MonthlyConversionMetrics
     public int NewConverts { get; set; }
     public decimal ConversionPercentage { get; set; }
 }
+
+public class GroupMemberAttendanceRate
+{
+    public int GroupMemberId { get; set; }
+    public int PersonId { get; set; }
+    public string MemberName { get; set; }
+    public int TotalMeetings { get; set; }
+    public int AttendedMeetings { get; set; }
+    public double AttendanceRatePercent { get; set; }
+}
