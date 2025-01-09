@@ -1,7 +1,8 @@
-﻿using System.Linq.Dynamic.Core;
+﻿using AutoMapper;
 using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features;
 using ChurchManager.Domain.Features.Communication.Repositories;
+using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Convey.CQRS.Queries;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +11,14 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories;
 
 public class MessageDbRepository : GenericRepositoryBase<Message>, IMessageDbRepository
 {
-    public MessageDbRepository(ChurchManagerDbContext dbContext) : base(dbContext)
+    private readonly IMapper _mapper;
+
+    public MessageDbRepository(ChurchManagerDbContext dbContext, IMapper mapper) : base(dbContext)
     {
+        _mapper = mapper;
     }
 
-    public async Task<IEnumerable<Message>> AllAsync(Guid userLoginId, IPagedQuery paging = null, CancellationToken ct = default)
+    public async Task<IList<MessageViewModel>> AllAsync(Guid userLoginId, IPagedQuery paging = null, CancellationToken ct = default)
     {
         return await Queryable()
             .AsNoTracking()
@@ -22,6 +26,19 @@ public class MessageDbRepository : GenericRepositoryBase<Message>, IMessageDbRep
             .OrderByDescending(n => n.SentDateTime)
             .Skip(paging?.CalculateSkip() ?? 0)
             .Take(paging?.CalculateTake() ?? PagedQueryExtensions.DefaultPageSize)
+            .Select(x => new MessageViewModel
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Body = x.Body,
+                SentDateTime = x.SentDateTime,
+                IconCssClass = x.IconCssClass,
+                Classification = x.Classification.ToString(),
+                Link = x.Link,
+                UseRouter = x.UseRouter,
+                IsRead = x.IsRead,
+                UserLoginId = x.UserLoginId.ToString()
+            })
             .ToListAsync(cancellationToken: ct);
     }
 
@@ -38,6 +55,7 @@ public class MessageDbRepository : GenericRepositoryBase<Message>, IMessageDbRep
         if (message is not null)
         {
             message.IsRead = true;
+            await SaveChangesAsync(ct);
         }
     }
 
