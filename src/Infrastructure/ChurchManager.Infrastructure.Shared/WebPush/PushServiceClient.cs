@@ -26,7 +26,7 @@ namespace ChurchManager.Infrastructure.Shared.WebPush
 
             var payload = JsonConvert.SerializeObject(new { notification }, _jsonSerializerSettings);
 
-            await _client.SendNotificationAsync(subscription, payload);
+            await _client.SendNotificationAsync(subscription, payload, cancellationToken: ct);
         }
     }
 }

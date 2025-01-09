@@ -1,0 +1,25 @@
+﻿using ChurchManager.Domain.Features;
+using ChurchManager.Domain.Features.Communication;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace ChurchManager.Infrastructure.Persistence.Configurations
+{
+    public class MessageConfiguration : IEntityTypeConfiguration<Message>
+    {
+        public void Configure(EntityTypeBuilder<Message> builder)
+        {
+            builder
+                .Property(e => e.Classification)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => new MessageClassification(v));
+            
+            builder
+                .HasOne(cg => cg.UserLogin)
+                .WithMany()
+                .HasForeignKey(cg => cg.UserLoginId)
+                .IsRequired();
+        }
+    }
+}

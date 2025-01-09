@@ -145,7 +145,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 
             var dillanUserLogin = new UserLogin
             {
-                Id = Guid.Parse("08925ade-9249-476b-8787-b3dd8f5dbc13"),
+                Id = Guid.Parse(SeedingConstants.MainUserLogin),
                 Person = dillan,
                 Username = "dillan",
                 Password = BCrypt.Net.BCrypt.HashPassword("pancake"),

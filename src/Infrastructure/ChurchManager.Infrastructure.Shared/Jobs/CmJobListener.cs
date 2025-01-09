@@ -51,7 +51,8 @@ public class CmJobListener(IServiceProvider serviceProvider, IDateTimeProvider d
 
     public Task JobExecutionVetoed(IJobExecutionContext context, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        logger.LogDebug("Job ID: {jobId}, Job Key: {jobKey}, Job was vetoed.", context.JobDetail?.Description.AsIntegerOrNull(), context.JobDetail?.Key );
+        return Task.CompletedTask;
     }
 
     public async Task JobWasExecuted(IJobExecutionContext context, JobExecutionException jobException,
@@ -68,7 +69,7 @@ public class CmJobListener(IServiceProvider serviceProvider, IDateTimeProvider d
 
         if (job == null)
         {
-            // log
+            logger.LogDebug( "Job ID: {jobId}, Job Key: {jobKey}, Job was not found.", serviceJobId, context.JobDetail?.Key );
             return;
         }
             
@@ -96,7 +97,7 @@ public class CmJobListener(IServiceProvider serviceProvider, IDateTimeProvider d
                 sendMessage = true;
             }
 
-            logger.LogInformation($"Job '{job.Name}' executed successfully at {dateTime.Now}");
+            logger.LogDebug( "Job ID: {jobId}, Job Key: {jobKey}, Job was executed.", serviceJobId, context.JobDetail?.Key );
         }
         else
         {
@@ -123,7 +124,7 @@ public class CmJobListener(IServiceProvider serviceProvider, IDateTimeProvider d
                 sendMessage = true;
             }
                 
-            logger.LogInformation($"Job '{job.Name}' exception at {dateTime.Now} with {exceptionToLog.Message}");
+            logger.LogDebug( exceptionToLog, "Job ID: {jobId}, Job Key: {jobKey}, Job was executed with an exception.", serviceJobId, context.JobDetail?.Key );
         }
             
         await dbContext.SaveChangesAsync(ct);

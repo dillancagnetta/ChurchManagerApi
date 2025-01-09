@@ -83,6 +83,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<MissionsFakeDbSeedInitializer>();
                     services.AddInitializer<JobsFakeDbSeedInitializer>();
                     services.AddInitializer<JobsDbSeedInitializer>();
+                    services.AddInitializer<MessagesFakeDbSeedInitializer>();
                 }
                 // Development / Test -  Seeding
                 else
@@ -100,6 +101,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<MissionsFakeDbSeedInitializer>();
                     services.AddInitializer<JobsFakeDbSeedInitializer>();
                     services.AddInitializer<JobsDbSeedInitializer>();
+                    services.AddInitializer<MessagesFakeDbSeedInitializer>();
                 }
             }
 
@@ -115,6 +117,7 @@ namespace ChurchManager.Infrastructure.Persistence
             services.AddScoped<IPersonDbRepository, PersonDbRepository>();
             services.AddScoped<IGroupDbRepository, GroupDbRepository>();
             services.AddScoped<IGroupTypeDbRepository, GroupTypeDbRepository>();
+            services.AddScoped<IUserLoginDbRepository, UserLoginDbRepository>();
             services.AddScoped<IGroupMemberAttendanceDbRepository, GroupMemberAttendanceDbRepository>();
             services.AddScoped<IHistoryDbRepository, HistoryDbRepository>();
             services.AddScoped<IPushSubscriptionsService, PushSubscriptionsService>();
