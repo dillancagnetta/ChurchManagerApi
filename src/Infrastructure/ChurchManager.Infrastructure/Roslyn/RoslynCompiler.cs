@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Loader;
-using ChurchManager.Infrastructure.Configuration;
+using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.SharedKernel.Extensions;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.CodeAnalysis;

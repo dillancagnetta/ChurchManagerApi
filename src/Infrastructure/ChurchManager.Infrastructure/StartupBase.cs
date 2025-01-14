@@ -1,9 +1,11 @@
 ﻿using System.Reflection;
 using AutoMapper;
-using ChurchManager.Infrastructure.Configuration;
+using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.Infrastructure.Mapper;
 using ChurchManager.Infrastructure.Plugins;
 using ChurchManager.Infrastructure.Roslyn;
+using ChurchManager.Infrastructure.Shared.SignalR.Hubs;
+using ChurchManager.Infrastructure.Shared.Tests;
 using ChurchManager.Infrastructure.TypeConverters;
 using ChurchManager.Infrastructure.TypeSearcher;
 using ChurchManager.SharedKernel;
@@ -155,30 +157,6 @@ namespace ChurchManager.Infrastructure
         /// <param name="services"></param>
         private static void AddMassTransitRabbitMq(IServiceCollection services, IConfiguration configuration, AppTypeSearcher typeSearcher)
         {
-            /*if (!config.RabbitEnabled) return;
-            services.AddMassTransit(x =>
-            {
-                x.AddConsumers(q => !q.Equals(typeof(CacheMessageEventConsumer)), typeSearcher.GetAssemblies().ToArray());
-
-                // reddits have more priority
-                if (!config.RedisPubSubEnabled && config.RabbitCachePubSubEnabled)
-                {
-                    x.AddConsumer<CacheMessageEventConsumer>().Endpoint(t => t.Name = config.RabbitCacheReceiveEndpoint);
-                }
-
-                x.UsingRabbitMq((context, cfg) =>
-                {
-                    cfg.Host(config.RabbitHostName, config.RabbitVirtualHost, h =>
-                    {
-                        h.Password(config.RabbitPassword);
-                        h.Username(config.RabbitUsername);
-                    });
-                    cfg.ConfigureEndpoints(context);
-                });
-            });
-            //for automaticly start/stop bus
-            services.AddMassTransitHostedService();*/
-            
             var connectionString = configuration.GetConnectionString("RabbitMq");
 
             #region MassTransit
@@ -186,6 +164,7 @@ namespace ChurchManager.Infrastructure
             services.AddMassTransit(x =>
             {
                 x.AddConsumers(typeSearcher.GetAssemblies().ToArray());
+                x.AddConsumers(typeof(TestDomainEventConsumer).Assembly); // Testing
 
                 // ** Add Hubs Here **
                 x.AddSignalRHub<NotificationHub>();
@@ -302,7 +281,7 @@ namespace ChurchManager.Infrastructure
             AddMediator(services, typeSearcher);
 
             //Add MassTransit
-            AddMassTransitRabbitMq(services, config, typeSearcher);
+            AddMassTransitRabbitMq(services, configuration, typeSearcher);
 
             //Register startup
             var instancesAfter = startupConfigurations

@@ -15,7 +15,7 @@ namespace ChurchManager.Infrastructure.Shared.SignalR
                 message, 
                 message.UserId.ToString(), 
                 "DirectMessage", 
-                busControl);
+                busControl, ct);
         }
     }
 }

@@ -5,9 +5,6 @@ using MassTransit;
 using MassTransit.SignalR.Contracts;
 using MassTransit.SignalR.Utils;
 using Microsoft.AspNetCore.SignalR.Protocol;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace ChurchManager.Infrastructure.Shared.SignalR
 {

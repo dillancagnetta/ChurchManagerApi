@@ -69,10 +69,10 @@ public class Message : IAggregateRoot<int>, IHaveUserId<Guid>
     
     #region Methods
 
-    public void MarkAsSent(IDateTimeProvider dateTime)
+    public void MarkAsSent(IDateTimeProvider? dateTime)
     {
         Status = MessageStatus.Sent;
-        SentDateTime = dateTime.Now;
+        SentDateTime = dateTime?.Now ?? DateTime.UtcNow;
     }
 
     public void MarkAsFailed(string error)

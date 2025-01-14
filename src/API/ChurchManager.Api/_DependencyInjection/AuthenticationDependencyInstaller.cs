@@ -1,4 +1,4 @@
-﻿using ChurchManager.Infrastructure.Configuration;
+﻿using ChurchManager.Infrastructure.Abstractions.Configuration;
 using CodeBoss.AspNetCore.DependencyInjection;
 using CodeBoss.Extensions;
 using Convey;
