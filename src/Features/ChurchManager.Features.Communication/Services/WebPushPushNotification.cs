@@ -10,11 +10,11 @@ namespace ChurchManager.Features.Communication.Services
     public class WebPushPushNotification : IPushNotificationService
     {
         public ILogger<WebPushPushNotification> Logger { get; }
-        private readonly IPushServiceClient _client;
+        private readonly IWebPushSenderClient _client;
         private readonly IGenericDbRepository<PushDevice> _dbRepository;
 
         public WebPushPushNotification(
-            IPushServiceClient client,
+            IWebPushSenderClient client,
             IGenericDbRepository<PushDevice> dbRepository,
             ILogger<WebPushPushNotification> logger)
         {

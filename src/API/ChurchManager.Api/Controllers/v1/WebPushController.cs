@@ -14,10 +14,10 @@ namespace ChurchManager.Api.Controllers.v1
     {
         private readonly IDetectionService _device;
         private readonly ICognitoCurrentUser _currentUser;
-        private readonly PushNotificationsOptions _options;
+        private readonly WebPushOptions _options;
 
         public WebPushController(
-            IOptions<PushNotificationsOptions> options,
+            IOptions<WebPushOptions> options,
             IDetectionService device,
             ICognitoCurrentUser currentUser)
         {

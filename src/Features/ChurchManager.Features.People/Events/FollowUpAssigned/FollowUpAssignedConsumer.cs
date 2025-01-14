@@ -46,7 +46,7 @@ namespace ChurchManager.Features.People.Events.FollowUpAssigned
                 Type = message.Type,
                 // Audits
                 CreatedBy = message.UserLoginId,
-                CreatedDate = DateTime.UtcNow
+                CreatedDate = _dateTimeProvider.ConvertFromUtc(DateTime.UtcNow)
             });
 
             if(message.SendEmail)

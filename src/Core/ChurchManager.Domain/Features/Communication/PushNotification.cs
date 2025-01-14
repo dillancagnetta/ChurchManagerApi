@@ -23,6 +23,14 @@ namespace ChurchManager.Domain.Features.Communication
             Body = body;
         }
 
+        public PushNotification(Message message)
+        {
+            Title = message.Title;
+            Body = message.Body;
+            Tag = message.Id.ToString();
+            Timestamp = message.SentDateTime ?? DateTime.UtcNow;
+        }
+
         public string Title { get; set; } = "Push Demo";
         public string Lang { get; set; } = "en";
         public string Body { get; set; }

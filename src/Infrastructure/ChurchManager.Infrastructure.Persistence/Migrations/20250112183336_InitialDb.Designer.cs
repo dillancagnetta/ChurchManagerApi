@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ChurchManagerDbContext))]
-    [Migration("20250109100456_Added_Messages")]
-    partial class Added_Messages
+    [Migration("20250112183336_InitialDb")]
+    partial class InitialDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -910,15 +910,29 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("ImagePath")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<bool>("IsRead")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("LastError")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("Link")
                         .HasMaxLength(300)
                         .HasColumnType("character varying(300)");
 
-                    b.Property<DateTime>("SentDateTime")
+                    b.Property<bool>("SendWebPush")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("SentDateTime")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -928,12 +942,12 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<bool>("UseRouter")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("UserLoginId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserLoginId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Message");
                 });
@@ -1709,7 +1723,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("ChurchManager.Domain.Common.UserLogin", "UserLogin")
                         .WithMany()
-                        .HasForeignKey("UserLoginId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

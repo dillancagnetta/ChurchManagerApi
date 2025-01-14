@@ -5,6 +5,8 @@ param(
     [string]$MigrationName
 )
 
+
+
 # Navigate to the Persistence project directory
 Set-Location -Path "src\Infrastructure\ChurchManager.Infrastructure.Persistence"
 

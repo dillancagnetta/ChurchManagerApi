@@ -12,4 +12,5 @@ public interface IMessageDbRepository: IGenericDbRepository<Message>
     Task DeleteAsync(int messageId, CancellationToken ct = default);
     Task MarkAllAsReadAsync(Guid userLoginId, CancellationToken ct = default);
     Task DeleteAllAsync(Guid userLoginId, CancellationToken ct = default);
+    Task<IList<Message>> PendingMessagesAsync(CancellationToken ct);
 }

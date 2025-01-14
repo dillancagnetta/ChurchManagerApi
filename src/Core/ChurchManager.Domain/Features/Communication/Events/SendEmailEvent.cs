@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ChurchManager.Domain.Features.People;
+﻿using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Domain.Features.Communication.Events

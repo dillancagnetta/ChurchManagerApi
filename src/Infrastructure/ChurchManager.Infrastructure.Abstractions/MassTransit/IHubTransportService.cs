@@ -6,6 +6,7 @@
             TModel model,
             string userId,
             string methodName,
-            TPublisher publisher);
+            TPublisher publisher, 
+            CancellationToken ct = default);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Domain.Features.Communication.Services;
+using ChurchManager.Infrastructure.Shared.Communications;
 using CodeBoss.AspNetCore.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,18 +13,18 @@ namespace ChurchManager.Infrastructure.Shared.WebPush
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
         {
-            services.Configure<PushNotificationsOptions>(configuration.GetSection(nameof(PushNotificationsOptions)));
+            services.Configure<WebPushOptions>(configuration.GetSection(nameof(WebPushOptions)));
 
-            services.AddSingleton<IPushServiceClient>(provider =>
+            services.AddSingleton<IWebPushSenderClient>(provider =>
             {
-                var options = provider.GetRequiredService<IOptions<PushNotificationsOptions>>();
+                var options = provider.GetRequiredService<IOptions<WebPushOptions>>();
                 var vapidDetails = new VapidDetails(options.Value.Subject, options.Value.PublicKey,
                     options.Value.PrivateKey);
 
                 var webPushClient = new WebPushClient();
                 webPushClient.SetVapidDetails(vapidDetails);
 
-                return new PushServiceClient(webPushClient);
+                return new WebPushSenderClient(webPushClient);
             });
 
             /*services.AddSingleton<WebPushClient>(provider =>
@@ -48,6 +49,8 @@ namespace ChurchManager.Infrastructure.Shared.WebPush
             });*/
 
             //services.AddHttpClient<PushServiceClient>();
+            
+            services.AddScoped<IWebPushService, WebPushService>();
         }
     }
 }

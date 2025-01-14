@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Domain.Features.Communication.Services;
+using ChurchManager.Infrastructure.Abstractions.SignalR;
 using CodeBoss.AspNetCore.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,8 @@ namespace ChurchManager.Infrastructure.Shared.SignalR
             services.AddTransient<IPushNotificationsService, MassTransitSignalRPushNotificationsService>(); //<-- use this for easy referencing
 
             services.AddTransient<IUserNotificationsHubService, MassTransitUserNotificationsSignalRHubService>();
+            
+            services.AddSingleton<IConnectionTracker, SignalRConnectionTracker>();
         }
     }
 }

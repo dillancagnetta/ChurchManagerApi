@@ -9,6 +9,8 @@ using ChurchManager.Infrastructure.TypeSearcher;
 using ChurchManager.SharedKernel;
 using ChurchManager.SharedKernel.Extensions;
 using FluentValidation.AspNetCore;
+using MassTransit;
+using MassTransit.SignalR;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -151,7 +153,7 @@ namespace ChurchManager.Infrastructure
         /// Add Mass Transit rabitMq message broker
         /// </summary>
         /// <param name="services"></param>
-        private static void AddMassTransitRabbitMq(IServiceCollection services, AppConfig config, AppTypeSearcher typeSearcher)
+        private static void AddMassTransitRabbitMq(IServiceCollection services, IConfiguration configuration, AppTypeSearcher typeSearcher)
         {
             /*if (!config.RabbitEnabled) return;
             services.AddMassTransit(x =>
@@ -176,6 +178,30 @@ namespace ChurchManager.Infrastructure
             });
             //for automaticly start/stop bus
             services.AddMassTransitHostedService();*/
+            
+            var connectionString = configuration.GetConnectionString("RabbitMq");
+
+            #region MassTransit
+
+            services.AddMassTransit(x =>
+            {
+                x.AddConsumers(typeSearcher.GetAssemblies().ToArray());
+
+                // ** Add Hubs Here **
+                x.AddSignalRHub<NotificationHub>();
+
+                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                {
+                    cfg.Host(new Uri(connectionString), h => { });
+
+                    cfg.ConfigureEndpoints(provider, new SnakeCaseEndpointNameFormatter(false));
+                }));
+
+            });
+
+            // services.AddMassTransitHostedService();
+
+            #endregion
         }
 
         /// <summary>

@@ -42,6 +42,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     triggerOptions.AddTrigger<GroupTrigger>();
                     triggerOptions.AddTrigger<GroupMemberTrigger>();
                     triggerOptions.AddTrigger<GroupMemberAttendanceTrigger>();
+                    triggerOptions.AddTrigger<MessageTrigger>();
                     //triggerOptions.AddTrigger<SendEmailTrigger>();
             }));
             
@@ -122,6 +123,7 @@ namespace ChurchManager.Infrastructure.Persistence
             services.AddScoped<IGroupMemberAttendanceDbRepository, GroupMemberAttendanceDbRepository>();
             services.AddScoped<IHistoryDbRepository, HistoryDbRepository>();
             services.AddScoped<IMessageDbRepository, MessageDbRepository>();
+            services.AddScoped<IPushDeviceDbRepository, PushDeviceDbRepository>();
             services.AddScoped<IPushSubscriptionsService, PushSubscriptionsService>();
             services.AddScoped<ISqlQueryHandler, SqlQueryHandler>();
 

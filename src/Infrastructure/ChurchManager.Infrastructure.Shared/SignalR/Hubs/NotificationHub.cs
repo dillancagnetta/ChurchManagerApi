@@ -1,12 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
-using ChurchManager.Domain.Features.People;
-using ChurchManager.Domain.Features.People.Specifications;
+﻿using ChurchManager.Domain.Features.People;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
+using ChurchManager.Infrastructure.Abstractions.SignalR;
 using Codeboss.Types;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ChurchManager.Infrastructure.Shared.SignalR.Hubs
@@ -16,15 +13,18 @@ namespace ChurchManager.Infrastructure.Shared.SignalR.Hubs
     {
         private readonly IGenericDbRepository<OnlineUser> _onlineUserRepository;
         private readonly IDateTimeProvider _dateTime;
+        private readonly IConnectionTracker _tracker;
         private readonly ILogger<NotificationHub> _logger;
 
         public NotificationHub(
             IGenericDbRepository<OnlineUser> onlineUserRepository,
             IDateTimeProvider dateTime,
+            IConnectionTracker tracker,
             ILogger<NotificationHub> logger)
         {
             _onlineUserRepository = onlineUserRepository;
             _dateTime = dateTime;
+            _tracker = tracker;
             _logger = logger;
         }
 
@@ -50,8 +50,8 @@ namespace ChurchManager.Infrastructure.Shared.SignalR.Hubs
             // Extra
             var connectionId = Context.ConnectionId;
             var userId = Context.UserIdentifier;
-            var spec = new OnlineUserSpecification(userId);
-            var onlineUser = await _onlineUserRepository.GetBySpecAsync(spec);
+            /*var spec = new OnlineUserSpecification(userId);
+            var onlineUser = await _onlineUserRepository.GetBySpecAsync(spec);*/
 
             // Create new online user
             /*if (onlineUser is null)
@@ -75,6 +75,7 @@ namespace ChurchManager.Infrastructure.Shared.SignalR.Hubs
 
             // Add user connections to a group for that user
             await Groups.AddToGroupAsync(connectionId, userId);
+            await _tracker.AddConnectionAsync(userId, connectionId);
 
             await base.OnConnectedAsync();
         }
@@ -104,6 +105,7 @@ namespace ChurchManager.Infrastructure.Shared.SignalR.Hubs
 
             // Remove user connection to a group for that user
             await Groups.RemoveFromGroupAsync(connectionId, userId);
+            await _tracker.RemoveConnectionAsync(userId, connectionId);
 
             await base.OnDisconnectedAsync(ex);
         }

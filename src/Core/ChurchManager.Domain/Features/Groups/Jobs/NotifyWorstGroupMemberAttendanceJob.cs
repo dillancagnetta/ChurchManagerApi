@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using ChurchManager.Domain.Features.Communication;
+using ChurchManager.Domain.Features.Communication.Repositories;
 using ChurchManager.Domain.Features.Communication.Services;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.People.Repositories;
@@ -17,6 +19,7 @@ public class NotifyWorstGroupMemberAttendanceJob(
     IServiceJobRepository repository, 
     ILogger<CodeBossJob> logger,
     IGroupAttendanceDbRepository groupAttendance,
+    IMessageDbRepository messageDb,
     IGroupMemberDbRepository groupMembers,
     IUserLoginDbRepository userLogins,
     IPushNotificationsService pusher
@@ -36,7 +39,8 @@ public class NotifyWorstGroupMemberAttendanceJob(
             
             Result = GetJobResultMessages(worstAttendees);
             
-            await SendPushNotificationsAsync(leaders, worstAttendees, ct);
+            //await SendPushNotificationsAsync(leaders, worstAttendees, ct);
+            await AddMessagesToDbForLeadersAsync(leaders, worstAttendees, ct);
             
             await UpdateLastStatusMessage(Result);
         }
@@ -44,6 +48,21 @@ public class NotifyWorstGroupMemberAttendanceJob(
         {
             logger.LogError(ex.Message);
             throw new JobExecutionException(msg: ex.Message, refireImmediately: false, cause: ex);
+        }
+    }
+
+    private async Task AddMessagesToDbForLeadersAsync(List<GroupMember> leaders, List<GroupMemberAttendanceRate> worstAttendees, CancellationToken ct)
+    {
+        foreach (var leader in leaders)
+        {
+            var userLogin = await userLogins.UserLoginIdForAsync(leader.PersonId, ct);
+            if (userLogin.HasValue)
+            {
+                var message = Message.CreateWarningMessage("Worst Group Attendees", Result, userLogin.Value);
+                message.SendWebPush = true;
+                
+                await messageDb.AddAsync(message, ct);
+            }
         }
     }
 

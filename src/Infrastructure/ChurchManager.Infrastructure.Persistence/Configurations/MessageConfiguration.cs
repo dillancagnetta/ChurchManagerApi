@@ -16,9 +16,15 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
                     v => new MessageClassification(v));
             
             builder
+                .Property(e => e.Status)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => new MessageStatus(v));
+            
+            builder
                 .HasOne(cg => cg.UserLogin)
                 .WithMany()
-                .HasForeignKey(cg => cg.UserLoginId)
+                .HasForeignKey(cg => cg.UserId)
                 .IsRequired();
         }
     }
