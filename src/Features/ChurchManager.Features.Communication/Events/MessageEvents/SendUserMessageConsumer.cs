@@ -2,29 +2,31 @@
 using ChurchManager.Domain.Features.Communication.Events;
 using ChurchManager.Domain.Features.Communication.Repositories;
 using ChurchManager.Domain.Features.Communication.Services;
-using Codeboss.Types;
 using MassTransit;
+using Microsoft.Extensions.Logging;
 
 namespace ChurchManager.Features.Communication.Events.MessageEvents;
 
 public class SendUserMessageConsumer: IConsumer<MessageForUserAddedEvent>
 {
+    public ILogger<SendUserMessageConsumer> Logger { get; }
     private readonly IMessageDbRepository _dbRepository;
-    private readonly IDateTimeProvider _dateTime;
     private readonly IMessageSender _sender;
 
     public SendUserMessageConsumer(
         IMessageDbRepository dbRepository,
-        IDateTimeProvider dateTime,
-        IMessageSender sender)
+        IMessageSender sender,
+        ILogger<SendUserMessageConsumer> logger)
     {
+        Logger = logger;
         _dbRepository = dbRepository;
-        _dateTime = dateTime;
         _sender = sender;
     }
     
     public async Task Consume(ConsumeContext<MessageForUserAddedEvent> context)
     {
+        Logger.LogInformation($"📩 [{nameof(MessageForUserAddedEvent)}] Message Received: {context.Message.MessageId}");
+
         var messageId = context.Message.MessageId;
         
         var message = await _dbRepository.GetByIdAsync(messageId, context.CancellationToken);
@@ -32,8 +34,7 @@ public class SendUserMessageConsumer: IConsumer<MessageForUserAddedEvent>
         if (message.Status == MessageStatus.Pending.Value)
         {
             await _sender.SendAsync(message, context.CancellationToken);
-            message.MarkAsSent(_dateTime);
-            await _dbRepository.SaveChangesAsync();
+            Logger.LogInformation($"🚀 [{nameof(MessageForUserAddedEvent)}] Message Sent: {context.Message.MessageId}");
         }
     }
 }

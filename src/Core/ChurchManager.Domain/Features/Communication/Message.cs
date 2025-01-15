@@ -36,8 +36,8 @@ public class Message : IAggregateRoot<int>, IHaveUserId<Guid>
     
     public bool UseRouter { get;  set; }
     public bool IsRead { get;  set; }
-    
-    public bool SendWebPush { get;  set; }
+
+    public bool SendWebPush { get; set; } = true;
     
     [Required]
     public Guid UserId { get; set; } 
