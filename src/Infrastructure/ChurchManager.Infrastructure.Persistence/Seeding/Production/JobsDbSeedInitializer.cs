@@ -6,7 +6,7 @@ using CodeBoss.Jobs.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ChurchManager.Infrastructure.Persistence.Seeding.Development;
+namespace ChurchManager.Infrastructure.Persistence.Seeding.Production;
 
 public class JobsDbSeedInitializer(IServiceScopeFactory scopeFactory) : IInitializer
 {

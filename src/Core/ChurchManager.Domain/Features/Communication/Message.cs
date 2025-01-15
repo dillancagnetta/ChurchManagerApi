@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ChurchManager.Domain.Common;
-using ChurchManager.Domain.Features.Communication;
 using Codeboss.Types;
 
-namespace ChurchManager.Domain.Features;
+namespace ChurchManager.Domain.Features.Communication;
 
 /// <summary>
 /// Represents a message entity for persistent messages

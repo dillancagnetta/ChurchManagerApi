@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Domain.Features;
+using ChurchManager.Domain.Features.Communication;
 using ChurchManager.Domain.Features.Communication.Services;
 using ChurchManager.Infrastructure.Shared.SignalR.Hubs;
 using MassTransit;
