@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿#region
+
 using Bogus;
 using Bogus.DataSets;
 using ChurchManager.Domain.Common;
@@ -14,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Address = ChurchManager.Domain.Features.People.Address;
 using Person = ChurchManager.Domain.Features.People.Person;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 {

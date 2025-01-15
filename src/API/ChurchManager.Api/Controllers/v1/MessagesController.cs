@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Features.Communication.Repositories;
+﻿using ChurchManager.Domain.Features.Communication;
+using ChurchManager.Domain.Features.Communication.Repositories;
 using ChurchManager.SharedKernel.Common;
 using ChurchManager.SharedKernel.Wrappers;
 using CodeBoss.Extensions;
@@ -16,7 +17,7 @@ public class MessagesController(
     [HttpGet("current-user")]
     public async Task<IActionResult> GetCurrentUserMessages(CancellationToken ct)
     {
-        var messages = await dbRepository.AllAsync(currentUser.Id.AsGuid(), null, ct);
+        var messages = await dbRepository.AllAsync(currentUser.Id.AsGuid(), MessageStatus.Pending, null, ct);
         return Ok(new ApiResponse(messages));
     }
     

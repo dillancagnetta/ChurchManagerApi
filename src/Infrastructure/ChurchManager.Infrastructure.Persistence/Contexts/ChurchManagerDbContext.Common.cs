@@ -1,6 +1,10 @@
-﻿using ChurchManager.Domain.Features.History;
+﻿#region
+
+using ChurchManager.Domain.Features.History;
 using CodeBoss.Jobs.Model;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Contexts
 {

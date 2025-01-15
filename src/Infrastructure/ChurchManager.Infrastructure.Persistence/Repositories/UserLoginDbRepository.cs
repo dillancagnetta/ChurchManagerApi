@@ -1,10 +1,14 @@
-﻿using AutoMapper;
+﻿#region
+
+using AutoMapper;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using MassTransit.Initializers;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories;
 

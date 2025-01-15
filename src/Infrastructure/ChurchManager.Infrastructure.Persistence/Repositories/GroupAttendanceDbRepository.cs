@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿#region
+
+using System.Globalization;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.Groups;
@@ -10,6 +12,8 @@ using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.Extensions;
 using Convey.CQRS.Queries;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories;
 

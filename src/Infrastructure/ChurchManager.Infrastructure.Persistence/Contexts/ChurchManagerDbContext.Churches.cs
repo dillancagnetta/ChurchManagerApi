@@ -1,5 +1,9 @@
-﻿using ChurchManager.Domain.Features.Churches;
+﻿#region
+
+using ChurchManager.Domain.Features.Churches;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Contexts
 {

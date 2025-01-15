@@ -1,6 +1,10 @@
-﻿using CodeBoss.Jobs.Model;
+﻿#region
+
+using CodeBoss.Jobs.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Configurations;
 

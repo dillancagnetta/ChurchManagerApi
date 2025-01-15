@@ -16,7 +16,7 @@ public class SendMessagesJob(
 {
     public override async Task Execute(CancellationToken ct = new CancellationToken())
     {
-        var messages = await messageDb.PendingMessagesAsync(ct);
+        var messages = await messageDb.AllPendingMessagesAsync(ct);
 
         foreach (var message in messages)
         {

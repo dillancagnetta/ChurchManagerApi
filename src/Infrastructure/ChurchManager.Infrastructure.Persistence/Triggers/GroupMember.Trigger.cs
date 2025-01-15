@@ -1,3 +1,5 @@
+#region
+
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.Groups.Repositories;
@@ -7,6 +9,8 @@ using ChurchManager.Domain.Features.People.Repositories;
 using CodeBoss.Extensions;
 using EntityFrameworkCore.Triggered;
 using Microsoft.Extensions.Logging;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Triggers;
 

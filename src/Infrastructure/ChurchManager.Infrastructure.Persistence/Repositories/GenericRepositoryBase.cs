@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿#region
+
 using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using Codeboss.Types;
 using Convey.CQRS.Queries;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories
 {

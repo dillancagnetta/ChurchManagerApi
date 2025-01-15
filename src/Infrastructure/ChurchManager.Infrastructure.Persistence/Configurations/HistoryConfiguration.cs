@@ -1,7 +1,10 @@
-﻿using ChurchManager.Domain.Common;
+﻿#region
+
 using ChurchManager.Domain.Features.History;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Configurations;
 

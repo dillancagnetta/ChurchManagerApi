@@ -1,9 +1,12 @@
-﻿using ChurchManager.Domain.Common;
+﻿#region
+
 using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.History;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.Extensions;
 using Codeboss.Types;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories;
 

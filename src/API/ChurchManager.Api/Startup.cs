@@ -1,18 +1,10 @@
-using System;
 using ChurchManager.Api.Extensions;
-using ChurchManager.Application;
 using ChurchManager.Infrastructure.Persistence;
 using ChurchManager.Infrastructure.Shared;
 using ChurchManager.Infrastructure.Shared.SignalR.Hubs;
 using CodeBoss.AspNetCore.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using Serilog;
+using StartupBase = ChurchManager.Infrastructure.StartupBase;
 
 namespace ChurchManager.Api
 {
@@ -35,7 +27,7 @@ namespace ChurchManager.Api
 
             services.InstallServicesInAssemblies(Configuration, Environment, typeof(Startup).Assembly);
 
-            Infrastructure.StartupBase.ConfigureServices(services, Configuration);
+            StartupBase.ConfigureServices(services, Configuration);
 
             // Add detection services container and device resolver service.
             services.AddDetection();

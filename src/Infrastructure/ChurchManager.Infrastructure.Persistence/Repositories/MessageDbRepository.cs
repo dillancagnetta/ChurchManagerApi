@@ -1,12 +1,15 @@
-﻿using AutoMapper;
+﻿#region
+
+using AutoMapper;
 using ChurchManager.Domain.Common.Extensions;
-using ChurchManager.Domain.Features;
 using ChurchManager.Domain.Features.Communication;
 using ChurchManager.Domain.Features.Communication.Repositories;
 using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Convey.CQRS.Queries;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories;
 
@@ -19,11 +22,11 @@ public class MessageDbRepository : GenericRepositoryBase<Message>, IMessageDbRep
         _mapper = mapper;
     }
 
-    public async Task<IList<MessageViewModel>> AllAsync(Guid userLoginId, IPagedQuery paging = null, CancellationToken ct = default)
+    public async Task<IList<MessageViewModel>> AllAsync(Guid userLoginId, MessageStatus status, IPagedQuery paging = null, CancellationToken ct = default)
     {
         return await Queryable()
             .AsNoTracking()
-            .Where(n => n.UserId == userLoginId)
+            .Where(n => n.UserId == userLoginId && n.Status == status.Value)
             .OrderByDescending(n => n.SentDateTime)
             .Skip(paging?.CalculateSkip() ?? 0)
             .Take(paging?.CalculateTake() ?? PagedQueryExtensions.DefaultPageSize)
@@ -88,7 +91,7 @@ public class MessageDbRepository : GenericRepositoryBase<Message>, IMessageDbRep
         }
     }
 
-    public async Task<IList<Message>> PendingMessagesAsync(CancellationToken ct)
+    public async Task<IList<Message>> AllPendingMessagesAsync(CancellationToken ct)
     {
         var messages = await Queryable()
             .Where(n => n.Status == MessageStatus.Pending)

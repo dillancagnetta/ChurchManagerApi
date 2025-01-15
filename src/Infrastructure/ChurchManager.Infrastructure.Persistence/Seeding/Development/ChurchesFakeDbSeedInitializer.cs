@@ -1,10 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿#region
+
 using Bogus;
 using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.AspNetCore.Startup;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 {

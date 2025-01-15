@@ -1,9 +1,12 @@
-﻿using ChurchManager.Domain.Features;
+﻿#region
+
 using ChurchManager.Domain.Features.Communication;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.AspNetCore.Startup;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Seeding.Development;
 

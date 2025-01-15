@@ -1,10 +1,14 @@
-﻿using System.Data;
+﻿#region
+
+using System.Data;
 using System.Reflection;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Npgsql;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories;
 

@@ -1,4 +1,6 @@
-﻿using System.Linq.Expressions;
+﻿#region
+
+using System.Linq.Expressions;
 using AutoMapper;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Groups;
@@ -7,6 +9,8 @@ using ChurchManager.Domain.Features.Groups.Specifications;
 using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories
 {

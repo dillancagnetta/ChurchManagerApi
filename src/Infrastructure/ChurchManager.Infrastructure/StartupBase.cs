@@ -28,6 +28,9 @@ namespace ChurchManager.Infrastructure
     /// </summary>
     public static class StartupBase
     {
+        private const string AppSectionName = "Application";
+        private const string RabbitMqSectionName = "RabbitMq";
+        
         #region Utilities
 
         /// <summary>
@@ -131,7 +134,7 @@ namespace ChurchManager.Infrastructure
         private static void RegisterExtensions(IMvcCoreBuilder mvcCoreBuilder, IConfiguration configuration)
         {
             var config = new AppConfig();
-            configuration.GetSection("Application").Bind(config);
+            configuration.GetSection(AppSectionName).Bind(config);
 
             //Load plugins
             PluginManager.Load(mvcCoreBuilder, config);
@@ -152,12 +155,12 @@ namespace ChurchManager.Infrastructure
         }
 
         /// <summary>
-        /// Add Mass Transit rabitMq message broker
+        /// Add Mass Transit RabbitMq message broker
         /// </summary>
         /// <param name="services"></param>
         private static void AddMassTransitRabbitMq(IServiceCollection services, IConfiguration configuration, AppTypeSearcher typeSearcher)
         {
-            var connectionString = configuration.GetConnectionString("RabbitMq");
+            var connectionString = configuration.GetConnectionString(RabbitMqSectionName);
 
             #region MassTransit
 
@@ -194,7 +197,7 @@ namespace ChurchManager.Infrastructure
             services.AddHttpContextAccessor();
 
             //add AppConfig configuration parameters
-            var config = services.StartupConfig<AppConfig>(configuration.GetSection("Application"));
+            var config = services.StartupConfig<AppConfig>(configuration.GetSection(AppSectionName));
             //add hosting configuration parameters
             //.StartupConfig<HostingConfig>(configuration.GetSection("Hosting"));
             //add api configuration parameters
@@ -275,7 +278,7 @@ namespace ChurchManager.Infrastructure
             RegisterTypeConverter(typeSearcher);
 
             var config = new AppConfig();
-            configuration.GetSection("Application").Bind(config);
+            configuration.GetSection(AppSectionName).Bind(config);
 
             //add mediator
             AddMediator(services, typeSearcher);

@@ -1,7 +1,11 @@
-﻿using ChurchManager.Infrastructure.Persistence.Contexts;
+﻿#region
+
+using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.AspNetCore.Startup;
 using CodeBoss.Jobs.Model;
 using Microsoft.Extensions.DependencyInjection;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Seeding.Development;
 

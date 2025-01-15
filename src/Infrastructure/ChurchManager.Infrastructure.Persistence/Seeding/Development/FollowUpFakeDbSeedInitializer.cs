@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿#region
+
 using Bogus;
 using ChurchManager.Domain.Common;
-using ChurchManager.Domain.Features.Groups;
-using ChurchManager.Domain.Features.Missions;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.AspNetCore.Startup;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Person = ChurchManager.Domain.Features.People.Person;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 {
@@ -53,7 +52,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             }
         }
         
-        public IEnumerable<FollowUp> FollowUpRecordsForPerson(Domain.Features.People.Person person, Faker faker, Random random)
+        public IEnumerable<FollowUp> FollowUpRecordsForPerson(Person person, Faker faker, Random random)
         {
             yield return new FollowUp
             {

@@ -1,14 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Dynamic.Core;
+﻿#region
+
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Infrastructure.Persistence.Contexts;
-using LinqKit;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories;
 

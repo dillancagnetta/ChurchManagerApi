@@ -1,4 +1,6 @@
-﻿using ChurchManager.Domain.Features.Churches.Repositories;
+﻿#region
+
+using ChurchManager.Domain.Features.Churches.Repositories;
 using ChurchManager.Domain.Features.Communication.Repositories;
 using ChurchManager.Domain.Features.Communication.Services;
 using ChurchManager.Domain.Features.Discipleship.Repositories;
@@ -20,6 +22,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence
 {

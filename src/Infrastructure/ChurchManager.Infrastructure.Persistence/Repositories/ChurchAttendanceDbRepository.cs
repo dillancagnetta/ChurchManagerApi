@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region
+
 using System.Globalization;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Threading.Tasks;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.Churches;
@@ -12,6 +9,8 @@ using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.Extensions;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories;
 

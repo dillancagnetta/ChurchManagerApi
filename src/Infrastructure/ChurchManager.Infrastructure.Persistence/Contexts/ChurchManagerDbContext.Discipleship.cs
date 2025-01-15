@@ -1,6 +1,10 @@
-﻿using ChurchManager.Domain.Features.Discipleship;
+﻿#region
+
+using ChurchManager.Domain.Features.Discipleship;
 using ChurchManager.Domain.Features.Missions;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Contexts
 {
