@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using CodeBoss.AspNetCore;
-using Microsoft.AspNetCore.Http;
+﻿using CodeBoss.AspNetCore;
 
 namespace ChurchManager.Api.Middlewares
 {

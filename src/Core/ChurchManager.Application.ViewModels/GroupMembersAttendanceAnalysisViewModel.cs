@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ChurchManager.Application.ViewModels
+﻿namespace ChurchManager.Application.ViewModels
 {
     public record GroupMembersAttendanceAnalysisViewModel
     {

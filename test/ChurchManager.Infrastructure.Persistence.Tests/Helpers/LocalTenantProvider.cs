@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using CodeBoss.MultiTenant;
+﻿using CodeBoss.MultiTenant;
 
 namespace ChurchManager.Infrastructure.Persistence.Tests.Helpers
 {

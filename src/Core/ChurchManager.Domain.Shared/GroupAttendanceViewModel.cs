@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ChurchManager.Domain.Shared;
+﻿namespace ChurchManager.Domain.Shared;
 
 public record GroupAttendanceViewModel
 {

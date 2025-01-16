@@ -2,8 +2,6 @@
 using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Shared;
 using Convey.CQRS.Queries;
-using System;
-using System.Linq;
 
 namespace ChurchManager.Domain.Features.Missions.Specifications
 {

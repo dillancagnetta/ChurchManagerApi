@@ -3,6 +3,7 @@ using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Features.People.Commands.AddNewFamily;
 using CodeBoss.Extensions;
 using MediatR;
+using BirthDate = ChurchManager.Domain.Features.People.BirthDate;
 
 namespace ChurchManager.Features.People.Commands.AddPersonToFamily
 {
@@ -37,7 +38,7 @@ namespace ChurchManager.Features.People.Commands.AddPersonToFamily
                 Gender = member.Person.Gender,
                 AgeClassification = member.Person.AgeClassification,
                 ReceivedHolySpirit = member.Person.ReceivedHolySpirit,
-                BirthDate = new Domain.Features.People.BirthDate
+                BirthDate = new BirthDate
                 {
                     BirthDay = member.Person.BirthDate?.Day,
                     BirthMonth = member.Person.BirthDate?.Month,

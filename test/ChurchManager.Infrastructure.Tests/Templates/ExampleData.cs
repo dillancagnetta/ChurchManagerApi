@@ -1,5 +1,4 @@
-﻿using System;
-using DotLiquid;
+﻿using DotLiquid;
 
 namespace ChurchManager.Infrastructure.Tests.Templates
 {

@@ -1,11 +1,11 @@
-﻿using CodeBoss.AspNetCore.DependencyInjection;
+﻿using ChurchManager.Infrastructure.Abstractions.Configuration;
+using CodeBoss.AspNetCore.DependencyInjection;
 using CodeBoss.Jobs;
 using CodeBoss.Jobs.Abstractions;
 using Convey;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Quartz;
 
 namespace ChurchManager.Infrastructure.Shared.Jobs;
 

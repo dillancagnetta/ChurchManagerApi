@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ChurchManager.Domain.Shared
+﻿namespace ChurchManager.Domain.Shared
 {
     public record OnlineUserViewModel
     {

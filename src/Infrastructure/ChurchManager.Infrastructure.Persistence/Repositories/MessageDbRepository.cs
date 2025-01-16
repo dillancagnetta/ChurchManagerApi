@@ -22,14 +22,14 @@ public class MessageDbRepository : GenericRepositoryBase<Message>, IMessageDbRep
         _mapper = mapper;
     }
 
-    public async Task<IList<MessageViewModel>> AllAsync(Guid userLoginId, MessageStatus status, IPagedQuery paging = null, CancellationToken ct = default)
+    public async Task<IList<MessageViewModel>> AllAsync(Guid userLoginId, IPagedQuery paging = null, CancellationToken ct = default)
     {
         return await Queryable()
             .AsNoTracking()
-            .Where(n => n.UserId == userLoginId && n.Status == status.Value)
+            .Where(n => n.UserId == userLoginId)
             .OrderByDescending(n => n.SentDateTime)
             .Skip(paging?.CalculateSkip() ?? 0)
-            .Take(paging?.CalculateTake() ?? PagedQueryExtensions.DefaultPageSize)
+            .Take(paging?.CalculateTake() ?? 50)
             .Select(x => new MessageViewModel
             {
                 Id = x.Id,

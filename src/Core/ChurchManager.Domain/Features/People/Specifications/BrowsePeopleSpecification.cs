@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Ardalis.Specification;
 using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.People.Queries;
 using CodeBoss.Extensions;
-using Microsoft.EntityFrameworkCore;
 using LinqKit;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Domain.Features.People.Specifications
 {

@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
-using ChurchManager.Application.ViewModels;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.Groups.Specifications;
 using ChurchManager.Domain.Parameters;
 using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
-using Convey.CQRS.Queries;
 using MediatR;
 
 namespace ChurchManager.Features.Groups.Queries.BrowsePersonsGroups

@@ -161,7 +161,7 @@ public class CmJobListener(IServiceProvider serviceProvider, IDateTimeProvider d
         Exception exceptionToLog = jobException;
 
         // drill down to the interesting exception
-        while ( exceptionToLog is Quartz.SchedulerException && exceptionToLog.InnerException != null )
+        while ( exceptionToLog is SchedulerException && exceptionToLog.InnerException != null )
         {
             exceptionToLog = exceptionToLog.InnerException;
         }

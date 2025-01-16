@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ChurchManager.Domain.Features.Groups
+﻿namespace ChurchManager.Domain.Features.Groups
 {
     #region Enumerations
 

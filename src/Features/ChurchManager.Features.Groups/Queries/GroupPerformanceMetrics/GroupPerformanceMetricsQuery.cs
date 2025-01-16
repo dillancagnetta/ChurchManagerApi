@@ -1,12 +1,8 @@
-﻿using ChurchManager.Application.ViewModels;
-using ChurchManager.Domain.Common;
+﻿using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Groups.Repositories;
-using ChurchManager.Domain.Features.Groups.Specifications;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Features.Groups.Queries.GroupMemberAttendance;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Features.Groups.Queries.GroupPerformanceMetrics
 {

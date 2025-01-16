@@ -1,7 +1,7 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using ChurchManager.Features.People.Infrastructure.Mapper;
 using ChurchManager.Infrastructure.Persistence.Contexts;
-using System;
 using Xunit;
 
 namespace ChurchManager.Application.Tests.Common

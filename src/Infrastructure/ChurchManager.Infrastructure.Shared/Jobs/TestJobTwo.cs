@@ -1,6 +1,5 @@
 ﻿using CodeBoss.Jobs.Abstractions;
 using CodeBoss.Jobs.Jobs;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace ChurchManager.Infrastructure.Shared.Jobs;

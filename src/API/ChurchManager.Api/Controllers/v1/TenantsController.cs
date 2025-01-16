@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using CodeBoss.MultiTenant;
+﻿using CodeBoss.MultiTenant;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using ChurchManager.Domain.Features.People.Services;
+﻿using ChurchManager.Domain.Features.People.Services;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Codeboss.Results;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
 namespace ChurchManager.Infrastructure.Shared.Photos

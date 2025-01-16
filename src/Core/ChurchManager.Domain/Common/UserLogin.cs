@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Persistence.Shared;
@@ -32,5 +30,11 @@ namespace ChurchManager.Domain.Common
         public virtual Person Person { get; set; }
 
         #endregion
+
+        public void ClearRefreshTokenHistory()
+        {
+            RefreshToken = null;
+            RefreshTokenExpiryTime = null;  
+        }
     }
 }

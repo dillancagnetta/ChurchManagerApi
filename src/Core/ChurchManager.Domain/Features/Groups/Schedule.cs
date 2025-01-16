@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using ChurchManager.Persistence.Shared;
 using CodeBoss.Extensions;
-using Codeboss.Types;
 using Ical.Net;
 using Ical.Net.CalendarComponents;
 

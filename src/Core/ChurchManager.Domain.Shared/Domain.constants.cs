@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 
 namespace ChurchManager.Domain.Shared

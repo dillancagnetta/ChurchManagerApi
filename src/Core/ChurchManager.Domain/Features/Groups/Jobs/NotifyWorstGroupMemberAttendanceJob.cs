@@ -21,7 +21,7 @@ public class NotifyWorstGroupMemberAttendanceJob(
     IGroupAttendanceDbRepository groupAttendance,
     IMessageDbRepository messageDb,
     IGroupMemberDbRepository groupMembers,
-    IUserLoginDbRepository userLogins,
+    IPersonDbRepository personDb,
     IPushNotificationsService pusher
     )
     : CodeBossJob(repository, logger)
@@ -51,14 +51,18 @@ public class NotifyWorstGroupMemberAttendanceJob(
         }
     }
 
+    /// <summary>
+    /// Adding messages to the database will trigger sending.
+    /// </summary>
     private async Task AddMessagesToDbForLeadersAsync(List<GroupMember> leaders, List<GroupMemberAttendanceRate> worstAttendees, CancellationToken ct)
     {
         foreach (var leader in leaders)
         {
-            var userLogin = await userLogins.UserLoginIdForAsync(leader.PersonId, ct);
-            if (userLogin.HasValue)
+            var operationResult = await personDb.UserLoginIdForPersonAsync(leader.PersonId, ct);
+            if (operationResult.IsSuccess && operationResult.Result.HasValue)
             {
-                var message = Message.CreateWarningMessage("Worst Group Attendees", Result, userLogin.Value);
+                var userLoginId = operationResult.Result.Value;
+                var message = Message.CreateWarningMessage("Worst Group Attendees", Result, userLoginId);
                 message.SendWebPush = true;
                 
                 await messageDb.AddAsync(message, ct);
@@ -70,16 +74,17 @@ public class NotifyWorstGroupMemberAttendanceJob(
     {
         foreach (var leader in leaders)
         {
-            var userLogin = await userLogins.UserLoginIdForAsync(leader.PersonId, ct);
-            if (userLogin.HasValue)
+            var operationResult = await personDb.UserLoginIdForPersonAsync(leader.PersonId, ct);
+            if (operationResult.IsSuccess && operationResult.Result.HasValue)
             {
+                var userLoginId = operationResult.Result.Value;
                 // Send push notification using a notification service
-                var notification = Codeboss.Types.Notification.UserNotification(
+                var notification = Notification.UserNotification(
                     type:"success", 
                     title:"Worst Group Attendees", 
                     payload:Result, 
                     methodName:"DirectMessage", 
-                    userId:userLogin.Value.ToString());
+                    userId:userLoginId.ToString());
                 
                 await pusher.PushAsync(notification, ct);
             }
@@ -91,7 +96,7 @@ public class NotifyWorstGroupMemberAttendanceJob(
         var results = new StringBuilder();
         if (worstAttendees.Any())
         {
-            worstAttendees.ForEach( e => results.AppendLine( $"{e.MemberName} - {e.AttendanceRatePercent}" ) );
+            worstAttendees.ForEach( e => results.AppendLine( $"{e.MemberName} -[AttendanceRate]:{e.AttendanceRatePercent}%" ) );
         }
         return results.ToString();
     }

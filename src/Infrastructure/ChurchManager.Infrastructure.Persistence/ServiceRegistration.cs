@@ -7,6 +7,7 @@ using ChurchManager.Domain.Features.Discipleship.Repositories;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.History;
 using ChurchManager.Domain.Features.People.Repositories;
+using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using ChurchManager.Infrastructure.Persistence.Repositories;
@@ -64,6 +65,8 @@ namespace ChurchManager.Infrastructure.Persistence
             // Migrate database
             services.AddHostedService<DbTenantMigrationHostedService>();
 
+            var jobOptions = configuration.GetOptions<JobsOptions>(nameof(JobsOptions));
+            
             // Seeding: Switch this off in `appsettings.json`
             bool seedDatabaseEnabled = configuration.GetOptions<DbOptions>(nameof(DbOptions)).Seed;
             if (seedDatabaseEnabled)
@@ -87,8 +90,6 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<GroupMemberAttendanceFakeDbSeedInitializer>();
                     services.AddInitializer<FollowUpFakeDbSeedInitializer>();
                     services.AddInitializer<MissionsFakeDbSeedInitializer>();
-                    services.AddInitializer<JobsFakeDbSeedInitializer>();
-                    services.AddInitializer<JobsDbSeedInitializer>();
                     services.AddInitializer<MessagesFakeDbSeedInitializer>();
                 }
                 // Development / Test -  Seeding
@@ -105,9 +106,13 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<GroupMemberAttendanceFakeDbSeedInitializer>();
                     services.AddInitializer<FollowUpFakeDbSeedInitializer>();
                     services.AddInitializer<MissionsFakeDbSeedInitializer>();
-                    services.AddInitializer<JobsFakeDbSeedInitializer>();
-                    services.AddInitializer<JobsDbSeedInitializer>();
                     services.AddInitializer<MessagesFakeDbSeedInitializer>();
+                }
+                
+                // Jobs
+                if (jobOptions.Enabled) services.AddInitializer<JobsDbSeedInitializer>();
+                {
+                    if (jobOptions.DebugEnabled) services.AddInitializer<JobsFakeDbSeedInitializer>();
                 }
             }
 

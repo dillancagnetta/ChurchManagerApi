@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using ChurchManager.Infrastructure.Abstractions.Persistence;
+﻿using ChurchManager.Infrastructure.Abstractions.Persistence;
 
 namespace ChurchManager.Domain.Features.Groups.Repositories
 {

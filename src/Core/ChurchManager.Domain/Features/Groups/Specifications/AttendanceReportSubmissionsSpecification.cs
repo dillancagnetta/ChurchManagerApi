@@ -1,7 +1,6 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Common;
 using CodeBoss.Extensions;
-using System;
 
 namespace ChurchManager.Domain.Features.Groups.Specifications
 {

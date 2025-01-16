@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ChurchManager.Domain.Common
+﻿namespace ChurchManager.Domain.Common
 {
     /// <summary>
     /// PeriodType Type

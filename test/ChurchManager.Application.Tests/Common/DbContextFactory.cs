@@ -1,6 +1,6 @@
-﻿using ChurchManager.Infrastructure.Persistence.Contexts;
+﻿using System;
+using ChurchManager.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace ChurchManager.Application.Tests.Common
 {

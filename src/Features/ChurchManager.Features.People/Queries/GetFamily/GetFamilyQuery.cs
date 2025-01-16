@@ -3,9 +3,7 @@ using ChurchManager.Domain.Features.People.Specifications;
 using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
-using MassTransit.Initializers;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Features.People.Queries.GetFamily
 {

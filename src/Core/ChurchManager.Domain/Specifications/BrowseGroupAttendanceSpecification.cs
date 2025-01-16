@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Persistence.Shared;
 using LinqKit;

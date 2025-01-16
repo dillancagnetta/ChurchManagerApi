@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ChurchManager.Application.ViewModels;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.Groups.Specifications;

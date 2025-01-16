@@ -13,7 +13,6 @@ using ChurchManager.SharedKernel.Extensions;
 using FluentValidation.AspNetCore;
 using MassTransit;
 using MassTransit.SignalR;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

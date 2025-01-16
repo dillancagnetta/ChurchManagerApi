@@ -33,4 +33,14 @@ public class UserLoginDbRepository : GenericRepositoryBase<UserLogin>,  IUserLog
             .FirstOrDefaultAsync(x => x.PersonId == personId, cancellationToken: token)
             .Select(x => x.Id);;
     }
+
+    public async Task LogoutUserAsync(Guid userLoginId, CancellationToken ct)
+    {
+        var userLogin = await GetByIdAsync(userLoginId, ct);
+        if (userLogin is not null)
+        {
+            userLogin.ClearRefreshTokenHistory();
+            await SaveChangesAsync(ct);
+        }
+    }
 }

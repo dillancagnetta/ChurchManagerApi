@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using ChurchManager.Domain.Features.People;
+﻿using ChurchManager.Domain.Features.People;
 using Codeboss.Results;
 
 namespace ChurchManager.Domain.Features.Communication.Services

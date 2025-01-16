@@ -2,7 +2,6 @@
 using DotLiquid;
 using DotLiquid.NamingConventions;
 
-
 namespace ChurchManager.Infrastructure.Shared.Templating
 {
     // https://github.com/JonJam/templates_dotliquid/blob/master/TemplatesWithDotLiquid/Program.cs

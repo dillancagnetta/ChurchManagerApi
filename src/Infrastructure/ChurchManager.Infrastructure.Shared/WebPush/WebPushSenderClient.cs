@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using ChurchManager.Domain.Features.Communication;
+﻿using ChurchManager.Domain.Features.Communication;
 using ChurchManager.Domain.Features.Communication.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
