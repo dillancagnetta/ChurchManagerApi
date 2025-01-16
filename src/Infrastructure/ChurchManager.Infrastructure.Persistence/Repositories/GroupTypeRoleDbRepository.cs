@@ -1,7 +1,10 @@
-﻿using System.Linq;
+﻿#region
+
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Infrastructure.Persistence.Contexts;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories
 {

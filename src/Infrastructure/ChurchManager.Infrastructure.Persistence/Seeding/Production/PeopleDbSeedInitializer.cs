@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿#region
+
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Infrastructure.Persistence.Contexts;
@@ -10,6 +8,8 @@ using CodeBoss.MultiTenant;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Person = ChurchManager.Domain.Features.People.Person;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Seeding.Production
 {

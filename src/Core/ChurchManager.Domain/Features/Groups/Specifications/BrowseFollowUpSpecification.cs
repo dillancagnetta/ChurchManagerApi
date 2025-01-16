@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Ardalis.Specification;
+﻿using Ardalis.Specification;
 using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Shared;

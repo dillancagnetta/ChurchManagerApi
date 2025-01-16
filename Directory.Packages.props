@@ -3,6 +3,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
     <NoWarn>$(NoWarn);NU1507</NoWarn>
+    <CodeBossVersion>8.0.11</CodeBossVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Amazon.Extensions.Configuration.SystemsManager" Version="3.0.0" />
@@ -16,10 +17,11 @@
     <PackageVersion Include="Bogus" Version="34.0.1" />
     <PackageVersion Include="Bugsnag.AspNet.Core" Version="2.2.1" />
     <PackageVersion Include="CloudinaryDotNet" Version="1.15.2" />
-    <PackageVersion Include="CodeBoss" Version="8.0.2" />
-    <PackageVersion Include="CodeBoss.AspNetCore" Version="8.0.2" />
-    <PackageVersion Include="CodeBoss.Extensions" Version="8.0.2" />
-    <PackageVersion Include="CodeBoss.MultiTenant" Version="8.0.2" />
+    <PackageVersion Include="CodeBoss" Version="$(CodeBossVersion)" />
+    <PackageVersion Include="CodeBoss.AspNetCore" Version="$(CodeBossVersion)" />
+    <PackageVersion Include="CodeBoss.Extensions" Version="$(CodeBossVersion)" />
+    <PackageVersion Include="CodeBoss.MultiTenant" Version="$(CodeBossVersion)" />
+    <PackageVersion Include="CodeBoss.Jobs" Version="$(CodeBossVersion)" />
     <PackageVersion Include="Convey" Version="1.1.448" />
     <PackageVersion Include="Convey.CQRS.Queries" Version="1.1.448" />
     <PackageVersion Include="Convey.Logging" Version="1.1.448" />

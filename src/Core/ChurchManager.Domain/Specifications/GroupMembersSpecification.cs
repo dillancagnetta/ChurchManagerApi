@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using ChurchManager.Domain.Common;
+﻿using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Persistence.Shared;
 

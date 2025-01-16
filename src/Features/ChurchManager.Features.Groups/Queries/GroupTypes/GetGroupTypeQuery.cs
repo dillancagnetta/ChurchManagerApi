@@ -1,10 +1,10 @@
-﻿using ChurchManager.Domain.Features.Groups;
+﻿using AutoMapper;
+using ChurchManager.Application.ViewModels;
+using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using ChurchManager.Application.ViewModels;
 
 namespace ChurchManager.Features.Groups.Queries.GroupTypes;
 

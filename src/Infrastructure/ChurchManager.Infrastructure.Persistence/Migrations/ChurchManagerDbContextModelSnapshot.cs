@@ -21,6 +21,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "hstore");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("ChurchManager.Domain.Common.UserLogin", b =>
@@ -760,6 +761,10 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("Date");
 
+                    b.Property<string>("Frequency")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<DateTime?>("InactiveDateTime")
                         .HasColumnType("timestamp without time zone");
 
@@ -879,6 +884,69 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.HasIndex("RelatedEntityType");
 
                     b.ToTable("History");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Classification")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("IconCssClass")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("ImagePath")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LastError")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Link")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<bool>("SendWebPush")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("SentDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("UseRouter")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Missions.Mission", b =>
@@ -1272,6 +1340,110 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.ToTable("PhoneNumber");
                 });
 
+            modelBuilder.Entity("CodeBoss.Jobs.Model.ServiceJob", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Assembly")
+                        .HasMaxLength(260)
+                        .HasColumnType("character varying(260)");
+
+                    b.Property<string>("Class")
+                        .IsRequired()
+                        .HasMaxLength(260)
+                        .HasColumnType("character varying(260)");
+
+                    b.Property<string>("CronExpression")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("EnableHistory")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("HistoryCount")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("JobKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<Dictionary<string, string>>("JobParameters")
+                        .HasColumnType("hstore");
+
+                    b.Property<DateTime?>("LastRunDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("LastRunDurationSeconds")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("LastStatus")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("LastStatusMessage")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastSuccessfulRunDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("NotificationEmails")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<int>("NotificationStatus")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ServiceJobs");
+                });
+
+            modelBuilder.Entity("CodeBoss.Jobs.Model.ServiceJobHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ServiceJobId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("StartDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("StatusMessage")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("StopDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServiceJobId");
+
+                    b.ToTable("ServiceJobHistory");
+                });
+
             modelBuilder.Entity("GroupGroupFeature", b =>
                 {
                     b.Property<int>("FeaturesId")
@@ -1542,6 +1714,17 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasForeignKey("GroupTypeId");
 
                     b.Navigation("GroupType");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Message", b =>
+                {
+                    b.HasOne("ChurchManager.Domain.Common.UserLogin", "UserLogin")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserLogin");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Missions.Mission", b =>
@@ -1847,6 +2030,17 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasForeignKey("PersonId");
                 });
 
+            modelBuilder.Entity("CodeBoss.Jobs.Model.ServiceJobHistory", b =>
+                {
+                    b.HasOne("CodeBoss.Jobs.Model.ServiceJob", "ServiceJob")
+                        .WithMany("ServiceJobHistory")
+                        .HasForeignKey("ServiceJobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ServiceJob");
+                });
+
             modelBuilder.Entity("GroupGroupFeature", b =>
                 {
                     b.HasOne("ChurchManager.Domain.Features.Groups.GroupFeature", null)
@@ -1899,6 +2093,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Navigation("Notes");
 
                     b.Navigation("PhoneNumbers");
+                });
+
+            modelBuilder.Entity("CodeBoss.Jobs.Model.ServiceJob", b =>
+                {
+                    b.Navigation("ServiceJobHistory");
                 });
 #pragma warning restore 612, 618
         }

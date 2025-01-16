@@ -1,10 +1,15 @@
-﻿using ChurchManager.Domain.Common;
+﻿#region
+
+using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Queries;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.Extensions;
+using Codeboss.Results;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories
 {
@@ -73,6 +78,16 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
             age = age.OrderBy(x => x.name).ToList();
             
             return new { connectionStatus, gender, age };
+        }
+
+        public async Task<OperationResult<Guid?>> UserLoginIdForPersonAsync(int personId, CancellationToken cancellationToken = default)
+        {
+            var userLoginId = await Queryable()
+                .Where(p => p.Id == personId)
+                .Select(p => p.UserLoginId)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return new OperationResult<Guid?>(userLoginId.AsGuidOrNull());
         }
 
         private IQueryable<Person> Queryable(string[] includes, PersonQueryOptions personQueryOptions)

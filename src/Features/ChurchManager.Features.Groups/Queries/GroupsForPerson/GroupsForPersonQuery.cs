@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ChurchManager.Application.ViewModels;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.Groups.Specifications;
@@ -27,9 +26,9 @@ namespace ChurchManager.Features.Groups.Queries.GroupsForPerson
 
             var groups = await _groupDbRepository.ListAsync(spec, ct);
 
-            var viewModels = _mapper.Map<IEnumerable<GroupSummaryViewModel>>(groups);
+            //var viewModels = _mapper.Map<IEnumerable<GroupSummaryViewModel>>(groups);
 
-            return new ApiResponse(new GroupSummariesViewModel(viewModels));
+            return new ApiResponse(groups);
         }
     }
 }

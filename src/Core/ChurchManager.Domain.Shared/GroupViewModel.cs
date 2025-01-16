@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ChurchManager.Domain.Shared
+﻿namespace ChurchManager.Domain.Shared
 {
     public record GroupViewModel
     {
@@ -43,5 +40,6 @@ namespace ChurchManager.Domain.Shared
         public DateTime? EndDate { get; set; }
         public string MeetingTime { get; set; }
         public string RecurrenceRule { get; set; }
+        public string Frequency { get; set; }
     }
 }

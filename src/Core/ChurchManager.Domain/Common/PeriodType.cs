@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ChurchManager.Domain.Common
+﻿namespace ChurchManager.Domain.Common
 {
     /// <summary>
     /// PeriodType Type
@@ -39,6 +37,7 @@ namespace ChurchManager.Domain.Common
         LastMonth = 60,
 
         ThisYear = 70,
+        LastYear = 80,
 
         AllTime = 100,
     }

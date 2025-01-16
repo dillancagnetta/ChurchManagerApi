@@ -1,5 +1,7 @@
-﻿using ChurchManager.Infrastructure.Abstractions;
+﻿using ChurchManager.Domain.Features.Communication.Services;
+using ChurchManager.Infrastructure.Abstractions;
 using ChurchManager.Infrastructure.Abstractions.Security;
+using ChurchManager.Infrastructure.Shared.Communications;
 using ChurchManager.Infrastructure.Shared.DomainEvents;
 using CodeBoss.AspNetCore.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
@@ -19,6 +21,10 @@ namespace ChurchManager.Infrastructure.Shared
             services.AddSingleton<ITokenService, TokenService>();
 
             services.AddScoped<IDomainEventPublisher, MassTransitDomainEventPublisher>();
+            
+            services.AddDistributedMemoryCache();
+
+            services.AddScoped<IMessageSender, MessageSender>();
         }
     }
 }

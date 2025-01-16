@@ -1,5 +1,4 @@
 ﻿using ChurchManager.Api.Middlewares;
-using Microsoft.AspNetCore.Builder;
 
 namespace ChurchManager.Api.Extensions
 {

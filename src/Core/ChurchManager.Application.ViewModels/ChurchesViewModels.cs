@@ -1,4 +1,4 @@
-﻿using ChurchManager.Domain.Shared;
+﻿
 
 /*
 namespace ChurchManager.Application.ViewModels

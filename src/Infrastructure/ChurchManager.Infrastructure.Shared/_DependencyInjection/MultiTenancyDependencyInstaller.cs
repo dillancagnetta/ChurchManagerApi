@@ -14,7 +14,6 @@ namespace ChurchManager.Infrastructure.Shared._DependencyInjection
 
             // Injected into db context to provide UserLoginId info
             services.AddScoped<ITenantCurrentUser, SimpleCurrentUser>();
-
         }
     }
 }

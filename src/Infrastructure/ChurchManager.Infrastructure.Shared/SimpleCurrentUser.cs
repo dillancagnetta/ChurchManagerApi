@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
-using Codeboss.Types;
 using CodeBoss.MultiTenant;
+using Codeboss.Types;
 
 namespace ChurchManager.Infrastructure.Shared
 {

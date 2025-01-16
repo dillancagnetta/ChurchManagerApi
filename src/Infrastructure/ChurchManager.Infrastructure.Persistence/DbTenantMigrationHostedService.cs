@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿#region
+
 using ChurchManager.Infrastructure.Persistence.Contexts.Factory;
 using ChurchManager.Persistence.Shared;
 using CodeBoss.MultiTenant;
@@ -10,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence
 {
@@ -29,11 +28,11 @@ namespace ChurchManager.Infrastructure.Persistence
             var dbOptions = _serviceProvider.GetRequiredService<IOptions<DbOptions>>().Value;
             if (!dbOptions.Migrate)
             {
-                Console.WriteLine("Migrations disabled.");
+                Console.WriteLine("[X] Migrations disabled.");
                 return;
             }
 
-            Console.WriteLine("Migrations enabled.");
+            Console.WriteLine("[✔️] Migrations enabled.");
 
             var tenantProvider = scope.ServiceProvider.GetRequiredService<ITenantProvider>();
                 
@@ -41,7 +40,7 @@ namespace ChurchManager.Infrastructure.Persistence
 
             IEnumerable<Task> tasks = tenants.Select(tenant => MigrateTenantDatabase(tenant, tenantProvider));
 
-            Console.WriteLine("Starting parallel execution of pending migrations...");
+            Console.WriteLine("> Starting parallel execution of pending migrations...");
             await Task.WhenAll(tasks);
         }
 
@@ -63,7 +62,7 @@ namespace ChurchManager.Infrastructure.Persistence
             }
             catch(Exception e)
             {
-                Console.WriteLine($"Error occurred during migration: {e.Message} --> {tenant.ConnectionString}");
+                Console.WriteLine($"Error occurred during migration: {e.Message} --> [{tenant.Name}]");
                 throw;
             }
         }

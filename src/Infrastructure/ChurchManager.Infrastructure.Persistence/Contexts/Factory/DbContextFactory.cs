@@ -1,5 +1,9 @@
-﻿using CodeBoss.MultiTenant;
+﻿#region
+
+using CodeBoss.MultiTenant;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Contexts.Factory
 {

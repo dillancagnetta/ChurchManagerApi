@@ -1,5 +1,5 @@
-﻿using Codeboss.Types;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
+using Codeboss.Types;
 
 namespace ChurchManager.Persistence.Shared
 {

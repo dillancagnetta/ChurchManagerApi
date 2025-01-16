@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace ChurchManager.Domain.Features.Communication
 {
@@ -21,6 +19,14 @@ namespace ChurchManager.Domain.Features.Communication
         {
             Title = title;
             Body = body;
+        }
+
+        public PushNotification(Message message)
+        {
+            Title = message.Title;
+            Body = message.Body;
+            Tag = message.Id.ToString();
+            Timestamp = message.SentDateTime ?? DateTime.UtcNow;
         }
 
         public string Title { get; set; } = "Push Demo";

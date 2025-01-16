@@ -1,8 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using CodeBoss.MultiTenant;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+﻿using CodeBoss.MultiTenant;
 
 namespace ChurchManager.Api.Middlewares
 {

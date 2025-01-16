@@ -1,5 +1,6 @@
 ﻿using ChurchManager.Domain.Features.Churches.Repositories;
 using ChurchManager.Domain.Features.People.Repositories;
+using ChurchManager.Features.Churches.Queries.Reports.AttendanceMetrics;
 using ChurchManager.SharedKernel.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,8 +43,23 @@ namespace ChurchManager.Api.Controllers.v1
         [HttpGet("church-people-connectionstatus-breakdown")]
         public async Task<IActionResult> ChurchConnectionStatusBreakdown([FromQuery] int? churchId, CancellationToken token)
         {
-            var breakdown = await _personDbRepository.DashboardChurchConnectionStatusBreakdown(churchId);
+            var breakdown = await _personDbRepository.DashboardChurchConnectionStatusBreakdown(churchId, token);
             return Ok(breakdown);
+        }
+        
+        [HttpGet("church-attendance-metrics-comparison")]
+        public async Task<IActionResult> ChurchAttendanceMetricsComparison([FromQuery] ChurchAttendanceMetricsComparisonQuery query, CancellationToken token)
+        {
+            var data = await _attendanceDbRepository.AttendanceMetricsComparisonAsync(query.ChurchId, query.PeriodType, token);
+            return Ok(data);
+        }
+        
+        [HttpGet("church-annual-conversion-rate-comparison")]
+        public async Task<IActionResult> ChurchYearlyConversionRateComparison(
+            [FromQuery] int? churchId, bool includeMonthlyBreakdown = false,CancellationToken token = default)
+        {
+            var data = await _attendanceDbRepository.YearlyConversionComparisonAsync(churchId, includeMonthlyBreakdown, token);
+            return Ok(data);
         }
     }
 }

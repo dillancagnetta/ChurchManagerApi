@@ -2,6 +2,7 @@
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
+using CodeBoss.Extensions;
 using Codeboss.Types;
 using Ical.Net;
 using Ical.Net.CalendarComponents;
@@ -87,7 +88,8 @@ namespace ChurchManager.Features.Groups.Commands.NewGroup
                     Name = $"{command.Name} Schedule",
                     iCalendarContent = serializedCalendar,
                     WeeklyTimeOfDay = weeklyTimeOfDay,
-                    WeeklyDayOfWeek = days.FirstOrDefault()?.DayOfWeek
+                    WeeklyDayOfWeek = days.FirstOrDefault()?.DayOfWeek,
+                    Frequency = rrule.Frequency.ConvertToString()
                 }
             };
 

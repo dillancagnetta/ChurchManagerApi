@@ -1,9 +1,13 @@
-﻿using ChurchManager.Domain.Features.History;
+﻿#region
+
+using ChurchManager.Domain.Features.History;
 using ChurchManager.Domain.Features.People;
+using EntityFrameworkCore.Triggered;
 using Microsoft.Extensions.Logging;
 
+#endregion
+
 namespace ChurchManager.Infrastructure.Persistence.Triggers;
-using EntityFrameworkCore.Triggered;
 
 public class FollowUpTrigger: IAfterSaveTrigger<FollowUp>
 {

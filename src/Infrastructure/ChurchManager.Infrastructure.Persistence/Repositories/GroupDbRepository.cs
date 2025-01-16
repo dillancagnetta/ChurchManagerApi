@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿#region
+
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoMapper;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Groups;
@@ -12,6 +9,8 @@ using ChurchManager.Domain.Features.Groups.Specifications;
 using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories
 {
@@ -84,37 +83,57 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
             return await query.ToListAsync(ct);
         }
 
+        public async Task<int> GroupMembersCountAsync(int groupId, bool includeLeaders = false, CancellationToken ct = default)
+        {
+            var membersCount = await Queryable()
+                .AsNoTracking()
+                .Where(x => x.Id == groupId)
+                .SelectMany(x => x.Members)
+                .Where(m => includeLeaders || !m.GroupRole.IsLeader)
+                .CountAsync(ct);
+        
+            return membersCount;
+        }
+
         /// <summary>
         /// Group statistics by group type
         /// </summary>
         public async Task<(int totalGroupsCount, int activeGroupsCount, int inActiveGroupsCount, int onlineGroupsCount, int openedGroupsCount, int closedGroupsCount)> GroupStatisticsAsync(int groupTypeId, DateTime? startDate = null, CancellationToken ct = default)
         {
-            var groups = await Queryable()
-                .AsNoTracking()
-                .Where(x => x.GroupTypeId == groupTypeId)
-                .Select(x => new { x.Id, x.RecordStatus, x.IsOnline, x.StartDate, x.InactiveDateTime })
-                .ToListAsync(ct);
-
-            var totalCellsCount = groups.Count;
-            var activeCellsCount = groups.Count(x => x.RecordStatus == RecordStatus.Active);
-            var inActiveCellsCount = totalCellsCount - activeCellsCount;
-            var onlineCellsCount = groups.Count(x => x.IsOnline.HasValue && x.IsOnline.Value);
-
-            if (startDate is null)
+            if (startDate == null)
             {
                 startDate = DateTime.UtcNow.AddMonths(-6);
             }
-
-            var openedGroupsCount = groups
-                .Count(x => x.StartDate >= startDate);
-
-            var closedGroupsCount = groups
-                .Count(
-                    x => x.InactiveDateTime != null &&
-                         x.InactiveDateTime >= startDate &&
-                         x.RecordStatus != RecordStatus.Active);
-
-            return (totalCellsCount, activeCellsCount, inActiveCellsCount, onlineCellsCount, openedGroupsCount, closedGroupsCount);
+        
+            var stats = await Queryable()
+                .AsNoTracking()
+                .Where(x => x.GroupTypeId == groupTypeId)
+                .GroupBy(x => 1) // Group all results together
+                .Select(g => new
+                {
+                    TotalCount = g.Count(),
+                    ActiveCount = g.Count(x => x.RecordStatus == RecordStatus.Active),
+                    OnlineCount = g.Count(x => x.IsOnline == true),
+                    OpenedCount = g.Count(x => x.StartDate >= startDate),
+                    ClosedCount = g.Count(x => x.InactiveDateTime != null && 
+                                               x.InactiveDateTime >= startDate && 
+                                               x.RecordStatus != RecordStatus.Active)
+                })
+                .FirstOrDefaultAsync(ct);
+        
+            if (stats == null)
+            {
+                return (0, 0, 0, 0, 0, 0);
+            }
+        
+            return (
+                stats.TotalCount,
+                stats.ActiveCount,
+                stats.TotalCount - stats.ActiveCount,
+                stats.OnlineCount,
+                stats.OpenedCount,
+                stats.ClosedCount
+            );
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿using ChurchManager.Infrastructure.Configuration;
+﻿using ChurchManager.Infrastructure.Abstractions.Configuration;
 using CodeBoss.AspNetCore.DependencyInjection;
 using CodeBoss.Extensions;
 using Convey;
@@ -59,7 +59,7 @@ namespace ChurchManager.Api._DependencyInjection
             // pull token from  query string; web sockets don't support headers so fall back to query is required
             var accessToken = context.Request.Query["access_token"];
 
-            if(IsHubPath() && !EnumerableExtensions.IsNullOrEmpty(accessToken))
+            if(IsHubPath() && !accessToken.IsNullOrEmpty())
             {
                 context.Token = accessToken;
             }

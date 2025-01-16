@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
 using System.Text.RegularExpressions;
-using ChurchManager.Infrastructure.Configuration;
+using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.SharedKernel.Extensions;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.DependencyInjection;

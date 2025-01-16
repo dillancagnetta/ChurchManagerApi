@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using ChurchManager.Domain.Features.Groups;
+﻿using ChurchManager.Domain.Features.Groups;
 
 namespace ChurchManager.Domain.Common.Extensions
 {

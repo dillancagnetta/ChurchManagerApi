@@ -6,7 +6,6 @@ using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 
-
 namespace ChurchManager.Features.Missions.Queries.BrowseMissions
 {
     public record BrowseMissionsQuery : QueryParameter, IRequest<PagedResponse<MissionViewModel>>

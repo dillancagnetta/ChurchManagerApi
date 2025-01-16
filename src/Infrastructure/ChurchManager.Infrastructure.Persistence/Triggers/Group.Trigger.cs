@@ -1,7 +1,11 @@
+#region
+
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.History;
 using EntityFrameworkCore.Triggered;
 using Microsoft.Extensions.Logging;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Triggers;
 

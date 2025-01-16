@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿#region
+
 using System.Linq.Dynamic.Core;
 using ChurchManager.Domain.Parameters;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Extensions
 {

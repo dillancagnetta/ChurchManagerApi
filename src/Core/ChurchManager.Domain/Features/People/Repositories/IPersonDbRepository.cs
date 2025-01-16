@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using ChurchManager.Domain.Features.People.Queries;
+﻿using ChurchManager.Domain.Features.People.Queries;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
+using Codeboss.Results;
 
 namespace ChurchManager.Domain.Features.People.Repositories
 {
@@ -10,5 +10,6 @@ namespace ChurchManager.Domain.Features.People.Repositories
         IQueryable<Person> Queryable(bool includeDeceased);
         IQueryable<Person> Queryable(PersonQueryOptions personQueryOptions);
         Task<dynamic> DashboardChurchConnectionStatusBreakdown(int? churchId = null, CancellationToken cancellationToken = default);
+        Task<OperationResult<Guid?>> UserLoginIdForPersonAsync(int  personId, CancellationToken cancellationToken = default);
     }
 }

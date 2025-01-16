@@ -1,13 +1,9 @@
-﻿using System;
-using System.Data;
-using System.Threading.Tasks;
+﻿using System.Data;
+using System.Data.SqlClient;
 using ChurchManager.Infrastructure.Persistence.Contexts;
-using ChurchManager.Infrastructure.Persistence.Extensions;
-using JetBrains.Annotations;
+using ChurchManager.Infrastructure.Persistence.Tests.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
-using System.Data.SqlClient;
-using ChurchManager.Infrastructure.Persistence.Tests.Helpers;
 
 namespace ChurchManager.Infrastructure.Persistence.Tests
 {

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿#region
+
 using ChurchManager.Domain.Features.Communication;
 using ChurchManager.Domain.Features.Communication.Services;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories
 {

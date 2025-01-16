@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using ChurchManager.Domain.Common;
+﻿using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Parameters;
 using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
@@ -20,6 +17,14 @@ namespace ChurchManager.Domain.Features.Groups.Repositories
             DateTime? from, DateTime? to,
             CancellationToken ct = default);
 
-        Task<dynamic> WeeklyBreakdownForPeriodAsync(int? groupId, ReportPeriod reportPeriod, CancellationToken ct);
+        Task<dynamic> WeeklyBreakdownForPeriodAsync(int? groupId, ReportPeriod reportPeriod, CancellationToken ct = default);
+        
+        Task<(int newConvertsCount, int firstTimersCount, int holySpiritCount)> PeopleStatisticsAsync(IEnumerable<int> groupIds, PeriodType period = PeriodType.ThisYear, CancellationToken ct = default);
+
+        Task<AttendanceMetricsComparisonViewModel> GroupAttendanceMetricsComparisonAsync(int? groupId = null, ReportPeriodType PeriodType = ReportPeriodType.SixMonths, CancellationToken ct = default);
+        
+        Task<YearlyConversionComparison> YearlyConversionComparisonAsync(int groupTypeId, int? churchId = null, int? groupId = null, bool includeMonthlyBreakdown = false, CancellationToken ct = default);
+        
+        Task<List<GroupMemberAttendanceRate>> TopWorstAttendeesAsync(int groupId, int top = 3, CancellationToken ct = default);
     }
 }

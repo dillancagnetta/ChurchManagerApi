@@ -1,11 +1,13 @@
-﻿using Bugsnag;
-using Microsoft.Extensions.Options;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
+using Bugsnag;
+using Bugsnag.Payload;
 using ChurchManager.Infrastructure.Shared.Bugsnag;
 using ChurchManager.SharedKernel.Common;
 using ChurchManager.SharedKernel.Exceptions;
 using ChurchManager.SharedKernel.Wrappers;
+using Microsoft.Extensions.Options;
+using Exception = System.Exception;
 
 namespace ChurchManager.Api.Middlewares
 {
@@ -71,7 +73,7 @@ namespace ChurchManager.Api.Middlewares
                         var person = await currentUser.CurrentPerson.Value;
                         bugsnagClient.BeforeNotify(report =>
                         {
-                            report.Event.User = new Bugsnag.Payload.User
+                            report.Event.User = new User
                             {
                                 Id = currentUser.Id,
                                 Name = $"{person.FullName.FirstName} {person.FullName.LastName}",

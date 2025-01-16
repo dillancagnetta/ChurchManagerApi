@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Ardalis.Specification;
+﻿using Ardalis.Specification;
 using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Domain.Features.Groups.Specifications

@@ -1,15 +1,18 @@
 ﻿using System.Reflection;
 using AutoMapper;
-using ChurchManager.Infrastructure.Configuration;
+using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.Infrastructure.Mapper;
 using ChurchManager.Infrastructure.Plugins;
 using ChurchManager.Infrastructure.Roslyn;
+using ChurchManager.Infrastructure.Shared.SignalR.Hubs;
+using ChurchManager.Infrastructure.Shared.Tests;
 using ChurchManager.Infrastructure.TypeConverters;
 using ChurchManager.Infrastructure.TypeSearcher;
 using ChurchManager.SharedKernel;
 using ChurchManager.SharedKernel.Extensions;
 using FluentValidation.AspNetCore;
-using MediatR;
+using MassTransit;
+using MassTransit.SignalR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -24,6 +27,9 @@ namespace ChurchManager.Infrastructure
     /// </summary>
     public static class StartupBase
     {
+        private const string AppSectionName = "Application";
+        private const string RabbitMqSectionName = "RabbitMq";
+        
         #region Utilities
 
         /// <summary>
@@ -127,7 +133,7 @@ namespace ChurchManager.Infrastructure
         private static void RegisterExtensions(IMvcCoreBuilder mvcCoreBuilder, IConfiguration configuration)
         {
             var config = new AppConfig();
-            configuration.GetSection("Application").Bind(config);
+            configuration.GetSection(AppSectionName).Bind(config);
 
             //Load plugins
             PluginManager.Load(mvcCoreBuilder, config);
@@ -148,34 +154,35 @@ namespace ChurchManager.Infrastructure
         }
 
         /// <summary>
-        /// Add Mass Transit rabitMq message broker
+        /// Add Mass Transit RabbitMq message broker
         /// </summary>
         /// <param name="services"></param>
-        private static void AddMassTransitRabbitMq(IServiceCollection services, AppConfig config, AppTypeSearcher typeSearcher)
+        private static void AddMassTransitRabbitMq(IServiceCollection services, IConfiguration configuration, AppTypeSearcher typeSearcher)
         {
-            /*if (!config.RabbitEnabled) return;
+            var connectionString = configuration.GetConnectionString(RabbitMqSectionName);
+
+            #region MassTransit
+
             services.AddMassTransit(x =>
             {
-                x.AddConsumers(q => !q.Equals(typeof(CacheMessageEventConsumer)), typeSearcher.GetAssemblies().ToArray());
+                x.AddConsumers(typeSearcher.GetAssemblies().ToArray());
+                x.AddConsumers(typeof(TestDomainEventConsumer).Assembly); // Testing
 
-                // reddits have more priority
-                if (!config.RedisPubSubEnabled && config.RabbitCachePubSubEnabled)
-                {
-                    x.AddConsumer<CacheMessageEventConsumer>().Endpoint(t => t.Name = config.RabbitCacheReceiveEndpoint);
-                }
+                // ** Add Hubs Here **
+                x.AddSignalRHub<NotificationHub>();
 
-                x.UsingRabbitMq((context, cfg) =>
+                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                 {
-                    cfg.Host(config.RabbitHostName, config.RabbitVirtualHost, h =>
-                    {
-                        h.Password(config.RabbitPassword);
-                        h.Username(config.RabbitUsername);
-                    });
-                    cfg.ConfigureEndpoints(context);
-                });
+                    cfg.Host(new Uri(connectionString), h => { });
+
+                    cfg.ConfigureEndpoints(provider, new SnakeCaseEndpointNameFormatter(false));
+                }));
+
             });
-            //for automaticly start/stop bus
-            services.AddMassTransitHostedService();*/
+
+            // services.AddMassTransitHostedService();
+
+            #endregion
         }
 
         /// <summary>
@@ -189,7 +196,7 @@ namespace ChurchManager.Infrastructure
             services.AddHttpContextAccessor();
 
             //add AppConfig configuration parameters
-            var config = services.StartupConfig<AppConfig>(configuration.GetSection("Application"));
+            var config = services.StartupConfig<AppConfig>(configuration.GetSection(AppSectionName));
             //add hosting configuration parameters
             //.StartupConfig<HostingConfig>(configuration.GetSection("Hosting"));
             //add api configuration parameters
@@ -270,13 +277,13 @@ namespace ChurchManager.Infrastructure
             RegisterTypeConverter(typeSearcher);
 
             var config = new AppConfig();
-            configuration.GetSection("Application").Bind(config);
+            configuration.GetSection(AppSectionName).Bind(config);
 
             //add mediator
             AddMediator(services, typeSearcher);
 
             //Add MassTransit
-            AddMassTransitRabbitMq(services, config, typeSearcher);
+            AddMassTransitRabbitMq(services, configuration, typeSearcher);
 
             //Register startup
             var instancesAfter = startupConfigurations

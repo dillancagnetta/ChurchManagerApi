@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ChurchManager.Domain.Features.Groups;
+﻿using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Application.ViewModels

@@ -9,11 +9,35 @@ SELECT
        COALESCE(SUM(c."MalesCount"), 0)::INT AS "TotalMales",
        COALESCE(SUM(c."FemalesCount"), 0)::INT AS "TotalFemales",
        COALESCE(SUM(c."ChildrenCount"), 0)::INT AS "TotalChildren"
-     , (COALESCE(SUM(c."ChildrenCount"), 0) / nullif(lag(c."ChildrenCount"), 0))
+     --, (COALESCE(SUM(c."ChildrenCount"), 0) / nullif(lag(c."ChildrenCount"), 0))
 FROM "ChurchAttendance" AS c
 WHERE (c."AttendanceDate" >= '2020-09-1') AND (c."AttendanceDate" <= '2020-12-31')
 GROUP BY date_part('year', c."AttendanceDate")::INT, date_part('month', c."AttendanceDate")::INT
-ORDER BY date_part('year', c."AttendanceDate")::INT DESC, date_part('month', c."AttendanceDate")::INT DESC
+ORDER BY date_part('year', c."AttendanceDate")::INT DESC, date_part('month', c."AttendanceDate")::INT DESC;
+
+-- ATTENDANCE WEEKLY BY CHURCH, SERVICE
+SELECT
+    EXTRACT (YEAR FROM "AttendanceDate") as year,
+    EXTRACT (MONTH FROM "AttendanceDate") as month,
+    EXTRACT (WEEK FROM "AttendanceDate") as week,
+    CH."Name" as "Church",
+    CAT."Name" as "ServiceType",
+    COALESCE(SUM("AttendanceCount"), 0)::INT AS "TotalAttendance",
+    COALESCE(SUM("MalesCount"), 0)::INT AS "TotalMales",
+    COALESCE(SUM("FemalesCount"), 0)::INT AS "TotalFemales",
+    COALESCE(SUM("ChildrenCount"), 0)::INT AS "TotalChildren"
+--, (COALESCE(SUM(c."ChildrenCount"), 0) / nullif(lag(c."ChildrenCount"), 0))
+FROM "ChurchAttendance"
+JOIN "ChurchAttendanceType" CAT on "ChurchAttendanceTypeId" = CAT."Id"
+JOIN "Church" CH ON "ChurchId" = CH."Id"
+--WHERE ("AttendanceDate" >= '2020-09-1') AND ("AttendanceDate" <= '2020-12-31')
+GROUP BY
+    EXTRACT (YEAR FROM "AttendanceDate"),
+    EXTRACT (MONTH FROM "AttendanceDate"),
+    EXTRACT (WEEK FROM "AttendanceDate"),
+    CH."Name",
+    CAT."Name"
+ORDER BY 1 DESC, 2 DESC;
 
 -- LAG BASIC
 WITH cte AS (

@@ -1,14 +1,12 @@
-﻿using ChurchManager.Domain.Features.People;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.Groups;
+using ChurchManager.Domain.Features.People;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Domain.Features.Missions
 {

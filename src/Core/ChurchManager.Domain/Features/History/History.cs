@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using ChurchManager.Domain.Common;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
 

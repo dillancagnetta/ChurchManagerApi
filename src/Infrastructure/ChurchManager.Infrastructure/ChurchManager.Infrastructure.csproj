@@ -14,5 +14,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\ChurchManager.SharedKernel\ChurchManager.SharedKernel.csproj" />
+    <ProjectReference Include="..\ChurchManager.Infrastructure.Shared\ChurchManager.Infrastructure.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MassTransit.RabbitMQ" />
+    <PackageReference Include="MassTransit.SignalR" />
   </ItemGroup>
 </Project>

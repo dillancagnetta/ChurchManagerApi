@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using ChurchManager.Application.ViewModels;
 using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
-using ChurchManager.Infrastructure.Mapper;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

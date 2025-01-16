@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using ChurchManager.Infrastructure.Abstractions.Persistence;
+﻿using ChurchManager.Infrastructure.Abstractions.Persistence;
 
 namespace ChurchManager.Domain.Features.Discipleship.Repositories
 {

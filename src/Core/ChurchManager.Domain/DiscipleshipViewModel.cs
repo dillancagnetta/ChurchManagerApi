@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ChurchManager.Domain.Shared;
+﻿using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Domain
 {

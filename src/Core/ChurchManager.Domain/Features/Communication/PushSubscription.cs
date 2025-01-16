@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ChurchManager.Domain.Features.Communication
+﻿namespace ChurchManager.Domain.Features.Communication
 {
     public class PushSubscription
     {

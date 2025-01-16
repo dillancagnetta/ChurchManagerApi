@@ -1,5 +1,4 @@
-﻿using System;
-using Ardalis.Specification;
+﻿using Ardalis.Specification;
 using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Shared;
 using Convey.CQRS.Queries;

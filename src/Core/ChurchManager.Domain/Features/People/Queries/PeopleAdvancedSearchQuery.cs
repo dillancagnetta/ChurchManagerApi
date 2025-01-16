@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ChurchManager.Domain.Parameters;
+﻿using ChurchManager.Domain.Parameters;
 
 namespace ChurchManager.Domain.Features.People.Queries
 {

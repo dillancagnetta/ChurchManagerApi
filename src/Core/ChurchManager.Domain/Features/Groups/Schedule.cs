@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using ChurchManager.Persistence.Shared;
 using CodeBoss.Extensions;
-using Codeboss.Types;
 using Ical.Net;
 using Ical.Net.CalendarComponents;
 
@@ -47,6 +43,12 @@ namespace ChurchManager.Domain.Features.Groups
         public DayOfWeek? WeeklyDayOfWeek { get; set; }
 
         public TimeSpan? WeeklyTimeOfDay { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the meeting frequence e.g. WEEKLY
+        /// </summary>
+        [MaxLength(100)]
+        public string Frequency { get; set; }
 
         #region Methods
 

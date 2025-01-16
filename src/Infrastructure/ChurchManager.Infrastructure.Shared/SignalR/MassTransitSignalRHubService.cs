@@ -18,7 +18,8 @@ namespace ChurchManager.Infrastructure.Shared.SignalR
             TModel model,
             string userId,
             string methodName,
-            IPublishEndpoint publisher)
+            IPublishEndpoint publisher, 
+            CancellationToken ct = default)
         {
             await publisher.Publish<User<THub>>(new
             {
@@ -27,7 +28,7 @@ namespace ChurchManager.Infrastructure.Shared.SignalR
                 {
                     model
                 })
-            }).ConfigureAwait(false);
+            }, ct).ConfigureAwait(false);
         }
     }
 }

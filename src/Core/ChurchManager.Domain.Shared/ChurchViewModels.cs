@@ -1,5 +1,5 @@
 namespace ChurchManager.Domain.Shared;
-using PersonViewModel = ChurchManager.Domain.Shared.PersonViewModelBasic;
+using PersonViewModel = PersonViewModelBasic;
 
 public record ChurchViewModel : SelectItemViewModel
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using CodeBoss.Extensions;
+﻿using CodeBoss.Extensions;
 
 namespace ChurchManager.Domain.Features.People.Queries
 {

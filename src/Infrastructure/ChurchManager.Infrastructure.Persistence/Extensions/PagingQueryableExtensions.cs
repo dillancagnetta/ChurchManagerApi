@@ -1,9 +1,11 @@
-﻿using Ardalis.GuardClauses;
-using Convey.CQRS.Queries;
-using Microsoft.EntityFrameworkCore;
+﻿#region
+
 using System.Linq.Dynamic.Core;
+using Ardalis.GuardClauses;
+using Microsoft.EntityFrameworkCore;
 using ConveyPaging = Convey.CQRS.Queries;
-using Dynamic = System.Linq.Dynamic.Core;
+
+#endregion
 
 namespace ChurchManager.Infrastructure.Persistence.Extensions
 {
@@ -12,7 +14,7 @@ namespace ChurchManager.Infrastructure.Persistence.Extensions
         /// <summary>
         /// Used for paging with an <see cref="PagedResult{T}"/> object.
         /// </summary>
-        public static IQueryable<T> PageBy<T>(this IQueryable<T> queryable, IPagedQuery paging)
+        public static IQueryable<T> PageBy<T>(this IQueryable<T> queryable, ConveyPaging.IPagedQuery paging)
         {
             Guard.Against.Null(paging, nameof(paging));
 
@@ -43,7 +45,7 @@ namespace ChurchManager.Infrastructure.Persistence.Extensions
             return query.Skip(skipCount).Take(maxResultCount);
         }
 
-        public static async Task<ConveyPaging.PagedResult<T>> PaginateAsync<T>(this IQueryable<T> queryable, IPagedQuery paging)
+        public static async Task<ConveyPaging.PagedResult<T>> PaginateAsync<T>(this IQueryable<T> queryable, ConveyPaging.IPagedQuery paging)
             => await queryable.PaginateAsync(paging.OrderBy, paging.SortOrder, paging.Page, paging.Results);
 
         public static async Task<ConveyPaging.PagedResult<T>> PaginateAsync<T>(
@@ -85,7 +87,7 @@ namespace ChurchManager.Infrastructure.Persistence.Extensions
         /// <summary>
         /// Wraps Dynamic code  PagedResults into Convey Paged result
         /// </summary>
-        public static async Task<ConveyPaging.PagedResult<T>> Map<T>(this Dynamic.PagedResult<T> pagedQuery, CancellationToken ct = default)
+        public static async Task<ConveyPaging.PagedResult<T>> Map<T>(this PagedResult<T> pagedQuery, CancellationToken ct = default)
         {
             var convey = ConveyPaging.PagedResult<T>.Create(
                 await pagedQuery.Queryable.ToListAsync(ct),

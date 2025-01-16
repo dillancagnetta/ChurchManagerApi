@@ -1,7 +1,7 @@
-﻿using ChurchManager.Domain.Shared;
-using Codeboss.Types;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ChurchManager.Domain.Shared;
+using Codeboss.Types;
 
 namespace ChurchManager.Persistence.Shared
 {

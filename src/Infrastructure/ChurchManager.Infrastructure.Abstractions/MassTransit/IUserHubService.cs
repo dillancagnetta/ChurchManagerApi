@@ -8,6 +8,7 @@ namespace ChurchManager.Infrastructure.Abstractions.MassTransit
             TModel model,
             string userId,
             string methodName,
-            IPublishEndpoint publisher);
+            IPublishEndpoint publisher,
+            CancellationToken ct = default);
     }
 }

@@ -29,7 +29,7 @@ namespace ChurchManager.Domain.Features.People.Specifications
                 Street = x.Address.Street,
                 Province = x.Address.Province,
                 Language = x.Language,
-                FamilyMembers = x.FamilyMembers.Select(x => new ChurchManager.Domain.Shared.PersonViewModelBasic
+                FamilyMembers = x.FamilyMembers.Select(x => new Shared.PersonViewModelBasic
                 {
                     PersonId   = x.Id,
                     Gender = x.Gender,
