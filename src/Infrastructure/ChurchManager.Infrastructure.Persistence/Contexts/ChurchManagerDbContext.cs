@@ -50,6 +50,7 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ChurchManagerDbContext).Assembly);
+            //modelBuilder.HasPostgresExtension("hstore");
         }
 
         public override int SaveChanges()

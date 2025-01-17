@@ -66,6 +66,8 @@ jobs:
         - name:  ⏭ Deploy to Jelastic
           uses: fjogeleit/http-request-action@master
           with:
-            url: https://app.my.mamazala.cloud/1.0/environment/control/rest/redeploycontainers?envName=${{ env.REPOSITORY }}-${{ env.ENVIRONMENT }}&session=${{ secrets.JELASTIC_ACCESS_TOKEN }}&tag=${{ steps.build-image.outputs.tag }}&nodeGroup=cp
+            #url: https://app.my.mamazala.cloud/1.0/environment/control/rest/redeploycontainers?envName=${{ env.REPOSITORY }}-${{ env.ENVIRONMENT }}&session=${{ secrets.JELASTIC_ACCESS_TOKEN }}&tag=${{ steps.build-image.outputs.tag }}&nodeGroup=cp
+            # TODO: fix jelastic naming when creating environments
+            url: https://app.my.mamazala.cloud/1.0/environment/control/rest/redeploycontainers?envName=cm-prod&session=${{ secrets.JELASTIC_ACCESS_TOKEN }}&tag=${{ steps.build-image.outputs.tag }}&nodeGroup=cp
             method: 'POST'
             timeout: 600000 #10mins
