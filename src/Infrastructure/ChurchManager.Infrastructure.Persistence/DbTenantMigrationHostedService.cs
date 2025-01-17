@@ -54,18 +54,23 @@ namespace ChurchManager.Infrastructure.Persistence
         {
             try
             {
-                Console.WriteLine($"*** Beginning migration: [{tenant.Name}]");
-
-                using var context = DbContextFactory.Create(tenant.ConnectionString, provider);
-                await context.Database.MigrateAsync(ct);
+                await using var dbContext = DbContextFactory.Create(tenant.ConnectionString, provider);
+                if ((await dbContext.Database.GetPendingMigrationsAsync(ct)).Any())
+                {
+                    Console.WriteLine($"*** Beginning migration for: [{tenant.Name}]");
+                    
+                    await dbContext.Database.MigrateAsync(ct);
                 
-                // Fixes issues with PostgreSQL not reloading types after migration e.g. hstore extension
-                // https://github.com/npgsql/efcore.pg/issues/292#issuecomment-388608426
-                await context.Database.OpenConnectionAsync(ct);
-                await ((NpgsqlConnection)context.Database.GetDbConnection()).ReloadTypesAsync(ct);
-                // ------------------------------------------------------------------------------
+                    // ------------------------------------------------------------------------------
+                    // Fixes issues with PostgreSQL not reloading types after migration e.g. hstore extension
+                    // https://github.com/npgsql/efcore.pg/issues/292#issuecomment-388608426
+                    await dbContext.Database.OpenConnectionAsync(ct);
+                    await ((NpgsqlConnection)dbContext.Database.GetDbConnection()).ReloadTypesAsync(ct);
+                    await dbContext.Database.CloseConnectionAsync();
+                    // ------------------------------------------------------------------------------
                 
-                Console.WriteLine($"*** Completed migration: [{tenant.Name}]");
+                    Console.WriteLine($"*** Completed migration for: [{tenant.Name}]");
+                }
             }
             catch(Exception e)
             {
