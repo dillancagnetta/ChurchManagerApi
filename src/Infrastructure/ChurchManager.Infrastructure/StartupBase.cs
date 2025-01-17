@@ -134,6 +134,9 @@ namespace ChurchManager.Infrastructure
         {
             var config = new AppConfig();
             configuration.GetSection(AppSectionName).Bind(config);
+            
+            Console.WriteLine($"[AppConfig] RabbitMqEnabled: {config.RabbitMqEnabled}");
+            Console.WriteLine($"[AppConfig] EmailSendingEnabled: {config.EmailSendingEnabled}");
 
             //Load plugins
             PluginManager.Load(mvcCoreBuilder, config);
@@ -157,9 +160,9 @@ namespace ChurchManager.Infrastructure
         /// Add Mass Transit RabbitMq message broker
         /// </summary>
         /// <param name="services"></param>
-        private static void AddMassTransitRabbitMq(IServiceCollection services, IConfiguration configuration, AppTypeSearcher typeSearcher)
+        private static void AddMassTransitRabbitMq(
+            IServiceCollection services, IConfiguration configuration, AppTypeSearcher typeSearcher, AppConfig config)
         {
-            var connectionString = configuration.GetConnectionString(RabbitMqSectionName);
 
             #region MassTransit
 
@@ -171,13 +174,24 @@ namespace ChurchManager.Infrastructure
                 // ** Add Hubs Here **
                 x.AddSignalRHub<NotificationHub>();
 
-                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                if (config.RabbitMqEnabled)
                 {
-                    cfg.Host(new Uri(connectionString), h => { });
+                    var connectionString = configuration.GetConnectionString(RabbitMqSectionName);
+                    
+                    x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                    {
+                        cfg.Host(new Uri(connectionString), h => { });
 
-                    cfg.ConfigureEndpoints(provider, new SnakeCaseEndpointNameFormatter(false));
-                }));
-
+                        cfg.ConfigureEndpoints(provider, new SnakeCaseEndpointNameFormatter(false));
+                    })); 
+                }
+                else
+                {
+                    x.UsingInMemory((context, cfg) =>
+                    {
+                        cfg.ConfigureEndpoints(context);
+                    });
+                }
             });
 
             // services.AddMassTransitHostedService();
@@ -283,7 +297,7 @@ namespace ChurchManager.Infrastructure
             AddMediator(services, typeSearcher);
 
             //Add MassTransit
-            AddMassTransitRabbitMq(services, configuration, typeSearcher);
+            AddMassTransitRabbitMq(services, configuration, typeSearcher, config);
 
             //Register startup
             var instancesAfter = startupConfigurations

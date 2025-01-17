@@ -3,6 +3,7 @@
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.AspNetCore.Startup;
 using CodeBoss.Jobs.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 #endregion
@@ -18,7 +19,7 @@ public class JobsFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) : IIni
         using var scope = scopeFactory.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ChurchManagerDbContext>();
 
-        if (!dbContext.ServiceJobs.Any())
+        if (!await dbContext.ServiceJobs.AnyAsync(x => x.Name.Contains("Test Job")))
         {
             var job = new ServiceJob
             {

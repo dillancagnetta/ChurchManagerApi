@@ -24,15 +24,16 @@ public class JobsDbSeedInitializer(IServiceScopeFactory scopeFactory) : IInitial
         var dbContext = scope.ServiceProvider.GetRequiredService<ChurchManagerDbContext>();
         var jobsOptions = scope.ServiceProvider.GetRequiredService<IOptions<JobsOptions>>().Value;
         
-        // Run every day at 8 AM or every 30 seconds when debugging is enabled
-        var cronExpression = jobsOptions.DebugEnabled? "0/30 * * * *?" : "0 0 8 * *?"; 
+        // Run every day at 10:15am every day or every 30 seconds when debugging is enabled
+        var cronExpression = jobsOptions.DebugEnabled ? "0/30 * * * * ?" : "0 15 10 ? * *"; 
         
-        if (await dbContext.ServiceJobs.CountAsync() <= 2)
+        if (!await dbContext.ServiceJobs.AnyAsync(x =>
+                x.JobKey == SeedingConstants.NotifyWorstGroupMemberAttendanceJob.AsGuid()))
         {
             var job = new ServiceJob
             {
                 Name = nameof(NotifyWorstGroupMemberAttendanceJob).SplitCase(),
-                JobKey = Guid.NewGuid(),
+                JobKey = SeedingConstants.NotifyWorstGroupMemberAttendanceJob.AsGuid(),
                 Description = "Determine the worst attendees in a group and send a notification.",
                 CronExpression = cronExpression,
                 IsActive = true,

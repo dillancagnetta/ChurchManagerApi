@@ -2,13 +2,18 @@
 {
     public static class ExtendedLinq
     {
+        /// <summary>
+        /// Determines whether the source sequence contains all elements from the values sequence.
+        /// </summary>
+        /// <c>true</c> if all elements in the values sequence are present in the source sequence; otherwise, <c>false</c>.
+        /// </returns>
         public static bool ContainsAll<TSource>(this IEnumerable<TSource> source, IEnumerable<TSource> values)
         {
-            return values.All(v => source.Contains(v));
+            return values.All(source.Contains);
         }
         public static bool ContainsAny<TSource>(this IEnumerable<TSource> source, IEnumerable<TSource> values)
         {
-            return source.Any(s => values.Contains(s));
+            return source.Any(values.Contains);
         }
 
         public static IEnumerable<IEnumerable<T>> CartesianProduct<T>(
