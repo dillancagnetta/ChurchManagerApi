@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 
 #endregion
 
-namespace ChurchManager.Infrastructure.Persistence.Seeding.Production;
+namespace ChurchManager.Infrastructure.Persistence.Seeding;
 
 public class JobsDbSeedInitializer(IServiceScopeFactory scopeFactory) : IInitializer
 {

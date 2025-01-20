@@ -90,7 +90,24 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 BirthDate = new BirthDate {BirthDay = 6, BirthMonth = 11, BirthYear = 1981},
                 ReceivedHolySpirit = true,
                 Occupation = "Pastor",
-                PhoneNumbers = new List<PhoneNumber>(1) {PhoneNumbersFaker()}
+                PhoneNumbers = new List<PhoneNumber>(1) {PhoneNumbersFaker()},
+                ConnectionStatusHistory = new List<ConnectionStatusHistory>
+                {
+                    new ()
+                    {
+                        ConnectionStatusTypeId = 2, // ConnectionStatus.FirstTimer
+                        StartDate = new DateTime(2004, 06, 01),
+                        EndDate = new DateTime(2004, 12, 31),
+                        Notes = "First time at church"        
+                    },
+                    new ()
+                    {
+                        ConnectionStatusTypeId = 1, // ConnectionStatus.Member
+                        StartDate = new DateTime(2005, 01, 01),
+                        EndDate = null,
+                        Notes = "Started as a member"        
+                    }
+                }
             };
 
             var danielle = new Person

@@ -21,7 +21,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "hstore");
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("ChurchManager.Domain.Common.UserLogin", b =>
@@ -1462,6 +1461,98 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.ToTable("Mission");
                 });
 
+            modelBuilder.Entity("ChurchManager.Domain.Features.People.ConnectionStatusHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConnectionStatusTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("InactiveDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RecordStatus")
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConnectionStatusTypeId");
+
+                    b.HasIndex("PersonId");
+
+                    b.ToTable("ConnectionStatusHistory");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.People.ConnectionStatusType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("InactiveDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RecordStatus")
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name");
+
+                    b.ToTable("ConnectionStatusType");
+                });
+
             modelBuilder.Entity("ChurchManager.Domain.Features.People.Family", b =>
                 {
                     b.Property<int>("Id")
@@ -1817,8 +1908,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("JobKey")
                         .HasColumnType("uuid");
 
-                    b.Property<Dictionary<string, string>>("JobParameters")
-                        .HasColumnType("hstore");
+                    b.Property<string>("JobParameters")
+                        .HasColumnType("jsonb");
 
                     b.Property<DateTime?>("LastRunDateTime")
                         .HasColumnType("timestamp without time zone");
@@ -2426,6 +2517,25 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Navigation("Person");
                 });
 
+            modelBuilder.Entity("ChurchManager.Domain.Features.People.ConnectionStatusHistory", b =>
+                {
+                    b.HasOne("ChurchManager.Domain.Features.People.ConnectionStatusType", "ConnectionStatusType")
+                        .WithMany()
+                        .HasForeignKey("ConnectionStatusTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ChurchManager.Domain.Features.People.Person", "Person")
+                        .WithMany("ConnectionStatusHistory")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ConnectionStatusType");
+
+                    b.Navigation("Person");
+                });
+
             modelBuilder.Entity("ChurchManager.Domain.Features.People.Family", b =>
                 {
                     b.OwnsOne("ChurchManager.Domain.Features.People.Address", "Address", b1 =>
@@ -2742,6 +2852,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("ChurchManager.Domain.Features.People.Person", b =>
                 {
+                    b.Navigation("ConnectionStatusHistory");
+
                     b.Navigation("Notes");
 
                     b.Navigation("PhoneNumbers");

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
 
@@ -22,8 +23,11 @@ public class ConnectionStatusType : Entity<int>
     /// 0 is the highest priority, and higher numbers are lower priority
     /// </summary>
     public int Priority { get; set; }
+
+    public bool IsSystem { get; set; }
 }
 
+[Table("PersonConnectionHistory")]
 public class ConnectionStatusHistory: AuditableEntity<int>, IAggregateRoot<int>
 {
     public int PersonId { get; set; }

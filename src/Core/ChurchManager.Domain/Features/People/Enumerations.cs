@@ -45,12 +45,12 @@ namespace ChurchManager.Domain.Features.People
         public ConnectionStatus() { Value = "Unknown"; }
 
         public static ConnectionStatus FirstTimer = new("First Timer");
-        public static ConnectionStatus Visitor = new("Visitor");
         public static ConnectionStatus NewConvert = new("New Convert");
         public static ConnectionStatus Member = new("Member");
         public static ConnectionStatus Unknown = new("Unknown");
         public static ConnectionStatus RegularAttendee = new("Regular Attendee");
         public static ConnectionStatus EventRegistrant = new("Event Registrant");
+        public static ConnectionStatus CellAttendee = new("Cell Attendee");
         // Implicit conversion from string
         public static implicit operator ConnectionStatus(string value) => new(value);
     }

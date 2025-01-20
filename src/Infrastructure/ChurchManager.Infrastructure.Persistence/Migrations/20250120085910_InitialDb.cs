@@ -13,9 +13,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:PostgresExtension:hstore", ",,");
-
             migrationBuilder.CreateTable(
                 name: "ChurchAttendanceType",
                 columns: table => new
@@ -28,6 +25,24 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ChurchAttendanceType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ConnectionStatusType",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Priority = table.Column<int>(type: "integer", nullable: false),
+                    IsSystem = table.Column<bool>(type: "boolean", nullable: false),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConnectionStatusType", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -200,7 +215,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     LastRunDurationSeconds = table.Column<int>(type: "integer", nullable: true),
                     LastStatus = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     LastStatusMessage = table.Column<string>(type: "text", nullable: true),
-                    JobParameters = table.Column<Dictionary<string, string>>(type: "hstore", nullable: true),
+                    JobParameters = table.Column<string>(type: "jsonb", nullable: true),
                     NotificationEmails = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     NotificationStatus = table.Column<int>(type: "integer", nullable: false),
                     EnableHistory = table.Column<bool>(type: "boolean", nullable: false),
@@ -562,6 +577,41 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         column: x => x.LeaderPersonId,
                         principalTable: "Person",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ConnectionStatusHistory",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PersonId = table.Column<int>(type: "integer", nullable: false),
+                    ConnectionStatusTypeId = table.Column<int>(type: "integer", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    Notes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ConnectionStatusHistory", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ConnectionStatusHistory_ConnectionStatusType_ConnectionStat~",
+                        column: x => x.ConnectionStatusTypeId,
+                        principalTable: "ConnectionStatusType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ConnectionStatusHistory_Person_PersonId",
+                        column: x => x.PersonId,
+                        principalTable: "Person",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1172,6 +1222,21 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_ConnectionStatusHistory_ConnectionStatusTypeId",
+                table: "ConnectionStatusHistory",
+                column: "ConnectionStatusTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConnectionStatusHistory_PersonId",
+                table: "ConnectionStatusHistory",
+                column: "PersonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ConnectionStatusType_Name",
+                table: "ConnectionStatusType",
+                column: "Name");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DiscipleshipStep_DiscipleshipStepDefinitionId",
                 table: "DiscipleshipStep",
                 column: "DiscipleshipStepDefinitionId");
@@ -1483,6 +1548,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 name: "ChurchAttendance");
 
             migrationBuilder.DropTable(
+                name: "ConnectionStatusHistory");
+
+            migrationBuilder.DropTable(
                 name: "DiscipleshipStep");
 
             migrationBuilder.DropTable(
@@ -1526,6 +1594,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "ChurchAttendanceType");
+
+            migrationBuilder.DropTable(
+                name: "ConnectionStatusType");
 
             migrationBuilder.DropTable(
                 name: "DiscipleshipStepDefinition");

@@ -14,6 +14,15 @@ public static class PropertyBuilderExtensions
             v => JsonSerializer.Deserialize<Dictionary<string, object>>(v, options) ?? new Dictionary<string, object>());
     }
     
+    public static PropertyBuilder<Dictionary<string, string>> HasJsonConversion(
+        this PropertyBuilder<Dictionary<string, string>> propertyBuilder,
+        JsonSerializerOptions options = null)
+    {
+        return propertyBuilder.HasConversion(
+            v => JsonSerializer.Serialize(v, options),
+            v => JsonSerializer.Deserialize<Dictionary<string, string>>(v, options) ?? new Dictionary<string, string>());
+    }
+    
     public static PropertyBuilder<string> HasRecordStatus(this PropertyBuilder<string> propertyBuilder)
     {
         return propertyBuilder

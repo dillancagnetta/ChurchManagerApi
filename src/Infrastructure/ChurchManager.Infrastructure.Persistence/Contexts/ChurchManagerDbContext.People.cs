@@ -18,6 +18,8 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts
         public DbSet<PushDevice> PushDevice { get; set; }
         public DbSet<FollowUp> FollowUp { get; set; }
         
+        // Connection Status
+        public DbSet<ConnectionStatusType> ConnectionStatusType { get; set; }
         public DbSet<ConnectionStatusHistory> ConnectionStatusHistory { get; set; }
 
     }

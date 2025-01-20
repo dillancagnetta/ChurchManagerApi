@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Text.Json;
 using CodeBoss.Jobs.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -16,5 +17,15 @@ public class ServiceJobHistoryConfiguration: IEntityTypeConfiguration<ServiceJob
             .HasOne( t => t.ServiceJob )
             .WithMany( t => t.ServiceJobHistory )
             .HasForeignKey( t => t.ServiceJobId );
+    }
+}
+
+public class ServiceJobConfiguration: IEntityTypeConfiguration<ServiceJob>
+{
+    public void Configure(EntityTypeBuilder<ServiceJob> builder)
+    {
+        builder.Property(c => c.JobParameters)
+            .HasColumnType("jsonb") // for Postgres
+            .HasJsonConversion(options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }
 }

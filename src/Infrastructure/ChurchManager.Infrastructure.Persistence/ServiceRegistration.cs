@@ -71,6 +71,7 @@ namespace ChurchManager.Infrastructure.Persistence
             bool seedDatabaseEnabled = configuration.GetOptions<DbOptions>(nameof(DbOptions)).Seed;
             if (seedDatabaseEnabled)
             {
+                services.AddInitializer<ConnectionTypesDbSeedInitializer>();
                 services.AddInitializer<ChurchAttendanceTypeDbInitializer>();
                 services.AddInitializer<DiscipleshipDbSeedInitializer>();
 
