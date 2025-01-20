@@ -120,11 +120,7 @@ public class EventRegistrationConfiguration : IEntityTypeConfiguration<EventRegi
             .OnDelete(DeleteBehavior.Restrict);
         
 
-        builder.HasOne(x => x.Group)
-            .WithMany()
-            .HasForeignKey(x => x.GroupId)
-            .OnDelete(DeleteBehavior.Restrict);
-
+       
         builder.HasMany(x => x.SessionRegistrations)
             .WithOne(x => x.EventRegistration)
             .HasForeignKey(x => x.EventRegistrationId);
@@ -136,6 +132,12 @@ public class EventRegistrationConfiguration : IEntityTypeConfiguration<EventRegi
             .HasForeignKey(r => r.RegisteredByPersonId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
+        
+        builder.HasOne(x => x.Group)
+            .WithMany()
+            .IsRequired(false)
+            .HasForeignKey(x => x.GroupId)
+            .OnDelete(DeleteBehavior.Restrict);
         
         /* Optional Properties */
         

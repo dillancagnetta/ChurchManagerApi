@@ -14,7 +14,7 @@ public class SessionRegistrationConfiguration : IEntityTypeConfiguration<EventSe
             .HasForeignKey(x => x.EventRegistrationId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(x => x.EventSessionSchedule)
+        builder.HasOne(x => x.SessionSchedule)
             .WithMany(x => x.SessionRegistrations)
             .HasForeignKey(x => x.SessionScheduleId)
             .OnDelete(DeleteBehavior.Restrict);
@@ -38,7 +38,7 @@ public class SessionScheduleConfiguration : IEntityTypeConfiguration<EventSessio
         
 
         builder.HasMany(x => x.SessionRegistrations)
-            .WithOne(x => x.EventSessionSchedule)
+            .WithOne(x => x.SessionSchedule)
             .HasForeignKey(x => x.SessionScheduleId);
 
         // Index for performance

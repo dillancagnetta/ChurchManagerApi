@@ -9,6 +9,6 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts
 {
     public partial class ChurchManagerDbContext
     {
-        // public DbSet<Event> Event { get; set; }
+        public DbSet<Event> Event { get; set; }
     }
 }

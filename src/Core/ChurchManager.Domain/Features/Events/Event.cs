@@ -32,6 +32,8 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
     public string Description { get; set; }
     
     public string PhotoUrl { get; set; }
+    
+    public int EventTypeId { get; set; }
 
     /// <summary>
     /// Gets or sets the Id of the <see cref="Church"/> that contains this event belongs to.
@@ -85,6 +87,8 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
     public virtual Person ContactPerson { get; set; }
     public virtual Group ChildCareGroup { get; set; }
     public virtual Group EventRegistrationGroup { get; set; }
+    
+    public virtual EventType EventType { get; set; }
     
     public virtual ICollection<EventSession> Sessions { get; set; }
     
