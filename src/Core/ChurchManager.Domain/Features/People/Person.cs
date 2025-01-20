@@ -63,6 +63,8 @@ namespace ChurchManager.Domain.Features.People
         public virtual Church Church { get; set; }
         public virtual ICollection<Note> Notes { get; set; } = new Collection<Note>();
         
+        public virtual ICollection<ConnectionStatusHistory> ConnectionStatusHistory { get; set; } = new Collection<ConnectionStatusHistory>();
+        
         #endregion
     }
 

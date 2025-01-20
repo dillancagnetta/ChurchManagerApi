@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+﻿/*using System.Text.Json;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Communication;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +22,7 @@ public class CommunicationConfiguration : IEntityTypeConfiguration<Communication
                 v => v.ToString(),
                 v => new CommunicationStatus(v));
 
-        builder.OwnsOne(x => x.CommunicationReview);
+        builder.OwnsOne(x => x.Review);
 
         builder.HasOne(c => c.Content)
             .WithOne(cc => cc.Communication)
@@ -44,7 +44,7 @@ public class CommunicationConfiguration : IEntityTypeConfiguration<Communication
             .HasColumnType("jsonb") // for Postgres
             .HasJsonConversion(options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         
-        /* Optional Properties */
+        /* Optional Properties #1#
         builder.HasOne(r => r.SystemCommunication)
             .WithMany()
             .HasForeignKey(r => r.SystemCommunicationId)
@@ -69,6 +69,6 @@ public class CommunicationConfiguration : IEntityTypeConfiguration<Communication
             .IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
         
-        /* Optional Properties */
+        /* Optional Properties #1#
     }
-}
+}*/

@@ -9,6 +9,8 @@ namespace ChurchManager.Domain.Features.People
     /// </summary>
     public class AgeClassification : Enumeration<AgeClassification, string>
     {
+        public AgeClassification() { Value = "Unknown"; }
+        
         public AgeClassification(string value) => Value = value;
 
         public static AgeClassification Adult = new("Adult");
@@ -40,10 +42,15 @@ namespace ChurchManager.Domain.Features.People
     {
         public ConnectionStatus(string value) => Value = value;
 
+        public ConnectionStatus() { Value = "Unknown"; }
+
         public static ConnectionStatus FirstTimer = new("First Timer");
+        public static ConnectionStatus Visitor = new("Visitor");
         public static ConnectionStatus NewConvert = new("New Convert");
         public static ConnectionStatus Member = new("Member");
         public static ConnectionStatus Unknown = new("Unknown");
+        public static ConnectionStatus RegularAttendee = new("Regular Attendee");
+        public static ConnectionStatus EventRegistrant = new("Event Registrant");
         // Implicit conversion from string
         public static implicit operator ConnectionStatus(string value) => new(value);
     }

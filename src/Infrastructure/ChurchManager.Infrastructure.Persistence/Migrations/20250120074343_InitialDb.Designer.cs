@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ChurchManagerDbContext))]
-    [Migration("20250112183336_InitialDb")]
+    [Migration("20250120074343_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -44,7 +44,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.Property<string>("RefreshToken")
                         .HasColumnType("text");
@@ -107,7 +108,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.Property<string>("ShortCode")
                         .HasMaxLength(50)
@@ -168,7 +170,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.HasKey("Id");
 
@@ -223,7 +226,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.HasKey("Id");
 
@@ -231,6 +235,69 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("ChurchGroup");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communication.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Classification")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("IconCssClass")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("ImagePath")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LastError")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Link")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
+                    b.Property<bool>("SendWebPush")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("SentDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("UseRouter")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Communication.PushDevice", b =>
@@ -279,7 +346,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
@@ -292,7 +360,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp without time zone");
@@ -306,7 +375,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.HasKey("Id");
 
@@ -325,7 +395,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
@@ -340,7 +411,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp without time zone");
@@ -353,7 +425,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.Property<DateTime?>("StartDateTime")
                         .HasColumnType("timestamp without time zone");
@@ -383,7 +456,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
@@ -403,7 +477,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp without time zone");
@@ -417,13 +492,412 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DiscipleshipProgramId");
 
                     b.ToTable("DiscipleshipStepDefinition");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.Event", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApprovalStatus")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Capacity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ChildCareGroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ChurchGroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ChurchId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ContactEmail")
+                        .HasMaxLength(75)
+                        .HasColumnType("character varying(75)");
+
+                    b.Property<int>("ContactPersonId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ContactPhone")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<int>("EventRegistrationGroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("InactiveDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RecordStatus")
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.Property<int>("ScheduleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChildCareGroupId");
+
+                    b.HasIndex("ChurchGroupId");
+
+                    b.HasIndex("ChurchId");
+
+                    b.HasIndex("ContactPersonId");
+
+                    b.HasIndex("EventRegistrationGroupId");
+
+                    b.HasIndex("ScheduleId");
+
+                    b.ToTable("Event");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventRegistration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("InactiveDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("NumberOfChildren")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RecordStatus")
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.Property<int?>("RegisteredByPersonId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("RegistrationDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("RequiresChildCare")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("PersonId");
+
+                    b.HasIndex("RegisteredByPersonId");
+
+                    b.HasIndex("EventId", "PersonId")
+                        .IsUnique();
+
+                    b.ToTable("EventRegistration");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("AttendanceRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Capacity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("InactiveDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("RecordStatus")
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.Property<int>("SessionOrder")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("EventSession");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventSessionRegistration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("EventRegistrationId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("InactiveDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("RecordStatus")
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.Property<DateTime>("RegisteredDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("SessionScheduleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SessionScheduleId");
+
+                    b.HasIndex("EventRegistrationId", "SessionScheduleId")
+                        .IsUnique();
+
+                    b.ToTable("EventSessionRegistration");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventSessionSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CancellationReason")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("EndDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("EventSessionId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("InactiveDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsCancelled")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsOnline")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("OnlineMeetingUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("RecordStatus")
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.Property<DateTime>("StartDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventSessionId");
+
+                    b.HasIndex("StartDateTime");
+
+                    b.ToTable("EventSessionSchedule");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AgeClassification")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("AllowFamilyRegistration")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("DefaultGroupTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("IconCssClass")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("InactiveDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("RecordStatus")
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.Property<bool>("RequiresChildInfo")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("RequiresRegistration")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("SupportsOnline")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("TakeAttendance")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DefaultGroupTypeId");
+
+                    b.ToTable("EventType");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Groups.Group", b =>
@@ -441,7 +915,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
@@ -463,7 +938,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp without time zone");
@@ -477,7 +953,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.Property<int?>("ScheduleId")
                         .HasColumnType("integer");
@@ -539,7 +1016,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.HasKey("Id");
 
@@ -566,7 +1044,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.HasKey("Id");
 
@@ -601,7 +1080,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.HasKey("Id");
 
@@ -654,7 +1134,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.HasKey("Id");
 
@@ -740,7 +1221,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.HasKey("Id");
 
@@ -776,10 +1258,15 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.Property<DateTime?>("StartDate")
                         .HasColumnType("Date");
+
+                    b.Property<string>("Timezone")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int?>("WeeklyDayOfWeek")
                         .HasColumnType("integer");
@@ -816,7 +1303,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(20)");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
@@ -838,7 +1326,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp without time zone");
@@ -856,7 +1345,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.Property<string>("RelatedData")
                         .HasColumnType("text");
@@ -889,69 +1379,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.ToTable("History");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Message", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Classification")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
-
-                    b.Property<string>("IconCssClass")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("ImagePath")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("LastError")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<string>("Link")
-                        .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
-
-                    b.Property<bool>("SendWebPush")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("SentDateTime")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<bool>("UseRouter")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Message");
-                });
-
             modelBuilder.Entity("ChurchManager.Domain.Features.Missions.Mission", b =>
                 {
                     b.Property<int>("Id")
@@ -968,7 +1395,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
@@ -991,7 +1419,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp without time zone");
@@ -1011,7 +1440,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("text[]");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.Property<DateTime?>("StartDateTime")
                         .HasColumnType("timestamp without time zone");
@@ -1053,7 +1483,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.HasKey("Id");
 
@@ -1080,7 +1511,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
@@ -1089,7 +1521,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp without time zone");
@@ -1101,7 +1534,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.Property<bool?>("RequiresAdditionalFollowUp")
                         .HasColumnType("boolean");
@@ -1133,7 +1567,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
@@ -1145,7 +1580,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp without time zone");
@@ -1157,7 +1593,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.Property<string>("Text")
                         .HasColumnType("text");
@@ -1192,7 +1629,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.HasKey("Id");
 
@@ -1221,7 +1659,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.Property<string>("Status")
                         .HasMaxLength(20)
@@ -1285,7 +1724,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("RecordStatus")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
 
                     b.Property<string>("Source")
                         .HasColumnType("text");
@@ -1508,6 +1948,17 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Navigation("LeaderPerson");
                 });
 
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communication.Message", b =>
+                {
+                    b.HasOne("ChurchManager.Domain.Common.UserLogin", "UserLogin")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserLogin");
+                });
+
             modelBuilder.Entity("ChurchManager.Domain.Features.Communication.PushDevice", b =>
                 {
                     b.HasOne("ChurchManager.Domain.Features.People.Person", "Person")
@@ -1547,6 +1998,194 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("DiscipleshipProgram");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.Event", b =>
+                {
+                    b.HasOne("ChurchManager.Domain.Features.Groups.Group", "ChildCareGroup")
+                        .WithMany()
+                        .HasForeignKey("ChildCareGroupId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ChurchManager.Domain.Features.Churches.ChurchGroup", "ChurchGroup")
+                        .WithMany()
+                        .HasForeignKey("ChurchGroupId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("ChurchManager.Domain.Features.Churches.Church", "Church")
+                        .WithMany()
+                        .HasForeignKey("ChurchId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("ChurchManager.Domain.Features.People.Person", "ContactPerson")
+                        .WithMany()
+                        .HasForeignKey("ContactPersonId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ChurchManager.Domain.Features.Groups.Group", "EventRegistrationGroup")
+                        .WithMany()
+                        .HasForeignKey("EventRegistrationGroupId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ChurchManager.Domain.Features.Groups.Schedule", "Schedule")
+                        .WithMany()
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.OwnsOne("ChurchManager.Domain.Common.Review", "Review", b1 =>
+                        {
+                            b1.Property<int>("EventId")
+                                .HasColumnType("integer");
+
+                            b1.Property<DateTime?>("ReviewedDateTime")
+                                .HasColumnType("timestamp without time zone");
+
+                            b1.Property<string>("ReviewerNote")
+                                .HasColumnType("text");
+
+                            b1.Property<int?>("ReviewerPersonId")
+                                .HasColumnType("integer");
+
+                            b1.HasKey("EventId");
+
+                            b1.ToTable("Event");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EventId");
+                        });
+
+                    b.Navigation("ChildCareGroup");
+
+                    b.Navigation("Church");
+
+                    b.Navigation("ChurchGroup");
+
+                    b.Navigation("ContactPerson");
+
+                    b.Navigation("EventRegistrationGroup");
+
+                    b.Navigation("Review");
+
+                    b.Navigation("Schedule");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventRegistration", b =>
+                {
+                    b.HasOne("ChurchManager.Domain.Features.Events.Event", "Event")
+                        .WithMany("Registrations")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ChurchManager.Domain.Features.Groups.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ChurchManager.Domain.Features.People.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ChurchManager.Domain.Features.People.Person", "RegisteredByPerson")
+                        .WithMany()
+                        .HasForeignKey("RegisteredByPersonId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Person");
+
+                    b.Navigation("RegisteredByPerson");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventSession", b =>
+                {
+                    b.HasOne("ChurchManager.Domain.Features.Events.Event", "Event")
+                        .WithMany("Sessions")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventSessionRegistration", b =>
+                {
+                    b.HasOne("ChurchManager.Domain.Features.Events.EventRegistration", "EventRegistration")
+                        .WithMany("SessionRegistrations")
+                        .HasForeignKey("EventRegistrationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ChurchManager.Domain.Features.Events.EventSession", null)
+                        .WithMany("SessionRegistrations")
+                        .HasForeignKey("SessionScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ChurchManager.Domain.Features.Events.EventSessionSchedule", "EventSessionSchedule")
+                        .WithMany("SessionRegistrations")
+                        .HasForeignKey("SessionScheduleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("EventRegistration");
+
+                    b.Navigation("EventSessionSchedule");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventSessionSchedule", b =>
+                {
+                    b.HasOne("ChurchManager.Domain.Features.Events.EventSession", "EventSession")
+                        .WithMany("SessionSchedules")
+                        .HasForeignKey("EventSessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EventSession");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventType", b =>
+                {
+                    b.HasOne("ChurchManager.Domain.Features.Groups.GroupType", "DefaultGroupType")
+                        .WithMany()
+                        .HasForeignKey("DefaultGroupTypeId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.OwnsOne("ChurchManager.Domain.Features.Events.ChildCare", "ChildCare", b1 =>
+                        {
+                            b1.Property<int>("EventTypeId")
+                                .HasColumnType("integer");
+
+                            b1.Property<bool>("HasChildCare")
+                                .HasColumnType("boolean");
+
+                            b1.Property<int?>("MaxChildAge")
+                                .HasColumnType("integer");
+
+                            b1.Property<int?>("MinChildAge")
+                                .HasColumnType("integer");
+
+                            b1.HasKey("EventTypeId");
+
+                            b1.ToTable("EventType");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EventTypeId");
+                        });
+
+                    b.Navigation("ChildCare");
+
+                    b.Navigation("DefaultGroupType");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Groups.Group", b =>
@@ -1717,17 +2356,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasForeignKey("GroupTypeId");
 
                     b.Navigation("GroupType");
-                });
-
-            modelBuilder.Entity("ChurchManager.Domain.Features.Message", b =>
-                {
-                    b.HasOne("ChurchManager.Domain.Common.UserLogin", "UserLogin")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserLogin");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Missions.Mission", b =>
@@ -2072,6 +2700,30 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("ChurchManager.Domain.Features.Discipleship.DiscipleshipStepDefinition", b =>
                 {
                     b.Navigation("Steps");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.Event", b =>
+                {
+                    b.Navigation("Registrations");
+
+                    b.Navigation("Sessions");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventRegistration", b =>
+                {
+                    b.Navigation("SessionRegistrations");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventSession", b =>
+                {
+                    b.Navigation("SessionRegistrations");
+
+                    b.Navigation("SessionSchedules");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventSessionSchedule", b =>
+                {
+                    b.Navigation("SessionRegistrations");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Groups.Group", b =>

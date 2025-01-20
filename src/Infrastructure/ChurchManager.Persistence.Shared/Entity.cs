@@ -9,7 +9,10 @@ namespace ChurchManager.Persistence.Shared
     {
         [Key]
         public TPrimaryKey Id { get; set; }
+        
+        [MaxLength(25)]
         public string RecordStatus { get; set; } = "Active";
+        
         public DateTime? InactiveDateTime { get; set; }
 
         #region Domain Events

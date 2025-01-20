@@ -51,4 +51,27 @@ namespace ChurchManager.Domain.Common
 
         public static implicit operator HistoryVerb(string value) => new(value);
     }
+
+    public class ApprovalStatus : Enumeration<ApprovalStatus, string>
+    {
+        public ApprovalStatus(string value) => Value = value;
+
+        /// <summary>
+        ///  has been submitted but not yet approved or denied
+        /// </summary>
+        public static ApprovalStatus PendingApproval = new("PendingApproval");
+    
+        /// <summary>
+        ///  has been approved 
+        /// </summary>
+        public static ApprovalStatus Approved = new("Approved");
+    
+        /// <summary>
+        ///  has been denied
+        /// </summary>
+        public static ApprovalStatus Denied = new ApprovalStatus("Denied");
+        
+        public static implicit operator ApprovalStatus(string value) => new(value);
+
+    }
 }

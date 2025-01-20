@@ -49,6 +49,10 @@ namespace ChurchManager.Domain.Features.Groups
         /// </summary>
         [MaxLength(100)]
         public string Frequency { get; set; }
+        
+        [MaxLength(100)]
+
+        public string Timezone { get; set; }
 
         #region Methods
 

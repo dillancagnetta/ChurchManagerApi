@@ -4,11 +4,10 @@ using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
-using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Domain.Features.Communication;
 
-public class Communication : Entity<int>, IAggregateRoot<int>
+public class Communication : AuditableEntity<int>, IAggregateRoot<int>
 {
     [MaxLength( 100 )]
     public string Name { get; private set; }
@@ -62,7 +61,7 @@ public class Communication : Entity<int>, IAggregateRoot<int>
     [MaxLength( 100 )]
     public CommunicationStatus Status { get; private set; }
     
-    public CommunicationReview CommunicationReview { get; set; } = new();
+    public Review Review { get; set; } = new();
     
     /// <summary>
     /// Gets or sets the message meta data.
@@ -83,12 +82,4 @@ public class Communication : Entity<int>, IAggregateRoot<int>
     public virtual Person SenderPerson { get; set; }
     
     # endregion
-}
-
-[Owned]
-public record CommunicationReview
-{
-    public string ReviewerNote { get; set; }
-    public DateTime? ReviewedDateTime { get; set; }
-    public int? ReviewerPersonId { get; set; }
 }
