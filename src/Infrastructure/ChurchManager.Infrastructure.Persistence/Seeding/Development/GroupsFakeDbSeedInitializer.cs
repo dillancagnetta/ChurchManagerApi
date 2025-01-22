@@ -26,6 +26,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         // Cell Group Type
         private readonly GroupType _sectionGroupType = new() { Name = "Section", Description = "Group Section", IconCssClass = "heroicons_outline:folder", TakesAttendance = false, IsSystem = true};
         private readonly GroupType _cellGroupType = new() { Name = "Cell", Description = "Cell Ministry", IconCssClass = "heroicons_outline:squares-2x2", IsSystem = true };
+        private readonly GroupType _eventsGroupType = new() { Name = "Events", Description = "Event Registration", IconCssClass = "heroicons_outline:calendar", IsSystem = true };
 
         private GroupTypeRole _cellLeaderRole;
         private GroupTypeRole _cellAssistantRole;
@@ -44,6 +45,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             {
                 await _dbContext.GroupType.AddAsync(_sectionGroupType);
                 await _dbContext.GroupType.AddAsync(_cellGroupType);
+                await _dbContext.GroupType.AddAsync(_eventsGroupType);
                 await _dbContext.SaveChangesAsync();
             }
 
@@ -85,6 +87,17 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 await _dbContext.Group.AddRangeAsync(GenerateGroups(2, cellSectionParentGroup));
                 await _dbContext.Group.AddRangeAsync(GenerateGroups(2, cellSectionParentGroup));
                 await _dbContext.Group.AddRangeAsync(GenerateGroups(2, cellSectionParentGroup));
+                await _dbContext.SaveChangesAsync();
+                
+                // Event Registration Groups
+                var eventRegistrationGroup = new Group
+                {
+                    GroupType = _eventsGroupType,
+                    Name = "Event Registration Group",
+                    Description = "Event Registration Group",
+                    CreatedDate = DateTime.UtcNow,
+                };
+                await _dbContext.Group.AddAsync(eventRegistrationGroup);
                 await _dbContext.SaveChangesAsync();
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ChurchManager.Persistence.Shared;
 using CodeBoss.Extensions;
@@ -45,13 +46,23 @@ namespace ChurchManager.Domain.Features.Groups
         public TimeSpan? WeeklyTimeOfDay { get; set; }
         
         /// <summary>
+        /// Gets or sets start time of the schedule. This property is inclusive.
+        /// </summary>
+        public TimeSpan? StartTime { get; set; }
+        
+        /// <summary>
+        /// Gets or sets end time of the schedule. This property is inclusive.
+        /// </summary>
+        public TimeSpan? EndTime { get; set; }
+        
+        /// <summary>
         /// Gets or sets the meeting frequence e.g. WEEKLY
         /// </summary>
         [MaxLength(100)]
         public string Frequency { get; set; }
         
         [MaxLength(100)]
-
+        [DefaultValue("South Africa Standard Time")]
         public string Timezone { get; set; }
 
         #region Methods

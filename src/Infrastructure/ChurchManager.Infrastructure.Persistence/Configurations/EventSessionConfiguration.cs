@@ -14,34 +14,13 @@ public class SessionRegistrationConfiguration : IEntityTypeConfiguration<EventSe
             .HasForeignKey(x => x.EventRegistrationId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(x => x.SessionSchedule)
+        builder.HasOne(x => x.EventSession)
             .WithMany(x => x.SessionRegistrations)
-            .HasForeignKey(x => x.SessionScheduleId)
+            .HasForeignKey(x => x.EventSessionId)
             .OnDelete(DeleteBehavior.Restrict);
 
         // Indexes
-        builder.HasIndex(x => new { x.EventRegistrationId, x.SessionScheduleId })
+        builder.HasIndex(x => new { x.EventRegistrationId, x.EventSessionId })
             .IsUnique();  // Can't register for same session twice
     }
-}
-
-public class SessionScheduleConfiguration : IEntityTypeConfiguration<EventSessionSchedule>
-{
-    public void Configure(EntityTypeBuilder<EventSessionSchedule> builder)
-    {
-
-        // Relationships
-        builder.HasOne(x => x.EventSession)
-            .WithMany(x => x.SessionSchedules)
-            .HasForeignKey(x => x.EventSessionId)
-            .OnDelete(DeleteBehavior.Cascade);
-        
-
-        builder.HasMany(x => x.SessionRegistrations)
-            .WithOne(x => x.SessionSchedule)
-            .HasForeignKey(x => x.SessionScheduleId);
-
-        // Index for performance
-        builder.HasIndex(x => x.StartDateTime);
-        builder.HasIndex(x => x.EventSessionId);    }
 }

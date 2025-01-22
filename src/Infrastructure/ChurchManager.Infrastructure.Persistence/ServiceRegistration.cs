@@ -108,6 +108,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<FollowUpFakeDbSeedInitializer>();
                     services.AddInitializer<MissionsFakeDbSeedInitializer>();
                     services.AddInitializer<MessagesFakeDbSeedInitializer>();
+                    services.AddInitializer<EventsFakeDbSeedInitializer>();
                 }
                 
                 // Jobs

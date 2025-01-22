@@ -57,7 +57,7 @@ public class EventsConfiguration : IEntityTypeConfiguration<Event>
         builder.HasOne(r => r.ChildCareGroup)
             .WithMany()
             .HasForeignKey(r => r.ChildCareGroupId)
-            .IsRequired(true)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
         
         /* Optional Properties */
@@ -77,6 +77,10 @@ public class EventTypeConfiguration : IEntityTypeConfiguration<EventType>
         builder
             .Property(e => e.AgeClassification)
             .HasEnumerationConversion<AgeClassification>();
+        
+        builder
+            .Property(e => e.OnlineSupport)
+            .HasEnumerationConversion<OnlineSupport>();
 
         builder
             .Property(c => c.RecordStatus)
@@ -153,20 +157,16 @@ public class EventSessionConfiguration : IEntityTypeConfiguration<EventSession>
     {
         builder.Property(x => x.SessionOrder)
             .IsRequired();
+        
+        builder
+            .Property(e => e.OnlineSupport)
+            .HasEnumerationConversion<OnlineSupport>();
 
         // Relationships
         builder.HasOne(x => x.Event)
             .WithMany(x => x.Sessions)
             .HasForeignKey(x => x.EventId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.HasMany(x => x.SessionSchedules)
-            .WithOne(x => x.EventSession)
-            .HasForeignKey(x => x.EventSessionId);
-
-        builder.HasMany(x => x.SessionRegistrations)
-            .WithOne()
-            .HasForeignKey(x => x.SessionScheduleId);
     }
 }
 

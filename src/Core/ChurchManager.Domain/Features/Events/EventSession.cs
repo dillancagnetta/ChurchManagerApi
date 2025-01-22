@@ -33,6 +33,26 @@ public class EventSession : AuditableEntity<int>
     /// </summary>
     public int EventId { get; set; }
     
+    // Schedule information
+    public DateTime? StartDateTime { get; set; }  // Combined date and time
+    
+    public DateTime? EndDateTime { get; set; }    // Combined date and time
+    
+    [MaxLength(200)]
+    public string Location { get; set; }
+    
+    [MaxLength(500)]
+    public string Notes { get; set; }
+    
+    public OnlineSupport OnlineSupport { get; set; }
+   
+    [MaxLength(200)]
+    public string OnlineMeetingUrl { get; set; }
+    
+    public bool IsCancelled { get; set; }
+    
+    public string CancellationReason { get; set; }
+    
     # region Navigation
     
     /// <summary>
@@ -40,7 +60,6 @@ public class EventSession : AuditableEntity<int>
     /// </summary>
     public virtual Event Event { get; set; }
     
-    public virtual ICollection<EventSessionSchedule> SessionSchedules { get; set; }
     public virtual ICollection<EventSessionRegistration> SessionRegistrations { get; set; }
     
     # endregion

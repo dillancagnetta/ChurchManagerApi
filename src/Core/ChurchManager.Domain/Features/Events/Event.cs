@@ -68,7 +68,7 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
     [MaxLength( 75 )]
     public string ContactEmail { get; set; }
     
-    [MaxLength( 20 )]
+    [MaxLength( 50 )]
     public string ContactPhone { get; set; }
     
     public Review Review { get; set; }

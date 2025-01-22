@@ -29,9 +29,9 @@ public class Event_DomainTest
             Description = "A special event for prayer.",
             RequiresRegistration = true,
             AllowFamilyRegistration = true,
-            TakeAttendance = true,
+            TakesAttendance = true,
             RequiresChildInfo = false,
-            SupportsOnline = true,
+            OnlineSupport = OnlineSupport.Both,
         };
 
         // Create Event using property initializer
@@ -73,7 +73,7 @@ public class Event_DomainTest
             ChildCareGroupId = 4,
             EventType = eventType,
             Capacity = 500,
-            Sessions = new List<EventSession> {
+            /*Sessions = new List<EventSession> {
                 new ()
                 {
                     Id = 1, Name = "Session 1",
@@ -88,7 +88,7 @@ public class Event_DomainTest
                         }
                     }
                 } 
-            }
+            }*/
         };
 
         // Assertions
