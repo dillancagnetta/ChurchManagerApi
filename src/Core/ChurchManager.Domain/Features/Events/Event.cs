@@ -80,6 +80,9 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
     /// </summary>
     public int? Capacity { get; set; }
     
+    [MaxLength(200)]
+    public string Location { get; set; }
+    
     #region Navigation
     public virtual Church Church { get; set; }
     public virtual ChurchGroup ChurchGroup { get; set; }

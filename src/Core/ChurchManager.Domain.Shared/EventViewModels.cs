@@ -6,8 +6,10 @@ using System;
 public record EventViewModel
 {
     public int Id { get; set; }
+    public int EventTypeId { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
+    public string PhotoUrl { get; set; }
     public int? ChurchId { get; set; }
     public string ChurchName { get; set; }
     public int? ChurchGroupId { get; set; }
@@ -24,10 +26,7 @@ public record EventViewModel
     public string EventTypeName { get; set; }
     public EventConfiguration Configuration { get; set; }
 
-    // ChildCare information
-    public bool HasChildCare { get; set; }
-    public int? MinChildAge { get; set; }
-    public int? MaxChildAge { get; set; }
+
 }
 
 public record EventConfiguration
@@ -38,4 +37,9 @@ public record EventConfiguration
     public bool AllowNonFamilyRegistration { get; set; }
     public bool RequiresChildInfo { get; set; }
     public bool TakesAttendance { get; set; }
+    // ChildCare information
+    public bool? HasChildCare { get; set; }
+    public int? MinChildAge { get; set; }
+    public int? MaxChildAge { get; set; }
+    public bool IsOnline => !OnlineSupport.Equals("Not Online");
 }

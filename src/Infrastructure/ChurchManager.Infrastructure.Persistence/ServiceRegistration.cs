@@ -4,6 +4,7 @@ using ChurchManager.Domain.Features.Churches.Repositories;
 using ChurchManager.Domain.Features.Communication.Repositories;
 using ChurchManager.Domain.Features.Communication.Services;
 using ChurchManager.Domain.Features.Discipleship.Repositories;
+using ChurchManager.Domain.Features.Events.Repositories;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.History;
 using ChurchManager.Domain.Features.People.Repositories;
@@ -134,6 +135,7 @@ namespace ChurchManager.Infrastructure.Persistence
             services.AddScoped<IGroupMemberAttendanceDbRepository, GroupMemberAttendanceDbRepository>();
             services.AddScoped<IHistoryDbRepository, HistoryDbRepository>();
             services.AddScoped<IMessageDbRepository, MessageDbRepository>();
+            services.AddScoped<IEventDbRepository, EventDbRepository>();
             services.AddScoped<IPushDeviceDbRepository, PushDeviceDbRepository>();
             services.AddScoped<IPushSubscriptionsService, PushSubscriptionsService>();
             services.AddScoped<ISqlQueryHandler, SqlQueryHandler>();

@@ -71,6 +71,7 @@ public class EventsFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) : II
                 .RuleFor(e => e.ChurchId, f => f.PickRandom(churches).Id)
                 .RuleFor(e => e.ContactPersonId, f => f.PickRandom(people).Id)
                 .RuleFor(e => e.ContactEmail, f => f.Person.Email)
+                .RuleFor(s => s.Location, f => f.Address.FullAddress())
                 .RuleFor(e => e.ContactPhone, f => f.Person.Phone)
                 .RuleFor(e => e.ApprovalStatus, f => ApprovalStatus.Approved)
                 .RuleFor(e => e.EventRegistrationGroup, f => eventRegistrationGroup)
