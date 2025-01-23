@@ -136,6 +136,7 @@ namespace ChurchManager.Infrastructure.Persistence
             services.AddScoped<IHistoryDbRepository, HistoryDbRepository>();
             services.AddScoped<IMessageDbRepository, MessageDbRepository>();
             services.AddScoped<IEventDbRepository, EventDbRepository>();
+            services.AddScoped<IFamilyDbRepository, FamilyDbRepository>();
             services.AddScoped<IPushDeviceDbRepository, PushDeviceDbRepository>();
             services.AddScoped<IPushSubscriptionsService, PushSubscriptionsService>();
             services.AddScoped<ISqlQueryHandler, SqlQueryHandler>();

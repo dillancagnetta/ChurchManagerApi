@@ -1,16 +1,21 @@
-﻿namespace ChurchManager.Domain.Shared
-{
-    public record FamilyViewModel
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string Country { get; set; }
-        public string Province { get; set; }
-        public string PostalCode { get; set; }
-        public string Language { get; set; }
+﻿namespace ChurchManager.Domain.Shared;
 
-        public IEnumerable<PersonViewModelBasic> FamilyMembers { get; set; }
-    }
+public record FamilyViewModel
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Street { get; set; }
+    public string City { get; set; }
+    public string Country { get; set; }
+    public string Province { get; set; }
+    public string PostalCode { get; set; }
+    public string Language { get; set; }
+
+    public IEnumerable<PersonViewModelBasic> FamilyMembers { get; set; }
+}
+
+public record FamilyCodeValidationViewModel
+{
+    public bool IsValid { get; set; }
+    public IEnumerable<PersonViewModelBasic> FamilyMembers { get; set; }
 }

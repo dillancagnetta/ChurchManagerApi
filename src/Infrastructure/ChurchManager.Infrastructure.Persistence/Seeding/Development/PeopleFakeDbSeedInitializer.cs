@@ -68,7 +68,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         private async Task SeedMyDetails()
        {
             var faker = new Faker("en");
-            var cagnettaFamily = new Family {Name = "Cagnetta Family", Language = "English", Address = GenerateAddress(faker)};
+            var cagnettaFamily = new Family {Name = "Cagnetta Family", Language = "English", Address = GenerateAddress(faker), Code = faker.Random.String(10) };
             await _dbContext.SaveChangesAsync();
 
             // Add me as the first Person i.e. with Id 1
@@ -214,7 +214,9 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 var familyFaker = new Faker<Family>()
                     .RuleFor(u => u.Name, f => $"{x.FullName.LastName} Family")
                     .RuleFor(u => u.Language, f => faker.PickRandom(Languages))
-                    .RuleFor(u => u.Address, f => GenerateAddress(faker));
+                    .RuleFor(u => u.Address, f => GenerateAddress(faker))
+                    .RuleFor(u => u.Code, f => f.Random.String(10))
+                    ;
 
                 x.Family = familyFaker.Generate();
             });
@@ -264,7 +266,9 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             var familyFaker = new Faker<Family>()
                 .RuleFor(u => u.Name, f => $"{lastName} Family")
                 .RuleFor(u => u.Language, f => faker.PickRandom(Languages))
-                .RuleFor(u => u.Address, f => GenerateAddress(faker));
+                .RuleFor(u => u.Address, f => GenerateAddress(faker))
+                .RuleFor(u => u.Code, f => f.Random.String(10))
+                ;
 
             var family = familyFaker.Generate();
 

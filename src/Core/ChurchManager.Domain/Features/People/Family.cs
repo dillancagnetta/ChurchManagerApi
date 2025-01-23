@@ -14,6 +14,9 @@ namespace ChurchManager.Domain.Features.People
         public string Name { get; set; }
         [Required] public Address Address { get; set; }
         public string Language { get; set; }
+        
+        [MaxLength(50)]
+        public string Code { get; set; }
 
         #region Navigation
 
