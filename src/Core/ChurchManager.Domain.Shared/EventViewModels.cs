@@ -25,8 +25,7 @@ public record EventViewModel
     // EventType information
     public string EventTypeName { get; set; }
     public EventConfiguration Configuration { get; set; }
-
-
+    public IEnumerable<EventSessionViewModel> Sessions { get; set; }
 }
 
 public record EventConfiguration
@@ -42,4 +41,19 @@ public record EventConfiguration
     public int? MinChildAge { get; set; }
     public int? MaxChildAge { get; set; }
     public bool IsOnline => !OnlineSupport.Equals("Not Online");
+}
+
+public record EventSessionViewModel
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public int SessionOrder { get; set; }
+    public DateTime? StartDateTime { get; set; }
+    public DateTime? EndDateTime { get; set; }
+    public string Location { get; set; }
+    public string OnlineSupport { get; set; }
+    public bool IsOnline => !OnlineSupport.Equals("Not Online");
+    public string OnlineMeetingUrl { get; set; }
+    public bool AttendanceRequired { get; set; }
 }

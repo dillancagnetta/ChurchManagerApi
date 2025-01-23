@@ -11,7 +11,7 @@ public class ValidateFamilyCodeHandler(IFamilyDbRepository dbRepository) : IRequ
     public async Task<ApiResponse> Handle(ValidateFamilyCodeQuery request, CancellationToken cancellationToken)
     {
         return new ApiResponse(
-            await dbRepository.ValidateFamilyCodeAsync(request.FamilyCode.ToLowerInvariant(), cancellationToken)
+            await dbRepository.ValidateFamilyCodeAsync(request.FamilyCode.ToUpperInvariant(), cancellationToken)
             );
     }
 }

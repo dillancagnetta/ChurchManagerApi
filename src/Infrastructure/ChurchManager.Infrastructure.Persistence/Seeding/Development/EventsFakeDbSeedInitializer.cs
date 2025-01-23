@@ -8,7 +8,6 @@ using ChurchManager.Domain.Features.People;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.AspNetCore.Startup;
 using CodeBoss.Extensions;
-using CodeBoss.Jobs.Model;
 using Ical.Net;
 using Ical.Net.Serialization;
 using Microsoft.EntityFrameworkCore;
@@ -89,8 +88,8 @@ public class EventsFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) : II
                 var sessions = new Faker<EventSession>()
                     .RuleFor(s => s.EventId, evt.Id)
                     .RuleFor(s => s.Name, f => f.Lorem.Word())
-                    .RuleFor(s => s.StartDateTime, sessionDate.AddHours(faker.Random.Number(1, 5)))
-                    .RuleFor(s => s.EndDateTime, sessionDate)
+                    .RuleFor(s => s.EndDateTime, sessionDate.AddHours(faker.Random.Number(1, 5)))
+                    .RuleFor(s => s.StartDateTime, sessionDate)
                     .RuleFor(s => s.Description, f => f.Lorem.Sentence())
                     .RuleFor(s => s.Location, f => f.Address.FullAddress())
                     .RuleFor(e => e.AttendanceRequired, f => faker.Random.Bool(0.3f))

@@ -48,7 +48,20 @@ public class EventDbRepository(ChurchManagerDbContext dbContext) : GenericReposi
                     MaxChildAge = x.EventType.ChildCare?.MaxChildAge,
                 },
 
-                NumberOfSessions = x.Sessions.Count
+                NumberOfSessions = x.Sessions.Count,
+                Sessions = x.Sessions?.Select(x => new EventSessionViewModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description,
+                    SessionOrder = x.SessionOrder,
+                    StartDateTime = x.StartDateTime,
+                    EndDateTime = x.EndDateTime,
+                    Location = x.Location,
+                    OnlineSupport = x.OnlineSupport,
+                    OnlineMeetingUrl = x.OnlineMeetingUrl,
+                    AttendanceRequired = x.AttendanceRequired,
+                })
             });
         
         return vm;
