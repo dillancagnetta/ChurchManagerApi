@@ -66,6 +66,25 @@ namespace ChurchManager.Domain.Features.People
         public virtual ICollection<ConnectionStatusHistory> ConnectionStatusHistory { get; set; } = new Collection<ConnectionStatusHistory>();
         
         #endregion
+
+        #region Methods
+
+        public AgeClassification AgeClassificationFromBirthDate()
+        {
+            var age = BirthDate.Age;
+        
+            if (!age.HasValue)
+                return AgeClassification.Unknown;
+
+            return age.Value switch
+            {
+                < 13 => AgeClassification.Child,
+                >= 13 and < 20 => AgeClassification.Teen,
+                >= 20 => AgeClassification.Adult,
+            };
+        }
+
+        #endregion
     }
 
 
