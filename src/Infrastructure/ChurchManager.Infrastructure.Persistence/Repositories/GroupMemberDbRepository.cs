@@ -1,5 +1,6 @@
 ﻿#region
 
+using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Groups;
@@ -66,6 +67,55 @@ public class GroupMemberDbRepository: GenericRepositoryBase<GroupMember>, IGroup
             .CountAsync(GroupMemberCriteria.IsLeaderOrCanManageFilter, cancellationToken: ct);
 
         return (peopleCount, leadersCount);
+    }
+
+    public async Task AddGroupMember(int groupId, int personId, int groupRoleId, DateTime? firstVisitDate = null,
+        string communicationPreference = "Email", CancellationToken ct = default)
+    {
+        // Check they are not a group member already
+        if (await Queryable().AnyAsync(m =>
+                m.PersonId == personId && m.GroupId == groupId, ct))
+            return;
+
+        var groupMember = new GroupMember
+        {
+            PersonId = personId,
+            GroupId = groupId,
+            GroupRoleId = groupRoleId,
+            FirstVisitDate = firstVisitDate ?? DateTime.UtcNow,
+            CommunicationPreference = communicationPreference ?? CommunicationType.Email.ToString()
+        };
+
+        await AddAsync(groupMember, ct);
+        await SaveChangesAsync(ct);
+    }
+
+    public async Task AddGroupMembers(int groupId, int[] personIds, int groupRoleId, DateTime? firstVisitDate = null,
+        string communicationPreference = "Email", CancellationToken ct = default)
+    {
+        // Get the personIds that are not already in the group
+        var newPersonIds = await Queryable()
+            .Where(gm => gm.GroupId == groupId)
+            .Select(gm => gm.PersonId)
+            .Distinct()
+            .ToListAsync(ct);
+    
+        var personIdsToAdd = personIds.Except(newPersonIds).ToArray();
+    
+        if (personIdsToAdd.Any())
+        {
+            var groupMembers = personIdsToAdd.Select(personId => new GroupMember
+            {
+                PersonId = personId,
+                GroupId = groupId,
+                GroupRoleId = groupRoleId,
+                FirstVisitDate = firstVisitDate ?? DateTime.UtcNow,
+                CommunicationPreference = communicationPreference ?? CommunicationType.Email.ToString()
+            }).ToList();
+    
+            await DbContext.AddRangeAsync(groupMembers, ct);
+            await SaveChangesAsync(ct);
+        }
     }
 }
 

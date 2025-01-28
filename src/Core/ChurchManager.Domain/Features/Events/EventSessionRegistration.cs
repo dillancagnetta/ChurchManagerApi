@@ -15,6 +15,7 @@ public class EventSessionRegistration : AuditableEntity<int>
     public int PersonId { get; set; }  // Added for query performance
 
     public bool? AttendingOnline { get; set; }
+    public bool? AttendingInPerson { get; set; }
     
     // Navigation Properties
     public virtual EventRegistration EventRegistration { get; set; }

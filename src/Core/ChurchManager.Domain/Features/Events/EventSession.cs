@@ -60,7 +60,7 @@ public class EventSession : AuditableEntity<int>
     /// </summary>
     public virtual Event Event { get; set; }
     
-    public virtual ICollection<EventSessionRegistration> SessionRegistrations { get; set; }
+    public virtual ICollection<EventSessionRegistration> SessionRegistrations { get; set; } = Enumerable.Empty<EventSessionRegistration>().ToList();
     
     # endregion
 }

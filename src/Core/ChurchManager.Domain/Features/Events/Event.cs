@@ -92,10 +92,10 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
     public virtual Group EventRegistrationGroup { get; set; }
     
     public virtual EventType EventType { get; set; }
-    
-    public virtual ICollection<EventSession> Sessions { get; set; }
-    
-    public virtual ICollection<EventRegistration> Registrations { get; set; }
-    
+
+    public virtual ICollection<EventSession> Sessions { get; set; } = Enumerable.Empty<EventSession>().ToList();
+
+    public virtual ICollection<EventRegistration> Registrations { get; set; } = Enumerable.Empty<EventRegistration>().ToList();
+
     #endregion
 }

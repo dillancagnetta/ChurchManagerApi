@@ -65,7 +65,7 @@ public class EventRegistration : AuditableEntity<int>
     public virtual Group Group { get; set; }
     public virtual Person RegisteredByPerson { get; set; }
     
-    public virtual ICollection<EventSessionRegistration> SessionRegistrations { get; set; }
+    public virtual ICollection<EventSessionRegistration> SessionRegistrations { get; set; } = Enumerable.Empty<EventSessionRegistration>().ToList();
     
     # endregion
 }
