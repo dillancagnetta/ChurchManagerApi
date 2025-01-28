@@ -96,6 +96,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChurchManager.Features.Hist
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchManager.Domain.Tests", "test\ChurchManager.Domain.Tests\ChurchManager.Domain.Tests.csproj", "{336595BB-943E-4B6F-984E-13FCB8B4F43D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchManager.Features.Events", "src\Features\ChurchManager.Features.Events\ChurchManager.Features.Events.csproj", "{0C6F1604-605E-4A1A-98F8-52D2D3939190}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -222,6 +224,10 @@ Global
 		{336595BB-943E-4B6F-984E-13FCB8B4F43D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{336595BB-943E-4B6F-984E-13FCB8B4F43D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{336595BB-943E-4B6F-984E-13FCB8B4F43D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C6F1604-605E-4A1A-98F8-52D2D3939190}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C6F1604-605E-4A1A-98F8-52D2D3939190}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C6F1604-605E-4A1A-98F8-52D2D3939190}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C6F1604-605E-4A1A-98F8-52D2D3939190}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -257,6 +263,7 @@ Global
 		{72E00EBA-F609-4A76-9C0D-854DCA27D54C} = {D4173B5E-3368-41B7-A208-72DD77CE12C5}
 		{42FE2282-1494-4B7F-8FA1-53F04F8B573F} = {4E57F1DC-B09A-46B9-81A2-D6325F089A7C}
 		{336595BB-943E-4B6F-984E-13FCB8B4F43D} = {B40AA988-6333-4B1C-8C7C-3D8B140DBDE1}
+		{0C6F1604-605E-4A1A-98F8-52D2D3939190} = {4E57F1DC-B09A-46B9-81A2-D6325F089A7C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FFB97C3E-0578-455B-ABD1-9C774B9BDEAC}
