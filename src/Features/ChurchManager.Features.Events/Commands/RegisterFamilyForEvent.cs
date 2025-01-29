@@ -1,9 +1,9 @@
 ﻿using ChurchManager.Domain.Features.Events;
+using ChurchManager.Domain.Features.Events.DomainEvents;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using Codeboss.Types;
-using MassTransit.Initializers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,7 +35,6 @@ public record SessionPreference
 
 public class RegisterFamilyForEventHandler(
     IGenericDbRepository<Event> eventDb,
-    IGroupMemberDbRepository groupMemberDb,
     IDateTimeProvider dateTime) : IRequestHandler<RegisterFamilyForEventCommand, ApiResponse>
 {
     public async Task<ApiResponse> Handle(RegisterFamilyForEventCommand command, CancellationToken ct)
@@ -92,16 +91,15 @@ public class RegisterFamilyForEventHandler(
                             };
                             registration.SessionRegistrations.Add(sessionRegistration);
                         }
-                        
-                       
                     }
 
                     // Register as group members
                     if (@event.EventRegistrationGroupId.HasValue)
                     {
-                        await groupMemberDb.AddGroupMember(
+                        @event.AddDomainEvent(new PersonRegisteredForEvent(registree.PersonId, @event.EventRegistrationGroupId.Value, 4));
+                        /*await groupMemberDb.AddGroupMember(
                             @event.EventRegistrationGroupId.Value, registree.PersonId,
-                            4, ct: ct);
+                            4, ct: ct);*/
                     }
                 }
             

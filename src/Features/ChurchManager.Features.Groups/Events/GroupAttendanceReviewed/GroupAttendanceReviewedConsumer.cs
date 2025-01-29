@@ -26,7 +26,7 @@ namespace ChurchManager.Features.Groups.Events.GroupAttendanceReviewed
 
         public async Task Consume(ConsumeContext<GroupAttendanceReviewedEvent> context)
         {
-            Logger.LogInformation("------ GroupAttendanceReviewed event received ------");
+            Logger.LogInformation("✔️ ------ GroupAttendanceReviewed event received ------");
 
             var message = context.Message;
 
