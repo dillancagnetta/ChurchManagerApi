@@ -84,6 +84,8 @@ namespace ChurchManager.Domain.Features.People
             };
         }
 
+        public bool HasValidActiveEmail => Email is { IsActive: not null } && Email.IsActive.Value;
+
         #endregion
     }
 

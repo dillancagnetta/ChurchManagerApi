@@ -1,4 +1,5 @@
-﻿using ChurchManager.Infrastructure.Shared.Email;
+﻿using ChurchManager.Domain.Features.Communication;
+using ChurchManager.Infrastructure.Shared.Email;
 using ChurchManager.Infrastructure.Shared.Templating;
 using ChurchManager.Infrastructure.Tests.Templates;
 using Newtonsoft.Json;
@@ -19,8 +20,10 @@ namespace ChurchManager.Infrastructure.Tests
         public async Task Test_sending_emails()
         {
             var sender = new AwsSesEmailSender(_awsAccessKeyId, _awsSecretAccessKey);
+            
+            var recipient = new EmailRecipient { PersonId = 1, EmailAddress = _toEmailAddress };
 
-            var operationResult = await sender.SendEmailAsync(_toEmailAddress, "EmailSender Basic Test", "Hello there");
+            var operationResult = await sender.SendEmailAsync(recipient, "EmailSender Basic Test", "Hello there");
 
             Assert.True(operationResult.IsSuccess);
         }
@@ -51,8 +54,9 @@ namespace ChurchManager.Infrastructure.Tests
             var htmlBody = parser.Render(template, model);
 
             var sender = new AwsSesEmailSender(_awsAccessKeyId, _awsSecretAccessKey);
-
-            var operationResult = await sender.SendEmailAsync(_toEmailAddress, "EmailSender Template Test", htmlBody);
+            var recipient = new EmailRecipient { PersonId = 1, EmailAddress = _toEmailAddress };
+            
+            var operationResult = await sender.SendEmailAsync(recipient, "EmailSender Template Test", htmlBody);
 
             Assert.True(operationResult.IsSuccess);
         }

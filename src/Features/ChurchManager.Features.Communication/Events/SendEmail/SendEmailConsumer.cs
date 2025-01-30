@@ -35,7 +35,7 @@ namespace ChurchManager.Features.Communication.Events.SendEmail
             
             var message = context.Message;
 
-            if(!message.RecipientEmailAddress.IsNullOrEmpty())
+            if(!message.Recipient.EmailAddress.IsNullOrEmpty())
             {
                 var path = DomainConstants.Communication.Email.Template(message.Template);
                 string template = await File.ReadAllTextAsync(path);
@@ -47,11 +47,15 @@ namespace ChurchManager.Features.Communication.Events.SendEmail
 
                 var htmlBody = _templateParser.Render(template, model);
 
-                var operationResult = await _sender.SendEmailAsync(message.RecipientEmailAddress, message.Subject, htmlBody);
+                var operationResult = await _sender.SendEmailAsync(message.Recipient, message.Subject, htmlBody);
 
-                if (!operationResult.IsSuccess)
+                if (operationResult.IsSuccess)
                 {
-                   // Raise event to set their email address to inactive to avoid repeated bounces
+                    
+                }
+                else
+                {
+                    // Raise event to set their email address to inactive to avoid repeated bounces
                 }
             }
         }

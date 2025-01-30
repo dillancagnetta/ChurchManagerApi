@@ -1,5 +1,6 @@
 ﻿using ChurchManager.Domain.Features.Communication.Services;
 using ChurchManager.Infrastructure.Abstractions.Communication;
+using ChurchManager.Infrastructure.Abstractions.Network;
 using ChurchManager.Infrastructure.Shared.Templating;
 using CodeBoss.AspNetCore.DependencyInjection;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,8 @@ namespace ChurchManager.Infrastructure.Shared.Email
 
                 return new AwsSesEmailSender(accessKey, secretKey);
             } );
+            
+            services.AddSingleton<IAwsIpRangeLoader, AwsIpRangeLoader>();
         }
     }
 }

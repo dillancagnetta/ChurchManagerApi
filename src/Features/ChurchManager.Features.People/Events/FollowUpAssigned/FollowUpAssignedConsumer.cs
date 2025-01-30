@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Features.Communication.Events;
+﻿using ChurchManager.Domain.Features.Communication;
+using ChurchManager.Domain.Features.Communication.Events;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Events;
 using ChurchManager.Domain.Features.People.Repositories;
@@ -63,13 +64,22 @@ namespace ChurchManager.Features.People.Events.FollowUpAssigned
                     ["CreationDate"] = _dateTimeProvider.ConvertFromUtc(DateTime.UtcNow).ToShortTimeString()
                 };
 
-                await context.Publish(new SendEmailEvent(
-                    "Follow Up Assignment",
-                    DomainConstants.Communication.Email.Templates.FollowUpTemplate,
-                    followUpAssignedPerson.Email.Address)
+                if (followUpAssignedPerson.HasValidActiveEmail)
                 {
-                    TemplateData = templateData
-                });
+                    var recipient = new EmailRecipient
+                    {
+                        PersonId = followUpAssignedPerson.Id,
+                        EmailAddress = followUpAssignedPerson.Email.Address
+                    };
+                    await context.Publish(new SendEmailEvent(
+                        "Follow Up Assignment",
+                        DomainConstants.Communication.Email.Templates.FollowUpTemplate,
+                        recipient
+                    )
+                    {
+                        TemplateData = templateData
+                    });
+                }
             }
 
         }

@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Features.Communication.Events;
+﻿using ChurchManager.Domain.Features.Communication;
+using ChurchManager.Domain.Features.Communication.Events;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions;
@@ -37,7 +38,7 @@ public class RequestFamilyCodeHandler(
                 x.Email != null && x.Email.Address != null 
                 && x.Email.Address == command.EmailAddress);
 
-        if (person != null)
+        if (person != null && person.HasValidActiveEmail)
         {
             var templateData = new Dictionary<string, string>
             {
@@ -48,10 +49,16 @@ public class RequestFamilyCodeHandler(
                 ["CreationDate"] = DateTime.UtcNow.ToShortTimeString()
             };
             
+            var recipient = new EmailRecipient
+            {
+                PersonId = person.Id,
+                EmailAddress = person.Email.Address
+            };
+            
             await publisher.PublishAsync(new SendEmailEvent(
                 "Family Code Request",
                 DomainConstants.Communication.Email.Templates.FamilyCodeRequest,
-                command.EmailAddress)
+                recipient)
             {
                 TemplateData = templateData
             }, cancellationToken);

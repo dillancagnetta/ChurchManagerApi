@@ -25,6 +25,8 @@ namespace ChurchManager.Infrastructure.Shared
             services.AddDistributedMemoryCache();
 
             services.AddScoped<IMessageSender, MessageSender>();
+
+            services.AddHttpClient();
         }
     }
 }
