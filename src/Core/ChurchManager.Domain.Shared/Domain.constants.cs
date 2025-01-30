@@ -35,6 +35,7 @@ namespace ChurchManager.Domain.Shared
                 public static class Templates
                 {
                     public static string FollowUpTemplate = "FollowUpAssignment";
+                    public static string FamilyCodeRequest = "FamilyCodeRequested";
                 }
             }
         }

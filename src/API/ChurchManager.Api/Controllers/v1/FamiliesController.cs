@@ -37,5 +37,13 @@ namespace ChurchManager.Api.Controllers.v1
         {
             return Ok(await Mediator.Send(new ValidateFamilyCodeQuery(familyCode.Trim()), token));
         }
+        
+        [HttpPost("request-code-email")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RequestFamilyCode([FromBody] RequestFamilyCodeCommand command, CancellationToken token)
+        {
+            await Mediator.Send(command, token);
+            return Accepted();
+        }
     }
 }

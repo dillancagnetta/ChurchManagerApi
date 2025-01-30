@@ -10,6 +10,9 @@ namespace ChurchManager.Infrastructure.Shared.Email
 {
     public class CommunicationsDependencyInstaller : IDependencyInstaller
     {
+        private const string AWS_ACCESS_KEY_ID = "AWS_ACCESS_KEY_ID";
+        private const string AWS_SECRET_ACCESS_KEY = "AWS_SECRET_ACCESS_KEY";
+
         public void InstallServices(IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
         {
             // Communications
@@ -17,8 +20,10 @@ namespace ChurchManager.Infrastructure.Shared.Email
             services.AddSingleton<IEmailSender>(sp =>
             {
                 // AWS Configuration
-                var accessKey = configuration["AWS:AccessKey"];
-                var secretKey = configuration["AWS:SecretKey"];
+                var accessKey = Environment.GetEnvironmentVariable(AWS_ACCESS_KEY_ID) ?? throw new ArgumentNullException(AWS_ACCESS_KEY_ID);
+                var secretKey = Environment.GetEnvironmentVariable(AWS_SECRET_ACCESS_KEY) ?? throw new ArgumentNullException(AWS_SECRET_ACCESS_KEY);
+                // var accessKey = configuration["AWS:AccessKey"];
+                //var secretKey = configuration["AWS:SecretKey"];
 
                 return new AwsSesEmailSender(accessKey, secretKey);
             } );

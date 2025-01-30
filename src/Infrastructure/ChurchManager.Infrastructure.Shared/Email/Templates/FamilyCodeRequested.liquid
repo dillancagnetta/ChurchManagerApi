@@ -1,0 +1,20 @@
+﻿{% include "Layout" %}
+
+{% block preheader %}
+  Your family code is ready.
+{% endblock %}
+
+{% block title %}
+  Family Code Requested
+{% endblock %}
+
+{% block body %}
+   <p style="margin: 0;">Dear {{Model.Title}} {{Model.FirstName}} {{Model.LastName}}</p> <br />
+    <p style="margin: 0;">Please see your family code below:</p>
+{% endblock %}
+
+{% block action %}
+    <div style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">
+        {{Model.FamilyCode}}
+    </div>
+{% endblock %}

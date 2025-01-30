@@ -66,7 +66,7 @@ namespace ChurchManager.Features.People.Events.FollowUpAssigned
                 await context.Publish(new SendEmailEvent(
                     "Follow Up Assignment",
                     DomainConstants.Communication.Email.Templates.FollowUpTemplate,
-                    followUpAssignedPerson)
+                    followUpAssignedPerson.Email.Address)
                 {
                     TemplateData = templateData
                 });
