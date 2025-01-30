@@ -5,10 +5,11 @@ using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Communication;
 using CodeBoss.Extensions;
 using MassTransit;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using DotLiquid;
 using DotLiquid.FileSystems; // Add this if you're using DotLiquid
+
+// https://github.com/dotliquid/dotliquid/blob/master/src/DotLiquid/Tags/Extends.cs
 
 namespace ChurchManager.Features.Communication.Events.SendEmail
 {
