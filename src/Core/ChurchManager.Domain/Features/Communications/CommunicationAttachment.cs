@@ -1,11 +1,41 @@
-﻿using ChurchManager.Persistence.Shared;
+﻿using System.ComponentModel.DataAnnotations;
+using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Persistence.Shared;
 
 namespace ChurchManager.Domain.Features.Communication;
 
-public class CommunicationAttachment: Entity<int>
+public class CommunicationAttachment: AuditableEntity<int>
 {
     public int CommunicationId { get; set; }
 
+    public CommunicationType CommunicationType { get; set; }
+    
+    [Required]
+    public bool IsSystem { get; set; }
+    
+    [Required, MaxLength( 255 )]
+    public string FileName { get; set; }
+    
+    [Required, MaxLength( 255 )]
+    public string MimeType { get; set; }
+    
+    public string Description { get; set; }
+    
+    /// <summary>
+    /// File will have a URL or contents saved in the database
+    /// </summary>
+    [MaxLength( 255 )]
+    public string FileUrl { get; set; }
+    
+    /// <summary>
+    /// File will have a URL or contents saved in the database
+    /// </summary>
+    public string FileContents { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the size of the file (in bytes)
+    /// </summary>
+    public long? FileSize { get; set; }
     
     # region Navigation
     

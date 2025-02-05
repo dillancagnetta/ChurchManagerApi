@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ChurchManager.Application.ViewModels;
 using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Infrastructure.Mapper;
 using Convey.CQRS.Queries;

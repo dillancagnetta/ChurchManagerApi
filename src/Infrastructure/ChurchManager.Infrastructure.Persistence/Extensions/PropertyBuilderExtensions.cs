@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using ChurchManager.Domain.Common;
 using Codeboss.Types;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public static class PropertyBuilderExtensions
@@ -38,5 +39,17 @@ public static class PropertyBuilderExtensions
             .HasConversion(
                 v => v.ToString(), // Converts the enumeration to its string representation
                 v => new TEnum { Value = v }); // Creates a new enumeration instance from the string value
+    }
+    
+    public static PropertyBuilder<ICollection<TEnum>> HasEnumerationListConversion<TEnum>(this PropertyBuilder<ICollection<TEnum>> propertyBuilder)
+        where TEnum : Enumeration<TEnum, string>, new()
+    {
+        return propertyBuilder
+            .HasConversion(
+                v => string.Join(',', v.Select(e => e.Value)),
+                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                      .Select(s => new TEnum { Value = s })
+                      .ToList()
+            );
     }
 }

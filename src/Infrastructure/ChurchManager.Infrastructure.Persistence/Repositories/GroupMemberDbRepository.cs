@@ -3,6 +3,7 @@
 using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Infrastructure.Persistence.Contexts;

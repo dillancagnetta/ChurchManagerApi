@@ -1,6 +1,7 @@
 ﻿using ChurchManager.DataImporter.Models;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Churches;
+using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Discipleship;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.People;

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Churches;
+using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.People.Notes;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;

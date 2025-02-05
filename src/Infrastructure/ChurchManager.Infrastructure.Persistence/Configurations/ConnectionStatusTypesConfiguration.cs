@@ -11,8 +11,6 @@ public class ConnectionStatusHistoryConfiguration: IEntityTypeConfiguration<Conn
         builder
             .Property(e => e.RecordStatus)
             .HasRecordStatus();
-
-
     }
 }
 

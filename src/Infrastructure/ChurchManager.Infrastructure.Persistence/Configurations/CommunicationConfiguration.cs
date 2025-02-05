@@ -1,6 +1,7 @@
-﻿/*using System.Text.Json;
+﻿using System.Text.Json;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Communication;
+using ChurchManager.Domain.Features.Communications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,22 +13,22 @@ public class CommunicationConfiguration : IEntityTypeConfiguration<Communication
     {
         builder
             .Property(e => e.CommunicationType)
-            .HasConversion(
-                v => v.ToString(),
-                v => new CommunicationType(v));
+            .HasEnumerationConversion<CommunicationType>();
 
         builder
             .Property(e => e.Status)
-            .HasConversion(
-                v => v.ToString(),
-                v => new CommunicationStatus(v));
+            .HasEnumerationConversion<CommunicationStatus>();
+        
+        builder
+            .Property(e => e.RecordStatus)
+            .HasRecordStatus();
 
         builder.OwnsOne(x => x.Review);
 
-        builder.HasOne(c => c.Content)
+        /*builder.HasOne(c => c.Content)
             .WithOne(cc => cc.Communication)
             .HasForeignKey<CommunicationContent>(cc => cc.CommunicationId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Cascade);*/
 
         builder.HasMany(c => c.Recipients)
             .WithOne(r => r.Communication)
@@ -42,9 +43,10 @@ public class CommunicationConfiguration : IEntityTypeConfiguration<Communication
         // Use JSON serialization for complex properties
         builder.Property(c => c.Metadata)
             .HasColumnType("jsonb") // for Postgres
-            .HasJsonConversion(options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            .HasJsonConversion(options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+            .Metadata.SetValueComparer(new JsonValueComparer<Dictionary<string, object>>());
         
-        /* Optional Properties #1#
+        /* Optional Properties #1# */
         builder.HasOne(r => r.SystemCommunication)
             .WithMany()
             .HasForeignKey(r => r.SystemCommunicationId)
@@ -68,7 +70,61 @@ public class CommunicationConfiguration : IEntityTypeConfiguration<Communication
             .HasForeignKey(r => r.SenderPersonId)
             .IsRequired(false)
             .OnDelete(DeleteBehavior.NoAction);
-        
-        /* Optional Properties #1#
     }
-}*/
+}
+
+/*
+ * ------------------------------------
+ */
+
+public class CommunicationTemplateConfiguration : IEntityTypeConfiguration<CommunicationTemplate>
+{
+    public void Configure(EntityTypeBuilder<CommunicationTemplate> builder)
+    {
+        builder
+            .Property(e => e.RecordStatus)
+            .HasRecordStatus();
+
+        builder
+            .Property(e => e.SupportedTypes)
+            .HasEnumerationListConversion<CommunicationType>()
+            .HasColumnType("text")
+            .Metadata.SetValueComparer(new EnumerationListValueComparer<CommunicationType>());
+    }
+}
+
+/*
+ * ------------------------------------
+ */
+ 
+public class CommunicationRecipientConfiguration : IEntityTypeConfiguration<CommunicationRecipient>
+{
+    public void Configure(EntityTypeBuilder<CommunicationRecipient> builder)
+    {
+        builder
+            .Property(e => e.RecordStatus)
+            .HasRecordStatus();
+
+        builder
+            .Property(e => e.Status)
+            .HasEnumerationConversion<CommunicationRecipientStatus>();
+    }
+}
+
+/*
+ * ------------------------------------
+ */
+ 
+public class CommunicationAttachmentConfiguration : IEntityTypeConfiguration<CommunicationAttachment>
+{
+    public void Configure(EntityTypeBuilder<CommunicationAttachment> builder)
+    {
+        builder
+            .Property(e => e.RecordStatus)
+            .HasRecordStatus();
+
+        builder
+            .Property(e => e.CommunicationType)
+            .HasEnumerationConversion<CommunicationType>();
+    }
+}

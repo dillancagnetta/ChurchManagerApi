@@ -140,7 +140,8 @@ namespace ChurchManager.Infrastructure.Persistence
             services.AddScoped<IPushDeviceDbRepository, PushDeviceDbRepository>();
             services.AddScoped<IPushSubscriptionsService, PushSubscriptionsService>();
             services.AddScoped<ISqlQueryHandler, SqlQueryHandler>();
-
+            services.AddScoped<ITemplateRepository, TemplateDbRepository>();
+            
             #endregion
         }
     }

@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Domain.Features.Communication;
 
@@ -24,7 +26,7 @@ public class Communication : AuditableEntity<int>, IAggregateRoot<int>
     public int? ListGroupId { get; private set; }
     
     /// <summary>
-    /// Gets or sets the <see cref="Rock.Model.CommunicationTemplate"/> that was used to compose this communication
+    /// Gets or sets the <see cref="Communications.CommunicationTemplate"/> that was used to compose this communication
     /// </summary>
     /// <value>
     /// The communication template identifier.
@@ -61,7 +63,7 @@ public class Communication : AuditableEntity<int>, IAggregateRoot<int>
     [MaxLength( 100 )]
     public CommunicationStatus Status { get; private set; }
     
-    public Review Review { get; set; } = new();
+    public CommunicationReview Review { get; set; } = new();
     
     /// <summary>
     /// Gets or sets the message meta data.
@@ -75,11 +77,18 @@ public class Communication : AuditableEntity<int>, IAggregateRoot<int>
     
     public virtual ICollection<CommunicationRecipient> Recipients { get; set; }
     public virtual ICollection<CommunicationAttachment> Attachments { get; set; }
-    public virtual CommunicationContent Content { get; set; }
     public virtual CommunicationTemplate CommunicationTemplate { get; set; }
     public virtual Group ListGroup { get; set; }
     public virtual SystemCommunication SystemCommunication { get; set; }
     public virtual Person SenderPerson { get; set; }
     
     # endregion
+}
+
+[Owned]
+public record CommunicationReview
+{
+    public string ReviewerNote { get; set; }
+    public DateTime? ReviewedDateTime { get; set; }
+    public int? ReviewerPersonId { get; set; }
 }
