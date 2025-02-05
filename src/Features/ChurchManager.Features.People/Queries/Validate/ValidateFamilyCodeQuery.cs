@@ -64,6 +64,6 @@ public class RequestFamilyCodeHandler(
             }, cancellationToken);
         }
         
-        return new ApiResponse();
+        return ApiResponse.Success();
     }
 }

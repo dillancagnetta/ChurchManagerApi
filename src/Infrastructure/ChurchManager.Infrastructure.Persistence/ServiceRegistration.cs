@@ -75,6 +75,7 @@ namespace ChurchManager.Infrastructure.Persistence
                 services.AddInitializer<ConnectionTypesDbSeedInitializer>();
                 services.AddInitializer<ChurchAttendanceTypeDbInitializer>();
                 services.AddInitializer<DiscipleshipDbSeedInitializer>();
+                services.AddInitializer<CommunicationTemplatesDbSeedInitializer>();
 
                 if(environment.IsProduction())
                 {

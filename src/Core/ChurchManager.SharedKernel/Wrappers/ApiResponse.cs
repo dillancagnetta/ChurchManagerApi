@@ -23,5 +23,7 @@
         public string Message { get; set; }
         public List<string> Errors { get; set; }
         public dynamic Data { get; set; }
+        
+        public static ApiResponse Success() => new() {Succeeded = true };
     }
 }
