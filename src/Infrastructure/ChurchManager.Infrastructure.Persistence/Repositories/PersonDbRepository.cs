@@ -4,7 +4,9 @@ using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Queries;
 using ChurchManager.Domain.Features.People.Repositories;
+using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;
+using ChurchManager.Infrastructure.Persistence.Extensions;
 using CodeBoss.Extensions;
 using Codeboss.Results;
 using Microsoft.EntityFrameworkCore;
@@ -15,8 +17,11 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
 {
     public class PersonDbRepository : GenericRepositoryBase<Person>, IPersonDbRepository
     {
-        public PersonDbRepository(ChurchManagerDbContext dbContext) : base(dbContext)
+        private readonly IQueryCache _cache;
+
+        public PersonDbRepository(ChurchManagerDbContext dbContext, IQueryCache cache) : base(dbContext)
         {
+            _cache = cache;
         }
 
         /// <summary>
@@ -24,11 +29,12 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
         /// </summary>
         /// <param name="searchParameters">The search parameters.</param>
         /// <param name="includeDeceased">if set to <c>true</c> [include deceased].</param>
+        /// <param name="includes">data table includes</param>
         /// <returns>A IEnumerable of person, ordered by the likelihood they are a good match for the query.</returns>
-        public IQueryable<Person> FindPersons(PersonMatchQuery searchParameters, bool includeDeceased = false)
+        public IQueryable<Person> FindPersons(PersonMatchQuery searchParameters, bool includeDeceased = false, params string[] includes)
         {
             // Query by last name, suffix, dob, and gender
-            var query = Queryable(includeDeceased)
+            var query = Queryable(includes, includeDeceased)
                 .AsNoTracking()
                 .Where(p => 
                     p.FullName.FirstName == searchParameters.FirstName &&
@@ -46,6 +52,12 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
         {
             return Queryable(new PersonQueryOptions() {IncludeDeceased = includeDeceased});
         }
+        
+        public IQueryable<Person> Queryable(string[] includes, bool includeDeceased)
+        {
+            var options = new PersonQueryOptions() {IncludeDeceased = includeDeceased};
+            return Queryable(includes, options);
+        }
 
         public IQueryable<Person> Queryable(PersonQueryOptions personQueryOptions)
         {
@@ -54,30 +66,35 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
 
         public async Task<dynamic> DashboardChurchConnectionStatusBreakdown(int? churchId = null, CancellationToken cancellationToken = default)
         {
-            var query = Queryable(false).AsNoTracking();
+            var cacheKey = CacheKeyHelper.CacheKey("DashboardChurchConnectionStatusBreakdown_".ToLower() + (churchId ??= 0));
             
-            if (churchId.HasValue && churchId.Value > 0)
+            return await _cache.GetOrSetAsync<dynamic>(cacheKey, async () =>
             {
-                query = query.Where(x => x.ChurchId == churchId.Value);
-            }
+                var query = Queryable(false).AsNoTracking();
             
-            var connectionStatus = await query.GroupBy(p => p.ConnectionStatus)
-                .Select(g => new { name = g.Key.Value, count = g.Count() })
-                .ToListAsync(cancellationToken);
+                if (churchId.HasValue && churchId.Value > 0)
+                {
+                    query = query.Where(x => x.ChurchId == churchId.Value);
+                }
             
-            var gender = await query.GroupBy(p => p.Gender)
-                .Select(g => new { name = g.Key.Value, count = g.Count() })
-                .ToListAsync(cancellationToken);
+                var connectionStatus = await query.GroupBy(p => p.ConnectionStatus)
+                    .Select(g => new { name = g.Key.Value, count = g.Count() })
+                    .ToListAsync(cancellationToken);
             
-            var age = await query.GroupBy(p => p.AgeClassification)
-                .Select(g => new { name = g.Key.Value, count = g.Count() })
-                .ToListAsync(cancellationToken);
+                var gender = await query.GroupBy(p => p.Gender)
+                    .Select(g => new { name = g.Key.Value, count = g.Count() })
+                    .ToListAsync(cancellationToken);
             
-            connectionStatus = connectionStatus.OrderBy(x => x.name).ToList();
-            gender = gender.OrderBy(x => x.name).ToList();
-            age = age.OrderBy(x => x.name).ToList();
+                var age = await query.GroupBy(p => p.AgeClassification)
+                    .Select(g => new { name = g.Key.Value, count = g.Count() })
+                    .ToListAsync(cancellationToken);
             
-            return new { connectionStatus, gender, age };
+                connectionStatus = connectionStatus.OrderBy(x => x.name).ToList();
+                gender = gender.OrderBy(x => x.name).ToList();
+                age = age.OrderBy(x => x.name).ToList();
+            
+                return new { connectionStatus, gender, age };
+            }, ct: cancellationToken);
         }
 
         public async Task<OperationResult<Guid?>> UserLoginIdForPersonAsync(int personId, CancellationToken cancellationToken = default)

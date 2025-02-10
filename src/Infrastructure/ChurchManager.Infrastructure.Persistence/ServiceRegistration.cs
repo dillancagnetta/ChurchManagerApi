@@ -143,6 +143,9 @@ namespace ChurchManager.Infrastructure.Persistence
             services.AddScoped<ISqlQueryHandler, SqlQueryHandler>();
             services.AddScoped<ITemplateRepository, TemplateDbRepository>();
             
+            // Register the query cache service
+            services.AddScoped<IQueryCache, QueryCache>();
+            
             #endregion
         }
     }

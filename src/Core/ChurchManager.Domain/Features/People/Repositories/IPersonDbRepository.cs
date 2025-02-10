@@ -6,7 +6,7 @@ namespace ChurchManager.Domain.Features.People.Repositories
 {
     public interface IPersonDbRepository : IGenericDbRepository<Person>
     {
-        IQueryable<Person> FindPersons(PersonMatchQuery searchParameters, bool includeDeceased = false);
+        IQueryable<Person> FindPersons(PersonMatchQuery searchParameters, bool includeDeceased = false, params string[] includes);
         IQueryable<Person> Queryable(bool includeDeceased);
         IQueryable<Person> Queryable(PersonQueryOptions personQueryOptions);
         Task<dynamic> DashboardChurchConnectionStatusBreakdown(int? churchId = null, CancellationToken cancellationToken = default);
