@@ -48,10 +48,12 @@ public class SendEmailToRecipientConsumer : IConsumer<SendEmailToRecipientEvent>
             var templateInfo = new TemplateInfo(template.Name, null);
 
             var result = await _email.SendEmailAsync(emailRecipient, subject, templateInfo, context.CancellationToken);
-
+            Logger.LogInformation($"SendEmailAsync success: [{result.IsSuccess}] ------");
+            
             recipient.AttemptCount++;
             recipient.Status = result.IsSuccess? CommunicationRecipientStatus.Sent : CommunicationRecipientStatus.Failed.Value;
-            recipient.StatusNote = result.IsSuccess? null : result.Errors.First().Message ;
+            recipient.StatusNote = result.IsSuccess? null : result.Errors.First().Message;
+            recipient.UniqueMessageId = result.IsSuccess? result.Result : null;
             _communicationDb.SaveChangesAsync();
         }
     }

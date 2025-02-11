@@ -21,9 +21,9 @@ namespace ChurchManager.Infrastructure.Shared.Email
             _awsSecretAccessKey = awsSecretAccessKey;
         }
 
-        public async Task<OperationResult> SendEmailAsync(EmailRecipient recipient, string subject, string htmlBody)
+        public async Task<OperationResult<string>> SendEmailAsync(EmailRecipient recipient, string subject, string htmlBody)
         {
-            if(recipient.EmailAddress.IsNullOrEmpty()) return OperationResult.Fail("Email address is required");
+            if(recipient.EmailAddress.IsNullOrEmpty()) return OperationResult<string>.Fail("Email address is required");
                 
             try
             {
@@ -65,20 +65,20 @@ namespace ChurchManager.Infrastructure.Shared.Email
                 switch (response.HttpStatusCode)
                 {
                     case HttpStatusCode.OK:
-                        return OperationResult.FromResult(response.MessageId);
+                        return new OperationResult<string>(true, response.MessageId);
                     case HttpStatusCode.BadRequest:
-                        return OperationResult.Fail("Bad request. Please check your email parameters.");
+                        return OperationResult<string>.Fail("Bad request. Please check your email parameters.");
                     case HttpStatusCode.Forbidden:
-                        return OperationResult.Fail("You don't have permission to send emails.");
+                        return OperationResult<string>.Fail("You don't have permission to send emails.");
                     case HttpStatusCode.TooManyRequests:
-                        return OperationResult.Fail("Sending limit exceeded. Please try again later.");
+                        return OperationResult<string>.Fail("Sending limit exceeded. Please try again later.");
                     default:
-                        return OperationResult.Fail($"Failed to send email. Status code: {response.HttpStatusCode}");
+                        return OperationResult<string>.Fail($"Failed to send email. Status code: {response.HttpStatusCode}");
                 }
             }
             catch (Exception ex)
             {
-                return OperationResult.Fail($"Failed to send email: {ex.Message}");
+                return OperationResult<string>.Fail($"Failed to send email: {ex.Message}");
             }
         }
 

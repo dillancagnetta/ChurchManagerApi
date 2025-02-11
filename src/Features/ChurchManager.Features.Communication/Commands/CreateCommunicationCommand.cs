@@ -31,6 +31,7 @@ public class CreateCommunicationHandler(ICommunicationDbRepository dbRepository)
             CommunicationTemplateId = command.CommunicationTemplateId,
             CommunicationContent = command.Content,
             Recipients = command.PersonIds.Select(id => new CommunicationRecipient { PersonId = id }).ToList(),
+            IsBulkCommunication = command.PersonIds.Length > 1
         };
 
         await dbRepository.AddAsync(communication, ct);
@@ -51,9 +52,8 @@ public class ApproveCommunicationHandler(ICommunicationDbRepository dbRepository
     {
         var communication = await dbRepository.GetByIdAsync(command.CommunicationId, ct);
 
-        if (communication is not null)
+        if (communication is not null && communication.Status != CommunicationStatus.Approved.Value)
         {
-               
             communication.Approve(new CommunicationReview
             {
                 ReviewedDateTime = DateTime.UtcNow,
@@ -63,7 +63,7 @@ public class ApproveCommunicationHandler(ICommunicationDbRepository dbRepository
         
             await dbRepository.UpdateAsync(communication, ct);
             
-            return new ApiResponse("Communication created successfully.");
+            return new ApiResponse("Communication approved successfully.");
         }
         
         return new ApiResponse("Communication not found.");

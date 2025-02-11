@@ -72,6 +72,7 @@ public class CommunicationApprovedConsumer: IConsumer<CommunicationApprovedEvent
                         
                         var peopleWithActiveEmail = people.Where(x => _isEmailActive(x.Email));
 
+                        // Set failure status for recipients without active email addresses
                         var peopleWithoutActiveEmails = recipientPersonIds.Except(peopleWithActiveEmail.Select(x => x.Id));
                         foreach (var personWithoutActiveEmail in peopleWithoutActiveEmails)
                         {
@@ -80,8 +81,7 @@ public class CommunicationApprovedConsumer: IConsumer<CommunicationApprovedEvent
                             recipient.StatusNote = "Email address not found or is not active.";
                         }
 
-                        _dbRepository.SaveChangesAsync();
-
+                        // Send to recipients with active email addresses
                         foreach (var personWithActiveEmail in peopleWithActiveEmail)
                         {
                             var recipient = recipients.FirstOrDefault(x => x.PersonId == personWithActiveEmail.Id);
@@ -91,6 +91,10 @@ public class CommunicationApprovedConsumer: IConsumer<CommunicationApprovedEvent
                                 recipient.Id
                             ), context.CancellationToken);
                         }
+                        
+                        // Save changes
+                        communication.SendDateTime = DateTime.UtcNow;
+                        _dbRepository.SaveChangesAsync();
                     }  
                 }
                 

@@ -35,7 +35,7 @@ public class EmailOrchestrator : IEmailOrchestrator
         Logger = logger;
     }
 
-    public async Task<OperationResult> SendEmailAsync(EmailRecipient recipient, string subject , TemplateInfo templateInfo, CancellationToken ct = default)
+    public async Task<OperationResult<string>> SendEmailAsync(EmailRecipient recipient, string subject , TemplateInfo templateInfo, CancellationToken ct = default)
     {
         try
         {
@@ -55,7 +55,7 @@ public class EmailOrchestrator : IEmailOrchestrator
         } catch (Exception ex)
         {
             Logger.LogError($"Error sending email: {ex.Message}");
-            return OperationResult.Fail($"Error sending email: {ex.Message}");
+            return OperationResult<string>.Fail($"Error sending email: {ex.Message}");
         }
     }
 }

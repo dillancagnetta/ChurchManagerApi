@@ -5,7 +5,7 @@ namespace ChurchManager.Domain.Features.Communications.Services;
 
 public interface IEmailOrchestrator
 {
-    Task<OperationResult> SendEmailAsync(
+    Task<OperationResult<string>> SendEmailAsync(
         EmailRecipient recipient,
         string subject,
         TemplateInfo templateInfo,
