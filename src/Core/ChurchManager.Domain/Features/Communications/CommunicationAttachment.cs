@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Persistence.Shared;
 
-namespace ChurchManager.Domain.Features.Communication;
+namespace ChurchManager.Domain.Features.Communications;
 
 public class CommunicationAttachment: AuditableEntity<int>
 {
@@ -39,7 +38,7 @@ public class CommunicationAttachment: AuditableEntity<int>
     
     # region Navigation
     
-    public virtual Communication Communication { get; set; }
+    public virtual Communications.Communication Communication { get; set; }
     
     # endregion
 }

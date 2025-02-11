@@ -1,4 +1,4 @@
-﻿namespace ChurchManager.Domain.Features.Communication.Services;
+﻿namespace ChurchManager.Domain.Features.Communications.Services;
 
 public interface IWebPushService
 {

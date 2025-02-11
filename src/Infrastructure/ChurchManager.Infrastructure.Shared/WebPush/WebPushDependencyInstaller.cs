@@ -1,4 +1,4 @@
-﻿using ChurchManager.Domain.Features.Communication.Services;
+﻿using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Infrastructure.Shared.Communications;
 using CodeBoss.AspNetCore.DependencyInjection;
 using Microsoft.Extensions.Configuration;

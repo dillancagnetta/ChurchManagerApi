@@ -2,7 +2,7 @@
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Persistence.Shared;
 
-namespace ChurchManager.Domain.Features.Communication;
+namespace ChurchManager.Domain.Features.Communications;
 
 public class CommunicationRecipient : Entity<int>
 {
@@ -19,7 +19,7 @@ public class CommunicationRecipient : Entity<int>
     /// <summary>
     /// Gets or sets the status of the Communication submission to the recipient.
     /// </summary>
-    public CommunicationRecipientStatus Status { get; set; }
+    public CommunicationRecipientStatus Status { get; set; } = CommunicationRecipientStatus.Pending.Value;
 
     /// <summary>
     /// Gets or sets the status note.
@@ -41,10 +41,16 @@ public class CommunicationRecipient : Entity<int>
     /// </summary>
     [MaxLength( 100 )]
     public string UniqueMessageId { get; set; }
-    
+
+    /// <summary>
+    /// Number of attempts made to send 
+    /// </summary>
+    public int AttemptCount  { get; set; }
+
     # region Navigation
     
     public virtual Communication Communication { get; set; }
+    public virtual Person RecipientPerson { get; set; }
     
     # endregion
 }

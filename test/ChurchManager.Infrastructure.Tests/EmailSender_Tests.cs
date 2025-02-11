@@ -1,4 +1,4 @@
-﻿using ChurchManager.Domain.Features.Communication;
+﻿using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Infrastructure.Shared.Email;
 using ChurchManager.Infrastructure.Shared.Templating;
 using ChurchManager.Infrastructure.Tests.Templates;

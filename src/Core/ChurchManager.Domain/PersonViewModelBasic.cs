@@ -10,5 +10,6 @@ namespace ChurchManager.Domain
         public string AgeClassification { get; set; }
         public string PhotoUrl { get; set; }
         public BirthDate BirthDate { get; set; }
+        public Email Email { get; set; }
     }
 }

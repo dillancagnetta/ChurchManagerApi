@@ -2,9 +2,8 @@
 using Amazon;
 using Amazon.SimpleEmailV2;
 using Amazon.SimpleEmailV2.Model;
-using ChurchManager.Domain.Features.Communication;
-using ChurchManager.Domain.Features.Communication.Services;
-using ChurchManager.Domain.Features.People;
+using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Communications.Services;
 using CodeBoss.Extensions;
 using Codeboss.Results;
 using Message = Amazon.SimpleEmailV2.Model.Message;

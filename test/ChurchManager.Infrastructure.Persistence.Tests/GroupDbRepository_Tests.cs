@@ -3,11 +3,13 @@ using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Parameters;
 using ChurchManager.Features.Groups.Infrastructure.Mapper;
 using ChurchManager.Features.Groups.Services;
+using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using ChurchManager.Infrastructure.Persistence.Repositories;
 using ChurchManager.Infrastructure.Persistence.Tests.Helpers;
 using ChurchManager.SharedKernel.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -77,7 +79,7 @@ namespace ChurchManager.Infrastructure.Persistence.Tests
         {
             using (var dbContext = new ChurchManagerDbContext(_options, new LocalTenantProvider(), null))
             {
-                var dbRepository = new GroupAttendanceDbRepository(dbContext);
+                var dbRepository = new GroupAttendanceDbRepository(dbContext, new Mock<IQueryCache>().Object);
 
                 var fromUtc = DateTime.Now.AddDays(-90).SetKindUtc();
                 var actual = await dbRepository.BrowseGroupAttendance(

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace ChurchManager.Domain.Features.Communication
+namespace ChurchManager.Domain.Features.Communications
 {
     /// <summary>
     ///     <see href="https://notifications.spec.whatwg.org/#dictdef-notificationoptions">Notification API Standard</see>

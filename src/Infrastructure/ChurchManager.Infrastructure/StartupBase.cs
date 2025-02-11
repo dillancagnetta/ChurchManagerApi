@@ -183,6 +183,9 @@ namespace ChurchManager.Infrastructure
                         cfg.Host(new Uri(connectionString), h => { });
 
                         cfg.ConfigureEndpoints(provider, new SnakeCaseEndpointNameFormatter(false));
+                        
+                        cfg.PrefetchCount = config.RabbitMqPrefetchCount; // Number of messages to prefetch
+                        cfg.ConcurrentMessageLimit = config.RabbitMqConcurrentMessageLimit; // Number of concurrent consumers
                     })); 
                 }
                 else

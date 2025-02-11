@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using ChurchManager.Api.Middlewares;
-using ChurchManager.Domain.Features.Communication.Repositories;
+using ChurchManager.Features.Communication.Commands;
 using ChurchManager.SharedKernel.Common;
 using ChurchManager.SharedKernel.Wrappers;
 using CodeBoss.Extensions;
@@ -100,6 +100,31 @@ public class CommunicationsController(ILogger<CommunicationsController> logger) 
     {
         // Your existing code for handling SNS messages
         logger.LogInformation($"Processing SNS message: {message.Message}");
+    }
+
+    
+    
+   /*
+    {
+      "personIds": [
+        1
+      ],
+      "communicationType": "Email",
+      "subject": "Test email",
+      "communicationTemplateId": 2,
+      "senderPersonId": 1
+    }
+    */
+    [HttpPost("create-communication")]
+    public async Task<IActionResult> CreateCommunication([FromBody] CreateCommunicationCommand command, CancellationToken token)
+    {
+        return Ok(await Mediator.Send(command, token));
+    }
+    
+    [HttpPost("approve-communication")]
+    public async Task<IActionResult> ApproveCommunication([FromBody] ApproveCommunicationCommand command, CancellationToken token)
+    {
+        return Ok(await Mediator.Send(command, token));
     }
 }
 

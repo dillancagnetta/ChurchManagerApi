@@ -1,6 +1,5 @@
 ﻿#region
 
-using ChurchManager.Domain.Features.Communication;
 using ChurchManager.Domain.Features.Communications;
 using Microsoft.EntityFrameworkCore;
 

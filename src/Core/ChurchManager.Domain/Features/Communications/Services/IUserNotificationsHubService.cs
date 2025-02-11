@@ -1,6 +1,6 @@
 ﻿using ChurchManager.Infrastructure.Abstractions.MassTransit;
 
-namespace ChurchManager.Domain.Features.Communication.Services
+namespace ChurchManager.Domain.Features.Communications.Services
 {
     public interface IUserNotificationsHubService : IUserHubService
     {

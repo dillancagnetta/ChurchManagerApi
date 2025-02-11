@@ -1,6 +1,6 @@
 ﻿using Codeboss.Types;
 
-namespace ChurchManager.Domain.Features.Communication.Services
+namespace ChurchManager.Domain.Features.Communications.Services
 {
     // Marker for easy access
     public interface IPushNotificationsService

@@ -1,7 +1,8 @@
-﻿using ChurchManager.Domain.Features.Communication.Services;
+﻿using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Infrastructure.Abstractions.Communication;
 using ChurchManager.Infrastructure.Abstractions.Network;
 using ChurchManager.Infrastructure.Shared.Templating;
+using ChurchManager.Infrastructure.Shared.Templating.DataResolvers;
 using CodeBoss.AspNetCore.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +31,10 @@ namespace ChurchManager.Infrastructure.Shared.Email
             } );
             
             services.AddSingleton<IAwsIpRangeLoader, AwsIpRangeLoader>();
+            
+            services.AddScoped<IEmailOrchestrator, EmailOrchestrator>();
+
+            services.AddTemplateDataResolvers();
         }
     }
 }

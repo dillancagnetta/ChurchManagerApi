@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using ChurchManager.Domain.Features.Communication.Repositories;
+using ChurchManager.Domain.Features.Communications.Repositories;
 using CodeBoss.Extensions;
 using DotLiquid;
 using DotLiquid.FileSystems;
@@ -8,7 +8,7 @@ using Microsoft.Extensions.Caching.Distributed;
 namespace ChurchManager.Infrastructure.Shared.Templating;
 
 public class DatabaseTemplateFileSystem(
-    ITemplateRepository templateDb,
+    ITemplateDbRepository templateDb,
     IDistributedCache cache) : IFileSystem
 {   
     private readonly TimeSpan _cacheDuration = TimeSpan.FromMinutes(30);

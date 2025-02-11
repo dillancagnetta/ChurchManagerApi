@@ -2,7 +2,7 @@
 using ChurchManager.Domain.Common;
 using Codeboss.Types;
 
-namespace ChurchManager.Domain.Features.Communication;
+namespace ChurchManager.Domain.Features.Communications;
 
 /// <summary>
 /// Represents a message entity for persistent messages

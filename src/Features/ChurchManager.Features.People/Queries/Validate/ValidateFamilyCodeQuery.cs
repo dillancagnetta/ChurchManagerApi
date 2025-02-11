@@ -1,5 +1,5 @@
-﻿using ChurchManager.Domain.Features.Communication;
-using ChurchManager.Domain.Features.Communication.Events;
+﻿using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Communications.Events;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions;

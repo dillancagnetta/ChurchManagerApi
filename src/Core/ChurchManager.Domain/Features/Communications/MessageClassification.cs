@@ -1,6 +1,6 @@
 ﻿using Codeboss.Types;
 
-namespace ChurchManager.Domain.Features.Communication;
+namespace ChurchManager.Domain.Features.Communications;
 
 public class MessageClassification: Enumeration<MessageClassification, string>
 {

@@ -1,7 +1,6 @@
-﻿using ChurchManager.Domain.Features.People;
-using Codeboss.Results;
+﻿using Codeboss.Results;
 
-namespace ChurchManager.Domain.Features.Communication.Services
+namespace ChurchManager.Domain.Features.Communications.Services
 {
     public interface IEmailSender
     {

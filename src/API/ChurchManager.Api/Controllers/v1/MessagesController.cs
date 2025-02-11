@@ -1,4 +1,4 @@
-﻿using ChurchManager.Domain.Features.Communication.Repositories;
+﻿using ChurchManager.Domain.Features.Communications.Repositories;
 using ChurchManager.SharedKernel.Common;
 using ChurchManager.SharedKernel.Wrappers;
 using CodeBoss.Extensions;

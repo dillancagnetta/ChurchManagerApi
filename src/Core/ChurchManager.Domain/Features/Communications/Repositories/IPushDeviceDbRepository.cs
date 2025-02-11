@@ -1,6 +1,6 @@
 ﻿using ChurchManager.Infrastructure.Abstractions.Persistence;
 
-namespace ChurchManager.Domain.Features.Communication.Repositories;
+namespace ChurchManager.Domain.Features.Communications.Repositories;
 
 public interface IPushDeviceDbRepository: IGenericDbRepository<PushDevice>
 {

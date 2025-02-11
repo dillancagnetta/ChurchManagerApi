@@ -1,5 +1,5 @@
 ﻿using ChurchManager.Application.Abstractions.Services;
-using ChurchManager.Domain.Features.Communication;
+using ChurchManager.Domain.Features.Communications;
 using MediatR;
 
 namespace ChurchManager.Features.Communication.Commands

@@ -2,7 +2,7 @@
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using Convey.CQRS.Queries;
 
-namespace ChurchManager.Domain.Features.Communication.Repositories;
+namespace ChurchManager.Domain.Features.Communications.Repositories;
 
 public interface IMessageDbRepository: IGenericDbRepository<Message>
 {

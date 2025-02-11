@@ -1,6 +1,6 @@
 ﻿using Codeboss.Types;
 
-namespace ChurchManager.Domain.Features.Communication;
+namespace ChurchManager.Domain.Features.Communications;
 
 public class CommunicationStatus : Enumeration<CommunicationStatus, string>
 {
@@ -51,6 +51,8 @@ public class CommunicationRecipientStatus : Enumeration<CommunicationRecipientSt
     /// Communication was successfully delivered to recipient's mail server
     /// </summary>  
     public static CommunicationRecipientStatus Delivered = new("Delivered");
+    
+    public static CommunicationRecipientStatus Sent = new("Sent");
     
     
     public static CommunicationRecipientStatus Failed = new("Failed");

@@ -23,9 +23,9 @@ public class CommunicationTemplatesDbSeedInitializer(IServiceScopeFactory scopeF
 
         if (!await dbContext.CommunicationTemplate.AnyAsync())
         {
-            var template1 = await CreateCommunicationTemplate("FollowUpAssignment");
-            var template2 = await CreateCommunicationTemplate("FamilyCodeRequested");
-            var baseTemplate = await CreateCommunicationTemplate("_Layout", true);
+            var template1 = await CreateCommunicationTemplate(DomainConstants.Communication.Email.Templates.FollowUpTemplate);
+            var template2 = await CreateCommunicationTemplate(DomainConstants.Communication.Email.Templates.FamilyCodeRequest);
+            var baseTemplate = await CreateCommunicationTemplate(DomainConstants.Communication.Email.Templates.Layout, true);
             
             await dbContext.CommunicationTemplate.AddRangeAsync(template1, template2, baseTemplate);
             await dbContext.SaveChangesAsync();

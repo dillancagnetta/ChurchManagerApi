@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using ChurchManager.Domain.Common;
-using ChurchManager.Domain.Features.Communication;
 using ChurchManager.Domain.Features.Communications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -108,6 +107,12 @@ public class CommunicationRecipientConfiguration : IEntityTypeConfiguration<Comm
         builder
             .Property(e => e.Status)
             .HasEnumerationConversion<CommunicationRecipientStatus>();
+        
+        builder.HasOne(r => r.RecipientPerson)
+            .WithMany()
+            .HasForeignKey(r => r.PersonId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
 

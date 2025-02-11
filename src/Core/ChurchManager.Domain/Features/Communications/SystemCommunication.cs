@@ -1,6 +1,6 @@
 ﻿using ChurchManager.Persistence.Shared;
 
-namespace ChurchManager.Domain.Features.Communication;
+namespace ChurchManager.Domain.Features.Communications;
 
 /// <summary>
 /// Represents a System email template.

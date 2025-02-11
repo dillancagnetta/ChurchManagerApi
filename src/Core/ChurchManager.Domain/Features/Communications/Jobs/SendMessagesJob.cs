@@ -1,10 +1,10 @@
-﻿using ChurchManager.Domain.Features.Communication.Repositories;
-using ChurchManager.Domain.Features.Communication.Services;
+﻿using ChurchManager.Domain.Features.Communications.Repositories;
+using ChurchManager.Domain.Features.Communications.Services;
 using CodeBoss.Jobs.Abstractions;
 using CodeBoss.Jobs.Jobs;
 using Microsoft.Extensions.Logging;
 
-namespace ChurchManager.Domain.Features.Communication.Jobs;
+namespace ChurchManager.Domain.Features.Communications.Jobs;
 /// <summary>
 /// NOT YET REGISTERED
 /// </summary>

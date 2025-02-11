@@ -1,7 +1,7 @@
 ﻿#region
 
-using ChurchManager.Domain.Features.Communication;
-using ChurchManager.Domain.Features.Communication.Repositories;
+using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Communications.Repositories;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 

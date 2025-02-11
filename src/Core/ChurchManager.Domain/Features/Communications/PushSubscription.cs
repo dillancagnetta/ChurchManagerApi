@@ -1,4 +1,4 @@
-﻿namespace ChurchManager.Domain.Features.Communication
+﻿namespace ChurchManager.Domain.Features.Communications
 {
     public class PushSubscription
     {

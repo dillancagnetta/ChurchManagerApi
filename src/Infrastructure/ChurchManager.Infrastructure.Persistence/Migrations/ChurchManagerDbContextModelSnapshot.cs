@@ -233,13 +233,16 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.ToTable("ChurchGroup");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Communication.Communication", b =>
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communications.Communication", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CommunicationContent")
+                        .HasColumnType("text");
 
                     b.Property<int?>("CommunicationTemplateId")
                         .HasColumnType("integer");
@@ -295,6 +298,10 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("Subject")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<int?>("SystemCommunicationId")
                         .HasColumnType("integer");
 
@@ -311,7 +318,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.ToTable("Communication");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Communication.CommunicationAttachment", b =>
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communications.CommunicationAttachment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -379,13 +386,16 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.ToTable("CommunicationAttachment");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Communication.CommunicationRecipient", b =>
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communications.CommunicationRecipient", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AttemptCount")
+                        .HasColumnType("integer");
 
                     b.Property<int>("CommunicationId")
                         .HasColumnType("integer");
@@ -420,10 +430,73 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("CommunicationId");
 
+                    b.HasIndex("PersonId");
+
                     b.ToTable("CommunicationRecipient");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Communication.Message", b =>
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communications.CommunicationTemplate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Category")
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("InactiveDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsBaseTemplate")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LogoFileUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("RecordStatus")
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.Property<string>("SupportedTypes")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CommunicationTemplate");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communications.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -486,7 +559,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.ToTable("Message");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Communication.PushDevice", b =>
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communications.PushDevice", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -519,7 +592,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.ToTable("PushDevice");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Communication.SystemCommunication", b =>
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communications.SystemCommunication", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -537,67 +610,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SystemCommunication");
-                });
-
-            modelBuilder.Entity("ChurchManager.Domain.Features.Communications.CommunicationTemplate", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Category")
-                        .HasMaxLength(25)
-                        .HasColumnType("character varying(25)");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("InactiveDateTime")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<bool>("IsBaseTemplate")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsSystem")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("LogoFileUrl")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("RecordStatus")
-                        .HasMaxLength(25)
-                        .HasColumnType("character varying(25)");
-
-                    b.Property<string>("SupportedTypes")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CommunicationTemplate");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Discipleship.DiscipleshipProgram", b =>
@@ -2302,7 +2314,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Navigation("LeaderPerson");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Communication.Communication", b =>
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communications.Communication", b =>
                 {
                     b.HasOne("ChurchManager.Domain.Features.Communications.CommunicationTemplate", "CommunicationTemplate")
                         .WithMany()
@@ -2319,12 +2331,12 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasForeignKey("SenderPersonId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("ChurchManager.Domain.Features.Communication.SystemCommunication", "SystemCommunication")
+                    b.HasOne("ChurchManager.Domain.Features.Communications.SystemCommunication", "SystemCommunication")
                         .WithMany()
                         .HasForeignKey("SystemCommunicationId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.OwnsOne("ChurchManager.Domain.Features.Communication.CommunicationReview", "Review", b1 =>
+                    b.OwnsOne("ChurchManager.Domain.Features.Communications.CommunicationReview", "Review", b1 =>
                         {
                             b1.Property<int>("CommunicationId")
                                 .HasColumnType("integer");
@@ -2357,9 +2369,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Navigation("SystemCommunication");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Communication.CommunicationAttachment", b =>
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communications.CommunicationAttachment", b =>
                 {
-                    b.HasOne("ChurchManager.Domain.Features.Communication.Communication", "Communication")
+                    b.HasOne("ChurchManager.Domain.Features.Communications.Communication", "Communication")
                         .WithMany("Attachments")
                         .HasForeignKey("CommunicationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2368,18 +2380,26 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Navigation("Communication");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Communication.CommunicationRecipient", b =>
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communications.CommunicationRecipient", b =>
                 {
-                    b.HasOne("ChurchManager.Domain.Features.Communication.Communication", "Communication")
+                    b.HasOne("ChurchManager.Domain.Features.Communications.Communication", "Communication")
                         .WithMany("Recipients")
                         .HasForeignKey("CommunicationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ChurchManager.Domain.Features.People.Person", "RecipientPerson")
+                        .WithMany()
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("Communication");
+
+                    b.Navigation("RecipientPerson");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Communication.Message", b =>
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communications.Message", b =>
                 {
                     b.HasOne("ChurchManager.Domain.Common.UserLogin", "UserLogin")
                         .WithMany()
@@ -2390,7 +2410,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Navigation("UserLogin");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Communication.PushDevice", b =>
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communications.PushDevice", b =>
                 {
                     b.HasOne("ChurchManager.Domain.Features.People.Person", "Person")
                         .WithMany()
@@ -3139,7 +3159,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Navigation("Churches");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Communication.Communication", b =>
+            modelBuilder.Entity("ChurchManager.Domain.Features.Communications.Communication", b =>
                 {
                     b.Navigation("Attachments");
 

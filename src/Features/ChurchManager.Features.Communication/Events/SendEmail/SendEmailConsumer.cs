@@ -1,6 +1,6 @@
-﻿using ChurchManager.Domain.Features.Communication.Events;
-using ChurchManager.Domain.Features.Communication.Repositories;
-using ChurchManager.Domain.Features.Communication.Services;
+﻿using ChurchManager.Domain.Features.Communications.Events;
+using ChurchManager.Domain.Features.Communications.Repositories;
+using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Communication;
@@ -20,14 +20,14 @@ namespace ChurchManager.Features.Communication.Events.SendEmail
     {
         private readonly IEmailSender _sender;
         private readonly ITemplateParser _templateParser;
-        private readonly ITemplateRepository _templateDb;
+        private readonly ITemplateDbRepository _templateDb;
         private readonly IDistributedCache _cache;
         public ILogger<SendEmailConsumer> Logger { get; }
 
         public SendEmailConsumer(
             IEmailSender sender,
             ITemplateParser templateParser,
-            ITemplateRepository templateDb,
+            ITemplateDbRepository templateDb,
             IDistributedCache cache,
             ILogger<SendEmailConsumer> logger)
         {
@@ -40,7 +40,7 @@ namespace ChurchManager.Features.Communication.Events.SendEmail
 
         public async Task Consume(ConsumeContext<SendEmailEvent> context)
         {
-            Logger.LogInformation("------ SendEmailConsumer event received ------");
+            Logger.LogInformation("✔️------ SendEmailConsumer event received ------");
             
             var message = context.Message;
 

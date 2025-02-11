@@ -1,5 +1,5 @@
-﻿using ChurchManager.Domain.Features.Communication;
-using ChurchManager.Domain.Features.Communication.Services;
+﻿using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.SharedKernel.Common;
 using MediatR;
 

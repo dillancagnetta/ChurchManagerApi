@@ -1,4 +1,4 @@
-﻿using ChurchManager.Domain.Features.Communication;
+﻿using ChurchManager.Domain.Features.Communications;
 
 namespace ChurchManager.Application.Abstractions.Services
 {

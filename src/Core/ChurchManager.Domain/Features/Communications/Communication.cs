@@ -1,67 +1,65 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using ChurchManager.Domain.Common;
-using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Communications.Events;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
 using Microsoft.EntityFrameworkCore;
 
-namespace ChurchManager.Domain.Features.Communication;
+namespace ChurchManager.Domain.Features.Communications;
 
 public class Communication : AuditableEntity<int>, IAggregateRoot<int>
 {
     [MaxLength( 100 )]
-    public string Name { get; private set; }
+    public string Name { get;  set; }
+    
+    /// <summary>
+    /// Gets or sets the subject or title of the communication.
+    /// </summary>
+    [MaxLength( 100 )]
+    public string? Subject { get; set; }
     
     [MaxLength( 50 )]
-    public CommunicationType CommunicationType  { get; private set; }
+    public CommunicationType CommunicationType  { get;  set; }
     
     /// <summary>
     /// Gets or sets the <see cref="Group">list</see> that email is being sent to.
     /// </summary>
-    /// <value>
-    /// The list group identifier.
-    /// </value>
-    public int? ListGroupId { get; private set; }
+    public int? ListGroupId { get;  set; }
     
     /// <summary>
     /// Gets or sets the <see cref="Communications.CommunicationTemplate"/> that was used to compose this communication
     /// </summary>
-    /// <value>
-    /// The communication template identifier.
-    /// </value>
-    public int? CommunicationTemplateId { get; private  set; }
+    public int? CommunicationTemplateId { get;  set; }
+    
+    /// <summary>
+    /// Gets or sets the content if no template was used.
+    /// </summary>
+    public string CommunicationContent { get; set; }
 
     /// <summary>
     /// Gets or sets the sender <see cref="Person"/> identifier.
     /// </summary>
-    public int? SenderPersonId { get; private  set; }
+    public int? SenderPersonId { get;   set; }
     
     /// <summary>
     /// Gets or sets the is bulk communication.
     /// </summary>
-    /// <value>
-    /// The is bulk communication.
-    /// </value>
-    public bool IsBulkCommunication { get;private  set; }
+    public bool IsBulkCommunication { get;  set; }
     
     /// <summary>
     /// Gets or sets the datetime that communication was sent. This also indicates that communication shouldn't attempt to send again.
     /// </summary>
-    /// <value>
-    /// The send date time.
-    /// </value>
-    public DateTime? SendDateTime { get; private set; }
+    public DateTime? SendDateTime { get;  set; }
     
     /// <summary>
     /// Gets or sets the future send date for the communication. This allows a user to schedule when a communication is sent 
     /// and the communication will not be sent until that date and time.
     /// </summary>
-    public DateTime? FutureSendDateTime { get; private set; }
+    public DateTime? FutureSendDateTime { get;  set; }
     
     [MaxLength( 100 )]
-    public CommunicationStatus Status { get; private set; }
+    public CommunicationStatus Status { get;  set; }
     
     public CommunicationReview Review { get; set; } = new();
     
@@ -83,6 +81,20 @@ public class Communication : AuditableEntity<int>, IAggregateRoot<int>
     public virtual Person SenderPerson { get; set; }
     
     # endregion
+
+    #region Methods
+
+    public void Approve(CommunicationReview review)
+    {
+        Review = review;
+        Status = CommunicationStatus.Approved;
+        
+        AddDomainEvent(new CommunicationApprovedEvent(Id));
+    }
+    
+    public bool IsTemplatedCommunication() => CommunicationTemplateId.HasValue;
+
+    #endregion
 }
 
 [Owned]

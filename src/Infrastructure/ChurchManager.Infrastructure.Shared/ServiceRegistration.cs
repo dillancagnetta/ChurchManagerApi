@@ -1,4 +1,4 @@
-﻿using ChurchManager.Domain.Features.Communication.Services;
+﻿using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Infrastructure.Abstractions;
 using ChurchManager.Infrastructure.Abstractions.Security;
 using ChurchManager.Infrastructure.Shared.Communications;
