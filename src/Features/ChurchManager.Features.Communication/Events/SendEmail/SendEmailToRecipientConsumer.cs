@@ -54,6 +54,7 @@ public class SendEmailToRecipientConsumer : IConsumer<SendEmailToRecipientEvent>
             recipient.Status = result.IsSuccess? CommunicationRecipientStatus.Sent : CommunicationRecipientStatus.Failed.Value;
             recipient.StatusNote = result.IsSuccess? null : result.Errors.First().Message;
             recipient.UniqueMessageId = result.IsSuccess? result.Result : null;
+            recipient.SendDateTime = result.IsSuccess? DateTime.UtcNow : null;
             _communicationDb.SaveChangesAsync();
         }
     }
