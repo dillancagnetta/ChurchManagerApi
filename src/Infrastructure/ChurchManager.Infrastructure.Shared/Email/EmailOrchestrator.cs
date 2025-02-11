@@ -58,4 +58,27 @@ public class EmailOrchestrator : IEmailOrchestrator
             return OperationResult<string>.Fail($"Error sending email: {ex.Message}");
         }
     }
+
+    public async Task<OperationResult<string>> SendEmailAsync(EmailRecipient recipient, string subject, string content, CancellationToken ct = default)
+    {
+        try
+        {
+            Template.FileSystem = new DatabaseTemplateFileSystem(_templateDb, _cache);
+                
+            var resolver = _templateDataFactory.CreateResolver("DefaultNoTemplate");
+            var templateData = await resolver.ResolveDataAsync(recipient.PersonId, null, ct);
+            object model = new { Model = templateData };
+        
+            var htmlBody = _templateParser.Render(content, model);
+
+            var operationResult = await _sender.SendEmailAsync(recipient, subject, htmlBody);
+            
+            return operationResult;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError($"Error sending email: {ex.Message}");
+            return OperationResult<string>.Fail($"Error sending email: {ex.Message}");
+        }
+    }
 }

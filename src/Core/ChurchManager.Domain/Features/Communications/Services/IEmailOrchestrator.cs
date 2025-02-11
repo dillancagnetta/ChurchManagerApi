@@ -10,4 +10,10 @@ public interface IEmailOrchestrator
         string subject,
         TemplateInfo templateInfo,
         CancellationToken ct = default);
+    
+    Task<OperationResult<string>> SendEmailAsync(
+        EmailRecipient recipient,
+        string subject,
+        string body,
+        CancellationToken ct = default);
 }

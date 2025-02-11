@@ -2,6 +2,7 @@
 using ChurchManager.Domain.Features.Communications.Events;
 using ChurchManager.Domain.Features.Communications.Repositories;
 using ChurchManager.Domain.Features.Communications.Services;
+using Codeboss.Results;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
@@ -32,7 +33,7 @@ public class SendEmailToRecipientConsumer : IConsumer<SendEmailToRecipientEvent>
 
         var communicationId = context.Message.CommunicationId;
         var recipientId = context.Message.RecipientId;
-        var (subject, recipient, template) = await _communicationDb.CommunicationToSendAsync(
+        var (subject, content, hasTemplate, recipient, template) = await _communicationDb.CommunicationToSendAsync(
             communicationId,
             recipientId
             );
@@ -45,9 +46,16 @@ public class SendEmailToRecipientConsumer : IConsumer<SendEmailToRecipientEvent>
                 PersonId = recipient.PersonId
             };
 
-            var templateInfo = new TemplateInfo(template.Name, null);
-
-            var result = await _email.SendEmailAsync(emailRecipient, subject, templateInfo, context.CancellationToken);
+            var result = new OperationResult<string>();
+            if (hasTemplate)
+            {
+                var templateInfo = new TemplateInfo(template.Name, null);
+                result = await _email.SendEmailAsync(emailRecipient, subject, templateInfo, context.CancellationToken);
+            }
+            else
+            {
+                result = await _email.SendEmailAsync(emailRecipient, subject, content, context.CancellationToken);
+            }
             Logger.LogInformation($"SendEmailAsync success: [{result.IsSuccess}] ------");
             
             recipient.AttemptCount++;

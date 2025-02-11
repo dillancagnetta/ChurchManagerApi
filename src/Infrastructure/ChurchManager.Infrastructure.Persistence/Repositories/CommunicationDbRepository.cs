@@ -11,7 +11,7 @@ public class CommunicationDbRepository : GenericRepositoryBase<Communication>, I
     {
     }
 
-    public async Task<(string Subject, CommunicationRecipient Recipient, CommunicationTemplate Template)> CommunicationToSendAsync(int communicationId, int recipientId, CancellationToken ct = default)
+    public async Task<(string Subject, string Content, bool HasTemplate, CommunicationRecipient Recipient, CommunicationTemplate Template)> CommunicationToSendAsync(int communicationId, int recipientId, CancellationToken ct = default)
     {
         var communication = await Queryable()
                 .Include(x => x.Recipients)
@@ -23,10 +23,12 @@ public class CommunicationDbRepository : GenericRepositoryBase<Communication>, I
             {
                 //Attachments = x.Attachments,
                 Subject = x.Subject,
+                Content = x.CommunicationContent,
+                HasTemplate = x.IsTemplatedCommunication(),
                 Recipient = x.Recipients.SingleOrDefault(r => r.Id == recipientId),
                 Template = x.CommunicationTemplate
             }).SingleOrDefaultAsync(ct);
         
-        return (communication.Subject, communication.Recipient, communication.Template);
+        return (communication.Subject, communication.Content, communication.HasTemplate, communication.Recipient, communication.Template);
     }
 }
