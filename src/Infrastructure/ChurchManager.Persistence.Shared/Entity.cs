@@ -55,6 +55,8 @@ namespace ChurchManager.Persistence.Shared
 
             return dictionary;
         }
+        
+        public string EntityType => GetType().Name;
 
         #endregion
     }

@@ -5,6 +5,7 @@ using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Discipleship;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.People;
+using ChurchManager.Domain.Features.Permissions;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.Extensions;
 using Ical.Net.Serialization;
@@ -295,6 +296,19 @@ namespace ChurchManager.DataImporter
                     {
                         importAndPerson.Deconstruct(out var import, out var person);
 
+                        // Church Group Admin gets dynamic access to all churches in their group
+                        var permission = new EntityPermission
+                        {
+                            EntityType = "Church",
+                            IsDynamicScope = true,
+                            ScopeType = "ChurchGroup",
+                            ScopeId = 1, // churchGroupId
+                            CanView = true,
+                            CanEdit = true,
+                            CanDelete = true,
+                            IsSystem = true
+                        };
+                        
                         if (!string.IsNullOrEmpty(import.UserLoginId))
                         {
                             if (import.FullName.FirstName.Equals("Dillan") &&
@@ -305,7 +319,14 @@ namespace ChurchManager.DataImporter
                                     PersonId = person.Id,
                                     Username = "dillan",
                                     Password = BCrypt.Net.BCrypt.HashPassword("81118599"),
-                                    Roles = new List<string> {"Admin"}
+                                    Roles =
+                                    [
+                                        new("Admin", "System Admin")
+                                        {
+                                            IsSystem = true,
+                                            Permissions = [permission]
+                                        }
+                                    ],
                                 });
                             else
                                 dbContext.UserLogin.Add(new UserLogin
@@ -314,7 +335,14 @@ namespace ChurchManager.DataImporter
                                     PersonId = person.Id,
                                     Username = import.Email.ToLower(),
                                     Password = BCrypt.Net.BCrypt.HashPassword("pancake"),
-                                    Roles = new List<string> {"Cell Leader"}
+                                    Roles =
+                                    [
+                                        new("Group Leader")
+                                        {
+                                            IsSystem = true,
+                                            Permissions = [permission]
+                                        }
+                                    ],
                                 });
                         }
                     }

@@ -2,6 +2,7 @@
 
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
+using ChurchManager.Domain.Features.Permissions;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.AspNetCore.Startup;
 using CodeBoss.MultiTenant;
@@ -113,13 +114,33 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Production
                 ReceivedHolySpirit = true,
             };
 
+            // Church Group Admin gets dynamic access to all churches in their group
+            var permission = new EntityPermission
+            {
+                EntityType = "Church",
+                IsDynamicScope = true,
+                ScopeType = "ChurchGroup",
+                ScopeId = 1, // churchGroupId
+                CanView = true,
+                CanEdit = true,
+                CanDelete = true,
+                IsSystem = true
+            };
+            
             var dillanUserLogin = new UserLogin
             {
                 Id = Guid.Parse("08925ade-9249-476b-8787-b3dd8f5dbc13"),
                 Person = dillan,
                 Username = "dillan",
                 Password = BCrypt.Net.BCrypt.HashPassword("81118599"),
-                Roles = new List<string>{ "Admin" },
+                Roles =
+                [
+                    new("Admin", "System Admin")
+                    {
+                        IsSystem = true,
+                        Permissions = [permission]
+                    }
+                ],
                 Tenant = _tenant.Name
             };
 

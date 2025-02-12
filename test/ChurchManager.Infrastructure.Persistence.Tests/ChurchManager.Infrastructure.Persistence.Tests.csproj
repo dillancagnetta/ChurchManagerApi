@@ -9,6 +9,7 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="System.Data.SqlClient" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -20,6 +21,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Features\ChurchManager.Features.Auth\ChurchManager.Features.Auth.csproj" />
     <ProjectReference Include="..\..\src\Features\ChurchManager.Features.Groups\ChurchManager.Features.Groups.csproj" />
   </ItemGroup>
 </Project>

@@ -28,6 +28,8 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts
             _tenantProvider = tenantProvider;
             _currentUser = currentUser;
 
+            if (_tenantProvider is null) throw new ArgumentNullException(nameof(_tenantProvider), "Valid tenantProvider not found or configured");
+
             if (_tenantProvider.Enabled)
             {
                 ConfigureMultiTenants();

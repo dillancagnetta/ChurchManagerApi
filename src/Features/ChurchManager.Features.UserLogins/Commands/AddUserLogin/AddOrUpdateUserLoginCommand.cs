@@ -32,13 +32,14 @@ namespace ChurchManager.Features.UserLogins.Commands.AddUserLogin
         {
             var userLogin =  await _dbRepository
                 .Queryable()
+                    .Include(x => x.Roles)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.PersonId == command.PersonId, ct);
 
             if (userLogin is not null)
             {
                 userLogin.Tenant = command.Tenant;
-                userLogin.Roles = command.Roles;
+                userLogin.Roles = command.Roles.Select(name => new UserLoginRole(name)).ToList();
             }
             else
             {
@@ -47,7 +48,7 @@ namespace ChurchManager.Features.UserLogins.Commands.AddUserLogin
                 {
                     PersonId = command.PersonId,
                     Tenant = command.Tenant,
-                    Roles = command.Roles,
+                    Roles = command.Roles.Select(name => new UserLoginRole(name)).ToList(),
                     Username = person.Email.IsTruthy() && person.Email.IsActive.IsTruthy() ? person.Email.Address : $"{person.FullName.FirstName}.{person.FullName.LastName}",
                     Password = BCrypt.Net.BCrypt.HashPassword("pancake"),
                 };
