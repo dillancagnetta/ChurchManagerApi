@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDb : Migration
+    public partial class Init_db : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -25,6 +25,32 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ChurchAttendanceType", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CommunicationTemplate",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    IsSystem = table.Column<bool>(type: "boolean", nullable: false),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    LogoFileUrl = table.Column<string>(type: "text", nullable: true),
+                    Category = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    Content = table.Column<string>(type: "text", nullable: true),
+                    SupportedTypes = table.Column<string>(type: "text", nullable: true),
+                    IsBaseTemplate = table.Column<bool>(type: "boolean", nullable: false),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommunicationTemplate", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -80,6 +106,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     Address_Province = table.Column<string>(type: "text", nullable: true),
                     Address_PostalCode = table.Column<string>(type: "text", nullable: true),
                     Language = table.Column<string>(type: "text", nullable: true),
+                    Code = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
@@ -226,6 +253,20 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ServiceJobs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SystemCommunication",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SystemCommunication", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -583,6 +624,60 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Communication",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Subject = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    CommunicationType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    ListGroupId = table.Column<int>(type: "integer", nullable: true),
+                    CommunicationTemplateId = table.Column<int>(type: "integer", nullable: true),
+                    CommunicationContent = table.Column<string>(type: "text", nullable: true),
+                    SenderPersonId = table.Column<int>(type: "integer", nullable: true),
+                    IsBulkCommunication = table.Column<bool>(type: "boolean", nullable: false),
+                    SendDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    FutureSendDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    Status = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Review_ReviewerNote = table.Column<string>(type: "text", nullable: true),
+                    Review_ReviewedDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    Review_ReviewerPersonId = table.Column<int>(type: "integer", nullable: true),
+                    Metadata = table.Column<string>(type: "jsonb", nullable: true),
+                    SystemCommunicationId = table.Column<int>(type: "integer", nullable: true),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Communication", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Communication_CommunicationTemplate_CommunicationTemplateId",
+                        column: x => x.CommunicationTemplateId,
+                        principalTable: "CommunicationTemplate",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Communication_Group_ListGroupId",
+                        column: x => x.ListGroupId,
+                        principalTable: "Group",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Communication_Person_SenderPersonId",
+                        column: x => x.SenderPersonId,
+                        principalTable: "Person",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Communication_SystemCommunication_SystemCommunicationId",
+                        column: x => x.SystemCommunicationId,
+                        principalTable: "SystemCommunication",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DiscipleshipStep",
                 columns: table => new
                 {
@@ -898,7 +993,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     Password = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
                     RefreshToken = table.Column<string>(type: "text", nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    Roles = table.Column<List<string>>(type: "text[]", nullable: true),
                     PersonId = table.Column<int>(type: "integer", nullable: false),
                     Tenant = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
@@ -928,16 +1022,17 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     ChurchId = table.Column<int>(type: "integer", nullable: true),
                     ChurchGroupId = table.Column<int>(type: "integer", nullable: true),
                     ScheduleId = table.Column<int>(type: "integer", nullable: false),
-                    ChildCareGroupId = table.Column<int>(type: "integer", nullable: false),
+                    ChildCareGroupId = table.Column<int>(type: "integer", nullable: true),
                     EventRegistrationGroupId = table.Column<int>(type: "integer", nullable: false),
                     ContactPersonId = table.Column<int>(type: "integer", nullable: false),
                     ContactEmail = table.Column<string>(type: "character varying(75)", maxLength: 75, nullable: true),
-                    ContactPhone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    ContactPhone = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     Review_ReviewerNote = table.Column<string>(type: "text", nullable: true),
                     Review_ReviewedDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Review_ReviewerPersonId = table.Column<int>(type: "integer", nullable: true),
                     ApprovalStatus = table.Column<string>(type: "text", nullable: true),
                     Capacity = table.Column<int>(type: "integer", nullable: true),
+                    Location = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -983,6 +1078,72 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         name: "FK_Event_Schedule_ScheduleId",
                         column: x => x.ScheduleId,
                         principalTable: "Schedule",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CommunicationAttachment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CommunicationId = table.Column<int>(type: "integer", nullable: false),
+                    CommunicationType = table.Column<string>(type: "text", nullable: true),
+                    IsSystem = table.Column<bool>(type: "boolean", nullable: false),
+                    FileName = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    MimeType = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    FileUrl = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    FileContents = table.Column<string>(type: "text", nullable: true),
+                    FileSize = table.Column<long>(type: "bigint", nullable: true),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommunicationAttachment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CommunicationAttachment_Communication_CommunicationId",
+                        column: x => x.CommunicationId,
+                        principalTable: "Communication",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CommunicationRecipient",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CommunicationId = table.Column<int>(type: "integer", nullable: false),
+                    PersonId = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: true),
+                    StatusNote = table.Column<string>(type: "text", nullable: true),
+                    SendDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    OpenedDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    UniqueMessageId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    AttemptCount = table.Column<int>(type: "integer", nullable: false),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommunicationRecipient", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CommunicationRecipient_Communication_CommunicationId",
+                        column: x => x.CommunicationId,
+                        principalTable: "Communication",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CommunicationRecipient_Person_PersonId",
+                        column: x => x.PersonId,
+                        principalTable: "Person",
                         principalColumn: "Id");
                 });
 
@@ -1053,6 +1214,34 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_Message_UserLogin_UserId",
                         column: x => x.UserId,
+                        principalTable: "UserLogin",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserLoginRole",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    IsSystem = table.Column<bool>(type: "boolean", nullable: false),
+                    UserLoginId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserLoginRole", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserLoginRole_UserLogin_UserLoginId",
+                        column: x => x.UserLoginId,
                         principalTable: "UserLogin",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -1147,6 +1336,41 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EntityPermission",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserLoginRoleId = table.Column<int>(type: "integer", nullable: false),
+                    IsSystem = table.Column<bool>(type: "boolean", nullable: false),
+                    EntityType = table.Column<string>(type: "text", nullable: true),
+                    EntityIds = table.Column<int[]>(type: "integer[]", nullable: true),
+                    IsDynamicScope = table.Column<bool>(type: "boolean", nullable: false),
+                    ScopeType = table.Column<string>(type: "text", nullable: true),
+                    ScopeId = table.Column<int>(type: "integer", nullable: false),
+                    CanView = table.Column<bool>(type: "boolean", nullable: false),
+                    CanEdit = table.Column<bool>(type: "boolean", nullable: false),
+                    CanDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    CanManageUsers = table.Column<bool>(type: "boolean", nullable: false),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EntityPermission", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EntityPermission_UserLoginRole_UserLoginRoleId",
+                        column: x => x.UserLoginRoleId,
+                        principalTable: "UserLoginRole",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EventSessionRegistration",
                 columns: table => new
                 {
@@ -1157,6 +1381,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     EventSessionId = table.Column<int>(type: "integer", nullable: false),
                     PersonId = table.Column<int>(type: "integer", nullable: false),
                     AttendingOnline = table.Column<bool>(type: "boolean", nullable: true),
+                    AttendingInPerson = table.Column<bool>(type: "boolean", nullable: true),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -1210,6 +1435,41 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Communication_CommunicationTemplateId",
+                table: "Communication",
+                column: "CommunicationTemplateId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Communication_ListGroupId",
+                table: "Communication",
+                column: "ListGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Communication_SenderPersonId",
+                table: "Communication",
+                column: "SenderPersonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Communication_SystemCommunicationId",
+                table: "Communication",
+                column: "SystemCommunicationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommunicationAttachment_CommunicationId",
+                table: "CommunicationAttachment",
+                column: "CommunicationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommunicationRecipient_CommunicationId",
+                table: "CommunicationRecipient",
+                column: "CommunicationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommunicationRecipient_PersonId",
+                table: "CommunicationRecipient",
+                column: "PersonId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ConnectionStatusType_Name",
                 table: "ConnectionStatusType",
                 column: "Name");
@@ -1228,6 +1488,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 name: "IX_DiscipleshipStepDefinition_DiscipleshipProgramId",
                 table: "DiscipleshipStepDefinition",
                 column: "DiscipleshipProgramId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EntityPermission_UserLoginRoleId",
+                table: "EntityPermission",
+                column: "UserLoginRoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Event_ChildCareGroupId",
@@ -1506,6 +1771,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 table: "UserLogin",
                 column: "PersonId");
 
+            migrationBuilder.CreateIndex(
+                name: "IX_UserLoginRole_UserLoginId",
+                table: "UserLoginRole",
+                column: "UserLoginId");
+
             migrationBuilder.AddForeignKey(
                 name: "FK_Church_ChurchGroup_ChurchGroupId",
                 table: "Church",
@@ -1536,7 +1806,16 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 name: "ChurchAttendance");
 
             migrationBuilder.DropTable(
+                name: "CommunicationAttachment");
+
+            migrationBuilder.DropTable(
+                name: "CommunicationRecipient");
+
+            migrationBuilder.DropTable(
                 name: "DiscipleshipStep");
+
+            migrationBuilder.DropTable(
+                name: "EntityPermission");
 
             migrationBuilder.DropTable(
                 name: "EventSessionRegistration");
@@ -1581,7 +1860,13 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 name: "ChurchAttendanceType");
 
             migrationBuilder.DropTable(
+                name: "Communication");
+
+            migrationBuilder.DropTable(
                 name: "DiscipleshipStepDefinition");
+
+            migrationBuilder.DropTable(
+                name: "UserLoginRole");
 
             migrationBuilder.DropTable(
                 name: "EventRegistration");
@@ -1599,9 +1884,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 name: "GroupFeature");
 
             migrationBuilder.DropTable(
-                name: "UserLogin");
-
-            migrationBuilder.DropTable(
                 name: "NoteType");
 
             migrationBuilder.DropTable(
@@ -1611,7 +1893,16 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 name: "ServiceJobs");
 
             migrationBuilder.DropTable(
+                name: "CommunicationTemplate");
+
+            migrationBuilder.DropTable(
+                name: "SystemCommunication");
+
+            migrationBuilder.DropTable(
                 name: "DiscipleshipProgram");
+
+            migrationBuilder.DropTable(
+                name: "UserLogin");
 
             migrationBuilder.DropTable(
                 name: "Event");

@@ -235,7 +235,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                     .RuleFor(u => u.Name, f => $"{x.FullName.LastName} Family")
                     .RuleFor(u => u.Language, f => faker.PickRandom(Languages))
                     .RuleFor(u => u.Address, f => GenerateAddress(faker))
-                    .RuleFor(u => u.Code, f => f.Random.String(10).ToUpperInvariant())
+                    .RuleFor(u => u.Code, f => x.FullName.LastName.ToUpperInvariant())
                     ;
 
                 x.Family = familyFaker.Generate();
@@ -287,7 +287,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 .RuleFor(u => u.Name, f => $"{lastName} Family")
                 .RuleFor(u => u.Language, f => faker.PickRandom(Languages))
                 .RuleFor(u => u.Address, f => GenerateAddress(faker))
-                .RuleFor(u => u.Code, f => f.Random.String(10).ToUpperInvariant())
+                .RuleFor(u => u.Code, f => lastName.ToUpperInvariant())
                 ;
 
             var family = familyFaker.Generate();

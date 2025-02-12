@@ -43,7 +43,7 @@
     <None Update="Email\Templates\FollowUpAssignment.liquid">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Email\Templates\FamilyCodeRequested.liquid">
+    <None Update="Email\Templates\FamilyCodeRequest.liquid">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Email\Templates\_Layout.liquid">

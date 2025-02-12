@@ -38,9 +38,11 @@ public class PermissionService(
     ///     For dynamic scopes, queries the relationships in real-time
     ///    Automatically includes any new entities that match the scope
     /// </summary>
-    public async Task<bool> HasPermissionAsync(Guid userLoginId, string entityType, int entityId, string permission,
-        CancellationToken ct = default)
+    public async Task<bool> HasPermissionAsync<T>(Guid userLoginId, int entityId, string permission,
+        CancellationToken ct = default) where T : class, IEntity<int>
     {
+        var entityType = typeof(T).Name;
+        
         var permissions = await rolesDb
             .Queryable()
                 .Include(x => x.Permissions)
@@ -98,16 +100,11 @@ public class PermissionService(
             if (ep.IsDynamicScope)
             {
                 var dynamicIds = await GetDynamicScopeIdsAsync(ep);
-                foreach (var id in dynamicIds)
-                    accessibleIds.Add(id);
+                foreach (var id in dynamicIds) accessibleIds.Add(id);
             }
         }
 
         return query.Where(e => accessibleIds.Contains(e.Id));
-
-        var allowedIds = await GetAllowedEntityIdsAsync(userLoginId, entityType, permission, ct);
-        
-        return query.Where(e => allowedIds.Contains(e.Id));
     }
 
     public async Task GrantPermissionAsync(int userLoginRoleId, string entityType, int[] entityIds, IEnumerable<string> permissions,
