@@ -1,17 +1,23 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Features.People;
-using ChurchManager.Domain.Features.Permissions.Services;
 using ChurchManager.Domain.Shared;
-using ChurchManager.Domain.Specifications;
-using Microsoft.EntityFrameworkCore;
 using CodeBoss.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Domain.Features.Churches.Specifications;
 
 public class ChurchesListSpecification: Specification<Church, ChurchViewModel>
 {
-    public ChurchesListSpecification(Guid userId, IPermissionService service, string searchTerm = null)
+    public ChurchesListSpecification(IEnumerable<int> allowedChurchIds = null, string searchTerm = null)
     {
+        // Only apply permission filter if allowedIds is not null
+        // If null, user is system admin and has unrestricted access
+        if (allowedChurchIds is not null)
+        {
+            // First apply the permissions filter
+            Query.Where(x => allowedChurchIds.Contains(x.Id));  
+        }
+        
         // Search Term
         if (!searchTerm.IsNullOrEmpty())
         {
@@ -22,7 +28,7 @@ public class ChurchesListSpecification: Specification<Church, ChurchViewModel>
                     EF.Functions.ILike(cg.Description, $"%{searchTerm}%"));
         }
         
-        PermissionCriteria<Church>.AddPermissionCriteria(Query, userId, service);
+        // PermissionCriteria<Church>.AddPermissionCriteria(Query, userId, service);
         
         // Add ordering
         Query.OrderBy(x => x.Name);

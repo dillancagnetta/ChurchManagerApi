@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.Churches.Specifications;
 using ChurchManager.Domain.Features.Permissions.Services;
@@ -19,17 +20,20 @@ namespace ChurchManager.Features.Churches.Queries.RetrieveChurches
         private readonly IGenericDbRepository<Church> _dbRepository;
         private readonly ITenantCurrentUser _currentUser;
         private readonly IPermissionService _permissions;
+        private readonly IChurchService _service;
         private readonly IMapper _mapper;
 
         public AllChurchQueryHandler(
             IGenericDbRepository<Church> dbRepository,
             ITenantCurrentUser currentUser,
             IPermissionService permissions,
+            IChurchService service,
             IMapper mapper)
         {
             _dbRepository = dbRepository;
             _currentUser = currentUser;
             _permissions = permissions;
+            _service = service;
             _mapper = mapper;
         }
 
@@ -38,14 +42,19 @@ namespace ChurchManager.Features.Churches.Queries.RetrieveChurches
             /*var vm = await _mapper
                 .ProjectTo<ChurchViewModel>(_dbRepository.Queryable().OrderBy(x => x.Name))
                 .ToListAsync(ct);*/
-
-            var spec = new ChurchesListSpecification(Guid.Parse(_currentUser.Id), _permissions, query.SearchTerm);
             
-            var vm = await _dbRepository.ListAsync(spec, ct);
+            // Get all allowed entity IDs
+            /*var allowedIds = await _permissions.GetAllowedEntityIdsAsync<Church>(Guid.Parse(_currentUser.Id), "View", ct);
+            var spec = new ChurchesListSpecification(allowedIds,  query.SearchTerm);
+            
+            var vm = await _dbRepository.ListAsync(spec, ct);*/
             
             /*var vm = await _dbRepository.Queryable().OrderBy(x => x.Name)
                 .MapTo<Church, ChurchViewModel>()
                 .ToListAsync(ct);*/
+            
+            var vm = await _service.ChurchListAsync(query.SearchTerm, ct);
+            return new ApiResponse(vm);
 
             return new ApiResponse(vm);
         }

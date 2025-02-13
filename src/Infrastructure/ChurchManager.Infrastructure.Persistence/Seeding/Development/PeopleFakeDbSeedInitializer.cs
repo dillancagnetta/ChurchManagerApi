@@ -179,14 +179,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 Person = dillan,
                 Username = "dillan",
                 Password = BCrypt.Net.BCrypt.HashPassword("pancake"),
-                Roles =
-                [
-                    new("Admin", "System Admin")
-                    {
-                        IsSystem = true,
-                        Permissions = [permission]
-                    }
-                ],
+                Roles = [UserLoginRole.SystemAdminRole],
                 Tenant = _tenant.Name
             };
 

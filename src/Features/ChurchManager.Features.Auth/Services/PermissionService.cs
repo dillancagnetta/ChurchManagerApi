@@ -38,15 +38,16 @@ public class PermissionService(
     ///     For dynamic scopes, queries the relationships in real-time
     ///    Automatically includes any new entities that match the scope
     /// </summary>
-    public async Task<bool> HasPermissionAsync<T>(Guid userLoginId, int entityId, string permission,
+    public async Task<bool> HasPermissionAsync<T>(Guid userLoginId, int entityId, PermissionAction permission,
         CancellationToken ct = default) where T : class, IEntity<int>
     {
         var entityType = typeof(T).Name;
         
         var permissions = await rolesDb
             .Queryable()
+            .AsNoTracking()
                 .Include(x => x.Permissions)
-            .Where(ulr => ulr.RecordStatus == RecordStatus.Active.Value)
+            .Where(ulr => ulr.UserLoginId == userLoginId && ulr.RecordStatus == RecordStatus.Active.Value)
             .SelectMany(ulr => ulr.Permissions)
                 .Where(ep => ep.RecordStatus == RecordStatus.Active.Value)
                 .Where(ep => ep.EntityType == entityType)
@@ -73,11 +74,14 @@ public class PermissionService(
 
         return false;    }
 
-    public async Task<IQueryable<T>> FilterByPermissionAsync<T>(Guid userLoginId, IQueryable<T> query, string permission, CancellationToken ct = default) where T : class, IEntity<int>
+    public async Task<IQueryable<T>> FilterByPermissionAsync<T>(Guid userLoginId, IQueryable<T> query, PermissionAction permission, CancellationToken ct = default) where T : class, IEntity<int>
     {
         var entityType = typeof(T).Name;
         
-        var permissions = await rolesDb.Queryable().Include(x => x.Permissions)
+        var permissions = await rolesDb
+            .Queryable()
+            .AsNoTracking()
+                .Include(x => x.Permissions)
             .Where(ulr => ulr.UserLoginId == userLoginId && ulr.RecordStatus == RecordStatus.Active.Value)
             .SelectMany(ulr => ulr.Permissions)
             .Where(ep => ep.EntityType == entityType)
@@ -107,7 +111,7 @@ public class PermissionService(
         return query.Where(e => accessibleIds.Contains(e.Id));
     }
 
-    public async Task GrantPermissionAsync(int userLoginRoleId, string entityType, int[] entityIds, IEnumerable<string> permissions,
+    public async Task GrantPermissionAsync(int userLoginRoleId, string entityType, int[] entityIds, IEnumerable<PermissionAction> permissions,
         CancellationToken ct = default)
     {
         // Check if permission already exists for this role and entity type
@@ -158,22 +162,51 @@ public class PermissionService(
         }    
     }
 
-    public async Task<List<int>> GetAllowedEntityIdsAsync(Guid userLoginId, string entityType, string permission, CancellationToken ct = default)
+    public async Task<List<int>> GetAllowedEntityIdsAsync<T>(Guid userLoginId, PermissionAction permission, CancellationToken ct = default) where T : class, IEntity<int>
     {
-        var allowedIds =  await rolesDb
+        if (await IsSystemAdminAsync(userLoginId, ct)) return null;
+        
+        var entityType = typeof(T).Name;
+        
+        var permissions = await rolesDb
             .Queryable()
-            .Include(x => x.Permissions)
-            .Where(ulr => ulr.RecordStatus == RecordStatus.Active.Value)
-            .SelectMany(ulr => ulr.Permissions)
-            .Where(ep => 
-                ep.EntityType == entityType && HasPermissionFlag(ep, permission))
-            .SelectMany(ep => ep.EntityIds)
-            .Distinct()
+            .AsNoTracking()
+                .Include(x => x.Permissions)
+            .Where(ulr => ulr.UserLoginId == userLoginId && ulr.RecordStatus == RecordStatus.Active.Value)
+                .SelectMany(ulr => ulr.Permissions)
+                .Where(ep => ep.EntityType == entityType)
             .ToListAsync(ct);
+        
+        var accessibleIds = new HashSet<int>();
 
-        return allowedIds;
+        foreach (var ep in permissions)
+        {
+            if (!HasPermissionFlag(ep, permission)) continue;
+
+            // Add explicit IDs
+            if (!ep.IsDynamicScope && ep.EntityIds != null)
+            {
+                foreach (var id in ep.EntityIds) accessibleIds.Add(id);
+            }
+
+            // Add dynamic scope IDs
+            if (ep.IsDynamicScope)
+            {
+                var dynamicIds = await GetDynamicScopeIdsAsync(ep);
+                foreach (var id in dynamicIds) accessibleIds.Add(id);
+            }
+        }
+
+        return accessibleIds.ToList();
     }
-    
+
+    public Task<bool> IsSystemAdminAsync(Guid userLoginId, CancellationToken ct = default)
+    {
+        return rolesDb.Queryable()
+            .AsNoTracking()
+            .AnyAsync(r => r.UserLoginId == userLoginId && r.Name == UserLoginRole.SystemAdminRoleName, ct);
+    }
+
     private bool HasPermissionFlag(EntityPermission permission, string permissionType)
     {
         return permissionType switch
@@ -186,11 +219,11 @@ public class PermissionService(
         };
     }
     
-    private void UpdatePermissionFlags(EntityPermission permission, IEnumerable<string> permissions)
+    private void UpdatePermissionFlags(EntityPermission permission, IEnumerable<PermissionAction> permissions)
     {
         foreach (var p in permissions)
         {
-            switch (p)
+            switch (p.Value)
             {
                 case "View":
                     permission.CanView = true;

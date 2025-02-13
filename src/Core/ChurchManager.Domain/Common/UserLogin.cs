@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.Permissions;
 using ChurchManager.Persistence.Shared;
+using CodeBoss.Extensions;
 using Codeboss.Types;
 
 namespace ChurchManager.Domain.Common;
@@ -65,4 +66,20 @@ public class UserLoginRole : AuditableEntity<int>, IAggregateRoot<int>
     {
         Description = description;
     }
+
+    public UserLoginRole()
+    {
+        RecordStatus = Common.RecordStatus.Active.Value;
+    }
+
+    public static UserLoginRole SystemAdminRole =>
+        new()
+        {
+            Name = SystemAdminRoleName,
+            Description = "System Administrator Role",
+            IsSystem = true,
+            Permissions = [EntityPermission.SystemAdminPermission]
+        };
+    
+    public const string SystemAdminRoleName = "System Admin";
 }

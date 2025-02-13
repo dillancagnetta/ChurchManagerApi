@@ -28,4 +28,18 @@ public class EntityPermission : AuditableEntity<int>, IAggregateRoot<int>
     public bool CanEdit { get; set; }
     public bool CanDelete { get; set; }
     public bool CanManageUsers { get; set; }
+
+    public static EntityPermission SystemAdminPermission =>
+        new()
+        {
+            IsSystem = true,
+            CanView = true,
+            CanEdit = true,
+            CanDelete = true,
+            CanManageUsers = true,
+            IsDynamicScope = true,
+            ScopeType = SystemAdminPermissionScope
+        };
+    
+    public const string SystemAdminPermissionScope = "SystemAdmin";
 }
