@@ -12,7 +12,7 @@ public interface IPermissionService
 
     Task RevokePermissionAsync(int userLoginRoleId, string entityType, CancellationToken ct = default);
     
-    Task<List<int>> GetAllowedEntityIdsAsync<T>(Guid userLoginId, PermissionAction permission, CancellationToken ct = default) where T : class, IEntity<int>;
+    Task<IReadOnlyList<int>> GetAllowedEntityIdsAsync<T>(Guid userLoginId, PermissionAction permission, CancellationToken ct = default) where T : class, IEntity<int>;
 
     Task<bool> IsSystemAdminAsync(Guid userLoginId, CancellationToken ct = default);
 }   

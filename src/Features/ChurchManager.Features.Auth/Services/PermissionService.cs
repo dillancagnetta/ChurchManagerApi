@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Common;
+﻿using System.Collections.Immutable;
+using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Permissions;
 using ChurchManager.Domain.Features.Permissions.Repositories;
 using ChurchManager.Domain.Features.Permissions.Services;
@@ -162,7 +163,7 @@ public class PermissionService(
         }    
     }
 
-    public async Task<List<int>> GetAllowedEntityIdsAsync<T>(Guid userLoginId, PermissionAction permission, CancellationToken ct = default) where T : class, IEntity<int>
+    public async Task<IReadOnlyList<int>> GetAllowedEntityIdsAsync<T>(Guid userLoginId, PermissionAction permission, CancellationToken ct = default) where T : class, IEntity<int>
     {
         if (await IsSystemAdminAsync(userLoginId, ct)) return null;
         
@@ -268,30 +269,40 @@ public class PermissionService(
         }
     }
     
-    private async Task<IEnumerable<int>> GetDynamicScopeIdsAsync(EntityPermission permission)
+    private async Task<IReadOnlyList<int>> GetDynamicScopeIdsAsync(EntityPermission permission)
     {
         switch (permission.EntityType)
         {
+            // Defines: Access to Churches in the ChurchGroup
             case "Church" when permission.ScopeType == "ChurchGroup":
                 return await dbContext.Church
                     .Where(c => c.ChurchGroupId == permission.ScopeId)
                     .Select(c => c.Id)
                     .ToListAsync();
 
+            // Defines: Access to Groups in the ChurchGroup
             case "Group" when permission.ScopeType == "ChurchGroup":
                 return await dbContext.Group
                     .Where(g => g.Church.ChurchGroupId == permission.ScopeId)
                     .Select(g => g.Id)
                     .ToListAsync();
 
+            // Defines: Access to Groups in the Church
             case "Group" when permission.ScopeType == "Church":
                 return await dbContext.Group
                     .Where(g => g.ChurchId == permission.ScopeId)
                     .Select(g => g.Id)
                     .ToListAsync();
+            
+            // Defines: Access to People in the Church
+            case "Person" when permission.ScopeType == "Church":
+                return await dbContext.Person
+                    .Where(g => g.ChurchId == permission.ScopeId)
+                    .Select(g => g.Id)
+                    .ToListAsync();
 
             default:
-                return Array.Empty<int>();
+                return Array.Empty<int>(); // No access
         }
     }
 }

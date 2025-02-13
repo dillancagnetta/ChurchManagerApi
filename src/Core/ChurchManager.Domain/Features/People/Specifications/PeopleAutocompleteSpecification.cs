@@ -1,12 +1,14 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Shared;
+using ChurchManager.Domain.Specifications;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Domain.Features.People.Specifications
 {
-    public class PeopleAutocompleteSpecification : Specification<Person, PeopleAutocompleteViewModel>
+    public class PeopleAutocompleteSpecification : PermissionSpecification<Person, PeopleAutocompleteViewModel>
     {
-        public PeopleAutocompleteSpecification(string searchTerm)
+        public PeopleAutocompleteSpecification(string searchTerm, IEnumerable<int> allowedChurchIds = null)
+            : base(allowedChurchIds)
         {
             Query.AsNoTracking();
 

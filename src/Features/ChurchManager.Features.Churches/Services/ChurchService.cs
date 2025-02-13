@@ -20,8 +20,8 @@ public class ChurchService(
         
         var spec = new ChurchesListSpecification(allowedIds, searchTerm);
         
-        var churches = await dbRepository.ListAsync(spec, ct);
+        var vm = await dbRepository.ListAsync(spec, ct);
     
-        return churches;
+        return vm;
     }
 }

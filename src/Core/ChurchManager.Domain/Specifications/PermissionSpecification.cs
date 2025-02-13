@@ -32,28 +32,17 @@ public class PermissionSpecification<T> : Specification<T> where T : class, Code
 
 public class PermissionSpecification<T, V> : Specification<T, V> where T : class, Codeboss.Types.IEntity<int>
 {
-    private readonly IPermissionService _service;
-    private readonly Guid _userId;
-    private readonly string _permission;
-    
-    public PermissionSpecification(
-        IPermissionService service,
-        Guid userId,
-        string permission = "View")
+    protected PermissionSpecification(IEnumerable<int> allowedChurchIds = null)
     {
-        _service = service;
-        _userId = userId;
-        _permission = permission;
-        
-        // Apply the permission filter using the Query property
-        Query.Where(BuildPermissionExpression());
+        // Only apply permission filter if allowedIds is not null
+        // If null, user is system admin and has unrestricted access
+        if (allowedChurchIds is not null)
+        {
+            // First apply the permissions filter
+            Query.Where(x => allowedChurchIds.Contains(x.Id));  
+        }
     }
     
-    // defer the permission check to when the query is executed
-    private Expression<Func<T, bool>> BuildPermissionExpression()
-    {
-        return entity => _service.HasPermissionAsync<T>(_userId, entity.Id, _permission, new CancellationToken()).GetAwaiter().GetResult();
-    }
 }
 
 public class PermissionCriteria<T> where T : class, Codeboss.Types.IEntity<int>
