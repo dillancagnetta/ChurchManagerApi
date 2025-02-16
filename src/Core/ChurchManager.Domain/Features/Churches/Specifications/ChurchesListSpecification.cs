@@ -40,21 +40,7 @@ public class ChurchesListSpecification: Specification<Church, ChurchViewModel>
             Name = x.Name,  
             Description = x.Description,
             ShortCode = x.ShortCode,
-            LeaderPerson = x.LeaderPersonId.HasValue ? ToBasicPerson(x.LeaderPerson) : null
+            LeaderPerson = x.LeaderPersonId.HasValue ? Person.ToBasicPerson(x.LeaderPerson) : null
         });
-    }
-    
-    private static Shared.PersonViewModelBasic ToBasicPerson(Person person)
-    {
-        return new Shared.PersonViewModelBasic
-        {
-            PersonId = person.Id,
-            Gender = person.Gender,
-            FirstName = person.FullName.FirstName,
-            LastName = person.FullName.LastName,
-            AgeClassification = person.AgeClassification,
-            Age = person.BirthDate.Age,
-            PhotoUrl = person.PhotoUrl
-        };
     }
 }

@@ -1,5 +1,5 @@
 ﻿using ChurchManager.Domain.Common;
-using ChurchManager.Domain.Features.Permissions.Repositories;
+using ChurchManager.Domain.Features.Security.Repositories;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Codeboss.Types;
 

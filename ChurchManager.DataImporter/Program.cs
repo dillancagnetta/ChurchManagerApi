@@ -5,7 +5,7 @@ using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Discipleship;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.People;
-using ChurchManager.Domain.Features.Permissions;
+using ChurchManager.Domain.Features.Security;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.Extensions;
 using Ical.Net.Serialization;

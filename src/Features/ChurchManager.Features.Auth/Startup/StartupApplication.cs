@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Features.Permissions.Services;
+﻿using ChurchManager.Application.Abstractions.Services;
+using ChurchManager.Domain.Features.Security.Services;
 using ChurchManager.Features.Auth.Services;
 using ChurchManager.Infrastructure;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +15,7 @@ namespace ChurchManager.Features.Auth.Startup
         {
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IPermissionContext, PermissionContext>();
+            services.AddScoped<ISecurityService, SecurityService>();
         }
 
         public void Configure(IApplicationBuilder application, IWebHostEnvironment webHostEnvironment)

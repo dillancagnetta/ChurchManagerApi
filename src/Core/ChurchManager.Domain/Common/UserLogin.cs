@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using ChurchManager.Domain.Features.People;
-using ChurchManager.Domain.Features.Permissions;
+using ChurchManager.Domain.Features.Security;
 using ChurchManager.Persistence.Shared;
 using CodeBoss.Extensions;
 using Codeboss.Types;

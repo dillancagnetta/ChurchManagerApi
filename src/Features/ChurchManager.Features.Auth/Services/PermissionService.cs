@@ -1,8 +1,7 @@
-﻿using System.Collections.Immutable;
-using ChurchManager.Domain.Common;
-using ChurchManager.Domain.Features.Permissions;
-using ChurchManager.Domain.Features.Permissions.Repositories;
-using ChurchManager.Domain.Features.Permissions.Services;
+﻿using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Features.Security;
+using ChurchManager.Domain.Features.Security.Repositories;
+using ChurchManager.Domain.Features.Security.Services;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Codeboss.Types;
 using Microsoft.EntityFrameworkCore;
@@ -187,14 +186,14 @@ public class PermissionService(
             // Add explicit IDs
             if (!ep.IsDynamicScope && ep.EntityIds != null)
             {
-                foreach (var id in ep.EntityIds) accessibleIds.Add(id);
+                accessibleIds.UnionWith(ep.EntityIds);
             }
 
             // Add dynamic scope IDs
             if (ep.IsDynamicScope)
             {
                 var dynamicIds = await GetDynamicScopeIdsAsync(ep);
-                foreach (var id in dynamicIds) accessibleIds.Add(id);
+                accessibleIds.UnionWith(dynamicIds);
             }
         }
 
@@ -298,6 +297,20 @@ public class PermissionService(
             case "Person" when permission.ScopeType == "Church":
                 return await dbContext.Person
                     .Where(g => g.ChurchId == permission.ScopeId)
+                    .Select(g => g.Id)
+                    .ToListAsync();
+            
+            // Defines: Access to Child Groups of Parent
+            case "Group" when permission.ScopeType == "ParentGroup":
+                var query = @"
+                        WITH RecursiveGroups AS (
+                            SELECT Id FROM Group WHERE Id = {0}
+                            UNION ALL
+                            SELECT g.Id FROM Group g
+                                INNER JOIN RecursiveGroups rg ON g.ParentId = rg.Id
+                        )
+                        SELECT Id FROM RecursiveGroups;";
+                return await dbContext.Group.FromSqlRaw(query, permission.ScopeId) // ScopeId is the Parent Group Id
                     .Select(g => g.Id)
                     .ToListAsync();
 

@@ -1,6 +1,6 @@
 ﻿using Codeboss.Types;
 
-namespace ChurchManager.Domain.Features.Permissions.Services;
+namespace ChurchManager.Domain.Features.Security.Services;
 
 public interface IPermissionContext
 {

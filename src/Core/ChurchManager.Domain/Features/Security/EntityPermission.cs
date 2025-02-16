@@ -2,7 +2,7 @@
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
 
-namespace ChurchManager.Domain.Features.Permissions;
+namespace ChurchManager.Domain.Features.Security;
 
 public class EntityPermission : AuditableEntity<int>, IAggregateRoot<int>
 {

@@ -1,7 +1,6 @@
-﻿using ChurchManager.Domain.Features.Communications;
-using Codeboss.Types;
+﻿using Codeboss.Types;
 
-namespace ChurchManager.Domain.Features.Permissions;
+namespace ChurchManager.Domain.Features.Security;
 
 
 public class PermissionAction : Enumeration<PermissionAction, string>

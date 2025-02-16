@@ -8,7 +8,7 @@ using ChurchManager.Domain.Features.Events.Repositories;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.History;
 using ChurchManager.Domain.Features.People.Repositories;
-using ChurchManager.Domain.Features.Permissions.Repositories;
+using ChurchManager.Domain.Features.Security.Repositories;
 using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;

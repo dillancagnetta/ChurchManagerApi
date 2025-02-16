@@ -2,7 +2,7 @@
 using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.Churches.Specifications;
-using ChurchManager.Domain.Features.Permissions.Services;
+using ChurchManager.Domain.Features.Security.Services;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using CodeBoss.MultiTenant;

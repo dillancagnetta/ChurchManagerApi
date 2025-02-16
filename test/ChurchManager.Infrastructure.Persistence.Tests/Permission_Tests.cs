@@ -2,9 +2,7 @@
 using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.People;
-using ChurchManager.Domain.Features.Permissions;
-using ChurchManager.Domain.Features.Permissions.Repositories;
-using ChurchManager.Domain.Features.Permissions.Services;
+using ChurchManager.Domain.Features.Security;
 using ChurchManager.Features.Auth.Services;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using ChurchManager.Infrastructure.Persistence.Repositories;

@@ -86,6 +86,20 @@ namespace ChurchManager.Domain.Features.People
         }
 
         public bool HasValidActiveEmail => Email is { IsActive: not null } && Email.IsActive.Value;
+        
+        public static Shared.PersonViewModelBasic ToBasicPerson(Person person)
+        {
+            return new Shared.PersonViewModelBasic
+            {
+                PersonId = person.Id,
+                Gender = person.Gender,
+                FirstName = person.FullName.FirstName,
+                LastName = person.FullName.LastName,
+                AgeClassification = person.AgeClassification,
+                Age = person.BirthDate.Age,
+                PhotoUrl = person.PhotoUrl
+            };
+        }
 
         #endregion
     }

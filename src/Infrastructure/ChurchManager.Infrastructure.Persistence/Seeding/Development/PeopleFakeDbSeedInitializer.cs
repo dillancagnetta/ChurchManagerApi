@@ -4,7 +4,7 @@ using Bogus;
 using Bogus.DataSets;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
-using ChurchManager.Domain.Features.Permissions;
+using ChurchManager.Domain.Features.Security;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.AspNetCore.Startup;
 using CodeBoss.Extensions;

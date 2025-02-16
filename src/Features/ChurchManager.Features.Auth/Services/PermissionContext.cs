@@ -1,5 +1,5 @@
-﻿using ChurchManager.Domain.Features.Permissions;
-using ChurchManager.Domain.Features.Permissions.Services;
+﻿using ChurchManager.Domain.Features.Security;
+using ChurchManager.Domain.Features.Security.Services;
 using Codeboss.Types;
 
 namespace ChurchManager.Features.Auth.Services;
