@@ -1743,10 +1743,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupMember_GroupId_PersonId",
+                name: "IX_GroupMember_GroupId",
                 table: "GroupMember",
-                columns: new[] { "GroupId", "PersonId" },
-                unique: true);
+                column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GroupMember_GroupRoleId",

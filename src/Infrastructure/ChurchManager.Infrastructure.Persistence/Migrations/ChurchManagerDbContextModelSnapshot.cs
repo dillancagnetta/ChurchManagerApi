@@ -1527,14 +1527,13 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GroupId");
+
                     b.HasIndex("GroupRoleId");
 
                     b.HasIndex("PersonId");
 
                     b.HasIndex("RecordStatus");
-
-                    b.HasIndex("GroupId", "PersonId")
-                        .IsUnique();
 
                     b.ToTable("GroupMember");
                 });

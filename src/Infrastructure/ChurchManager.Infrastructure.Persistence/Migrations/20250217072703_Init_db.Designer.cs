@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ChurchManagerDbContext))]
-    [Migration("20250217071717_Init_db")]
+    [Migration("20250217072703_Init_db")]
     partial class Init_db
     {
         /// <inheritdoc />
@@ -1530,14 +1530,13 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GroupId");
+
                     b.HasIndex("GroupRoleId");
 
                     b.HasIndex("PersonId");
 
                     b.HasIndex("RecordStatus");
-
-                    b.HasIndex("GroupId", "PersonId")
-                        .IsUnique();
 
                     b.ToTable("GroupMember");
                 });
