@@ -22,5 +22,6 @@ public class SessionRegistrationConfiguration : IEntityTypeConfiguration<EventSe
         // Indexes
         builder.HasIndex(x => new { x.EventRegistrationId, x.EventSessionId })
             .IsUnique();  // Can't register for same session twice
+        builder.HasIndex(x => x.PersonId);  // Person lookups
     }
 }

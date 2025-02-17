@@ -14,6 +14,9 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
         {
             builder.OwnsOne(x => x.Offering);
             builder.HasMany(b => b.Attendees).WithOne().OnDelete(DeleteBehavior.Cascade);
+           
+            // Indexes
+            builder.HasIndex(x => x.AttendanceDate); 
         }
     }
 }

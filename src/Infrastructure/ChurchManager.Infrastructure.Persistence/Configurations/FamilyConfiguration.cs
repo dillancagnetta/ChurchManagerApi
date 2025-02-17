@@ -20,6 +20,7 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
                     v => new RecordStatus(v));
 
             builder.HasIndex(x => x.Name);
+            builder.HasIndex(x => x.Code);
             
             builder
                 .HasMany(f => f.FamilyMembers)

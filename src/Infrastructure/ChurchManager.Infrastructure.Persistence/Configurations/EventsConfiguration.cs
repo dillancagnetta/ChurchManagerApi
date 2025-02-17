@@ -61,6 +61,10 @@ public class EventsConfiguration : IEntityTypeConfiguration<Event>
             .OnDelete(DeleteBehavior.NoAction);
         
         /* Optional Properties */
+        
+        // Indexes
+        builder.HasIndex(x => x.Name);  // Role name lookups
+        builder.HasIndex(x => new { x.Name, x.RecordStatus });  // Active    lookups by name
     }
 }
 
@@ -97,6 +101,10 @@ public class EventTypeConfiguration : IEntityTypeConfiguration<EventType>
             .OnDelete(DeleteBehavior.NoAction);
         
         /* Optional Properties */
+        
+        // Indexes
+        builder.HasIndex(x => x.Name);  // Role name lookups
+        builder.HasIndex(x => new { x.Name, x.RecordStatus });  // Active    lookups by name
     }
 }
 
@@ -148,6 +156,8 @@ public class EventRegistrationConfiguration : IEntityTypeConfiguration<EventRegi
         // Indexes
         builder.HasIndex(x => new { x.EventId, x.PersonId })
             .IsUnique();  // Person can only register once for an event
+        builder.HasIndex(x => x.Status);  // Role name lookups
+        builder.HasIndex(x => x.RecordStatus);  // Status filtering
     }
 }
 
@@ -167,6 +177,11 @@ public class EventSessionConfiguration : IEntityTypeConfiguration<EventSession>
             .WithMany(x => x.Sessions)
             .HasForeignKey(x => x.EventId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        // Indexes
+        builder.HasIndex(x => x.Name);  // Role name lookups
+        builder.HasIndex(x => x.RecordStatus);  // Status filtering
+        builder.HasIndex(x => x.EventId);  // Status filtering
     }
 }
 

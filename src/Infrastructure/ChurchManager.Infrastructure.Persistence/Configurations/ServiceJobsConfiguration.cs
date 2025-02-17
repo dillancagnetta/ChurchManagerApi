@@ -28,5 +28,8 @@ public class ServiceJobConfiguration: IEntityTypeConfiguration<ServiceJob>
             .HasColumnType("jsonb") // for Postgres
             .HasJsonConversion(options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
             .Metadata.SetValueComparer(new JsonValueComparer<Dictionary<string, string>>());
+        
+        builder.HasIndex(x => x.Name); 
+        builder.HasIndex(x => x.JobKey); 
     }
 }

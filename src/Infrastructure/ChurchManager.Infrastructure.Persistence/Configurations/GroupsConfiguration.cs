@@ -25,7 +25,9 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
                 .WithMany(p => p.Groups)
                 .UsingEntity(j => j.ToTable("GroupsFeatures"));
 
+            // Indexes
             builder.HasIndex(x => x.Name);
+            builder.HasIndex(x => x.ParentGroupId);  // ParentGroup lookups
         }
     }
 }

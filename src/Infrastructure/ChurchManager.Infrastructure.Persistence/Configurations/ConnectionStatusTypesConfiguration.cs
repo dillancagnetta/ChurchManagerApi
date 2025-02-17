@@ -11,6 +11,10 @@ public class ConnectionStatusHistoryConfiguration: IEntityTypeConfiguration<Conn
         builder
             .Property(e => e.RecordStatus)
             .HasRecordStatus();
+        
+        builder.HasIndex(o => o.PersonId);
+        builder.HasIndex(o => o.ConnectionStatusTypeId);
+        builder.HasIndex(o => new { o.PersonId, o.ConnectionStatusTypeId });
     }
 }
 

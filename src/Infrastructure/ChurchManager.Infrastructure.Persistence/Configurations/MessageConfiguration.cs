@@ -29,6 +29,12 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
                 .WithMany()
                 .HasForeignKey(cg => cg.UserId)
                 .IsRequired();
+            
+            // Indexes
+            builder.HasIndex(x => x.Classification); 
+            builder.HasIndex(x => x.Status);  
+            builder.HasIndex(x => x.IsRead);  
+            builder.HasIndex(x => x.UserId);  
         }
     }
 }
