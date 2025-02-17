@@ -1,4 +1,5 @@
-﻿using ChurchManager.Features.UserLogins.Commands.AddUserLogin;
+﻿using ChurchManager.Domain.Parameters;
+using ChurchManager.Features.UserLogins.Commands.AddUserLogin;
 using ChurchManager.Features.UserLogins.Queries;
 using ChurchManager.SharedKernel.Common;
 using Microsoft.AspNetCore.Authorization;
@@ -31,10 +32,10 @@ namespace ChurchManager.Api.Controllers.v1
             return Ok(response);
         }
         
-        [HttpGet("browse")]
-        public async Task<IActionResult> GetUserLogins(string searchTerm, CancellationToken token)
+        [HttpPost("browse")]
+        public async Task<IActionResult> BrowseUserLogins(SearchTermQueryParameter filter, CancellationToken token)
         {
-            var response = await Mediator.Send(new UserLoginsQuery(searchTerm), token);
+            var response = await Mediator.Send(new UserLoginsQuery(filter.SearchTerm), token);
             return Ok(response);
         }
         
