@@ -126,22 +126,23 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Production
                 CanDelete = true,
                 IsSystem = true
             };
-            
+            var systemAdminRole = UserLoginRole.SystemAdminRole;
             var dillanUserLogin = new UserLogin
             {
                 Id = Guid.Parse("08925ade-9249-476b-8787-b3dd8f5dbc13"),
                 Person = dillan,
                 Username = "dillan",
                 Password = BCrypt.Net.BCrypt.HashPassword("81118599"),
-                Roles = [UserLoginRole.SystemAdminRole],
                 Tenant = _tenant.Name
             };
+            dillanUserLogin.AddUserLoginRole(new UserRoleAssignment { UserLogin = dillanUserLogin, Role = systemAdminRole}); // System Admin
 
             await _dbContext.Person.AddAsync(dillan);
             await _dbContext.Person.AddAsync(danielle);
             await _dbContext.Person.AddAsync(david);
             await _dbContext.Person.AddAsync(daniel);
-
+            
+            await _dbContext.UserLoginRole.AddAsync(systemAdminRole);
             await _dbContext.UserLogin.AddAsync(dillanUserLogin);
 
             await _dbContext.SaveChangesAsync();

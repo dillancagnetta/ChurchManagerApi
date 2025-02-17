@@ -1,14 +1,42 @@
 ﻿using ChurchManager.Domain.Common;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Domain.Features.Security;
 
+/*
+ 
+ // Example: Create a reusable permission
+var churchViewPermission = new Permission 
+{
+    EntityType = "Church",
+    CanView = true,
+    IsDynamicScope = true,
+    ScopeType = "ChurchGroup"
+};
+
+// Create a role and assign the permission
+var pastorRole = new Role("Pastor", "Church Pastor Role");
+var rolePermission = new RolePermissionAssignment 
+{
+    Role = pastorRole,
+    Permission = churchViewPermission
+};
+
+// Assign the role to a user
+var userRoleAssignment = new UserRoleAssignment 
+{
+    UserLogin = user,
+    Role = pastorRole
+};
+ 
+ */
 public class EntityPermission : AuditableEntity<int>, IAggregateRoot<int>
 {
     // Link to UserLoginRole
-    public int UserLoginRoleId { get; set; }
-    public virtual UserLoginRole Role { get; set; }
+    // Many-to-many relationship with Role through RolePermissionAssignment
+    public virtual ICollection<RolePermissionAssignment> RoleAssignments { get; set; } = new List<RolePermissionAssignment>();
     
     public bool IsSystem { get; set; }
     
@@ -43,3 +71,4 @@ public class EntityPermission : AuditableEntity<int>, IAggregateRoot<int>
     
     public const string SystemAdminPermissionScope = "SystemAdmin";
 }
+

@@ -49,11 +49,14 @@ public class Permission_Tests
             
             // Arrange
             var (churchGroup, churches) = await SetupChurchGroupWithChurches(dbContext);
-            var userLoginRole = await SetupUserWithDynamicPermission("ChurchGroup", churchGroup.Id, "Church", dbContext);
+            var role = await SetupUserWithDynamicPermission("ChurchGroup", churchGroup.Id, "Church", dbContext);
 
+            // Get the UserLoginId through the role assignment
+            var userLoginId = await UserLoginIdForRole(dbContext, role);
+            
             // Act
             var query = dbContext.Church.AsQueryable();
-            var filteredChurches = await service.FilterByPermissionAsync(userLoginRole.UserLoginId, query, "View");
+            var filteredChurches = await service.FilterByPermissionAsync(userLoginId, query, "View");
             var result = await filteredChurches.ToListAsync();
 
             // Assert
@@ -75,10 +78,13 @@ public class Permission_Tests
             var rolesDb = new UserLoginRoleDbRepository(dbContext, _dateTimeProvider);
             var permissionsDb = new EntityPermissionDbRepository(dbContext, _dateTimeProvider);
             var service = new PermissionService(rolesDb, permissionsDb, dbContext);
-            
+        
             // Arrange
             var (churchGroup, churches) = await SetupChurchGroupWithChurches(dbContext);
-            var userLoginRole = await SetupUserWithDynamicPermission(scopeType:"ChurchGroup", churchGroup.Id, entityType:"Church", dbContext);
+            var role = await SetupUserWithDynamicPermission(scopeType:"ChurchGroup", churchGroup.Id, entityType:"Church", dbContext);
+        
+            // Get the UserLoginId through the role assignment
+            var userLoginId = await UserLoginIdForRole(dbContext, role);
 
             // Add new church to group
             var newChurch = new Church 
@@ -91,13 +97,13 @@ public class Permission_Tests
 
             // Act
             var query = dbContext.Church.AsQueryable();
-            var filteredChurches = await service.FilterByPermissionAsync(userLoginRole.UserLoginId, query, "View");
+            var filteredChurches = await service.FilterByPermissionAsync(userLoginId, query, "View");
             var result = await filteredChurches.ToListAsync();
 
             // Assert
             Assert.Equal(3, result.Count); // Now includes the new church
             Assert.Contains(result, c => c.Id == newChurch.Id);
-            
+        
             // Cleanup
             await dbContext.Database.EnsureDeletedAsync();
         }
@@ -115,11 +121,14 @@ public class Permission_Tests
             
             // Arrange
             var church = await SetupChurchWithGroups(dbContext);
-            var userLoginRole = await SetupUserWithDynamicPermission(scopeType: "Church", church.Id, entityType: "Group", dbContext);
+            var role = await SetupUserWithDynamicPermission(scopeType: "Church", church.Id, entityType: "Group", dbContext);
 
+            // Get the UserLoginId through the role assignment
+            var userLoginId = await UserLoginIdForRole(dbContext, role);
+            
             // Act
             var query = dbContext.Group.AsQueryable();
-            var filteredGroups = await service.FilterByPermissionAsync(userLoginRole.UserLoginId, query, "View");
+            var filteredGroups = await service.FilterByPermissionAsync(userLoginId, query, "View");
             var result = await filteredGroups.ToListAsync();
 
             // Assert
@@ -144,14 +153,17 @@ public class Permission_Tests
             
             // Arrange
             var (churchGroup, churches) = await SetupChurchGroupWithChurches(dbContext);
-            var userLoginRole = await SetupUserWithExplicitPermission(
+            var role = await SetupUserWithExplicitPermission(
                 entityType: "Church",
                 entityIds: new[] { churches[0].Id },
                 dbContext);
+            
+            // Get the UserLoginId through the role assignment
+            var userLoginId = await UserLoginIdForRole(dbContext, role);
 
             // Act
             var query = dbContext.Church.AsQueryable();
-            var filteredChurches = await service.FilterByPermissionAsync(userLoginRole.UserLoginId, query, "View");
+            var filteredChurches = await service.FilterByPermissionAsync(userLoginId, query, "View");
             var result = await filteredChurches.ToListAsync();
 
             // Assert
@@ -175,14 +187,17 @@ public class Permission_Tests
             
             // Arrange
             var (churchGroup, churches) = await SetupChurchGroupWithChurches(dbContext);
-            var userLoginRole = await SetupUserWithDynamicPermission(
+            var role = await SetupUserWithDynamicPermission(
                 scopeType:"ChurchGroup", 
                 churchGroup.Id, 
                 entityType:"Church", dbContext);
+            
+            // Get the UserLoginId through the role assignment
+            var userLoginId = await UserLoginIdForRole(dbContext, role);
 
             // Act
             var hasPermission = await service.HasPermissionAsync<Church>(
-                userLoginRole.UserLoginId,
+                userLoginId,
                 entityId:churches[0].Id,
                 permission:"View");
 
@@ -210,14 +225,17 @@ public class Permission_Tests
             dbContext.Church.Add(otherChurch);
             await dbContext.SaveChangesAsync();
 
-            var userLoginRole = await SetupUserWithDynamicPermission(
+            var role = await SetupUserWithDynamicPermission(
                 scopeType:"ChurchGroup", 
                 churchGroup.Id, 
                 entityType:"Church", dbContext);
+            
+            // Get the UserLoginId through the role assignment
+            var userLoginId = await UserLoginIdForRole(dbContext, role);
 
             // Act
             var hasPermission = await service.HasPermissionAsync<Church>(
-                userLoginRole.UserLoginId,
+                userLoginId,
                 entityId:otherChurch.Id,
                 permission:"View");
 
@@ -262,6 +280,8 @@ public class Permission_Tests
     {
         var family = new Family() { Address = new Address() };
         var person = new Person { Family = family};
+        
+        // Create permission
         var permission = new EntityPermission
         {
             EntityType = entityType,
@@ -271,19 +291,42 @@ public class Permission_Tests
             CanView = true,
             CanEdit = true
         };
-        var role = new UserLoginRole("TestRole")
-        {
-            Permissions = [permission]
-        };
+        _context.EntityPermission.Add(permission);
+        
+        // Create role
+        var role = new UserLoginRole("TestRole");
+        _context.UserLoginRole.Add(role);
+        
+        // Create user
         var userLogin = new UserLogin 
         { 
             Username = "test@test.com",
             Password = "hash",
-            Roles = [role],
             Tenant = "Tenant1",
             Person = person
         };
         _context.UserLogin.Add(userLogin);
+        
+        await _context.SaveChangesAsync();
+
+        // Create role-permission assignment
+        var rolePermission = new RolePermissionAssignment
+        {
+            RoleId = role.Id,
+            EntityPermissionId = permission.Id,
+            Permission = permission
+        };
+        _context.RolePermissionAssignment.Add(rolePermission);
+
+        // Create user-role assignment
+        var userRole = new UserRoleAssignment
+        {
+            UserLoginId = userLogin.Id,
+            UserLoginRoleId = role.Id,
+            Role = role
+        };
+        _context.UserRoleAssignment.Add(userRole);
+
         await _context.SaveChangesAsync();
         
         return role;
@@ -293,6 +336,8 @@ public class Permission_Tests
     {
         var family = new Family() { Address = new Address() };
         var person = new Person { Family = family};
+        
+        // Create permission
         var permission = new EntityPermission
         {
             EntityType = entityType,
@@ -301,22 +346,53 @@ public class Permission_Tests
             CanView = true,
             CanEdit = true
         };
-        var role = new UserLoginRole("TestRole")
-        {
-            Permissions = [permission]
-        };
+        _context.EntityPermission.Add(permission);
+        
+        // Create role
+        var role = new UserLoginRole("TestRole");
+        _context.UserLoginRole.Add(role);
+        
+        // Create user
         var userLogin = new UserLogin 
         { 
             Username = "test@test.com",
             Password = "hash",
-            Roles = [role],
             Tenant = "Tenant1",
             Person = person
         };
         _context.UserLogin.Add(userLogin);
+        
+        await _context.SaveChangesAsync();
+
+        // Create role-permission assignment
+        var rolePermission = new RolePermissionAssignment
+        {
+            RoleId = role.Id,
+            EntityPermissionId = permission.Id,
+            Permission = permission
+        };
+        _context.RolePermissionAssignment.Add(rolePermission);
+
+        // Create user-role assignment
+        var userRole = new UserRoleAssignment
+        {
+            UserLoginId = userLogin.Id,
+            UserLoginRoleId = role.Id,
+            Role = role
+        };
+        _context.UserRoleAssignment.Add(userRole);
+
         await _context.SaveChangesAsync();
 
         return role;
+    }
+    
+    private async Task<Guid> UserLoginIdForRole(ChurchManagerDbContext dbContext, UserLoginRole role)
+    {
+        return await dbContext.UserRoleAssignment
+            .Where(ura => ura.UserLoginRoleId == role.Id)
+            .Select(ura => ura.UserLoginId)
+            .FirstAsync();
     }
 }
 

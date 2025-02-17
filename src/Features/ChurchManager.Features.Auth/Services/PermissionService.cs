@@ -46,9 +46,13 @@ public class PermissionService(
         var permissions = await rolesDb
             .Queryable()
             .AsNoTracking()
-                .Include(x => x.Permissions)
-            .Where(ulr => ulr.UserLoginId == userLoginId && ulr.RecordStatus == RecordStatus.Active.Value)
-            .SelectMany(ulr => ulr.Permissions)
+            .Include(x => x.UserAssignments)
+            .Include(x => x.PermissionAssignments)
+                .ThenInclude(pa => pa.Permission)
+            .Where(role => role.UserAssignments.Any(ua => ua.UserLoginId == userLoginId))
+            .Where(role => role.RecordStatus == RecordStatus.Active.Value)
+            .SelectMany(role => role.PermissionAssignments)
+                .Select(pa => pa.Permission)
                 .Where(ep => ep.RecordStatus == RecordStatus.Active.Value)
                 .Where(ep => ep.EntityType == entityType)
             .ToListAsync(ct);
@@ -72,7 +76,8 @@ public class PermissionService(
             }
         }
 
-        return false;    }
+        return false;    
+    }
 
     public async Task<IQueryable<T>> FilterByPermissionAsync<T>(Guid userLoginId, IQueryable<T> query, PermissionAction permission, CancellationToken ct = default) where T : class, IEntity<int>
     {
@@ -81,9 +86,12 @@ public class PermissionService(
         var permissions = await rolesDb
             .Queryable()
             .AsNoTracking()
-                .Include(x => x.Permissions)
-            .Where(ulr => ulr.UserLoginId == userLoginId && ulr.RecordStatus == RecordStatus.Active.Value)
-            .SelectMany(ulr => ulr.Permissions)
+            .Include(x => x.PermissionAssignments)
+                .ThenInclude(pa => pa.Permission)
+            .Where(ulr => ulr.UserAssignments.Any(ua => ua.UserLoginId == userLoginId))
+            .Where(ulr => ulr.RecordStatus == RecordStatus.Active.Value)
+            .SelectMany(ulr => ulr.PermissionAssignments)
+            .Select(pa => pa.Permission)
             .Where(ep => ep.EntityType == entityType)
             .ToListAsync(ct);
 
@@ -117,12 +125,10 @@ public class PermissionService(
         // Check if permission already exists for this role and entity type
         var existingPermission = await permissionsDb
             .Queryable()
-                /*.Include(x => x.Permissions)
-            //.Where(ulr => ulr.RecordStatus == RecordStatus.Active.Value)
-            .SelectMany(ulr => ulr.Permissions)*/
             .FirstOrDefaultAsync(ep => 
-                ep.UserLoginRoleId == userLoginRoleId && 
-                ep.EntityType == entityType, cancellationToken: ct);
+                    ep.RoleAssignments.Any(ra => ra.RoleId == userLoginRoleId) && 
+                    ep.EntityType == entityType, 
+                cancellationToken: ct);
 
         if (existingPermission != null)
         {
@@ -135,7 +141,7 @@ public class PermissionService(
             // Create new permission
             var entityPermission = new EntityPermission
             {
-                UserLoginRoleId = userLoginRoleId,
+                //UserLoginRoleId = userLoginRoleId,
                 EntityType = entityType,
                 EntityIds = entityIds,
             };
@@ -152,8 +158,9 @@ public class PermissionService(
         var permission = await permissionsDb
             .Queryable()
             .FirstOrDefaultAsync(ep => 
-                ep.UserLoginRoleId == userLoginRoleId && 
-                ep.EntityType == entityType, ct);
+                    ep.RoleAssignments.Any(ra => ra.RoleId == userLoginRoleId) && 
+                    ep.EntityType == entityType, 
+                cancellationToken: ct);
 
         if (permission != null)
         {
@@ -171,10 +178,13 @@ public class PermissionService(
         var permissions = await rolesDb
             .Queryable()
             .AsNoTracking()
-                .Include(x => x.Permissions)
-            .Where(ulr => ulr.UserLoginId == userLoginId && ulr.RecordStatus == RecordStatus.Active.Value)
-                .SelectMany(ulr => ulr.Permissions)
-                .Where(ep => ep.EntityType == entityType)
+            .Include(x => x.PermissionAssignments)
+                .ThenInclude(pa => pa.Permission)
+            .Where(role => role.UserAssignments.Any(ua => ua.UserLoginId == userLoginId))
+            .Where(role => role.RecordStatus == RecordStatus.Active.Value)
+            .SelectMany(role => role.PermissionAssignments)
+            .Select(pa => pa.Permission)
+            .Where(ep => ep.EntityType == entityType)
             .ToListAsync(ct);
         
         var accessibleIds = new HashSet<int>();
@@ -204,7 +214,8 @@ public class PermissionService(
     {
         return rolesDb.Queryable()
             .AsNoTracking()
-            .AnyAsync(r => r.UserLoginId == userLoginId && r.Name == UserLoginRole.SystemAdminRoleName, ct);
+            .Where(r => r.Name == UserLoginRole.SystemAdminRoleName)
+            .AnyAsync(r => r.UserAssignments.Any(ua => ua.UserLoginId == userLoginId), ct);
     }
 
     private bool HasPermissionFlag(EntityPermission permission, string permissionType)

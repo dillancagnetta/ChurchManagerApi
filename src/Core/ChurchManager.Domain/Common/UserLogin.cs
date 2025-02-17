@@ -18,7 +18,9 @@ public class UserLogin : Entity<int>, IAggregateRoot<int>
     public string Password { get; set; }
     public string RefreshToken { get; set; }
     public DateTime? RefreshTokenExpiryTime { get; set; }
-    public virtual List<UserLoginRole> Roles { get; set; } = new(0);
+    
+    // Many-to-many relationship with Role through UserRoleAssignment
+    public virtual ICollection<UserRoleAssignment> UserRoles { get; set; } = new List<UserRoleAssignment>();
 
     public int PersonId { get; set; }
 
@@ -38,6 +40,16 @@ public class UserLogin : Entity<int>, IAggregateRoot<int>
         RefreshToken = null;
         RefreshTokenExpiryTime = null;  
     }
+
+    public void AddUserLoginRole(UserRoleAssignment assignment)
+    {
+        UserRoles.Add(assignment);
+    }
+    
+    public void AddUserLoginRole(UserLoginRole role)
+    {
+        UserRoles.Add(new UserRoleAssignment() {UserLogin = this, Role = role });
+    }
 }
 
 public class UserLoginRole : AuditableEntity<int>, IAggregateRoot<int>
@@ -49,12 +61,11 @@ public class UserLoginRole : AuditableEntity<int>, IAggregateRoot<int>
 
     public bool IsSystem { get; set; }
     
-    // Link to UserLogin
-    public Guid UserLoginId { get; set; }
-    
-    public virtual UserLogin UserLogin { get; set; }
+    // Many-to-many relationship with UserLogin through UserRoleAssignment
+    public virtual ICollection<UserRoleAssignment> UserAssignments { get; set; } = new List<UserRoleAssignment>();
 
-    public virtual ICollection<EntityPermission> Permissions { get; set; } = new List<EntityPermission>(0);
+// Many-to-many relationship with Permission through RolePermissionAssignment
+    public virtual ICollection<RolePermissionAssignment> PermissionAssignments { get; set; } = new List<RolePermissionAssignment>();
 
     public UserLoginRole(string name)
     {
@@ -77,9 +88,28 @@ public class UserLoginRole : AuditableEntity<int>, IAggregateRoot<int>
         {
             Name = SystemAdminRoleName,
             Description = "System Administrator Role",
-            IsSystem = true,
-            Permissions = [EntityPermission.SystemAdminPermission]
+            IsSystem = true
         };
     
     public const string SystemAdminRoleName = "System Admin";
+}
+
+// Junction table for many-to-many relationship between UserLogin and Role
+public class UserRoleAssignment : AuditableEntity<int>, IAggregateRoot<int>
+{
+    public Guid UserLoginId { get; set; }
+    public virtual UserLogin UserLogin { get; set; }
+    
+    public int UserLoginRoleId { get; set; }
+    public virtual UserLoginRole Role { get; set; }
+}
+
+// Junction table for many-to-many relationship between Role and Permission
+public class RolePermissionAssignment : AuditableEntity<int>
+{
+    public int RoleId { get; set; }
+    public virtual UserLoginRole Role { get; set; }
+    
+    public int EntityPermissionId { get; set; }
+    public virtual EntityPermission Permission { get; set; }
 }

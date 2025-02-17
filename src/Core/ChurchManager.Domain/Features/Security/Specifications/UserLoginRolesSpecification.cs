@@ -13,7 +13,11 @@ public class UserLoginRolesSpecification : PermissionSpecification<UserLoginRole
     {
         Query.AsNoTracking();
 
-        Query.Include(x => x.Permissions);
+        Query
+            .Include(x => x.PermissionAssignments)
+            .ThenInclude(pa => pa.Permission)
+            .Include(x => x.UserAssignments)
+            .ThenInclude(ua => ua.UserLogin);
             
         if (!searchTerm.IsNullOrEmpty())
         {
@@ -27,8 +31,25 @@ public class UserLoginRolesSpecification : PermissionSpecification<UserLoginRole
             Name = x.Name,
             Description = x.Description,
             IsSystem = x.IsSystem,
-            UserLoginId = x.UserLoginId,
-            RecordStatus = x.RecordStatus.ToString()
+            RecordStatus = x.RecordStatus.ToString(),
+            UserLogins = x.UserAssignments.Select(ua => new UserLoginBasicViewModel
+            {
+                Id = ua.UserLoginId,
+                Username = ua.UserLogin.Username
+            }).ToList(),
+            Permissions = x.PermissionAssignments.Select(pa => new PermissionViewModel
+            {
+                Id = pa.Permission.Id,
+                EntityType = pa.Permission.EntityType,
+                ScopeType = pa.Permission.ScopeType,
+                IsSystem = pa.Permission.IsSystem,
+                RecordStatus = pa.Permission.RecordStatus.ToString(),
+                EntityIds = pa.Permission.EntityIds,
+                CanView = pa.Permission.CanView,
+                CanEdit = pa.Permission.CanEdit,
+                CanDelete = pa.Permission.CanDelete,
+                CanManageUsers = pa.Permission.CanManageUsers
+            }).ToList()
         });
     }
 }

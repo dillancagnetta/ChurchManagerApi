@@ -16,8 +16,10 @@ public class UserLoginsSpecification : PermissionSpecification<UserLogin, UserLo
 
         Query
             .Include(x => x.Person)
-            .Include(x => x.Roles)
-             .ThenInclude(r => r.Permissions);
+            .Include(x => x.UserRoles)
+                .ThenInclude(ur => ur.Role)
+                 .ThenInclude(r => r.PermissionAssignments)
+                    .ThenInclude(rp => rp.Permission);
 
         if (!searchTerm.IsNullOrEmpty())
         {
@@ -30,27 +32,27 @@ public class UserLoginsSpecification : PermissionSpecification<UserLogin, UserLo
             Username = x.Username,
             RecordStatus = x.RecordStatus.ToString(),
             Person = Person.ToBasicPerson(x.Person),
-            Roles = x.Roles.Select(r => new UserLoginRoleViewModel
+            Roles = x.UserRoles.Select(ur => new UserLoginRoleViewModel
             {
-                Id = r.Id,
-                Name = r.Name,
-                Description = r.Description,
-                IsSystem = r.IsSystem,
-                RecordStatus = r.RecordStatus.ToString(),
-                Permissions = r.Permissions.Select(p => new PermissionViewModel
+                Id = ur.Role.Id,
+                Name = ur.Role.Name,
+                Description = ur.Role.Description,
+                IsSystem = ur.Role.IsSystem,
+                RecordStatus = ur.Role.RecordStatus.ToString(),
+                Permissions = ur.Role.PermissionAssignments.Select(pa => new PermissionViewModel
                 {
-                    Id = p.Id,
-                    EntityType = p.EntityType,
-                    ScopeType = p.ScopeType,
-                    IsSystem = p.IsSystem,
-                    RecordStatus = p.RecordStatus.ToString(),
-                    EntityIds = p.EntityIds,
-                    CanView = p.CanView,
-                    CanEdit = p.CanEdit,
-                    CanDelete = p.CanDelete,
-                    CanManageUsers = p.CanManageUsers
+                    Id = pa.Permission.Id,
+                    EntityType = pa.Permission.EntityType,
+                    ScopeType = pa.Permission.ScopeType,
+                    IsSystem = pa.Permission.IsSystem,
+                    RecordStatus = pa.Permission.RecordStatus.ToString(),
+                    EntityIds = pa.Permission.EntityIds,
+                    CanView = pa.Permission.CanView,
+                    CanEdit = pa.Permission.CanEdit,
+                    CanDelete = pa.Permission.CanDelete,
+                    CanManageUsers = pa.Permission.CanManageUsers
                 }).ToList()
-            } ).ToList()
+            }).ToList()
         });
     }
 }

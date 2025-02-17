@@ -292,6 +292,11 @@ namespace ChurchManager.DataImporter
                     // Add UserLogins
                     Console.WriteLine();
                     Console.WriteLine("*** UserLogins ***");
+                    
+                    var systemAdminRole = UserLoginRole.SystemAdminRole;
+                    dbContext.UserLoginRole.Add(systemAdminRole);
+                    dbContext.SaveChanges();
+                    
                     foreach (var importAndPerson in personMap)
                     {
                         importAndPerson.Deconstruct(out var import, out var person);
@@ -313,37 +318,30 @@ namespace ChurchManager.DataImporter
                         {
                             if (import.FullName.FirstName.Equals("Dillan") &&
                                 import.FullName.LastName.Equals("Cagnetta"))
-                                dbContext.UserLogin.Add(new UserLogin
+                            {
+                                var _userLogin = new UserLogin
                                 {
                                     Id = Guid.Parse(import.UserLoginId),
                                     PersonId = person.Id,
                                     Username = "dillan",
-                                    Password = BCrypt.Net.BCrypt.HashPassword("81118599"),
-                                    Roles =
-                                    [
-                                        new("Admin", "System Admin")
-                                        {
-                                            IsSystem = true,
-                                            Permissions = [permission]
-                                        }
-                                    ],
-                                });
+                                    Password = BCrypt.Net.BCrypt.HashPassword("81118599")
+                                };
+                                _userLogin.AddUserLoginRole(systemAdminRole);
+                                dbContext.UserLogin.Add(_userLogin);
+                            }
                             else
-                                dbContext.UserLogin.Add(new UserLogin
+                            {
+                                var _userLogin = new UserLogin
                                 {
                                     Id = Guid.Parse(import.UserLoginId),
                                     PersonId = person.Id,
                                     Username = import.Email.ToLower(),
                                     Password = BCrypt.Net.BCrypt.HashPassword("pancake"),
-                                    Roles =
-                                    [
-                                        new("Group Leader")
-                                        {
-                                            IsSystem = true,
-                                            Permissions = [permission]
-                                        }
-                                    ],
-                                });
+                                    
+                                };
+                                dbContext.UserLogin.Add(_userLogin);
+                            }
+                                
                         }
                     }
 
