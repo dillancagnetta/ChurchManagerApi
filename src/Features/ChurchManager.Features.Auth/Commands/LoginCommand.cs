@@ -34,6 +34,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, TokenViewModel>
         // get account from database
         var user = await _dbContext.UserLogin
             .Include(x => x.UserRoles)
+                .ThenInclude(r => r.Role)
             .FirstOrDefaultAsync(u => u.Username == request.Username, ct);
 
         // check account found and verify password
