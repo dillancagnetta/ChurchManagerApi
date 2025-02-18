@@ -47,6 +47,7 @@ public class UserLoginsSpecification : PermissionSpecification<UserLogin, UserLo
                     IsSystem = pa.Permission.IsSystem,
                     RecordStatus = pa.Permission.RecordStatus.ToString(),
                     EntityIds = pa.Permission.EntityIds,
+                    IsDynamicScope = pa.Permission.IsDynamicScope,
                     CanView = pa.Permission.CanView,
                     CanEdit = pa.Permission.CanEdit,
                     CanDelete = pa.Permission.CanDelete,

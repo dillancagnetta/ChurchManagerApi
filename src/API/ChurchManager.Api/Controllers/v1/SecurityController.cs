@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ChurchManager.Api.Controllers.v1
 {
     [ApiVersion("1.0")]
-    [Authorize]
+    [Authorize(Roles = "System Admin")]
     public class SecurityController(ICognitoCurrentUser currentUser) : BaseApiController
     {
         [HttpGet("roles")]
@@ -20,6 +20,13 @@ namespace ChurchManager.Api.Controllers.v1
         public async Task<IActionResult> CreateUserLoginRole(string searchTerm, CancellationToken token)
         {
             var response = await Mediator.Send(new UserLoginRolesQuery(searchTerm), token);
+            return Ok(response);
+        }
+        
+        [HttpPost("permissions/browse")]
+        public async Task<IActionResult> BrowsePermissions([FromBody] BrowsePermissionsQuery query, CancellationToken token)
+        {
+            var response = await Mediator.Send(query, token);
             return Ok(response);
         }
     }

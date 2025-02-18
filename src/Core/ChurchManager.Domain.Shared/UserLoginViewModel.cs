@@ -33,6 +33,7 @@ public class PermissionViewModel
     public bool IsSystem { get; set; }
     public string RecordStatus { get; set; }
     public ICollection<int> EntityIds { get; set; }
+    public bool IsDynamicScope { get; set; }
     public bool CanView { get; set; }
     public bool CanEdit { get; set; }
     public bool CanDelete { get; set; }
