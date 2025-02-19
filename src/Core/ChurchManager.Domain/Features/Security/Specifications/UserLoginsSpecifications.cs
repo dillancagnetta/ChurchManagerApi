@@ -9,8 +9,8 @@ namespace ChurchManager.Domain.Features.Security.Specifications;
 
 public class UserLoginsSpecification : PermissionSpecification<UserLogin, UserLoginViewModel>
 {
-    public UserLoginsSpecification(string searchTerm, IEnumerable<int> allowedChurchIds = null)
-        : base(allowedChurchIds)
+    public UserLoginsSpecification(string searchTerm, IEnumerable<int> allowedIds = null)
+        : base(allowedIds)
     {
         Query.AsNoTracking();
 

@@ -7,8 +7,8 @@ namespace ChurchManager.Domain.Features.People.Specifications
 {
     public class PeopleAutocompleteSpecification : PermissionSpecification<Person, PeopleAutocompleteViewModel>
     {
-        public PeopleAutocompleteSpecification(string searchTerm, IEnumerable<int> allowedChurchIds = null)
-            : base(allowedChurchIds)
+        public PeopleAutocompleteSpecification(string searchTerm, IEnumerable<int> allowedIds = null)
+            : base(allowedIds)
         {
             Query.AsNoTracking();
 

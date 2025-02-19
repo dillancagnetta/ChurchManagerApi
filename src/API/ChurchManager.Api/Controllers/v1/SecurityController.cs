@@ -9,10 +9,10 @@ namespace ChurchManager.Api.Controllers.v1
     [Authorize(Roles = "System Admin")]
     public class SecurityController(ICognitoCurrentUser currentUser) : BaseApiController
     {
-        [HttpGet("roles")]
-        public async Task<IActionResult> GetUserLoginRoles(string searchTerm, CancellationToken token)
+        [HttpPost("roles")]
+        public async Task<IActionResult> GetUserLoginRoles(UserLoginRolesQuery query, CancellationToken token)
         {
-            var response = await Mediator.Send(new UserLoginRolesQuery(searchTerm), token);
+            var response = await Mediator.Send(query, token);
             return Ok(response);
         }
         

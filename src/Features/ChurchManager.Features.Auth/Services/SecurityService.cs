@@ -28,9 +28,9 @@ public class SecurityService(IPermissionContext permissions,
         return vm;
     }
 
-    public async Task<IEnumerable<UserLoginRoleViewModel>> UserLoginRolesAsync(string searchTerm, CancellationToken ct = default)
+    public async Task<IEnumerable<UserLoginRoleViewModel>> UserLoginRolesAsync(string searchTerm = null, IEnumerable<int> excludeIds = null, CancellationToken ct = default)
     {
-        var spec = new UserLoginRolesSpecification(searchTerm);
+        var spec = new UserLoginRolesSpecification(searchTerm, excludeIds:excludeIds);
         
         var vm = await rolesDb.ListAsync(spec, ct);
         

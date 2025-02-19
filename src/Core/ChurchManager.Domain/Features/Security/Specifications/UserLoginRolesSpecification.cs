@@ -8,8 +8,8 @@ namespace ChurchManager.Domain.Features.Security.Specifications;
 
 public class UserLoginRolesSpecification : PermissionSpecification<UserLoginRole, UserLoginRoleViewModel>
 {
-    public UserLoginRolesSpecification(string searchTerm, IEnumerable<int> allowedChurchIds = null)
-        : base(allowedChurchIds)
+    public UserLoginRolesSpecification(string searchTerm, IEnumerable<int> excludeIds = null, IEnumerable<int> allowedIds = null)
+        : base(allowedIds)
     {
         Query.AsNoTracking();
 
@@ -24,6 +24,13 @@ public class UserLoginRolesSpecification : PermissionSpecification<UserLoginRole
             Query.Search(x => x.Name, searchTerm);
             Query.Search(x => x.Description, searchTerm);
         }
+
+        if (!excludeIds.IsNullOrEmpty())
+        {
+            Query.Where(x => !excludeIds.Contains(x.Id));  
+        }
+        
+        Query.Where(x => x.RecordStatus == RecordStatus.Active.Value);
         
         Query.Select(x => new UserLoginRoleViewModel
         {
