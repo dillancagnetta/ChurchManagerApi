@@ -7,6 +7,8 @@ using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Common;
 using ChurchManager.SharedKernel.Wrappers;
+using CodeBoss.Extensions;
+using Codeboss.Results;
 using Convey.CQRS.Queries;
 
 namespace ChurchManager.Features.Auth.Services;
@@ -43,5 +45,27 @@ public class SecurityService(IPermissionContext permissions,
         var pagedResult = await permissionsDb.BrowseAsync(query, spec, ct);
         
         return new PagedResponse<PermissionViewModel>(pagedResult);
+    }
+
+    public async Task<OperationResult> CreatePermissionAsync(string permissionType, string entityType, IEnumerable<int> entityIds, string scopeType, int? scopeId,
+        bool canView, bool canEdit, bool canDelete, bool canManageUsers, CancellationToken ct = default)
+    {
+        var permission = new EntityPermission
+        {
+            EntityType = entityType.Replace(" ", ""),
+            IsDynamicScope = permissionType.Equals("dynamic", StringComparison.InvariantCultureIgnoreCase),
+            EntityIds = !entityIds.IsNullOrEmpty() ? entityIds.ToList() : null,
+            ScopeType = scopeType.Replace(" ", ""),
+            ScopeId = scopeId,
+            CanView = canView,
+            CanEdit = canEdit,
+            CanDelete = canDelete,
+            CanManageUsers = canManageUsers,
+            IsSystem = false
+        };
+        await permissionsDb.AddAsync(permission, ct);
+        var result = await permissionsDb.SaveChangesAsync(ct);
+        
+        return result == 1 ? OperationResult.Success() : OperationResult.Fail("Failed to create permission");
     }
 }

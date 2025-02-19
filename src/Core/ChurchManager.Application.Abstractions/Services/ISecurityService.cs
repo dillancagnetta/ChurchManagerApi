@@ -1,5 +1,6 @@
 ﻿using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
+using Codeboss.Results;
 using Convey.CQRS.Queries;
 
 namespace ChurchManager.Application.Abstractions.Services;
@@ -10,4 +11,5 @@ public interface ISecurityService
     Task<IEnumerable<UserLoginRoleViewModel>> UserLoginRolesAsync(string searchTerm, CancellationToken ct = default);
     Task<PagedResponse<PermissionViewModel>> BrowsePermissionsAsync(IPagedQuery query, string searchTerm, int? entityId = null, bool? isDynamicScope = null,
         CancellationToken ct = default);
+    Task<OperationResult> CreatePermissionAsync(string permissionType, string entityType, IEnumerable<int> entityIds, string scopeType, int? scopeId, bool canView, bool canEdit, bool canDelete, bool canManageUsers, CancellationToken ct = default);
 }

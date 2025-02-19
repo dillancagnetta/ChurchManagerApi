@@ -49,7 +49,7 @@ public class EntityPermission : AuditableEntity<int>, IAggregateRoot<int>
     // Dynamic scope properties
     public bool IsDynamicScope { get; set; }
     public string ScopeType { get; set; }  // e.g., "ChurchGroup", "Church"
-    public int ScopeId { get; set; }       // e.g., ChurchGroupId or ChurchId
+    public int? ScopeId { get; set; }       // e.g., ChurchGroupId or ChurchId
     
     // Permissions
     public bool CanView { get; set; }

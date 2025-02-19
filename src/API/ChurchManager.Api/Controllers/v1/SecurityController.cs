@@ -29,5 +29,12 @@ namespace ChurchManager.Api.Controllers.v1
             var response = await Mediator.Send(query, token);
             return Ok(response);
         }
+        
+        [HttpPost("permissions/create")]
+        public async Task<IActionResult> CreatePermissions(CreatePermissionCommand command, CancellationToken token)
+        {
+            var response = await Mediator.Send(command, token);
+            return Ok(response);
+        }
     }
 }

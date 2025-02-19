@@ -22,13 +22,13 @@ namespace ChurchManager.Api.Controllers.v1
             return Ok(await Mediator.Send(query, token));
         }
         
-        /*[HttpGet]
-        public async Task<IActionResult> GetAll( CancellationToken token)
+        [HttpGet]
+        public async Task<IActionResult> GetAll(bool includeDetails = true, CancellationToken token = default)
         {
-            return Ok(await Mediator.Send(new GetGroupTypeQuery(groupTypeId), token));
+            return Ok(await Mediator.Send(new ChurchesGroupsQuery(IncludeDetails:includeDetails), token));
         }
             
-        [HttpGet("{groupTypeId}")]
+        /*[HttpGet("{groupTypeId}")]
         public async Task<IActionResult> GetGroupTypeById(int groupTypeId, CancellationToken token)
         {
             return Ok(await Mediator.Send(new GetGroupTypeQuery(groupTypeId), token));
