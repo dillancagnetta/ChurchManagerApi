@@ -171,5 +171,11 @@ namespace ChurchManager.Api.Controllers.v1
         {
             return Ok(await Mediator.Send(query, token));
         }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken token)
+        {
+            return Ok(await Mediator.Send(new GetGroupsSelectQuery() , token));
+        }
     }
 }
