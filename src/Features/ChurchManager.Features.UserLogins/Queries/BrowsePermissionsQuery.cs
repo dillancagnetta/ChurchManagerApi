@@ -7,7 +7,7 @@ using MediatR;
 
 namespace ChurchManager.Features.UserLogins.Queries;
 
-public record BrowsePermissionsQuery : SearchTermQueryParameter,  IRequest<PagedResponse<PermissionViewModel>>
+public record BrowsePermissionsQuery : QueryParameter,  IRequest<PagedResponse<PermissionViewModel>>
 {
     public string EntityType { get; set; }
     public string ScopeType { get; set; }
@@ -17,9 +17,9 @@ public record BrowsePermissionsQuery : SearchTermQueryParameter,  IRequest<Paged
 
 public class PermissionsQueryHandler(ISecurityService service) : IRequestHandler<BrowsePermissionsQuery, PagedResponse<PermissionViewModel>>
 {
-    public Task<PagedResponse<PermissionViewModel>> Handle(BrowsePermissionsQuery request, CancellationToken ct)
+    public async Task<PagedResponse<PermissionViewModel>> Handle(BrowsePermissionsQuery request, CancellationToken ct)
     {
-        var result = service.BrowsePermissionsAsync(request, request.SearchTerm, request.EntityId, request.IsDynamicScope, ct);
+        var result = await service.BrowsePermissionsAsync(request, request.EntityType, request.ScopeType, request.EntityId, request.IsDynamicScope, ct);
         
         return result;
     }

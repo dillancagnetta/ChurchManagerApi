@@ -6,14 +6,18 @@ namespace ChurchManager.Domain.Features.Security.Specifications;
 
 public class BrowsePermissionSpecification : Specification<EntityPermission, PermissionViewModel>
 {
-    public BrowsePermissionSpecification(string searchTerm, int? entityId = null, bool? isDynamicScope = null)
+    public BrowsePermissionSpecification(string entityType, string scopeType, int? entityId = null, bool? isDynamicScope = null)
     {
         Query.AsNoTracking();
 
-        if (!searchTerm.IsNullOrEmpty())
+        if (!entityType.IsNullOrEmpty())
         {
-            Query.Search(x => x.EntityType, searchTerm);
-            Query.Search(x => x.ScopeType, searchTerm);
+            Query.Search(x => x.EntityType, entityType.Replace(" ", ""));
+        }
+        
+        if (!scopeType.IsNullOrEmpty())
+        {
+            Query.Search(x => x.ScopeType, scopeType.Replace(" ", ""));
         }
         
         if (entityId.HasValue)

@@ -33,14 +33,14 @@ public class SecurityService(IPermissionContext permissions,
         var spec = new UserLoginRolesSpecification(searchTerm, excludeIds:excludeIds);
         
         var vm = await rolesDb.ListAsync(spec, ct);
-        
+            
         return vm;
     }
 
-    public async Task<PagedResponse<PermissionViewModel>> BrowsePermissionsAsync(IPagedQuery query, string searchTerm, int? entityId = null, bool? isDynamicScope = null,
+    public async Task<PagedResponse<PermissionViewModel>> BrowsePermissionsAsync(IPagedQuery query, string entityType, string scopeType, int? entityId = null, bool? isDynamicScope = null,
         CancellationToken ct = default)
     {
-        var spec = new BrowsePermissionSpecification(searchTerm, entityId, isDynamicScope);
+        var spec = new BrowsePermissionSpecification(entityType, scopeType, entityId, isDynamicScope);
         
         var pagedResult = await permissionsDb.BrowseAsync(query, spec, ct);
         
