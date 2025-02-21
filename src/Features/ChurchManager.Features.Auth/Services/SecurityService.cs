@@ -15,7 +15,7 @@ namespace ChurchManager.Features.Auth.Services;
 
 public class SecurityService(IPermissionContext permissions,
     IGenericDbRepository<UserLogin> userLoginDb,
-    IGenericDbRepository<UserLoginRole> rolesDb,
+    IReadDbRepository<UserLoginRole> rolesDb,
     IGenericDbRepository<EntityPermission> permissionsDb,
     ICognitoCurrentUser currentUser
     ) : ISecurityService
@@ -67,5 +67,14 @@ public class SecurityService(IPermissionContext permissions,
         var result = await permissionsDb.SaveChangesAsync(ct);
         
         return result == 1 ? OperationResult.Success() : OperationResult.Fail("Failed to create permission");
+    }
+
+    public async Task<IEnumerable<PermissionViewModel>> EntityPermissionsAsync(IEnumerable<int> excludeIds, CancellationToken ct = default)
+    {
+        var spec = new EntityPermissionsSpecification(excludeIds);
+        
+        var vm = await permissionsDb.ListAsync(spec, ct);
+        
+        return vm;
     }
 }

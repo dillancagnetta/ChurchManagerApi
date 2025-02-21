@@ -16,6 +16,13 @@ namespace ChurchManager.Api.Controllers.v1
             return Ok(response);
         }
         
+        [HttpPost("permissions")]
+        public async Task<IActionResult> GetEntityPermissions(EntityPermissionsQuery query, CancellationToken token)
+        {
+            var response = await Mediator.Send(query, token);
+            return Ok(response);
+        }
+        
         [HttpPost("role")]
         public async Task<IActionResult> CreateUserLoginRole(string searchTerm, CancellationToken token)
         {

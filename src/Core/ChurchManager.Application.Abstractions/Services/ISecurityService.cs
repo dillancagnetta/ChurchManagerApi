@@ -12,4 +12,5 @@ public interface ISecurityService
     Task<PagedResponse<PermissionViewModel>> BrowsePermissionsAsync(IPagedQuery query, string entityType, string scopeType, int? entityId = null, bool? isDynamicScope = null,
         CancellationToken ct = default);
     Task<OperationResult> CreatePermissionAsync(string permissionType, string entityType, IEnumerable<int> entityIds, string scopeType, int? scopeId, bool canView, bool canEdit, bool canDelete, bool canManageUsers, CancellationToken ct = default);
+    Task<IEnumerable<PermissionViewModel>> EntityPermissionsAsync(IEnumerable<int> excludeIds, CancellationToken ct = default);
 }

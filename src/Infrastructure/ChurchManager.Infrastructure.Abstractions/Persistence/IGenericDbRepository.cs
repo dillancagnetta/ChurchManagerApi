@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Infrastructure.Abstractions.Persistence
 {
-    public interface IGenericDbRepository<T> : IRepositoryBase<T>, IPaginatedDbRepository<T>
+    public interface IGenericDbRepository<T> : IRepositoryBase<T>, IPaginatedDbRepository<T>, IReadDbRepository<T>
         where T : class, IAggregateRoot<int>
     {
-        DbContext DbContext { get; }
-        IQueryable<T> Queryable(params string[] includes);
+        /*DbContext DbContext { get; }
+        IQueryable<T> Queryable(params string[] includes);*/
         Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
     }
 
@@ -42,5 +42,12 @@ namespace ChurchManager.Infrastructure.Abstractions.Persistence
         /// The task result contains a <see cref="List{TResult}" /> that contains elements from the input sequence.
         /// </returns>
         Task<PagedResult<TResult>> BrowseAsync<TResult>(IPagedQuery query, ISpecification<T, TResult> specification, CancellationToken ct = default);
+    }
+    
+    /// <inheritdoc/>
+    public interface IReadDbRepository<T> : IReadRepositoryBase<T>, IPaginatedDbRepository<T> where T : class, IAggregateRoot<int>
+    {
+        DbContext DbContext { get; }
+        IQueryable<T> Queryable(params string[] includes);
     }
 }

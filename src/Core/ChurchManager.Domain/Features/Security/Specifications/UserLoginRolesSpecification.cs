@@ -1,5 +1,6 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Shared;
 using ChurchManager.Domain.Specifications;
 using CodeBoss.Extensions;
@@ -11,8 +12,10 @@ public class UserLoginRolesSpecification : PermissionSpecification<UserLoginRole
     public UserLoginRolesSpecification(string searchTerm, IEnumerable<int> excludeIds = null, IEnumerable<int> allowedIds = null)
         : base(allowedIds)
     {
-        Query.AsNoTracking();
-
+        Query
+            .AsNoTracking()
+            .EnableCache(nameof(UserLoginRolesSpecification), searchTerm, excludeIds.ToCacheKey(), allowedIds.ToCacheKey());
+        
         Query
             .Include(x => x.PermissionAssignments)
             .ThenInclude(pa => pa.Permission)
@@ -49,6 +52,7 @@ public class UserLoginRolesSpecification : PermissionSpecification<UserLoginRole
                 Id = pa.Permission.Id,
                 EntityType = pa.Permission.EntityType,
                 ScopeType = pa.Permission.ScopeType,
+                ScopeId = pa.Permission.ScopeId,
                 IsSystem = pa.Permission.IsSystem,
                 RecordStatus = pa.Permission.RecordStatus.ToString(),
                 EntityIds = pa.Permission.EntityIds,

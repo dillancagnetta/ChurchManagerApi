@@ -125,6 +125,7 @@ namespace ChurchManager.Infrastructure.Persistence
 
             // TODO: scan and register these automatically
             services.AddScoped(typeof(IGenericDbRepository<>), typeof(GenericRepositoryBase<>));
+            services.AddScoped(typeof(IReadDbRepository<>), typeof(CachedDbRepository<>));
             services.AddScoped<IGroupAttendanceDbRepository, GroupAttendanceDbRepository>();
             services.AddScoped<IChurchAttendanceDbRepository, ChurchAttendanceDbRepository>();
             services.AddScoped<IDiscipleshipStepDefinitionDbRepository, DiscipleshipDbRepository>();

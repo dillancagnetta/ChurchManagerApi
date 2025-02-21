@@ -28,6 +28,7 @@ public class UserLoginBasicViewModel
 public class PermissionViewModel
 {
     public int Id { get; set; }
+    public int? ScopeId { get; set; }
     public string EntityType { get; set; }
     public string ScopeType { get; set; }
     public bool IsSystem { get; set; }
