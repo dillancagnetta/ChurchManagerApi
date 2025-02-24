@@ -8,7 +8,7 @@ namespace ChurchManager.Domain.Features.Security.Specifications;
 
 public class EntityPermissionsSpecification : Specification<EntityPermission, PermissionViewModel>
 {
-    public EntityPermissionsSpecification(IEnumerable<int> excludeIds = null)
+    public EntityPermissionsSpecification(IEnumerable<int> excludeIds = null, int? UserLoginRoleId = null)
     {
         Query
             .AsNoTracking()
@@ -17,6 +17,12 @@ public class EntityPermissionsSpecification : Specification<EntityPermission, Pe
         if (!excludeIds.IsNullOrEmpty())
         {
             Query.Where(x => !excludeIds.Contains(x.Id));  
+        }
+
+        if (UserLoginRoleId.HasValue)
+        {
+            Query.Include(x => x.RoleAssignments.Where(ra => ra.Id == UserLoginRoleId.Value));
+            Query.Where(x => x.RoleAssignments.Any());
         }
         
         Query.Where(x => x.RecordStatus == RecordStatus.Active.Value);

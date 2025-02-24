@@ -69,9 +69,9 @@ public class SecurityService(IPermissionContext permissions,
         return result == 1 ? OperationResult.Success() : OperationResult.Fail("Failed to create permission");
     }
 
-    public async Task<IEnumerable<PermissionViewModel>> EntityPermissionsAsync(IEnumerable<int> excludeIds, CancellationToken ct = default)
+    public async Task<IEnumerable<PermissionViewModel>> EntityPermissionsAsync(IEnumerable<int> excludeIds, int? userLoginRoleId = null, CancellationToken ct = default)
     {
-        var spec = new EntityPermissionsSpecification(excludeIds);
+        var spec = new EntityPermissionsSpecification(excludeIds, userLoginRoleId);
         
         var vm = await permissionsDb.ListAsync(spec, ct);
         

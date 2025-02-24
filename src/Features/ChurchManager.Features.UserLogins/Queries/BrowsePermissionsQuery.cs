@@ -26,7 +26,7 @@ public class PermissionsQueryHandler(ISecurityService service) : IRequestHandler
 }
 
 /*
- * -----------------------
+ * ---------------------------------------------------------
  */
  
 public record CreatePermissionCommand : IRequest<ApiResponse>
@@ -58,5 +58,19 @@ public class CreatePermissionHandler(ISecurityService service) : IRequestHandler
             command.CanManageUsers, ct);
         
         return new ApiResponse {Succeeded = operation.IsSuccess};
+    }
+}
+
+/*
+ * ---------------------------------------------------------
+ */
+
+public record AddPermissionsToRoleCommand(int UserLoginRoleId, int[] PermissionIds, bool? IsAllSelected = null) : IRequest<ApiResponse>;
+
+public class AddPermissionsToRoleHandler(ISecurityService service) : IRequestHandler<AddPermissionsToRoleCommand, ApiResponse>
+{
+    public async Task<ApiResponse> Handle(AddPermissionsToRoleCommand command, CancellationToken ct)
+    {
+        return new ApiResponse {Succeeded = true};
     }
 }
