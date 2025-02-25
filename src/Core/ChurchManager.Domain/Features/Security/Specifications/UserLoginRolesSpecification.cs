@@ -9,18 +9,19 @@ namespace ChurchManager.Domain.Features.Security.Specifications;
 
 public class UserLoginRolesSpecification : PermissionSpecification<UserLoginRole, UserLoginRoleViewModel>
 {
-    public UserLoginRolesSpecification(string searchTerm, IEnumerable<int> excludeIds = null, IEnumerable<int> allowedIds = null)
+    public UserLoginRolesSpecification(
+        string searchTerm, IEnumerable<int> excludeIds = null, IEnumerable<int> allowedIds = null,  Guid? userLoginId = null)
         : base(allowedIds)
     {
         Query
             .AsNoTracking()
             .EnableCache(nameof(UserLoginRolesSpecification), searchTerm, excludeIds.ToCacheKey(), allowedIds.ToCacheKey());
-        
+
         Query
             .Include(x => x.PermissionAssignments)
-            .ThenInclude(pa => pa.Permission)
-            .Include(x => x.UserAssignments)
-            .ThenInclude(ua => ua.UserLogin);
+            .ThenInclude(pa => pa.Permission);
+            /*.Include(x => x.UserAssignments)
+            .ThenInclude(ua => ua.UserLogin);*/
             
         if (!searchTerm.IsNullOrEmpty())
         {
@@ -31,6 +32,17 @@ public class UserLoginRolesSpecification : PermissionSpecification<UserLoginRole
         if (!excludeIds.IsNullOrEmpty())
         {
             Query.Where(x => !excludeIds.Contains(x.Id));  
+        }
+        
+        if (userLoginId.HasValue)
+        {
+            Query.Include(x => x.UserAssignments.Where(ra => ra.UserLoginId == userLoginId.Value))
+                .ThenInclude(ua => ua.UserLogin);
+        }
+        else
+        {
+            Query.Include(x => x.UserAssignments)
+                .ThenInclude(ua => ua.UserLogin);
         }
         
         Query.Where(x => x.RecordStatus == RecordStatus.Active.Value);

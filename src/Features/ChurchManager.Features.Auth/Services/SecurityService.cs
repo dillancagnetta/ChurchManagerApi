@@ -1,4 +1,5 @@
-﻿using ChurchManager.Application.Abstractions.Services;
+﻿using System.Linq.Dynamic.Core;
+using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Security;
 using ChurchManager.Domain.Features.Security.Services;
@@ -10,12 +11,14 @@ using ChurchManager.SharedKernel.Wrappers;
 using CodeBoss.Extensions;
 using Codeboss.Results;
 using Convey.CQRS.Queries;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Features.Auth.Services;
 
 public class SecurityService(IPermissionContext permissions,
     IGenericDbRepository<UserLogin> userLoginDb,
     IReadDbRepository<UserLoginRole> rolesDb,
+    IGenericDbRepository<UserLoginRole> rolesWriteDb,
     IGenericDbRepository<EntityPermission> permissionsDb,
     ICognitoCurrentUser currentUser
     ) : ISecurityService
@@ -28,9 +31,9 @@ public class SecurityService(IPermissionContext permissions,
         return vm;
     }
 
-    public async Task<IEnumerable<UserLoginRoleViewModel>> UserLoginRolesAsync(string searchTerm = null, IEnumerable<int> excludeIds = null, CancellationToken ct = default)
+    public async Task<IEnumerable<UserLoginRoleViewModel>> UserLoginRolesAsync(string searchTerm = null, IEnumerable<int> excludeIds = null, Guid? userLoginId = null, CancellationToken ct = default)
     {
-        var spec = new UserLoginRolesSpecification(searchTerm, excludeIds:excludeIds);
+        var spec = new UserLoginRolesSpecification(searchTerm, excludeIds:excludeIds, userLoginId:userLoginId);
         
         var vm = await rolesDb.ListAsync(spec, ct);
             
@@ -76,5 +79,35 @@ public class SecurityService(IPermissionContext permissions,
         var vm = await permissionsDb.ListAsync(spec, ct);
         
         return vm;
+    }
+
+    public async Task<OperationResult> AddRoleToUserAsync(Guid userLoginId, int userLoginRoleId, CancellationToken ct = default)
+    {
+        var userLogin = await userLoginDb.GetByIdAsync(userLoginId, ct);
+        if (userLogin is null)  return OperationResult.Fail("User login not found");
+        
+        userLogin.AddUserLoginRole(userLoginRoleId);
+        return new OperationResult(await userLoginDb.SaveChangesAsync(ct) > 0);
+    }
+
+    public async Task<OperationResult> AddPermissionsToRoleAsync(int userLoginRoleId, int[] permissionIds, bool? isAllSelected,
+        CancellationToken ct = default)
+    {
+        var role = await rolesWriteDb.GetByIdAsync(userLoginRoleId, ct);
+        if (role is null)  return OperationResult.Fail("Role not found");
+        
+        if (isAllSelected is true)
+        {
+            permissionIds = await permissionsDb.Queryable().AsNoTracking().Select(x => x.Id).ToArrayAsync(ct);
+        }
+
+        if (!permissionIds.IsNullOrEmpty())
+        {
+            role.AssignPermissions(permissionIds);
+            return new OperationResult(await userLoginDb.SaveChangesAsync(ct) > 0);
+        }
+       
+        // Nothing to change
+        return OperationResult.Success();
     }
 }

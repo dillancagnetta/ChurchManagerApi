@@ -71,6 +71,22 @@ public class AddPermissionsToRoleHandler(ISecurityService service) : IRequestHan
 {
     public async Task<ApiResponse> Handle(AddPermissionsToRoleCommand command, CancellationToken ct)
     {
-        return new ApiResponse {Succeeded = true};
+        OperationResult operation = await service.AddPermissionsToRoleAsync(command.UserLoginRoleId, command.PermissionIds, command.IsAllSelected, ct);
+        return ApiResponse.FromOperation(operation);
+    }
+}
+
+/*
+ * ---------------------------------------------------------
+ */
+
+public record AddRoleToUserCommand(int UserLoginRoleId, Guid UserLoginId) : IRequest<ApiResponse>;
+
+public class AddRoleToUserCommandHandler(ISecurityService service) : IRequestHandler<AddRoleToUserCommand, ApiResponse>
+{
+    public async Task<ApiResponse> Handle(AddRoleToUserCommand command, CancellationToken ct)
+    {
+        var operation = await service.AddRoleToUserAsync(command.UserLoginId, command.UserLoginRoleId, ct);
+        return ApiResponse.FromOperation(operation);
     }
 }

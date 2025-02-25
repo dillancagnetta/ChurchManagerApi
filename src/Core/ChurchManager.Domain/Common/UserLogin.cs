@@ -50,6 +50,11 @@ public class UserLogin : Entity<int>, IAggregateRoot<int>
     {
         UserRoles.Add(new UserRoleAssignment() {UserLogin = this, Role = role });
     }
+    
+    public void AddUserLoginRole(int userLoginRoleId)
+    {
+        UserRoles.Add(new UserRoleAssignment() {UserLogin = this, UserLoginRoleId = userLoginRoleId });
+    }
 }
 
 public class UserLoginRole : AuditableEntity<int>, IAggregateRoot<int>
@@ -92,6 +97,13 @@ public class UserLoginRole : AuditableEntity<int>, IAggregateRoot<int>
         };
     
     public const string SystemAdminRoleName = "System Admin";
+
+    public void AssignPermissions(int[] permissionIds)
+    {
+        permissionIds.ForEach(permissionId =>
+            PermissionAssignments.Add(new RolePermissionAssignment() { EntityPermissionId = permissionId, Role = this }) 
+            );
+    }
 }
 
 // Junction table for many-to-many relationship between UserLogin and Role

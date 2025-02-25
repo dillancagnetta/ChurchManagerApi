@@ -3,6 +3,7 @@ using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Shared;
 using CodeBoss.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Domain.Features.Security.Specifications;
 
@@ -26,6 +27,15 @@ public class EntityPermissionsSpecification : Specification<EntityPermission, Pe
         }
         
         Query.Where(x => x.RecordStatus == RecordStatus.Active.Value);
+
+        Query.OrderBy(x => x.EntityType)
+            .ThenBy(x => x.IsDynamicScope)
+            .ThenBy(x => x.ScopeType)
+            .ThenBy(x => x.ScopeId)
+            .ThenBy(x => x.CanView)
+            .ThenBy(x => x.CanEdit)
+            .ThenBy(x => x.CanDelete)
+            ;
 
         Query.Select(x => new PermissionViewModel
         {
