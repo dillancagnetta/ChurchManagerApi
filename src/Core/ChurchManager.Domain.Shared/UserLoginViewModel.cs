@@ -39,5 +39,9 @@ public class PermissionViewModel
     public bool CanEdit { get; set; }
     public bool CanDelete { get; set; }
     public bool CanManageUsers { get; set; }
+    
+    // Resolved Names
+    public string ScopeName { get; set; }
+    public ICollection<string> EntityNames { get; set; }
 }
 

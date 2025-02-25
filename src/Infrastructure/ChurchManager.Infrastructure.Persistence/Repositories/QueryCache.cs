@@ -37,5 +37,20 @@ public class QueryCache: IQueryCache
         return data;
     }
 
+    public async Task<T> GetAsync<T>(string cacheKey, CancellationToken ct = default)
+    {
+        var key = $"{_currentUser?.Tenant}_{cacheKey}";
+        var cachedData = await _cache.GetStringAsync(key,  ct);
+        
+        return cachedData != null? JsonSerializer.Deserialize<T>(cachedData) : default;
+    }
+
+    public async Task SetAsync<T>(string cacheKey, T data, DistributedCacheEntryOptions options = null, CancellationToken ct = default)
+    {
+        var key = $"{_currentUser?.Tenant}_{cacheKey}";
+        
+        if (data != null) await _cache.SetStringAsync(key, JsonSerializer.Serialize(data), options ?? _options, ct);
+    }
+
     public Task InvalidateAsync(string cacheKey, CancellationToken ct = default) => _cache.RemoveAsync(cacheKey, ct);
 }

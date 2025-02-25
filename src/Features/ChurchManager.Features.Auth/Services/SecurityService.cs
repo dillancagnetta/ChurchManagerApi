@@ -12,6 +12,7 @@ using CodeBoss.Extensions;
 using Codeboss.Results;
 using Convey.CQRS.Queries;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ChurchManager.Features.Auth.Services;
 
@@ -20,7 +21,8 @@ public class SecurityService(IPermissionContext permissions,
     IReadDbRepository<UserLoginRole> rolesDb,
     IGenericDbRepository<UserLoginRole> rolesWriteDb,
     IGenericDbRepository<EntityPermission> permissionsDb,
-    ICognitoCurrentUser currentUser
+    ICognitoCurrentUser currentUser,
+    IEntityPermissionsResolver permissionsResolver
     ) : ISecurityService
 {
     public async Task<IEnumerable<UserLoginViewModel>> UserLoginsAsync(string searchTerm, CancellationToken ct = default)
@@ -77,6 +79,62 @@ public class SecurityService(IPermissionContext permissions,
         var spec = new EntityPermissionsSpecification(excludeIds, userLoginRoleId);
         
         var vm = await permissionsDb.ListAsync(spec, ct);
+
+        var entityPermissions = vm
+            .Where(x => !x.IsDynamicScope)
+            .GroupBy(x => x.EntityType)
+            .ToDictionary(
+                g => g.Key,
+                g => g.SelectMany(p => p.EntityIds).ToArray()
+            );;
+
+        var dynamicPermissions = vm
+            .Where(x => x.IsDynamicScope)
+            .GroupBy(x => x.ScopeType)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(p => p.ScopeId).Where(id => id.HasValue).Select(id => id.Value).ToArray()
+            );
+
+        var resolvedPermissionNames = new List<(string Key, IReadOnlyList<SelectItemViewModel> Items)>();
+        foreach (var permission in entityPermissions)
+        {
+            resolvedPermissionNames.Add((permission.Key, await permissionsResolver.ResolveAsync(permission.Key, permission.Value, ct)));
+        }
+        foreach (var permission in dynamicPermissions)
+        {
+            resolvedPermissionNames.Add((permission.Key, await permissionsResolver.ResolveAsync(permission.Key, permission.Value, ct)));
+        }
+
+        var x = resolvedPermissionNames
+            .GroupBy(x => x.Key);
+        
+        var resolvedPermissions =  resolvedPermissionNames
+            .GroupBy(x => x.Key)
+            .ToDictionary(
+                g => g.Key,
+                g => g.SelectMany(p => p.Items)
+                    .GroupBy(x => x.Id)
+                    .ToDictionary
+                        (x => x.Key,
+                            x => x.Select(x => x.Name))
+        );
+        
+        foreach (var viewModel in vm)
+        {
+            if (viewModel.IsDynamicScope)
+            {
+                var scopeResolved = resolvedPermissions[viewModel.ScopeType.Replace(" ", "")];
+                var scopeName = scopeResolved[viewModel.ScopeId.Value];
+                viewModel.ScopeName = scopeName.FirstOrDefault();
+            }
+            else
+            {
+                var entityResolved = resolvedPermissions[viewModel.EntityType.Replace(" ", "")];
+                var entityNames = viewModel.EntityIds.SelectMany(id => entityResolved[id]).ToList();
+                viewModel.EntityNames = entityNames;
+            }
+        }
         
         return vm;
     }

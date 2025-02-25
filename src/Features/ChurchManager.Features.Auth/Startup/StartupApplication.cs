@@ -16,6 +16,7 @@ namespace ChurchManager.Features.Auth.Startup
             services.AddScoped<IPermissionService, PermissionService>();
             services.AddScoped<IPermissionContext, PermissionContext>();
             services.AddScoped<ISecurityService, SecurityService>();
+            services.AddScoped<IEntityPermissionsResolver, EntityPermissionsResolver>();
         }
 
         public void Configure(IApplicationBuilder application, IWebHostEnvironment webHostEnvironment)
