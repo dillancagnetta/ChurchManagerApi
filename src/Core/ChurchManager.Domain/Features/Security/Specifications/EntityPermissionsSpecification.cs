@@ -49,7 +49,8 @@ public class EntityPermissionsSpecification : Specification<EntityPermission, Pe
             CanEdit = x.CanEdit,
             CanDelete = x.CanDelete,
             CanManageUsers = x.CanManageUsers,
-            RecordStatus = x.RecordStatus.ToString()
+            RecordStatus = x.RecordStatus.ToString(),
+            IsSystem = x.IsSystem,
         });
 
     }

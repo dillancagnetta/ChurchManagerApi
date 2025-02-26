@@ -44,6 +44,13 @@ namespace ChurchManager.Api.Controllers.v1
             return Ok(response);
         }
         
+        [HttpDelete("permissions/remove-from-role")]
+        public async Task<IActionResult> RemovePermissionFromRole(RemovePermissionFromRoleCommand command, CancellationToken token)
+        {
+            var response = await Mediator.Send(command, token);
+            return Ok(response);
+        }
+        
         [HttpPost("permissions/add-to-role")]
         public async Task<IActionResult> AddPermissionsToRole(AddPermissionsToRoleCommand command, CancellationToken token)
         {
@@ -53,6 +60,13 @@ namespace ChurchManager.Api.Controllers.v1
         
         [HttpPost("role/add-to-user")]
         public async Task<IActionResult> AddRoleToUser(AddRoleToUserCommand command, CancellationToken token)
+        {
+            var response = await Mediator.Send(command, token);
+            return Ok(response);
+        }
+        
+        [HttpDelete("role/remove-from-user")]
+        public async Task<IActionResult> RemoveRoleFromUser(RemoveRoleFromUserCommand command, CancellationToken token)
         {
             var response = await Mediator.Send(command, token);
             return Ok(response);

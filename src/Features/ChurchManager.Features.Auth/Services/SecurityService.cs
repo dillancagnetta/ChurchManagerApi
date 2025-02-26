@@ -1,5 +1,4 @@
-﻿using System.Linq.Dynamic.Core;
-using ChurchManager.Application.Abstractions.Services;
+﻿using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Security;
 using ChurchManager.Domain.Features.Security.Services;
@@ -12,7 +11,6 @@ using CodeBoss.Extensions;
 using Codeboss.Results;
 using Convey.CQRS.Queries;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace ChurchManager.Features.Auth.Services;
 
@@ -96,6 +94,7 @@ public class SecurityService(IPermissionContext permissions,
                 g => g.Select(p => p.ScopeId).Where(id => id.HasValue).Select(id => id.Value).ToArray()
             );
 
+        // Resolve the permission entities and scopes
         var resolvedPermissionNames = new List<(string Key, IReadOnlyList<SelectItemViewModel> Items)>();
         foreach (var permission in entityPermissions)
         {
@@ -106,9 +105,7 @@ public class SecurityService(IPermissionContext permissions,
             resolvedPermissionNames.Add((permission.Key, await permissionsResolver.ResolveAsync(permission.Key, permission.Value, ct)));
         }
 
-        var x = resolvedPermissionNames
-            .GroupBy(x => x.Key);
-        
+        // Group permissions by entity or scope and then by entity or scope id
         var resolvedPermissions =  resolvedPermissionNames
             .GroupBy(x => x.Key)
             .ToDictionary(
@@ -122,6 +119,7 @@ public class SecurityService(IPermissionContext permissions,
         
         foreach (var viewModel in vm)
         {
+            // Key into entity or scope then to the specified entity or scope id
             if (viewModel.IsDynamicScope)
             {
                 var scopeResolved = resolvedPermissions[viewModel.ScopeType.Replace(" ", "")];
@@ -167,5 +165,31 @@ public class SecurityService(IPermissionContext permissions,
        
         // Nothing to change
         return OperationResult.Success();
+    }
+
+    public async Task<OperationResult> RemovePermissionFromRoleAsync(int userLoginRoleId, int permissionId, CancellationToken ct = default)
+    {
+        var role = await rolesWriteDb
+            .Queryable()
+            .Include(x => x.PermissionAssignments)
+            .FirstOrDefaultAsync(x => x.Id == userLoginRoleId, ct);
+        
+        if (role is null)  return OperationResult.Fail("Role not found");
+        
+        role.RemovePermission(permissionId);
+        return new OperationResult(await userLoginDb.SaveChangesAsync(ct) > 0);
+    }
+
+    public async Task<OperationResult> RemoveRoleFromUserAsync(Guid userLoginId, int userLoginRoleId, CancellationToken ct = default)
+    {
+        var userLogin = await userLoginDb
+            .Queryable()
+            .Include(x => x.UserRoles)
+            .FirstOrDefaultAsync(x => x.Id == userLoginId, ct);
+        
+        if (userLogin is null)  return OperationResult.Fail("User login not found");
+
+        userLogin.RemoveUserLoginRole(userLoginRoleId);
+        return new OperationResult(await userLoginDb.SaveChangesAsync(ct) > 0);
     }
 }

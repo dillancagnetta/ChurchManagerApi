@@ -90,3 +90,33 @@ public class AddRoleToUserCommandHandler(ISecurityService service) : IRequestHan
         return ApiResponse.FromOperation(operation);
     }
 }
+
+/*
+ * ---------------------------------------------------------
+ */
+
+public record RemovePermissionFromRoleCommand(int UserLoginRoleId, int PermissionId) : IRequest<ApiResponse>;
+
+public class RemovePermissionsFromRoleCommandHandler(ISecurityService service) : IRequestHandler<RemovePermissionFromRoleCommand, ApiResponse>
+{
+    public async Task<ApiResponse> Handle(RemovePermissionFromRoleCommand command, CancellationToken ct)
+    {
+        OperationResult operation = await service.RemovePermissionFromRoleAsync(command.UserLoginRoleId, command.PermissionId, ct);
+        return ApiResponse.FromOperation(operation);
+    }
+}
+
+/*
+ * ---------------------------------------------------------
+ */
+
+public record RemoveRoleFromUserCommand(int UserLoginRoleId, Guid UserLoginId) : IRequest<ApiResponse>;
+
+public class RemoveRoleFromUserCommandHandler(ISecurityService service) : IRequestHandler<RemoveRoleFromUserCommand, ApiResponse>
+{
+    public async Task<ApiResponse> Handle(RemoveRoleFromUserCommand command, CancellationToken ct)
+    {
+        var operation = await service.RemoveRoleFromUserAsync(command.UserLoginId, command.UserLoginRoleId, ct);
+        return ApiResponse.FromOperation(operation);
+    }
+}

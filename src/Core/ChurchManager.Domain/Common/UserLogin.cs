@@ -55,6 +55,15 @@ public class UserLogin : Entity<int>, IAggregateRoot<int>
     {
         UserRoles.Add(new UserRoleAssignment() {UserLogin = this, UserLoginRoleId = userLoginRoleId });
     }
+
+    public void RemoveUserLoginRole(int userLoginRoleId)
+    {
+        var toRemove = UserRoles.FirstOrDefault(x => x.UserLoginRoleId == userLoginRoleId);
+        if (toRemove!= null)
+        {
+            UserRoles.Remove(toRemove);
+        }
+    }
 }
 
 public class UserLoginRole : AuditableEntity<int>, IAggregateRoot<int>
@@ -103,6 +112,15 @@ public class UserLoginRole : AuditableEntity<int>, IAggregateRoot<int>
         permissionIds.ForEach(permissionId =>
             PermissionAssignments.Add(new RolePermissionAssignment() { EntityPermissionId = permissionId, Role = this }) 
             );
+    }
+
+    public void RemovePermission(int permissionId)
+    {
+        var toRemove = PermissionAssignments.FirstOrDefault(x => x.EntityPermissionId == permissionId);
+        if (toRemove!= null)
+        {
+            PermissionAssignments.Remove(toRemove);
+        }
     }
 }
 

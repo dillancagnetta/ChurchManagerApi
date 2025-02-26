@@ -67,6 +67,7 @@ public class UserLoginRolesSpecification : PermissionSpecification<UserLoginRole
                 ScopeId = pa.Permission.ScopeId,
                 IsSystem = pa.Permission.IsSystem,
                 RecordStatus = pa.Permission.RecordStatus.ToString(),
+                IsDynamicScope = pa.Permission.IsDynamicScope,
                 EntityIds = pa.Permission.EntityIds,
                 CanView = pa.Permission.CanView,
                 CanEdit = pa.Permission.CanEdit,

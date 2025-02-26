@@ -15,4 +15,6 @@ public interface ISecurityService
     Task<IEnumerable<PermissionViewModel>> EntityPermissionsAsync(IEnumerable<int> excludeIds, int? UserLoginRoleId = null, CancellationToken ct = default);
     Task<OperationResult> AddRoleToUserAsync(Guid userLoginId, int userLoginRoleId, CancellationToken ct = default);
     Task<OperationResult> AddPermissionsToRoleAsync(int userLoginRoleId, int[] permissionIds, bool? isAllSelected, CancellationToken ct = default);
+    Task<OperationResult> RemovePermissionFromRoleAsync(int userLoginRoleId, int permissionId, CancellationToken ct = default);
+    Task<OperationResult> RemoveRoleFromUserAsync(Guid userLoginId, int userLoginRoleId, CancellationToken ct =default);
 }
