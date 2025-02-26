@@ -42,18 +42,19 @@ public class UserLoginsSpecification : PermissionSpecification<UserLogin, UserLo
                 Permissions = ur.Role.PermissionAssignments.Select(pa => new PermissionViewModel
                 {
                     Id = pa.Permission.Id,
+                    IsDynamicScope = pa.Permission.IsDynamicScope,
                     EntityType = pa.Permission.EntityType,
                     ScopeType = pa.Permission.ScopeType,
+                    ScopeId = pa.Permission.ScopeId,
                     IsSystem = pa.Permission.IsSystem,
                     RecordStatus = pa.Permission.RecordStatus.ToString(),
                     EntityIds = pa.Permission.EntityIds,
-                    IsDynamicScope = pa.Permission.IsDynamicScope,
                     CanView = pa.Permission.CanView,
                     CanEdit = pa.Permission.CanEdit,
                     CanDelete = pa.Permission.CanDelete,
                     CanManageUsers = pa.Permission.CanManageUsers
-                }).ToList()
-            }).ToList()
+                })
+            })
         });
     }
 }

@@ -27,8 +27,14 @@ public class SecurityService(IPermissionContext permissions,
     {
         var spec = new UserLoginsSpecification(searchTerm);
         
-        var vm = await userLoginDb.ListAsync(spec, ct);
-        return vm;
+        var vms = await userLoginDb.ListAsync(spec, ct);
+
+        // Augment Permissions
+        foreach (var vm in vms)
+            foreach (var role in vm.Roles)
+                role.Permissions = (await AugmentPermissionViewModels(role.Permissions, ct)).ToList();
+        
+        return vms;
     }
 
     public async Task<IEnumerable<UserLoginRoleViewModel>> UserLoginRolesAsync(string searchTerm = null, IEnumerable<int> excludeIds = null, Guid? userLoginId = null, CancellationToken ct = default)
@@ -78,63 +84,7 @@ public class SecurityService(IPermissionContext permissions,
         
         var vm = await permissionsDb.ListAsync(spec, ct);
 
-        var entityPermissions = vm
-            .Where(x => !x.IsDynamicScope)
-            .GroupBy(x => x.EntityType)
-            .ToDictionary(
-                g => g.Key,
-                g => g.SelectMany(p => p.EntityIds).ToArray()
-            );;
-
-        var dynamicPermissions = vm
-            .Where(x => x.IsDynamicScope)
-            .GroupBy(x => x.ScopeType)
-            .ToDictionary(
-                g => g.Key,
-                g => g.Select(p => p.ScopeId).Where(id => id.HasValue).Select(id => id.Value).ToArray()
-            );
-
-        // Resolve the permission entities and scopes
-        var resolvedPermissionNames = new List<(string Key, IReadOnlyList<SelectItemViewModel> Items)>();
-        foreach (var permission in entityPermissions)
-        {
-            resolvedPermissionNames.Add((permission.Key, await permissionsResolver.ResolveAsync(permission.Key, permission.Value, ct)));
-        }
-        foreach (var permission in dynamicPermissions)
-        {
-            resolvedPermissionNames.Add((permission.Key, await permissionsResolver.ResolveAsync(permission.Key, permission.Value, ct)));
-        }
-
-        // Group permissions by entity or scope and then by entity or scope id
-        var resolvedPermissions =  resolvedPermissionNames
-            .GroupBy(x => x.Key)
-            .ToDictionary(
-                g => g.Key,
-                g => g.SelectMany(p => p.Items)
-                    .GroupBy(x => x.Id)
-                    .ToDictionary
-                        (x => x.Key,
-                            x => x.Select(x => x.Name))
-        );
-        
-        foreach (var viewModel in vm)
-        {
-            // Key into entity or scope then to the specified entity or scope id
-            if (viewModel.IsDynamicScope)
-            {
-                var scopeResolved = resolvedPermissions[viewModel.ScopeType.Replace(" ", "")];
-                var scopeName = scopeResolved[viewModel.ScopeId.Value];
-                viewModel.ScopeName = scopeName.FirstOrDefault();
-            }
-            else
-            {
-                var entityResolved = resolvedPermissions[viewModel.EntityType.Replace(" ", "")];
-                var entityNames = viewModel.EntityIds.SelectMany(id => entityResolved[id]).ToList();
-                viewModel.EntityNames = entityNames;
-            }
-        }
-        
-        return vm;
+        return await AugmentPermissionViewModels(vm, ct);
     }
 
     public async Task<OperationResult> AddRoleToUserAsync(Guid userLoginId, int userLoginRoleId, CancellationToken ct = default)
@@ -192,4 +142,69 @@ public class SecurityService(IPermissionContext permissions,
         userLogin.RemoveUserLoginRole(userLoginRoleId);
         return new OperationResult(await userLoginDb.SaveChangesAsync(ct) > 0);
     }
+
+    #region Private Methods
+
+    private async Task<IEnumerable<PermissionViewModel>> AugmentPermissionViewModels(IEnumerable<PermissionViewModel> vm, CancellationToken ct)
+    {
+        var entityPermissions = vm
+            .Where(x => !x.IsDynamicScope)
+            .GroupBy(x => x.EntityType)
+            .ToDictionary(
+                g => g.Key,
+                g => g.SelectMany(p => p.EntityIds).ToArray()
+            );;
+
+        var dynamicPermissions = vm
+            .Where(x => x.IsDynamicScope)
+            .GroupBy(x => x.ScopeType)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(p => p.ScopeId).Where(id => id.HasValue).Select(id => id.Value).ToArray()
+            );
+
+        // Resolve the permission entities and scopes
+        var resolvedPermissionNames = new List<(string Key, IReadOnlyList<SelectItemViewModel> Items)>();
+        foreach (var permission in entityPermissions)
+        {
+            resolvedPermissionNames.Add((permission.Key, await permissionsResolver.ResolveAsync(permission.Key, permission.Value, ct)));
+        }
+        foreach (var permission in dynamicPermissions)
+        {
+            resolvedPermissionNames.Add((permission.Key, await permissionsResolver.ResolveAsync(permission.Key, permission.Value, ct)));
+        }
+
+        // Group permissions by entity or scope and then by entity or scope id
+        var resolvedPermissions =  resolvedPermissionNames
+            .GroupBy(x => x.Key)
+            .ToDictionary(
+                g => g.Key,
+                g => g.SelectMany(p => p.Items)
+                    .GroupBy(x => x.Id)
+                    .ToDictionary
+                    (x => x.Key,
+                        x => x.Select(x => x.Name))
+            );
+        
+        foreach (var viewModel in vm)
+        {
+            // Key into entity or scope then to the specified entity or scope id
+            if (viewModel.IsDynamicScope)
+            {
+                var scopeResolved = resolvedPermissions[viewModel.ScopeType.Replace(" ", "")];
+                var scopeName = scopeResolved[viewModel.ScopeId.Value];
+                viewModel.ScopeName = scopeName.FirstOrDefault();
+            }
+            else
+            {
+                var entityResolved = resolvedPermissions[viewModel.EntityType.Replace(" ", "")];
+                var entityNames = viewModel.EntityIds.SelectMany(id => entityResolved[id]).ToList();
+                viewModel.EntityNames = entityNames;
+            }
+        }
+        
+        return vm;
+    }
+
+    #endregion
 }

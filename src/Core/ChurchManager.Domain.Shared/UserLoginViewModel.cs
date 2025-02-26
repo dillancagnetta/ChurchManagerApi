@@ -15,8 +15,8 @@ public class UserLoginRoleViewModel
     public string Description { get; set; }
     public bool IsSystem { get; set; }
     public string RecordStatus { get; set; }
-    public List<UserLoginBasicViewModel> UserLogins { get; set; }
-    public List<PermissionViewModel> Permissions { get; set; }
+    public IEnumerable<UserLoginBasicViewModel> UserLogins { get; set; }
+    public IEnumerable<PermissionViewModel> Permissions { get; set; }
 }
 
 public class UserLoginBasicViewModel
@@ -33,7 +33,7 @@ public class PermissionViewModel
     public string ScopeType { get; set; }
     public bool IsSystem { get; set; }
     public string RecordStatus { get; set; }
-    public ICollection<int> EntityIds { get; set; }
+    public IEnumerable<int> EntityIds { get; set; }
     public bool IsDynamicScope { get; set; }
     public bool CanView { get; set; }
     public bool CanEdit { get; set; }
@@ -42,6 +42,6 @@ public class PermissionViewModel
     
     // Resolved Names
     public string ScopeName { get; set; }
-    public ICollection<string> EntityNames { get; set; }
+    public IEnumerable<string> EntityNames { get; set; }
 }
 
