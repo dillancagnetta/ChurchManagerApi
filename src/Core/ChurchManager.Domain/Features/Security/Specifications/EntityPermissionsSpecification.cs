@@ -13,7 +13,9 @@ public class EntityPermissionsSpecification : Specification<EntityPermission, Pe
     {
         Query
             .AsNoTracking()
-            .EnableCache(nameof(EntityPermissionsSpecification), excludeIds.ToCacheKey());
+            .EnableCache(nameof(EntityPermissionsSpecification), 
+                condition: !excludeIds.IsNullOrEmpty() && !UserLoginRoleId.HasValue,
+                excludeIds.ToCacheKey());
 
         if (!excludeIds.IsNullOrEmpty())
         {
@@ -22,8 +24,8 @@ public class EntityPermissionsSpecification : Specification<EntityPermission, Pe
 
         if (UserLoginRoleId.HasValue)
         {
-            Query.Include(x => x.RoleAssignments.Where(ra => ra.Id == UserLoginRoleId.Value));
-            Query.Where(x => x.RoleAssignments.Any());
+            Query.Include(x => x.RoleAssignments);
+            Query.Where(x => x.RoleAssignments.Any(ra => ra.RoleId == UserLoginRoleId.Value));
         }
         
         Query.Where(x => x.RecordStatus == RecordStatus.Active.Value);

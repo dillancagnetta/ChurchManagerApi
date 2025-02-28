@@ -1,15 +1,17 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Shared;
+using ChurchManager.Domain.Specifications;
 using CodeBoss.Extensions;
 using Microsoft.EntityFrameworkCore;
 using PersonViewModel = ChurchManager.Domain.Shared.PersonViewModelBasic;
 
 namespace ChurchManager.Domain.Features.Churches.Specifications;
 
-public class ChurchGroupsQuerySpecification: Specification<ChurchGroup, ChurchGroupViewModel>
+public class ChurchGroupsQuerySpecification: PermissionSpecification<ChurchGroup, ChurchGroupViewModel>
 {
-    public ChurchGroupsQuerySpecification(string searchTerm = null, bool IncludeDetails = true)
+    public ChurchGroupsQuerySpecification(string searchTerm = null, bool IncludeDetails = true, IEnumerable<int> allowedIds = null)
+        : base(allowedIds)
     {
         if (IncludeDetails)
         {

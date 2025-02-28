@@ -6,14 +6,14 @@ namespace ChurchManager.Domain.Specifications;
 
 public class PermissionSpecification<T> : Specification<T> where T : class, Codeboss.Types.IEntity<int>
 {
-    protected PermissionSpecification(IEnumerable<int> allowedChurchIds = null)
+    protected PermissionSpecification(IEnumerable<int> allowedIds = null)
     {
         // Only apply permission filter if allowedIds is not null
         // If null, user is system admin and has unrestricted access
-        if (allowedChurchIds is not null)
+        if (allowedIds is not null)
         {
             // First apply the permissions filter
-            Query.Where(x => allowedChurchIds.Contains(x.Id));  
+            Query.Where(x => allowedIds.Contains(x.Id));  
         }
     }
 }

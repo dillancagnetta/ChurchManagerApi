@@ -20,8 +20,10 @@ public class UserLoginRolesSpecification : PermissionSpecification<UserLoginRole
             , searchTerm, excludeIds.ToCacheKey(), allowedIds.ToCacheKey());
         
         Query
+            .Include(x => x.UserAssignments)
+                .ThenInclude(ua => ua.UserLogin)
             .Include(x => x.PermissionAssignments)
-            .ThenInclude(pa => pa.Permission);
+                .ThenInclude(pa => pa.Permission);
             /*.Include(x => x.UserAssignments)
             .ThenInclude(ua => ua.UserLogin);*/
             
@@ -38,13 +40,7 @@ public class UserLoginRolesSpecification : PermissionSpecification<UserLoginRole
         
         if (userLoginId.HasValue)
         {
-            Query.Include(x => x.UserAssignments.Where(ra => ra.UserLoginId == userLoginId.Value))
-                .ThenInclude(ua => ua.UserLogin);
-        }
-        else
-        {
-            Query.Include(x => x.UserAssignments)
-                .ThenInclude(ua => ua.UserLogin);
+            Query.Where(x => x.UserAssignments.Any(ua => ua.UserLoginId == userLoginId.Value));
         }
         
         Query.Where(x => x.RecordStatus == RecordStatus.Active.Value);
