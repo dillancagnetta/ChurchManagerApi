@@ -188,6 +188,12 @@ public class SecurityService(IPermissionContext permissions,
         return new OperationResult(await userLoginDb.SaveChangesAsync(ct) > 0);
     }
 
+    public async Task<OperationResult> AddRoleAsync(string name, string description, CancellationToken ct = default)
+    {
+        await rolesWriteDb.AddAsync(new UserLoginRole(name,description), ct);
+        return new OperationResult(await rolesWriteDb.SaveChangesAsync(ct) > 0);
+    }
+
     #region Private Methods
 
     private async Task<IEnumerable<PermissionViewModel>> AugmentPermissionViewModels(IEnumerable<PermissionViewModel> vm, CancellationToken ct)

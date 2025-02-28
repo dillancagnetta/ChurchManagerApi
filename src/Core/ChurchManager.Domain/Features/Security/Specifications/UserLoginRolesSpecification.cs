@@ -13,10 +13,12 @@ public class UserLoginRolesSpecification : PermissionSpecification<UserLoginRole
         string searchTerm, IEnumerable<int> excludeIds = null, IEnumerable<int> allowedIds = null,  Guid? userLoginId = null)
         : base(allowedIds)
     {
-        Query
-            .AsNoTracking()
-            .EnableCache(nameof(UserLoginRolesSpecification), searchTerm, excludeIds.ToCacheKey(), allowedIds.ToCacheKey());
+        Query.AsNoTracking();
 
+        Query.EnableCache(nameof(UserLoginRolesSpecification),
+            condition: !searchTerm.IsNullOrEmpty() || !excludeIds.IsNullOrEmpty() || !allowedIds.IsNullOrEmpty()
+            , searchTerm, excludeIds.ToCacheKey(), allowedIds.ToCacheKey());
+        
         Query
             .Include(x => x.PermissionAssignments)
             .ThenInclude(pa => pa.Permission);

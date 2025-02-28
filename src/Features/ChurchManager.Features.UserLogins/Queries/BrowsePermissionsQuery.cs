@@ -150,3 +150,18 @@ public class ToggleRoleStatusForUserHandler(ISecurityService service) : IRequest
         return ApiResponse.FromOperation(operation);
     }
 }
+
+/*
+ * ---------------------------------------------------------
+ */
+
+public record AddRoleCommand(string Name, string Description) : IRequest<ApiResponse>;
+
+public class AddRoleCommandHandler(ISecurityService service) : IRequestHandler<AddRoleCommand, ApiResponse>
+{
+    public async Task<ApiResponse> Handle(AddRoleCommand command, CancellationToken ct)
+    {
+        var operation = await service.AddRoleAsync(command.Name, command.Description, ct);
+        return ApiResponse.FromOperation(operation);
+    }
+}

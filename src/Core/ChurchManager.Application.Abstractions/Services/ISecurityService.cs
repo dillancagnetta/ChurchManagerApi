@@ -20,4 +20,5 @@ public interface ISecurityService
     Task<OperationResult> ToggleUserLoginStatusAsync(Guid userLoginId, CancellationToken ct = default);
     Task<OperationResult> TogglePermissionStatusForRoleCommandAsync(int userLoginRoleId, int permissionId, CancellationToken ct = default);
     Task<OperationResult> ToggleRoleStatusForUserCommandAsync(Guid userLoginId, int userLoginRoleId, CancellationToken ct = default);
+    Task<OperationResult> AddRoleAsync(string name, string description, CancellationToken ct = default);
 }

@@ -85,5 +85,12 @@ namespace ChurchManager.Api.Controllers.v1
             var response = await Mediator.Send(command, token);
             return Ok(response);
         }
+        
+        [HttpPost("role/create")]
+        public async Task<IActionResult> CreateRole(AddRoleCommand command, CancellationToken token)
+        {
+            var response = await Mediator.Send(command, token);
+            return Ok(response);
+        }
     }
 }
