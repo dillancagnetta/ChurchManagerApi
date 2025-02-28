@@ -120,3 +120,33 @@ public class RemoveRoleFromUserCommandHandler(ISecurityService service) : IReque
         return ApiResponse.FromOperation(operation);
     }
 }
+
+/*
+ * ---------------------------------------------------------
+ */
+
+public record TogglePermissionStatusForRoleCommand(int UserLoginRoleId, int PermissionId) : IRequest<ApiResponse>;
+
+public class TogglePermissionStatusForRoleCommandHandler(ISecurityService service) : IRequestHandler<TogglePermissionStatusForRoleCommand, ApiResponse>
+{
+    public async Task<ApiResponse> Handle(TogglePermissionStatusForRoleCommand command, CancellationToken ct)
+    {
+        OperationResult operation = await service.TogglePermissionStatusForRoleCommandAsync(command.UserLoginRoleId, command.PermissionId, ct);
+        return ApiResponse.FromOperation(operation);
+    }
+}
+
+/*
+ * ---------------------------------------------------------
+ */
+
+public record ToggleRoleStatusForUserCommand(int UserLoginRoleId, Guid UserLoginId) : IRequest<ApiResponse>;
+
+public class ToggleRoleStatusForUserHandler(ISecurityService service) : IRequestHandler<ToggleRoleStatusForUserCommand, ApiResponse>
+{
+    public async Task<ApiResponse> Handle(ToggleRoleStatusForUserCommand command, CancellationToken ct)
+    {
+        var operation = await service.ToggleRoleStatusForUserCommandAsync(command.UserLoginId, command.UserLoginRoleId, ct);
+        return ApiResponse.FromOperation(operation);
+    }
+}

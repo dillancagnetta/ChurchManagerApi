@@ -23,12 +23,12 @@ namespace ChurchManager.Api.Controllers.v1
             return Ok(response);
         }
         
-        [HttpPost("role")]
+        /*[HttpPost("role")]
         public async Task<IActionResult> CreateUserLoginRole(string searchTerm, CancellationToken token)
         {
             var response = await Mediator.Send(new UserLoginRolesQuery(searchTerm), token);
             return Ok(response);
-        }
+        }*/
         
         [HttpPost("permissions/browse")]
         public async Task<IActionResult> BrowsePermissions([FromBody] BrowsePermissionsQuery query, CancellationToken token)
@@ -58,6 +58,13 @@ namespace ChurchManager.Api.Controllers.v1
             return Ok(response);
         }
         
+        [HttpGet("permissions/toggle-status-for-role")]
+        public async Task<IActionResult> TogglePermissionStatusForRole(TogglePermissionStatusForRoleCommand command, CancellationToken token)
+        {
+            var response = await Mediator.Send(command, token);
+            return Ok(response);
+        }
+        
         [HttpPost("role/add-to-user")]
         public async Task<IActionResult> AddRoleToUser(AddRoleToUserCommand command, CancellationToken token)
         {
@@ -67,6 +74,13 @@ namespace ChurchManager.Api.Controllers.v1
         
         [HttpDelete("role/remove-from-user")]
         public async Task<IActionResult> RemoveRoleFromUser(RemoveRoleFromUserCommand command, CancellationToken token)
+        {
+            var response = await Mediator.Send(command, token);
+            return Ok(response);
+        }
+        
+        [HttpPost("role/toggle-status-for-user")]
+        public async Task<IActionResult> ToggleRoleStatusForUser(ToggleRoleStatusForUserCommand command, CancellationToken token)
         {
             var response = await Mediator.Send(command, token);
             return Ok(response);

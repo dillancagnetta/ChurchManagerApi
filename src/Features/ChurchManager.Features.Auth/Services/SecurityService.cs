@@ -52,8 +52,18 @@ public class SecurityService(IPermissionContext permissions,
         var spec = new BrowsePermissionSpecification(entityType, scopeType, entityId, isDynamicScope);
         
         var pagedResult = await permissionsDb.BrowseAsync(query, spec, ct);
+
+        #region Augment Permissions
+    
+        var augmentedItems = await AugmentPermissionViewModels(pagedResult.Items, ct);
+
+        var augmentPagedResult = PagedResult<PermissionViewModel>.Create(
+            augmentedItems, 
+            pagedResult.CurrentPage, pagedResult.ResultsPerPage, pagedResult.TotalPages, pagedResult.TotalResults);
+
+        #endregion
         
-        return new PagedResponse<PermissionViewModel>(pagedResult);
+        return new PagedResponse<PermissionViewModel>(augmentPagedResult);
     }
 
     public async Task<OperationResult> CreatePermissionAsync(string permissionType, string entityType, IEnumerable<int> entityIds, string scopeType, int? scopeId,
@@ -140,6 +150,41 @@ public class SecurityService(IPermissionContext permissions,
         if (userLogin is null)  return OperationResult.Fail("User login not found");
 
         userLogin.RemoveUserLoginRole(userLoginRoleId);
+        return new OperationResult(await userLoginDb.SaveChangesAsync(ct) > 0);
+    }
+
+    public async Task<OperationResult> ToggleUserLoginStatusAsync(Guid userLoginId, CancellationToken ct = default)
+    {
+        var userLogin = await userLoginDb.GetByIdAsync(userLoginId, ct);
+        if (userLogin is null)  return OperationResult.Fail("User login not found");
+        
+        userLogin.ToggleRecordStatus();
+        return new OperationResult(await userLoginDb.SaveChangesAsync(ct) > 0);
+    }
+
+    public async Task<OperationResult> TogglePermissionStatusForRoleCommandAsync(int userLoginRoleId, int permissionId, CancellationToken ct = default)
+    {
+        var role = await rolesWriteDb
+            .Queryable()
+            .Include(x => x.PermissionAssignments)
+            .FirstOrDefaultAsync(x => x.Id == userLoginRoleId, ct);
+        
+        if (role is null)  return OperationResult.Fail("Role not found");
+        
+        role.TogglePermissionStatus(permissionId);
+        return new OperationResult(await userLoginDb.SaveChangesAsync(ct) > 0);
+    }
+
+    public async Task<OperationResult> ToggleRoleStatusForUserCommandAsync(Guid userLoginId, int userLoginRoleId, CancellationToken ct = default)
+    {
+        var userLogin = await userLoginDb
+            .Queryable()
+            .Include(x => x.UserRoles)
+            .FirstOrDefaultAsync(x => x.Id == userLoginId, ct);
+        
+        if (userLogin is null)  return OperationResult.Fail("User login not found");
+
+        userLogin.ToggleRoleStatus(userLoginRoleId);
         return new OperationResult(await userLoginDb.SaveChangesAsync(ct) > 0);
     }
 

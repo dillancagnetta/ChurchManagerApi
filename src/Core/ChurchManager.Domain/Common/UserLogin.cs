@@ -59,9 +59,23 @@ public class UserLogin : Entity<int>, IAggregateRoot<int>
     public void RemoveUserLoginRole(int userLoginRoleId)
     {
         var toRemove = UserRoles.FirstOrDefault(x => x.UserLoginRoleId == userLoginRoleId);
-        if (toRemove!= null)
+        if (toRemove != null)
         {
             UserRoles.Remove(toRemove);
+        }
+    }
+
+    public void ToggleRecordStatus()
+    {
+        RecordStatus = new RecordStatus(RecordStatus).ToggleStatus();
+    }
+
+    public void ToggleRoleStatus(int userLoginRoleId)
+    {
+        var toUpdate = UserRoles.FirstOrDefault(x => x.UserLoginRoleId == userLoginRoleId);
+        if (toUpdate != null)
+        {
+            toUpdate.RecordStatus = new RecordStatus(toUpdate.RecordStatus).ToggleStatus();
         }
     }
 }
@@ -117,9 +131,18 @@ public class UserLoginRole : AuditableEntity<int>, IAggregateRoot<int>
     public void RemovePermission(int permissionId)
     {
         var toRemove = PermissionAssignments.FirstOrDefault(x => x.EntityPermissionId == permissionId);
-        if (toRemove!= null)
+        if (toRemove != null)
         {
             PermissionAssignments.Remove(toRemove);
+        }
+    }
+
+    public void TogglePermissionStatus(int permissionId)
+    {
+        var toUpdate = PermissionAssignments.FirstOrDefault(x => x.EntityPermissionId == permissionId);
+        if (toUpdate != null)
+        {
+            toUpdate.RecordStatus = new RecordStatus(toUpdate.RecordStatus).ToggleStatus();
         }
     }
 }

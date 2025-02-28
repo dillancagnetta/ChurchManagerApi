@@ -44,8 +44,8 @@ namespace ChurchManager.Api.Controllers.v1
         [HttpGet("toggle-status")]
         public async Task<IActionResult> ToggleStatus(Guid userLoginId, CancellationToken token)
         {
-            //var response = await Mediator.Send(new UserLoginsQuery(filter.SearchTerm), token);
-            return Ok();
+            var response = await Mediator.Send(new ToggleUserLoginStatusCommand(userLoginId), token);
+            return Ok(response);
         }
     }
 }

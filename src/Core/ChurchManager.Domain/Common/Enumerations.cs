@@ -14,6 +14,14 @@ namespace ChurchManager.Domain.Common
         // Implicit conversion to bool
         public static implicit operator bool(RecordStatus status) =>
             status != null && !string.IsNullOrEmpty(status.Value) && status.Value == Active;
+        
+        /// <summary>
+        /// Toggles between active and inactive status
+        /// Pending status remains the same
+        /// </summary>
+        public string ToggleStatus() => Value != Pending 
+            ? Value == Active? InActive : Active
+            : Pending;
     }
 
     public class HistoryVerb : Enumeration<HistoryVerb, string>

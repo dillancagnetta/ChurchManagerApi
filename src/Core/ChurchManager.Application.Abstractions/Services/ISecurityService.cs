@@ -17,4 +17,7 @@ public interface ISecurityService
     Task<OperationResult> AddPermissionsToRoleAsync(int userLoginRoleId, int[] permissionIds, bool? isAllSelected, CancellationToken ct = default);
     Task<OperationResult> RemovePermissionFromRoleAsync(int userLoginRoleId, int permissionId, CancellationToken ct = default);
     Task<OperationResult> RemoveRoleFromUserAsync(Guid userLoginId, int userLoginRoleId, CancellationToken ct =default);
+    Task<OperationResult> ToggleUserLoginStatusAsync(Guid userLoginId, CancellationToken ct = default);
+    Task<OperationResult> TogglePermissionStatusForRoleCommandAsync(int userLoginRoleId, int permissionId, CancellationToken ct = default);
+    Task<OperationResult> ToggleRoleStatusForUserCommandAsync(Guid userLoginId, int userLoginRoleId, CancellationToken ct = default);
 }

@@ -2,7 +2,9 @@
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
+using CodeBoss.MultiTenant;
 using DotLiquid.Util;
+using MassTransit.Initializers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,8 +13,8 @@ namespace ChurchManager.Features.UserLogins.Commands.AddUserLogin;
 public record AddOrUpdateUserLoginCommand : IRequest<ApiResponse>
 {
     public int PersonId { get; set; }
-    public string Tenant { get; set; }
-    public List<string> Roles { get; set; } = new(0);
+    public string Password { get; set; }
+    public List<int> UserLoginRoleIds { get; set; } = new(0); // RoleIds
 }
 
 public class AddUserLoginHandler : IRequestHandler<AddOrUpdateUserLoginCommand, ApiResponse>
@@ -21,17 +23,20 @@ public class AddUserLoginHandler : IRequestHandler<AddOrUpdateUserLoginCommand, 
     private readonly IGenericDbRepository<UserLoginRole> _roleRepository;
     private readonly IGenericDbRepository<UserRoleAssignment> _roleAssignmentRepository;
     private readonly IPersonDbRepository _personDbRepository;
+    private readonly ITenantCurrentUser _tenantCurrentUser;
 
     public AddUserLoginHandler(
         IGenericDbRepository<UserLogin> dbRepository,
         IGenericDbRepository<UserLoginRole> roleRepository,
         IGenericDbRepository<UserRoleAssignment> roleAssignmentRepository,
-        IPersonDbRepository personDbRepository)
+        IPersonDbRepository personDbRepository, 
+        ITenantCurrentUser tenantCurrentUser)
     {
         _dbRepository = dbRepository;
         _roleRepository = roleRepository;
         _roleAssignmentRepository = roleAssignmentRepository;
         _personDbRepository = personDbRepository;
+        _tenantCurrentUser = tenantCurrentUser;
     }
 
     public async Task<ApiResponse> Handle(AddOrUpdateUserLoginCommand command, CancellationToken ct)
@@ -44,12 +49,10 @@ public class AddUserLoginHandler : IRequestHandler<AddOrUpdateUserLoginCommand, 
             .FirstOrDefaultAsync(x => x.PersonId == command.PersonId, ct);
 
         // Get or create roles
-        var roles = await GetOrCreateRoles(command.Roles, ct);
+        //var roles = await GetOrCreateRoles(command.UserLoginRoleIds, ct);
 
         if (userLogin is not null)
         {
-            userLogin.Tenant = command.Tenant;
-                
             // Get existing role assignments to delete
             var existingAssignments = await _roleAssignmentRepository
                 .Queryable()
@@ -63,12 +66,12 @@ public class AddUserLoginHandler : IRequestHandler<AddOrUpdateUserLoginCommand, 
             }
                 
             // Create new role assignments
-            foreach (var role in roles)
+            foreach (var roleId in command.UserLoginRoleIds)
             {
                 await _roleAssignmentRepository.AddAsync(new UserRoleAssignment
                 {
                     UserLoginId = userLogin.Id,
-                    UserLoginRoleId = role.Id
+                    UserLoginRoleId = roleId
                 }, ct);
             }
 
@@ -82,14 +85,14 @@ public class AddUserLoginHandler : IRequestHandler<AddOrUpdateUserLoginCommand, 
             userLogin = new UserLogin
             {
                 PersonId = command.PersonId,
-                Tenant = command.Tenant,
+                Tenant = _tenantCurrentUser.Tenant,
                 Username = person.Email.IsTruthy() && person.Email.IsActive.IsTruthy() 
                     ? person.Email.Address 
                     : $"{person.FullName.FirstName}.{person.FullName.LastName}",
-                Password = BCrypt.Net.BCrypt.HashPassword("pancake"),
-                UserRoles = roles.Select(role => new UserRoleAssignment
+                Password = BCrypt.Net.BCrypt.HashPassword(command.Password),
+                UserRoles = command.UserLoginRoleIds.Select(roleId => new UserRoleAssignment
                 {
-                    UserLoginRoleId = role.Id
+                    UserLoginRoleId = roleId
                 }).ToList()
             };
 
@@ -99,23 +102,25 @@ public class AddUserLoginHandler : IRequestHandler<AddOrUpdateUserLoginCommand, 
         return new ApiResponse();
     }
     
-    private async Task<List<UserLoginRole>> GetOrCreateRoles(List<string> roleNames, CancellationToken ct)
+    private async Task<List<int>> GetOrCreateRoles(List<int> roleIds, CancellationToken ct)
     {
-        var roles = new List<UserLoginRole>();
+        var roles = new List<int>();
 
-        foreach (var roleName in roleNames)
+        foreach (var roleId in roleIds)
         {
             var role = await _roleRepository
                 .Queryable()
-                .FirstOrDefaultAsync(r => r.Name == roleName, ct);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == roleId, ct)
+                .Select(x => x.Id);
 
-            if (role == null)
+            if (role != 0) roles.Add(role);
+  
+            /*if (role == null)
             {
                 role = new UserLoginRole(roleName);
                 await _roleRepository.AddAsync(role, ct);
-            }
-
-            roles.Add(role);
+            }*/
         }
 
         return roles;
