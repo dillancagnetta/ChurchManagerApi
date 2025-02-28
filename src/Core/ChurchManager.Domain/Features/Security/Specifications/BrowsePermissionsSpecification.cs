@@ -36,6 +36,7 @@ public class BrowsePermissionSpecification : Specification<EntityPermission, Per
             RecordStatus = x.RecordStatus.ToString(),
             EntityType = x.EntityType,
             ScopeType = x.ScopeType,
+            ScopeId = x.ScopeId,
             IsSystem = x.IsSystem,
             EntityIds = x.EntityIds,
             IsDynamicScope = x.IsDynamicScope,
