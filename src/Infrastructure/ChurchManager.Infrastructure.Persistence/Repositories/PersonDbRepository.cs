@@ -6,6 +6,7 @@ using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Queries;
 using ChurchManager.Domain.Features.People.Repositories;
+using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using ChurchManager.Infrastructure.Persistence.Extensions;
@@ -118,12 +119,14 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
                 .Select(x => new PersonViewModelBasic
                 {
                     PersonId = x.Id,
-                    FullName = x.FullName,
-                    Gender = x.Gender,
+                    Title = x.FullName.Title,
+                    FirstName = x.FullName.FirstName,
+                    LastName = x.FullName.LastName,
+                    Gender = x.Gender.ToString(),
                     AgeClassification = x.AgeClassification,
                     PhotoUrl = x.PhotoUrl,
-                    BirthDate = x.BirthDate,
-                    Email = x.Email
+                    Age = x.BirthDate != null ? x.BirthDate.Age : null,
+                    Email =x.Email != null ? x.Email.Address : null
                 })
                 .FirstOrDefaultAsync(cancellationToken);
         }

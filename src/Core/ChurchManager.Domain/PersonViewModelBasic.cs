@@ -2,7 +2,7 @@
 
 namespace ChurchManager.Domain
 {
-    public record PersonViewModelBasic
+    /*public record PersonViewModelBasic
     {
         public int PersonId { get; set; }
         public FullName FullName { get; set; }
@@ -11,5 +11,5 @@ namespace ChurchManager.Domain
         public string PhotoUrl { get; set; }
         public BirthDate BirthDate { get; set; }
         public Email Email { get; set; }
-    }
+    }*/
 }

@@ -27,6 +27,13 @@ namespace ChurchManager.Api.Controllers.v1
         {
             return Ok(await Mediator.Send(new ChurchesGroupsQuery(IncludeDetails:includeDetails), token));
         }
+        
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] AddChurchGroupCommand cmd, CancellationToken token)
+        {
+            return Accepted(await Mediator.Send(cmd, token));
+        }
+
             
         /*[HttpGet("{groupTypeId}")]
         public async Task<IActionResult> GetGroupTypeById(int groupTypeId, CancellationToken token)
@@ -34,12 +41,7 @@ namespace ChurchManager.Api.Controllers.v1
             return Ok(await Mediator.Send(new GetGroupTypeQuery(groupTypeId), token));
         }
         
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] AddGroupTypeCommand cmd, CancellationToken token)
-        {
-            return Accepted(await Mediator.Send(cmd, token));
-        }
-        
+       
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] EditGroupTypeCommand cmd, CancellationToken token)
         {

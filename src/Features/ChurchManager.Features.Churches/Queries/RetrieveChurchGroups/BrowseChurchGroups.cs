@@ -1,5 +1,7 @@
-﻿using ChurchManager.Domain.Features.Churches;
+﻿using ChurchManager.Application.Abstractions.Services;
+using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.Churches.Specifications;
+using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Domain.Features.Security;
 using ChurchManager.Domain.Features.Security.Services;
 using ChurchManager.Domain.Shared;
@@ -42,5 +44,32 @@ public class ChurchesGroupsQueryHandler(IMediator mediator) : IRequestHandler<Ch
         var apiResponse = await mediator.Send(new BrowseChurchGroups(query.SearchTerm, query.IncludeDetails), ct);
 
         return apiResponse;
+    }
+}
+
+/*
+ * ------------------------------------------------
+ */
+
+public record AddChurchGroupCommand(string Name, string Description, int? LeaderPersonId) : IRequest<ApiResponse>;
+public class AddChurchGroupCommandHandler(
+    IServiceAsync<ChurchGroup, ChurchGroupViewModel> service,
+    IPersonDbRepository personDb) : IRequestHandler<AddChurchGroupCommand, ApiResponse>
+{
+    public async Task<ApiResponse> Handle(AddChurchGroupCommand command, CancellationToken ct)
+    {
+        var dto = new ChurchGroupViewModel
+        {
+            Name = command.Name,
+            Description = command.Description,
+            LeaderPerson = command.LeaderPersonId.HasValue
+                // Needed because we rerender the list - so we need this data
+                ? await personDb.BasicPersonViewModelAsync(command.LeaderPersonId.Value, ct)
+                : null
+        };
+        
+        await service.AddAsync(dto, ct);
+
+        return new ApiResponse(dto);
     }
 }

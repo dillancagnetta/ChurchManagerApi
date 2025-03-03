@@ -1,4 +1,7 @@
 ﻿using ChurchManager.Application.Abstractions.Services;
+using ChurchManager.Application.Features;
+using ChurchManager.Domain.Features.Churches;
+using ChurchManager.Domain.Shared;
 using ChurchManager.Features.Churches.Services;
 using ChurchManager.Infrastructure;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +16,8 @@ namespace ChurchManager.Features.Churches.Startup
         public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IChurchService, ChurchService>();
+            services.AddScoped<IChurchGroupService, ChurchGroupService>();
+            services.AddScoped<IServiceAsync<ChurchGroup, ChurchGroupViewModel>, ServiceAsync<ChurchGroup, ChurchGroupViewModel>>();
         }
 
         public void Configure(IApplicationBuilder application, IWebHostEnvironment webHostEnvironment)

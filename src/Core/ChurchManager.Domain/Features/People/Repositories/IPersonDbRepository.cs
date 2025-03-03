@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Domain.Features.People.Queries;
+using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using Codeboss.Results;
 

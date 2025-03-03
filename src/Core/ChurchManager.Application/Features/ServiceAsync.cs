@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ChurchManager.Application.Abstractions.Models;
 using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using Codeboss.Types;
@@ -7,7 +6,8 @@ using Codeboss.Types;
 namespace ChurchManager.Application.Features
 {
     public class ServiceAsync<TEntity, TDto> : IServiceAsync<TEntity, TDto>
-        where TDto : EntityDto where TEntity : class, IAggregateRoot<int>
+        where TDto : class 
+        where TEntity : class, IAggregateRoot<int>
     {
         protected readonly IGenericDbRepository<TEntity> Repository;
         private readonly IMapper _mapper;

@@ -39,9 +39,9 @@ public abstract class TemplateDataResolverBase(IPersonDbRepository personDb) : I
         
         return new Dictionary<string, string>
         {
-            ["Title"] = person.FullName.Title,
-            ["FirstName"] = person.FullName.FirstName,
-            ["LastName"] = person.FullName.LastName,
+            ["Title"] = person.Title,
+            ["FirstName"] = person.FirstName,
+            ["LastName"] = person.LastName,
             ["CreationDate"] = DateTime.UtcNow.ToShortDateString()
         };
     }
