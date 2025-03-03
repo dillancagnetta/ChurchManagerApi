@@ -68,7 +68,8 @@ public class AddChurchGroupCommandHandler(
                 : null
         };
         
-        await service.AddAsync(dto, ct);
+        var entity = await service.AddAsync(dto, ct);
+        dto.Id = entity.Id;
 
         return new ApiResponse(dto);
     }

@@ -30,10 +30,10 @@ namespace ChurchManager.Application.Features
             return _mapper.Map<TDto>(entity);
         }
 
-        public virtual async Task AddAsync(TDto tDto, CancellationToken ct = default)
+        public virtual async Task<TEntity> AddAsync(TDto tDto, CancellationToken ct = default)
         {
             var entity = _mapper.Map<TEntity>(tDto);
-            await Repository.AddAsync(entity, ct);
+            return await Repository.AddAsync(entity, ct);
         }
 
         public virtual async Task DeleteAsync(int id, CancellationToken ct = default)

@@ -18,6 +18,7 @@ namespace ChurchManager.Features.Churches.Startup
             services.AddScoped<IChurchService, ChurchService>();
             services.AddScoped<IChurchGroupService, ChurchGroupService>();
             services.AddScoped<IServiceAsync<ChurchGroup, ChurchGroupViewModel>, ServiceAsync<ChurchGroup, ChurchGroupViewModel>>();
+            services.AddScoped<IServiceAsync<Church, ChurchViewModel>, ServiceAsync<Church, ChurchViewModel>>();
         }
 
         public void Configure(IApplicationBuilder application, IWebHostEnvironment webHostEnvironment)
