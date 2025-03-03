@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ChurchManagerDbContext))]
-    [Migration("20250217072703_Init_db")]
-    partial class Init_db
+    [Migration("20250303132908_Cascade_delete_2")]
+    partial class Cascade_delete_2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -238,7 +238,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<int?>("ChurchGroupId")
+                    b.Property<int>("ChurchGroupId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
@@ -2399,7 +2399,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("character varying(25)");
 
-                    b.Property<int>("ScopeId")
+                    b.Property<int?>("ScopeId")
                         .HasColumnType("integer");
 
                     b.Property<string>("ScopeType")
@@ -2598,7 +2598,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("ChurchManager.Domain.Features.Churches.ChurchGroup", "ChurchGroup")
                         .WithMany("Churches")
-                        .HasForeignKey("ChurchGroupId");
+                        .HasForeignKey("ChurchGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ChurchManager.Domain.Features.People.Person", "LeaderPerson")
                         .WithOne()
@@ -2776,12 +2778,12 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.HasOne("ChurchManager.Domain.Features.Churches.ChurchGroup", "ChurchGroup")
                         .WithMany()
                         .HasForeignKey("ChurchGroupId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ChurchManager.Domain.Features.Churches.Church", "Church")
                         .WithMany()
                         .HasForeignKey("ChurchId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ChurchManager.Domain.Features.People.Person", "ContactPerson")
                         .WithMany()
@@ -2955,7 +2957,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("ChurchManager.Domain.Features.Churches.Church", "Church")
                         .WithMany()
-                        .HasForeignKey("ChurchId");
+                        .HasForeignKey("ChurchId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ChurchManager.Domain.Features.Groups.GroupType", "GroupType")
                         .WithMany()
@@ -3125,15 +3128,18 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("ChurchManager.Domain.Features.Churches.Church", "Church")
                         .WithMany()
-                        .HasForeignKey("ChurchId");
+                        .HasForeignKey("ChurchId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ChurchManager.Domain.Features.Groups.Group", "Group")
                         .WithMany()
-                        .HasForeignKey("GroupId");
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ChurchManager.Domain.Features.People.Person", "Person")
                         .WithMany()
-                        .HasForeignKey("PersonId");
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.OwnsOne("ChurchManager.Domain.Features.Missions.Attendance", "Attendance", b1 =>
                         {
@@ -3294,7 +3300,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("ChurchManager.Domain.Features.Churches.Church", "Church")
                         .WithMany()
-                        .HasForeignKey("ChurchId");
+                        .HasForeignKey("ChurchId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ChurchManager.Domain.Features.People.Family", "Family")
                         .WithMany("FamilyMembers")

@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Init_db : Migration
+    public partial class Cascade_delete_2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -104,7 +104,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     EntityIds = table.Column<int[]>(type: "integer[]", nullable: true),
                     IsDynamicScope = table.Column<bool>(type: "boolean", nullable: false),
                     ScopeType = table.Column<string>(type: "text", nullable: true),
-                    ScopeId = table.Column<int>(type: "integer", nullable: false),
+                    ScopeId = table.Column<int>(type: "integer", nullable: true),
                     CanView = table.Column<bool>(type: "boolean", nullable: false),
                     CanEdit = table.Column<bool>(type: "boolean", nullable: false),
                     CanDelete = table.Column<bool>(type: "boolean", nullable: false),
@@ -504,7 +504,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ChurchGroupId = table.Column<int>(type: "integer", nullable: true),
+                    ChurchGroupId = table.Column<int>(type: "integer", nullable: false),
                     Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     ShortCode = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -549,7 +549,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         name: "FK_Group_Church_ChurchId",
                         column: x => x.ChurchId,
                         principalTable: "Church",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Group_GroupType_GroupTypeId",
                         column: x => x.GroupTypeId,
@@ -615,7 +616,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         name: "FK_Person_Church_ChurchId",
                         column: x => x.ChurchId,
                         principalTable: "Church",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Person_Family_FamilyId",
                         column: x => x.FamilyId,
@@ -911,17 +913,20 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         name: "FK_Mission_Church_ChurchId",
                         column: x => x.ChurchId,
                         principalTable: "Church",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Mission_Group_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Group",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Mission_Person_PersonId",
                         column: x => x.PersonId,
                         principalTable: "Person",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1128,12 +1133,14 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         name: "FK_Event_ChurchGroup_ChurchGroupId",
                         column: x => x.ChurchGroupId,
                         principalTable: "ChurchGroup",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Event_Church_ChurchId",
                         column: x => x.ChurchId,
                         principalTable: "Church",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Event_EventType_EventTypeId",
                         column: x => x.EventTypeId,
@@ -2035,7 +2042,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 table: "Church",
                 column: "ChurchGroupId",
                 principalTable: "ChurchGroup",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Church_Person_LeaderPersonId",

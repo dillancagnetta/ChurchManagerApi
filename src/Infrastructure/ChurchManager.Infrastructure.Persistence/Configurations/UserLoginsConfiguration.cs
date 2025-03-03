@@ -23,6 +23,14 @@ public class UserLoginsConfiguration : IEntityTypeConfiguration<UserLogin>
         builder.HasIndex(x => new { x.Tenant, x.Username });  // Tenant-specific username lookups
         builder.HasIndex(x => x.PersonId);  // Person lookups
         builder.HasIndex(x => new { x.Tenant, x.RecordStatus });  // Filtered queries by tenant and status
+        
+        // Configure the relationship with Person
+        // If Person is deleted - all UL will be deleted
+        builder
+            .HasOne(p => p.Person)
+            .WithMany()
+            .HasForeignKey(p => p.PersonId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }   
 

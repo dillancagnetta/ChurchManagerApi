@@ -28,4 +28,10 @@ public class ChurchesController : BaseApiController
     {
         return Accepted(await Mediator.Send(cmd, token));
     }
+    
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken token)
+    {
+        return Ok(await Mediator.Send(new DeleteChurchCommand(id), token));
+    }
 }

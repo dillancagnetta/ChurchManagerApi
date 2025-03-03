@@ -28,6 +28,14 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
             // Indexes
             builder.HasIndex(x => x.Name);
             builder.HasIndex(x => x.ParentGroupId);  // ParentGroup lookups
+            
+            // Configure the relationship with Church
+            // If Church is deleted - all groups will be deleted
+            builder
+                .HasOne(p => p.Church)
+                .WithMany()
+                .HasForeignKey(p => p.ChurchId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

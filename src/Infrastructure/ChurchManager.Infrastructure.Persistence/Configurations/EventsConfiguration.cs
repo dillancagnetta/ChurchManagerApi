@@ -65,6 +65,20 @@ public class EventsConfiguration : IEntityTypeConfiguration<Event>
         // Indexes
         builder.HasIndex(x => x.Name);  // Role name lookups
         builder.HasIndex(x => new { x.Name, x.RecordStatus });  // Active    lookups by name
+        
+        // Configure the relationship with ChurchGroup
+        // If Church Group is deleted - all churches will be deleted
+        builder
+            .HasOne(p => p.Church)
+            .WithMany()
+            .HasForeignKey(p => p.ChurchId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder
+            .HasOne(p => p.ChurchGroup)
+            .WithMany()
+            .HasForeignKey(p => p.ChurchGroupId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
 

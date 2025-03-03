@@ -60,6 +60,14 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
             // Indexes
             builder.HasIndex(o => o.ConnectionStatus);
             builder.HasIndex(x => x.RecordStatus);  // Status filtering
+            
+            // Configure the relationship with Church
+            // If Church is deleted - all groups will be deleted
+            builder
+                .HasOne(p => p.Church)
+                .WithMany()
+                .HasForeignKey(p => p.ChurchId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

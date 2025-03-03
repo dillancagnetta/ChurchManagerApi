@@ -10,7 +10,7 @@ namespace ChurchManager.Domain.Features.Churches
 
     public class Church : Entity<int>, IAggregateRoot<int>
     {
-        public int? ChurchGroupId { get; set; }
+        public int ChurchGroupId { get; set; }
         [Required, MaxLength(50)]
         public string Name { get; set; }
         [MaxLength(100)]

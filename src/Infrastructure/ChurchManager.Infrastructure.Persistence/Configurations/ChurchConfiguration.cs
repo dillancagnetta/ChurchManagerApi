@@ -41,6 +41,13 @@ public class ChurchConfiguration : IEntityTypeConfiguration<Church>
                 .WithOne()
                 .HasForeignKey<ChurchGroup>(cg => cg.LeaderPersonId)
                 .IsRequired(false);
+            
+            // Configure the one-to-many relationship between ChurchGroup and Church
+            builder.HasMany(cg => cg.Churches)
+                .WithOne(c => c.ChurchGroup)
+                .HasForeignKey(c => c.ChurchGroupId)
+                .OnDelete(DeleteBehavior.Cascade); // This enables cascade delete
+
         }
     }
     

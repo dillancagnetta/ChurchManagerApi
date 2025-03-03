@@ -74,3 +74,20 @@ public class AddChurchGroupCommandHandler(
         return new ApiResponse(dto);
     }
 }
+
+/*
+ * ------------------------------------------------
+ */
+
+public record DeleteChurchGroupCommand(int ChurchGroupId) : IRequest<ApiResponse>;
+public class DeleteChurchGroupCommandHandler(
+    IServiceAsync<ChurchGroup, ChurchGroupViewModel> service,
+    IPersonDbRepository personDb) : IRequestHandler<DeleteChurchGroupCommand, ApiResponse>
+{
+    public async Task<ApiResponse> Handle(DeleteChurchGroupCommand command, CancellationToken ct)
+    {
+        await service.DeleteAsync(command.ChurchGroupId, ct);
+
+        return new ApiResponse();
+    }
+}
