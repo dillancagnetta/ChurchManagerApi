@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Cascade_delete_2 : Migration
+    public partial class init_db : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -998,6 +998,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Notes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    PersonId1 = table.Column<int>(type: "integer", nullable: true),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -1020,6 +1021,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         principalTable: "Person",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PersonConnectionHistory_Person_PersonId1",
+                        column: x => x.PersonId1,
+                        principalTable: "Person",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1028,13 +1034,13 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PersonId = table.Column<int>(type: "integer", nullable: false),
                     CountryCode = table.Column<string>(type: "text", nullable: true),
                     Number = table.Column<string>(type: "text", nullable: true),
                     Extension = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     IsMessagingEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    IsUnlisted = table.Column<bool>(type: "boolean", nullable: false),
-                    PersonId = table.Column<int>(type: "integer", nullable: true)
+                    IsUnlisted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1043,7 +1049,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         name: "FK_PhoneNumber_Person_PersonId",
                         column: x => x.PersonId,
                         principalTable: "Person",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1928,6 +1935,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 name: "IX_PersonConnectionHistory_PersonId_ConnectionStatusTypeId",
                 table: "PersonConnectionHistory",
                 columns: new[] { "PersonId", "ConnectionStatusTypeId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonConnectionHistory_PersonId1",
+                table: "PersonConnectionHistory",
+                column: "PersonId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PhoneNumber_PersonId",

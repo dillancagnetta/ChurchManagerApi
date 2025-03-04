@@ -11,6 +11,8 @@ namespace ChurchManager.Domain.Features.People
     {
         [Key]
         public int Id { get; set; }
+        
+        public int PersonId { get; set; }
 
         /// <summary>
         /// Gets or sets the country code.

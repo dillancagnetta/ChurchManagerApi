@@ -26,7 +26,7 @@ public class EventsConfiguration : IEntityTypeConfiguration<Event>
             .WithMany()
             .HasForeignKey(r => r.ContactPersonId)
             .IsRequired(true)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.SetNull);
         
         builder.HasOne(r => r.Schedule)
             .WithMany()
@@ -40,25 +40,25 @@ public class EventsConfiguration : IEntityTypeConfiguration<Event>
             .WithMany()
             .HasForeignKey(r => r.ChurchId)
             .IsRequired(false)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.SetNull);
         
         builder.HasOne(r => r.ChurchGroup)
             .WithMany()
             .HasForeignKey(r => r.ChurchGroupId)
             .IsRequired(false)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.SetNull);
         
         builder.HasOne(r => r.EventRegistrationGroup)
             .WithMany()
             .HasForeignKey(r => r.EventRegistrationGroupId)
             .IsRequired(true)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.SetNull);
         
         builder.HasOne(r => r.ChildCareGroup)
             .WithMany()
             .HasForeignKey(r => r.ChildCareGroupId)
             .IsRequired(false)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.SetNull);
         
         /* Optional Properties */
         

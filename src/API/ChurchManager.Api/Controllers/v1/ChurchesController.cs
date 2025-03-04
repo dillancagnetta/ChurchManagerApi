@@ -26,7 +26,7 @@ public class ChurchesController : BaseApiController
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] AddChurchCommand cmd, CancellationToken token)
     {
-        return Accepted(await Mediator.Send(cmd, token));
+        return Ok(await Mediator.Send(cmd, token));
     }
     
     [HttpDelete("{id}")]

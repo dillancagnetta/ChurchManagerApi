@@ -1,8 +1,9 @@
-﻿using ChurchManager.Domain.Shared;
+﻿using ChurchManager.Domain.Features.Churches;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Application.Abstractions.Services;
 
-public interface IChurchService
+public interface IChurchService : ICrudServiceAsync<Church, ChurchViewModel>
 {
     Task<IReadOnlyList<ChurchViewModel>> ChurchListAsync(
         string searchTerm,

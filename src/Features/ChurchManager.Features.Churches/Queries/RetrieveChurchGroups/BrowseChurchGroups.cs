@@ -53,7 +53,7 @@ public class ChurchesGroupsQueryHandler(IMediator mediator) : IRequestHandler<Ch
 
 public record AddChurchGroupCommand(string Name, string Description, int? LeaderPersonId) : IRequest<ApiResponse>;
 public class AddChurchGroupCommandHandler(
-    IServiceAsync<ChurchGroup, ChurchGroupViewModel> service,
+    IChurchGroupService service,
     IPersonDbRepository personDb) : IRequestHandler<AddChurchGroupCommand, ApiResponse>
 {
     public async Task<ApiResponse> Handle(AddChurchGroupCommand command, CancellationToken ct)
@@ -81,7 +81,7 @@ public class AddChurchGroupCommandHandler(
 
 public record DeleteChurchGroupCommand(int ChurchGroupId) : IRequest<ApiResponse>;
 public class DeleteChurchGroupCommandHandler(
-    IServiceAsync<ChurchGroup, ChurchGroupViewModel> service,
+    IChurchGroupService service,
     IPersonDbRepository personDb) : IRequestHandler<DeleteChurchGroupCommand, ApiResponse>
 {
     public async Task<ApiResponse> Handle(DeleteChurchGroupCommand command, CancellationToken ct)

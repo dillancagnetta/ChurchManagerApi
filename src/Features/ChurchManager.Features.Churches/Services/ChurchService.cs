@@ -1,4 +1,6 @@
-﻿using ChurchManager.Application.Abstractions.Services;
+﻿using AutoMapper;
+using ChurchManager.Application.Abstractions.Services;
+using ChurchManager.Application.Features;
 using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.Churches.Specifications;
 using ChurchManager.Domain.Features.Security;
@@ -12,7 +14,8 @@ namespace ChurchManager.Features.Churches.Services;
 public class ChurchService(
     IPermissionContext permissions,
     ITenantCurrentUser currentUser,
-    IGenericDbRepository<Church> dbRepository) : IChurchService
+    IGenericDbRepository<Church> dbRepository,
+    IMapper mapper) : CrudServiceAsync<Church, ChurchViewModel>(dbRepository, mapper), IChurchService
 {
     public async Task<IReadOnlyList<ChurchViewModel>> ChurchListAsync(string searchTerm, CancellationToken ct = default)
     {
@@ -20,7 +23,7 @@ public class ChurchService(
         
         var spec = new ChurchesListSpecification(allowedIds, searchTerm);
         
-        var vm = await dbRepository.ListAsync(spec, ct);
+        var vm = await Repository.ListAsync(spec, ct);
     
         return vm;
     }

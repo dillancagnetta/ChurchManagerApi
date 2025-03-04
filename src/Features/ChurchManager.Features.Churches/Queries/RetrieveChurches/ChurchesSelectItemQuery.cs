@@ -68,7 +68,7 @@ public class AllChurchQueryHandler : IRequestHandler<ChurchesQuery, ApiResponse>
  
 public record AddChurchCommand(string Name, string Description, int ChurchGroupId, int? LeaderPersonId) : IRequest<ApiResponse>;
 public class AddChurchCommandHandler(
-    IServiceAsync<Church, ChurchViewModel> service,
+    IChurchService service,
     IPersonDbRepository personDb) : IRequestHandler<AddChurchCommand, ApiResponse>
 {
     public async Task<ApiResponse> Handle(AddChurchCommand command, CancellationToken ct)
@@ -97,7 +97,7 @@ public class AddChurchCommandHandler(
 
 public record DeleteChurchCommand(int ChurchGroupId) : IRequest<ApiResponse>;
 public class DeleteChurchCommandHandler(
-    IServiceAsync<ChurchGroup, ChurchGroupViewModel> service,
+    IChurchService service,
     IPersonDbRepository personDb) : IRequestHandler<DeleteChurchCommand, ApiResponse>
 {
     public async Task<ApiResponse> Handle(DeleteChurchCommand command, CancellationToken ct)

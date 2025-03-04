@@ -31,7 +31,7 @@ namespace ChurchManager.Api.Controllers.v1
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddChurchGroupCommand cmd, CancellationToken token)
         {
-            return Accepted(await Mediator.Send(cmd, token));
+            return Ok(await Mediator.Send(cmd, token));
         }
         
         [HttpDelete("{id}")]

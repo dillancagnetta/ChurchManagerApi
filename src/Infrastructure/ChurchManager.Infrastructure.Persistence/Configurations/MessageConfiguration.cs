@@ -35,6 +35,14 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
             builder.HasIndex(x => x.Status);  
             builder.HasIndex(x => x.IsRead);  
             builder.HasIndex(x => x.UserId);  
+            
+            // Configure the relationship with user login
+            // If ser login is deleted - all  will be deleted
+            builder
+                .HasOne(p => p.UserLogin)
+                .WithMany()
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ChurchManagerDbContext))]
-    [Migration("20250303132908_Cascade_delete_2")]
-    partial class Cascade_delete_2
+    [Migration("20250304091159_init_db")]
+    partial class init_db
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1964,6 +1964,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<int>("PersonId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("PersonId1")
+                        .HasColumnType("integer");
+
                     b.Property<string>("RecordStatus")
                         .HasMaxLength(25)
                         .HasColumnType("character varying(25)");
@@ -1976,6 +1979,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.HasIndex("ConnectionStatusTypeId");
 
                     b.HasIndex("PersonId");
+
+                    b.HasIndex("PersonId1");
 
                     b.HasIndex("PersonId", "ConnectionStatusTypeId");
 
@@ -2336,7 +2341,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<string>("Number")
                         .HasColumnType("text");
 
-                    b.Property<int?>("PersonId")
+                    b.Property<int>("PersonId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -3206,11 +3211,15 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ChurchManager.Domain.Features.People.Person", "Person")
+                    b.HasOne("ChurchManager.Domain.Features.People.Person", null)
                         .WithMany("ConnectionStatusHistory")
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ChurchManager.Domain.Features.People.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId1");
 
                     b.Navigation("ConnectionStatusType");
 
@@ -3447,7 +3456,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("ChurchManager.Domain.Features.People.Person", null)
                         .WithMany("PhoneNumbers")
-                        .HasForeignKey("PersonId");
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("CodeBoss.Jobs.Model.ServiceJobHistory", b =>

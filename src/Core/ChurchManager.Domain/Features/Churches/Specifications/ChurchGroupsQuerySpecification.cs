@@ -28,6 +28,8 @@ public class ChurchGroupsQuerySpecification: PermissionSpecification<ChurchGroup
                     EF.Functions.ILike(cg.Name, $"%{searchTerm}%") ||
                     EF.Functions.ILike(cg.Description, $"%{searchTerm}%"));
         }
+
+        Query.OrderBy(x => x.Name);
         
         Query.Select(x => new ChurchGroupViewModel
         {
@@ -35,14 +37,17 @@ public class ChurchGroupsQuerySpecification: PermissionSpecification<ChurchGroup
             Name = x.Name,  
             Description = x.Description,
             LeaderPerson = IncludeDetails && x.LeaderPersonId.HasValue ? ToBasicPerson(x.LeaderPerson) : null,
-            Churches = IncludeDetails ? x.Churches.Select(c => new ChurchViewModel
-            { 
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                ShortCode = c.ShortCode,
-                LeaderPerson = c.LeaderPersonId.HasValue ? ToBasicPerson(c.LeaderPerson) : null,
-            }) : null
+            Churches = IncludeDetails 
+                ? x.Churches.OrderBy(c => c.Name)
+                    .Select(c => new ChurchViewModel
+                    { 
+                        Id = c.Id,
+                        Name = c.Name,
+                        Description = c.Description,
+                        ShortCode = c.ShortCode,
+                        LeaderPerson = c.LeaderPersonId.HasValue ? ToBasicPerson(c.LeaderPerson) : null,
+                    }).ToList()
+                : null
         });
     }
     

@@ -15,6 +15,14 @@ public class ConnectionStatusHistoryConfiguration: IEntityTypeConfiguration<Conn
         builder.HasIndex(o => o.PersonId);
         builder.HasIndex(o => o.ConnectionStatusTypeId);
         builder.HasIndex(o => new { o.PersonId, o.ConnectionStatusTypeId });
+        
+        // Configure the relationship with person
+        // If person is deleted - all  will be deleted
+        builder
+            .HasOne<Person>()
+            .WithMany(p => p.ConnectionStatusHistory)
+            .HasForeignKey(p => p.PersonId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
 

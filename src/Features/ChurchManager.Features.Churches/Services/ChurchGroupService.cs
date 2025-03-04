@@ -1,18 +1,24 @@
-﻿using ChurchManager.Application.Abstractions.Services;
+﻿using AutoMapper;
+using ChurchManager.Application.Abstractions.Services;
+using ChurchManager.Application.Features;
 using ChurchManager.Domain.Features.Churches;
+using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using Codeboss.Results;
 using Microsoft.Extensions.Logging;
 
 namespace ChurchManager.Features.Churches.Services;
 
-public class ChurchGroupService(IGenericDbRepository<ChurchGroup> dbRepository, ILogger<ChurchGroupService> logger) : IChurchGroupService
+public class ChurchGroupService(
+    IGenericDbRepository<ChurchGroup> dbRepository, 
+    ILogger<ChurchGroupService> logger,
+    IMapper mapper) : CrudServiceAsync<ChurchGroup, ChurchGroupViewModel>(dbRepository, mapper), IChurchGroupService
 {
     public async Task<OperationResult> AddChurchGroupAsync(string Name, string Description, int? LeaderPersonId, CancellationToken ct = default)
     {
         try
         {
-            await dbRepository.AddAsync(new ChurchGroup
+            await Repository.AddAsync(new ChurchGroup
             {
                 Name = Name,
                 Description = Description,
