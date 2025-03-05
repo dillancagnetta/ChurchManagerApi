@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ChurchManagerDbContext))]
-    [Migration("20250304091159_init_db")]
+    [Migration("20250305112610_init_db")]
     partial class init_db
     {
         /// <inheritdoc />
@@ -272,8 +272,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("ChurchGroupId");
 
-                    b.HasIndex("LeaderPersonId")
-                        .IsUnique();
+                    b.HasIndex("LeaderPersonId");
 
                     b.ToTable("Church");
                 });
@@ -286,7 +285,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AttendanceCount")
+                    b.Property<int?>("AttendanceCount")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("AttendanceDate")
@@ -300,6 +299,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("ChurchId")
                         .HasColumnType("integer");
+
+                    b.Property<bool?>("DidNotOccur")
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("FemalesCount")
                         .HasColumnType("integer");
@@ -319,6 +321,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("text");
 
+                    b.PrimitiveCollection<List<string>>("PhotoUrls")
+                        .HasColumnType("text[]");
+
                     b.Property<int?>("ReceivedHolySpiritCount")
                         .HasColumnType("integer");
 
@@ -326,9 +331,14 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("character varying(25)");
 
+                    b.Property<int?>("TeensCount")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ChurchAttendanceTypeId");
+
+                    b.HasIndex("ChurchId");
 
                     b.ToTable("ChurchAttendance");
                 });
@@ -384,8 +394,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LeaderPersonId")
-                        .IsUnique();
+                    b.HasIndex("LeaderPersonId");
 
                     b.ToTable("ChurchGroup");
                 });
@@ -2608,8 +2617,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("ChurchManager.Domain.Features.People.Person", "LeaderPerson")
-                        .WithOne()
-                        .HasForeignKey("ChurchManager.Domain.Features.Churches.Church", "LeaderPersonId");
+                        .WithMany()
+                        .HasForeignKey("LeaderPersonId");
 
                     b.Navigation("ChurchGroup");
 
@@ -2624,14 +2633,22 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ChurchManager.Domain.Features.Churches.Church", "Church")
+                        .WithMany()
+                        .HasForeignKey("ChurchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Church");
+
                     b.Navigation("ChurchAttendanceType");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Churches.ChurchGroup", b =>
                 {
                     b.HasOne("ChurchManager.Domain.Features.People.Person", "LeaderPerson")
-                        .WithOne()
-                        .HasForeignKey("ChurchManager.Domain.Features.Churches.ChurchGroup", "LeaderPersonId");
+                        .WithMany()
+                        .HasForeignKey("LeaderPersonId");
 
                     b.Navigation("LeaderPerson");
                 });
@@ -2778,7 +2795,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.HasOne("ChurchManager.Domain.Features.Groups.Group", "ChildCareGroup")
                         .WithMany()
                         .HasForeignKey("ChildCareGroupId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("ChurchManager.Domain.Features.Churches.ChurchGroup", "ChurchGroup")
                         .WithMany()
@@ -2793,13 +2810,13 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.HasOne("ChurchManager.Domain.Features.People.Person", "ContactPerson")
                         .WithMany()
                         .HasForeignKey("ContactPersonId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.HasOne("ChurchManager.Domain.Features.Groups.Group", "EventRegistrationGroup")
                         .WithMany()
                         .HasForeignKey("EventRegistrationGroupId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.HasOne("ChurchManager.Domain.Features.Events.EventType", "EventType")
@@ -3310,7 +3327,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.HasOne("ChurchManager.Domain.Features.Churches.Church", "Church")
                         .WithMany()
                         .HasForeignKey("ChurchId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("ChurchManager.Domain.Features.People.Family", "Family")
                         .WithMany("FamilyMembers")

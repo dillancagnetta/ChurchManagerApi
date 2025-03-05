@@ -1,4 +1,5 @@
-﻿using ChurchManager.Features.Churches.Queries.RetrieveChurches;
+﻿using ChurchManager.Features.Churches.Queries.BrowseAttendance;
+using ChurchManager.Features.Churches.Queries.RetrieveChurches;
 using ChurchManager.SharedKernel.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,8 @@ public class ChurchesController : BaseApiController
     {
         _currentUser = currentUser;
     }
+
+    #region CRUD
 
     [HttpGet]
     public async Task<IActionResult> AllChurches(CancellationToken token)
@@ -39,5 +42,14 @@ public class ChurchesController : BaseApiController
     public async Task<IActionResult> Update([FromBody] EditChurchCommand cmd, CancellationToken token)
     {
         return Accepted(await Mediator.Send(cmd, token));
+    }
+
+    #endregion
+    
+    [HttpPost("attendance/browse")]
+    public async Task<IActionResult> BrowseChurchAttendances([FromBody] BrowseChurchAttendanceQuery query, CancellationToken token)
+    {
+        var attendances = await Mediator.Send(query, token);
+        return Ok(attendances);
     }
 }

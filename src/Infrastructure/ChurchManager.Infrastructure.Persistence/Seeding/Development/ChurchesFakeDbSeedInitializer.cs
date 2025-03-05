@@ -9,45 +9,56 @@ using Microsoft.Extensions.DependencyInjection;
 
 #endregion
 
-namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
+namespace ChurchManager.Infrastructure.Persistence.Seeding.Development;
+
+/// <summary>
+/// Seeds the database with some dummy data
+/// </summary>
+public class ChurchesFakeDbSeedInitializer : IInitializer
 {
-    /// <summary>
-    /// Seeds the database with some dummy data
-    /// </summary>
-    public class ChurchesFakeDbSeedInitializer : IInitializer
+    public int OrderNumber { get; } = 0;
+    private readonly IServiceScopeFactory _scopeFactory;
+
+    public ChurchesFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
+
+    public async Task InitializeAsync()
     {
-        public int OrderNumber { get; } = 0;
-        private readonly IServiceScopeFactory _scopeFactory;
+        using var scope = _scopeFactory.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ChurchManagerDbContext>();
 
-        public ChurchesFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
-
-        public async Task InitializeAsync()
+        var southAfricaProvinces = new Dictionary<string, List<string>>
         {
-            using var scope = _scopeFactory.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ChurchManagerDbContext>();
+            { "Western Cape", new List<string> 
+                { "Cape Town", "Stellenbosch", "Paarl", "George", "Mossel Bay", 
+                    "Worcester", "Somerset West", "Hermanus", "Knysna", "Beaufort West" } 
+            },
+            { "Gauteng", new List<string> 
+                { "Johannesburg", "Pretoria", "Sandton", "Soweto", "Midrand", 
+                    "Centurion", "Benoni", "Boksburg", "Alberton", "Kempton Park" } 
+            }
+        };
+            
+        if(!await dbContext.Church.AnyAsync())
+        {
+            var faker = new Faker();
 
-            if(!await dbContext.Church.AnyAsync())
+            foreach (var province in southAfricaProvinces)
             {
-                var faker = new Faker();
-
-                var group1 = new ChurchGroup { Name = faker.Address.City() + " Group", Description = faker.Company.Bs() };
-                var group2 = new ChurchGroup { Name = faker.Address.City() + " Group", Description = faker.Company.Bs() };
-                var churchGroups = new[] { group1, group2 };
-
-                for(int i = 0; i < 10; i++)
+                var churchGroup = new ChurchGroup { Name = province.Key + " Group", Description = province.Key + " Church Group" };
+                foreach (var city in province.Value)
                 {
                     dbContext.Church.Add(new Church
                     {
-                        Name = faker.Address.City() + " Church",
-                        Description = faker.Address.City() + " Church",
+                        Name = city + " Church",
+                        Description = city + " Church",
                         ShortCode = faker.Address.ZipCode(),
                         PhoneNumber = faker.Phone.PhoneNumber(),
-                        ChurchGroup = faker.PickRandom(churchGroups),
+                        ChurchGroup = churchGroup,
                     });
                 }
-
-                await dbContext.SaveChangesAsync();
             }
+                
+            await dbContext.SaveChangesAsync();
         }
     }
 }

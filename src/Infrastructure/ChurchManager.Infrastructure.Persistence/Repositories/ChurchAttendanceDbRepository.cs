@@ -49,7 +49,7 @@ public class ChurchAttendanceDbRepository : GenericRepositoryBase<ChurchAttendan
                 {
                     Year = x.Year,
                     Month = x.Month,
-                    TotalAttendance = e.Sum(y => y.AttendanceCount),
+                    TotalAttendance = e.Sum(y => y.AttendanceCount ?? 0),
                     TotalNewConverts = e.Sum(y => y.NewConvertCount),
                     TotalFirstTimers = e.Sum(y => y.FirstTimerCount),
                     TotalHolySpirit = e.Sum(y => y.ReceivedHolySpiritCount),

@@ -319,37 +319,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ChurchAttendance",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ChurchAttendanceTypeId = table.Column<int>(type: "integer", nullable: false),
-                    ChurchId = table.Column<int>(type: "integer", nullable: false),
-                    AttendanceDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    AttendanceCount = table.Column<int>(type: "integer", nullable: false),
-                    MalesCount = table.Column<int>(type: "integer", nullable: true),
-                    FemalesCount = table.Column<int>(type: "integer", nullable: true),
-                    ChildrenCount = table.Column<int>(type: "integer", nullable: true),
-                    FirstTimerCount = table.Column<int>(type: "integer", nullable: true),
-                    NewConvertCount = table.Column<int>(type: "integer", nullable: true),
-                    ReceivedHolySpiritCount = table.Column<int>(type: "integer", nullable: true),
-                    Notes = table.Column<string>(type: "text", nullable: true),
-                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
-                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ChurchAttendance", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ChurchAttendance_ChurchAttendanceType_ChurchAttendanceTypeId",
-                        column: x => x.ChurchAttendanceTypeId,
-                        principalTable: "ChurchAttendanceType",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DiscipleshipStepDefinition",
                 columns: table => new
                 {
@@ -520,6 +489,46 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ChurchAttendance",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ChurchAttendanceTypeId = table.Column<int>(type: "integer", nullable: false),
+                    ChurchId = table.Column<int>(type: "integer", nullable: false),
+                    AttendanceDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DidNotOccur = table.Column<bool>(type: "boolean", nullable: true),
+                    AttendanceCount = table.Column<int>(type: "integer", nullable: true),
+                    MalesCount = table.Column<int>(type: "integer", nullable: true),
+                    FemalesCount = table.Column<int>(type: "integer", nullable: true),
+                    ChildrenCount = table.Column<int>(type: "integer", nullable: true),
+                    TeensCount = table.Column<int>(type: "integer", nullable: true),
+                    FirstTimerCount = table.Column<int>(type: "integer", nullable: true),
+                    NewConvertCount = table.Column<int>(type: "integer", nullable: true),
+                    ReceivedHolySpiritCount = table.Column<int>(type: "integer", nullable: true),
+                    Notes = table.Column<string>(type: "text", nullable: true),
+                    PhotoUrls = table.Column<List<string>>(type: "text[]", nullable: true),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChurchAttendance", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ChurchAttendance_ChurchAttendanceType_ChurchAttendanceTypeId",
+                        column: x => x.ChurchAttendanceTypeId,
+                        principalTable: "ChurchAttendanceType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ChurchAttendance_Church_ChurchId",
+                        column: x => x.ChurchId,
+                        principalTable: "Church",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Group",
                 columns: table => new
                 {
@@ -617,7 +626,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         column: x => x.ChurchId,
                         principalTable: "Church",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Person_Family_FamilyId",
                         column: x => x.FamilyId,
@@ -1158,17 +1167,20 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         name: "FK_Event_Group_ChildCareGroupId",
                         column: x => x.ChildCareGroupId,
                         principalTable: "Group",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Event_Group_EventRegistrationGroupId",
                         column: x => x.EventRegistrationGroupId,
                         principalTable: "Group",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Event_Person_ContactPersonId",
                         column: x => x.ContactPersonId,
                         principalTable: "Person",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Event_Schedule_ScheduleId",
                         column: x => x.ScheduleId,
@@ -1484,8 +1496,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Church_LeaderPersonId",
                 table: "Church",
-                column: "LeaderPersonId",
-                unique: true);
+                column: "LeaderPersonId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChurchAttendance_ChurchAttendanceTypeId",
@@ -1493,10 +1504,14 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 column: "ChurchAttendanceTypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ChurchAttendance_ChurchId",
+                table: "ChurchAttendance",
+                column: "ChurchId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ChurchGroup_LeaderPersonId",
                 table: "ChurchGroup",
-                column: "LeaderPersonId",
-                unique: true);
+                column: "LeaderPersonId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Communication_CommunicationTemplateId",
