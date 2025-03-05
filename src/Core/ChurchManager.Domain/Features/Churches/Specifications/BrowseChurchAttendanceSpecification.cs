@@ -72,6 +72,10 @@ namespace ChurchManager.Domain.Features.Churches.Specifications
                 FirstTimerCount = x.FirstTimerCount,
                 NewConvertCount = x.NewConvertCount,
                 ReceivedHolySpiritCount = x.ReceivedHolySpiritCount,
+                MalesCount = x.MalesCount,
+                FemalesCount = x.FemalesCount,
+                ChildrenCount = x.ChildrenCount,
+                TeensCount = x.TeensCount,
                 Notes = x.Notes,
                 PhotoUrls = x.PhotoUrls,
                 //Offering = x.Amount.HasValue ? new MoneyViewModel{Currency = x.Currency, Amount = x.Amount.Value} : null

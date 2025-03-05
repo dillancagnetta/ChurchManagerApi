@@ -15,5 +15,13 @@ public record ChurchAttendanceViewModel
     public double AttendanceRate { get; set; }
     public string Notes { get; set; }
     public IEnumerable<string> PhotoUrls { get; set; }
+
+    public int? MalesCount { get; set; }
+
+    public int? FemalesCount { get; set; }
+
+    public int? ChildrenCount { get; set; }
+
+    public int? TeensCount { get; set; }
     //public MoneyViewModel Offering { get; set; }
 }
