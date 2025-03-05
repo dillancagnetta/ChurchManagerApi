@@ -48,6 +48,10 @@ public class ChurchesMappingProfile : Profile, IAutoMapperProfile
                 }
                 : null
             ));*/
+
+        // EDIT
+        CreateMap<EditChurchModel, Church>().ReverseMap();
+        CreateMap<EditChurchGroupModel, ChurchGroup>().ReverseMap();
     }
 
     public int Order => 1;

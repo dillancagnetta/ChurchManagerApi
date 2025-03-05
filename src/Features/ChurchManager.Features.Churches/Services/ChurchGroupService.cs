@@ -12,7 +12,7 @@ namespace ChurchManager.Features.Churches.Services;
 public class ChurchGroupService(
     IGenericDbRepository<ChurchGroup> dbRepository, 
     ILogger<ChurchGroupService> logger,
-    IMapper mapper) : CrudServiceAsync<ChurchGroup, ChurchGroupViewModel>(dbRepository, mapper), IChurchGroupService
+    IMapper mapper) : CrudServiceAsync<ChurchGroup, ChurchGroupViewModel, EditChurchGroupModel>(dbRepository, mapper), IChurchGroupService
 {
     public async Task<OperationResult> AddChurchGroupAsync(string Name, string Description, int? LeaderPersonId, CancellationToken ct = default)
     {

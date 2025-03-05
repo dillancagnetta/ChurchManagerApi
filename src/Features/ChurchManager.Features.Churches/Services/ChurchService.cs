@@ -15,7 +15,7 @@ public class ChurchService(
     IPermissionContext permissions,
     ITenantCurrentUser currentUser,
     IGenericDbRepository<Church> dbRepository,
-    IMapper mapper) : CrudServiceAsync<Church, ChurchViewModel>(dbRepository, mapper), IChurchService
+    IMapper mapper) : CrudServiceAsync<Church, ChurchViewModel, EditChurchModel>(dbRepository, mapper), IChurchService
 {
     public async Task<IReadOnlyList<ChurchViewModel>> ChurchListAsync(string searchTerm, CancellationToken ct = default)
     {

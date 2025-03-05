@@ -39,6 +39,12 @@ namespace ChurchManager.Api.Controllers.v1
         {
             return Ok(await Mediator.Send(new DeleteChurchGroupCommand(id), token));
         }
+        
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] EditChurchGroupCommand cmd, CancellationToken token)
+        {
+            return Accepted(await Mediator.Send(cmd, token));
+        }
 
             
         /*[HttpGet("{groupTypeId}")]
@@ -48,11 +54,7 @@ namespace ChurchManager.Api.Controllers.v1
         }
         
        
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] EditGroupTypeCommand cmd, CancellationToken token)
-        {
-            return Accepted(await Mediator.Send(cmd, token));
-        }
+       
         
        */
     }

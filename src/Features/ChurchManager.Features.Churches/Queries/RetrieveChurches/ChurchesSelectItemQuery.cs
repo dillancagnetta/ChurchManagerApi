@@ -73,7 +73,7 @@ public class AddChurchCommandHandler(
 {
     public async Task<ApiResponse> Handle(AddChurchCommand command, CancellationToken ct)
     {
-        var dto = new ChurchViewModel
+        /*var dto = new ChurchViewModel
         {
             Name = command.Name,
             Description = command.Description,
@@ -85,9 +85,25 @@ public class AddChurchCommandHandler(
         };
         
         var entity = await service.AddAsync(dto, ct);
-        dto.Id = entity.Id;
+        dto.Id = entity.Id;*/
+        
+        var dto = new EditChurchModel
+        {
+            Name = command.Name,
+            Description = command.Description,
+            ChurchGroupId = command.ChurchGroupId,
+            LeaderPersonId = command.LeaderPersonId
+        };
 
-        return new ApiResponse(dto);
+        var vm = await service.AddAsync(dto, ct);
+        
+        //var entity = await service.AddAsync(dto, ct);
+        // Needed because we rerender the list - so we need this data
+        vm.LeaderPerson = command.LeaderPersonId.HasValue
+            ? await personDb.BasicPersonViewModelAsync(command.LeaderPersonId.Value, ct)
+            : null;
+
+        return new ApiResponse(vm);
     }
 }
 
@@ -103,6 +119,34 @@ public class DeleteChurchCommandHandler(
     public async Task<ApiResponse> Handle(DeleteChurchCommand command, CancellationToken ct)
     {
         await service.DeleteAsync(command.ChurchGroupId, ct);
+
+        return new ApiResponse();
+    }
+}
+
+/*
+ * ------------------------------------------------
+ */
+
+public record EditChurchCommand(int Id, string Name, string Description, int? LeaderPersonId, int ChurchGroupId) : IRequest<ApiResponse>;
+public class EditChurchCommandHandler(
+    IChurchService service,
+    IPersonDbRepository personDb) : IRequestHandler<EditChurchCommand, ApiResponse>
+{
+    public async Task<ApiResponse> Handle(EditChurchCommand command, CancellationToken ct)
+    {
+        var dto = new EditChurchModel
+        {
+            Id = command.Id,
+            Name = command.Name,
+            Description = command.Description,
+            LeaderPersonId = command.LeaderPersonId,
+            ChurchGroupId = command.ChurchGroupId
+        };
+        
+        await service.UpdateAsync(dto, ct);
+
+        return new ApiResponse();
 
         return new ApiResponse();
     }

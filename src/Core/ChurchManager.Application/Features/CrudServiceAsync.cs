@@ -5,8 +5,9 @@ using Codeboss.Types;
 
 namespace ChurchManager.Application.Features
 {
-    public class CrudServiceAsync<TEntity, TDto> : ICrudServiceAsync<TEntity, TDto>
-        where TDto : class 
+    public class CrudServiceAsync<TEntity, TViewDto, TEditDto> : ICrudServiceAsync<TEntity, TViewDto, TEditDto>
+        where TViewDto : class 
+        where TEditDto : class 
         where TEntity : class, IAggregateRoot<int>
     {
         protected readonly IGenericDbRepository<TEntity> Repository;
@@ -18,22 +19,24 @@ namespace ChurchManager.Application.Features
             _mapper = mapper;
         }
 
-        public virtual async Task<IEnumerable<TDto>> ListAsync(CancellationToken ct = default)
+        public virtual async Task<IEnumerable<TViewDto>> ListAsync(CancellationToken ct = default)
         {
             var entities = await Repository.ListAsync(ct);
-            return _mapper.Map<IEnumerable<TDto>>(entities);
+            return _mapper.Map<IEnumerable<TViewDto>>(entities);
         }
 
-        public virtual async Task<TDto> GetByIdAsync(int id, CancellationToken ct = default)
+        public virtual async Task<TViewDto> GetByIdAsync(int id, CancellationToken ct = default)
         {
             var entity = await Repository.GetByIdAsync(id, ct);
-            return _mapper.Map<TDto>(entity);
+            return _mapper.Map<TViewDto>(entity);
         }
 
-        public virtual async Task<TEntity> AddAsync(TDto tDto, CancellationToken ct = default)
+        public virtual async Task<TViewDto> AddAsync(TEditDto tDto, CancellationToken ct = default)
         {
             var entity = _mapper.Map<TEntity>(tDto);
-            return await Repository.AddAsync(entity, ct);
+            
+            // return the view model mapped from entity
+            return _mapper.Map<TViewDto>(await Repository.AddAsync(entity, ct));
         }
 
         public virtual async Task DeleteAsync(int id, CancellationToken ct = default)
@@ -42,10 +45,13 @@ namespace ChurchManager.Application.Features
             await Repository.DeleteAsync(entity, ct);
         }
 
-        public virtual async Task UpdateAsync(TDto entityTDto, CancellationToken ct = default)
+        public virtual async Task<TViewDto> UpdateAsync(TEditDto tDto, CancellationToken ct = default)
         {
-            var entity = _mapper.Map<TEntity>(entityTDto);
+            var entity = _mapper.Map<TEntity>(tDto);
             await Repository.UpdateAsync(entity, ct);
+            
+            // return the view model mapped from entity
+            return _mapper.Map<TViewDto>(entity);
         }
     }
 }

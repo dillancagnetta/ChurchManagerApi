@@ -4,7 +4,7 @@ using Codeboss.Results;
 
 namespace ChurchManager.Application.Abstractions.Services;
 
-public interface IChurchGroupService: ICrudServiceAsync<ChurchGroup, ChurchGroupViewModel>
+public interface IChurchGroupService: ICrudServiceAsync<ChurchGroup, ChurchGroupViewModel, EditChurchGroupModel>
 {
    Task<OperationResult>  AddChurchGroupAsync(string Name, string Description, int? LeaderPersonId, CancellationToken ct = default);
 }

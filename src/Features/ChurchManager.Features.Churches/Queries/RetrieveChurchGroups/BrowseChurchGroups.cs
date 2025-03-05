@@ -58,7 +58,7 @@ public class AddChurchGroupCommandHandler(
 {
     public async Task<ApiResponse> Handle(AddChurchGroupCommand command, CancellationToken ct)
     {
-        var dto = new ChurchGroupViewModel
+        /*var dto = new ChurchGroupViewModel
         {
             Name = command.Name,
             Description = command.Description,
@@ -66,12 +66,24 @@ public class AddChurchGroupCommandHandler(
                 // Needed because we rerender the list - so we need this data
                 ? await personDb.BasicPersonViewModelAsync(command.LeaderPersonId.Value, ct)
                 : null
-        };
+        };*/
         
-        var entity = await service.AddAsync(dto, ct);
-        dto.Id = entity.Id;
+        var dto = new EditChurchGroupModel
+        {
+            Name = command.Name,
+            Description = command.Description,
+            LeaderPersonId = command.LeaderPersonId
+        };
 
-        return new ApiResponse(dto);
+        var vm = await service.AddAsync(dto, ct);
+        
+        //var entity = await service.AddAsync(dto, ct);
+        // Needed because we rerender the list - so we need this data
+        vm.LeaderPerson = command.LeaderPersonId.HasValue
+            ? await personDb.BasicPersonViewModelAsync(command.LeaderPersonId.Value, ct)
+            : null;
+
+        return new ApiResponse(vm);
     }
 }
 
@@ -89,5 +101,35 @@ public class DeleteChurchGroupCommandHandler(
         await service.DeleteAsync(command.ChurchGroupId, ct);
 
         return new ApiResponse();
+    }
+}
+
+/*
+ * ------------------------------------------------
+ */
+
+public record EditChurchGroupCommand(int Id, string Name, string Description, int? LeaderPersonId) : IRequest<ApiResponse>;
+public class EditChurchGroupCommandHandler(
+    IChurchGroupService service,
+    IPersonDbRepository personDb) : IRequestHandler<EditChurchGroupCommand, ApiResponse>
+{
+    public async Task<ApiResponse> Handle(EditChurchGroupCommand command, CancellationToken ct)
+    {
+        var dto = new EditChurchGroupModel
+        {
+            Id = command.Id,
+            Name = command.Name,
+            Description = command.Description,
+            LeaderPersonId = command.LeaderPersonId
+        };
+        
+        var vm = await service.UpdateAsync(dto, ct);
+
+        // Needed because we rerender the list - so we need this data
+        vm.LeaderPerson = command.LeaderPersonId.HasValue
+            ? await personDb.BasicPersonViewModelAsync(command.LeaderPersonId.Value, ct)
+            : null;
+
+        return new ApiResponse(vm);
     }
 }

@@ -1,11 +1,12 @@
 ﻿namespace ChurchManager.Application.Abstractions.Services
 {
-    public interface ICrudServiceAsync<TEntity, TDto>
+    public interface ICrudServiceAsync<TEntity, TViewDto, in TEditDto>
     {
-        Task<IEnumerable<TDto>> ListAsync(CancellationToken ct = default);
-        Task<TDto> GetByIdAsync(int id, CancellationToken ct = default);
-        Task<TEntity> AddAsync(TDto tDto, CancellationToken ct = default);
+        Task<IEnumerable<TViewDto>> ListAsync(CancellationToken ct = default);
+        Task<TViewDto> GetByIdAsync(int id, CancellationToken ct = default);
+        Task<TViewDto> AddAsync(TEditDto tDto, CancellationToken ct = default);
         Task DeleteAsync(int id, CancellationToken ct = default);
-        Task UpdateAsync(TDto entityTDto, CancellationToken ct = default);
+        //Task UpdateAsync(TEditDto entityTDto, CancellationToken ct = default);
+        Task<TViewDto> UpdateAsync(TEditDto entityTDto, CancellationToken ct = default);
     }
 }

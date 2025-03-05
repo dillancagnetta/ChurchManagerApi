@@ -34,4 +34,10 @@ public class ChurchesController : BaseApiController
     {
         return Ok(await Mediator.Send(new DeleteChurchCommand(id), token));
     }
+    
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] EditChurchCommand cmd, CancellationToken token)
+    {
+        return Accepted(await Mediator.Send(cmd, token));
+    }
 }
