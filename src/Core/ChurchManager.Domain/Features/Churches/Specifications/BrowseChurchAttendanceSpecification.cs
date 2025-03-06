@@ -29,7 +29,6 @@ namespace ChurchManager.Domain.Features.Churches.Specifications
             {
                 Query.Where(g => attendanceTypeIds.Contains(g.ChurchAttendanceTypeId));
             }
-
             
             // Group Filter
             if (churchGroupId.HasValue)
@@ -60,26 +59,7 @@ namespace ChurchManager.Domain.Features.Churches.Specifications
                 .Skip(paging.CalculateSkip())
                 .Take(paging.CalculateTake());
 
-            Query.Select(x => new ChurchAttendanceViewModel
-            {
-                Id = x.Id,
-                ChurchName = x.Church.Name,
-                ChurchGroupName = x.Church.ChurchGroup.Name,
-                AttendanceTypeName = x.ChurchAttendanceType.Name,
-                AttendanceDate = x.AttendanceDate,
-                DidNotOccur = x.DidNotOccur,
-                AttendanceCount = x.AttendanceCount,
-                FirstTimerCount = x.FirstTimerCount,
-                NewConvertCount = x.NewConvertCount,
-                ReceivedHolySpiritCount = x.ReceivedHolySpiritCount,
-                MalesCount = x.MalesCount,
-                FemalesCount = x.FemalesCount,
-                ChildrenCount = x.ChildrenCount,
-                TeensCount = x.TeensCount,
-                Notes = x.Notes,
-                PhotoUrls = x.PhotoUrls,
-                //Offering = x.Amount.HasValue ? new MoneyViewModel{Currency = x.Currency, Amount = x.Amount.Value} : null
-            });
+            Query.Select(ExpressionExtensions.SelectChurchAttendance);
         }  
     }
 }

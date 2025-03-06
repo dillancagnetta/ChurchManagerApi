@@ -45,11 +45,24 @@ public class ChurchesController : BaseApiController
     }
 
     #endregion
-    
+
+    #region Attendance
+
     [HttpPost("attendance/browse")]
     public async Task<IActionResult> BrowseChurchAttendances([FromBody] BrowseChurchAttendanceQuery query, CancellationToken token)
     {
         var attendances = await Mediator.Send(query, token);
         return Ok(attendances);
     }
+    
+    [HttpPost("attendance-report-grid")]
+    public async Task<IActionResult> AttendanceReportGrid([FromBody] ChurchAttendanceReportGridQuery query, CancellationToken token)
+    {
+        var data = await Mediator.Send(query, token);
+        return Ok(data);
+    }
+
+    #endregion
+    
+   
 }
