@@ -52,7 +52,8 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                     males = random.Next(0, 500),
                     females = random.Next(0, 500),
                     children = random.Next(0, 200),
-                    firsttimers = random.Next(10, 100),
+                    teens = random.Next(0, 100),
+                    firsttimers = random.Next(10, 100)
                 };
 
                 churchAttendances.Add( new ChurchAttendance
@@ -60,8 +61,9 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                     ChurchAttendanceTypeId = random.Next(1, 3),  // will generate 1 to 2 only
                     ChurchId = churchId,
                     AttendanceDate = attendance.attendancedate,
-                    AttendanceCount = attendance.males + attendance.females + attendance.children,
+                    AttendanceCount = attendance.males + attendance.females + attendance.children + attendance.teens,
                     ChildrenCount = attendance.children,
+                    TeensCount = attendance.teens,
                     FemalesCount = attendance.females,
                     MalesCount = attendance.males,
                     FirstTimerCount = attendance.firsttimers,

@@ -1,18 +1,23 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Shared;
+using ChurchManager.Domain.Specifications;
 using CodeBoss.Extensions;
 using Microsoft.EntityFrameworkCore;
 using PersonViewModel = ChurchManager.Domain.Shared.PersonViewModelBasic;
 
 namespace ChurchManager.Domain.Features.Churches.Specifications;
 
-public class ChurchGroupsQuerySpecification: Specification<ChurchGroup, ChurchGroupViewModel>
+public class ChurchGroupsQuerySpecification: PermissionSpecification<ChurchGroup, ChurchGroupViewModel>
 {
-    public ChurchGroupsQuerySpecification(string searchTerm)
+    public ChurchGroupsQuerySpecification(string searchTerm = null, bool IncludeDetails = true, IEnumerable<int> allowedIds = null)
+        : base(allowedIds)
     {
-        Query.Include(cg => cg.Churches).ThenInclude(c => c.LeaderPerson);
-        Query.Include(cg => cg.LeaderPerson);
+        if (IncludeDetails)
+        {
+            Query.Include(cg => cg.Churches).ThenInclude(c => c.LeaderPerson);
+            Query.Include(cg => cg.LeaderPerson);
+        }
         
         // Search Term
         if (!searchTerm.IsNullOrEmpty())
@@ -23,21 +28,26 @@ public class ChurchGroupsQuerySpecification: Specification<ChurchGroup, ChurchGr
                     EF.Functions.ILike(cg.Name, $"%{searchTerm}%") ||
                     EF.Functions.ILike(cg.Description, $"%{searchTerm}%"));
         }
+
+        Query.OrderBy(x => x.Name);
         
         Query.Select(x => new ChurchGroupViewModel
         {
             Id = x.Id,
             Name = x.Name,  
             Description = x.Description,
-            LeaderPerson = x.LeaderPersonId.HasValue ? ToBasicPerson(x.LeaderPerson) : null,
-            Churches = x.Churches.Select(c => new ChurchViewModel
-            { 
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                ShortCode = c.ShortCode,
-                LeaderPerson = c.LeaderPersonId.HasValue ? ToBasicPerson(c.LeaderPerson) : null,
-            })
+            LeaderPerson = IncludeDetails && x.LeaderPersonId.HasValue ? ToBasicPerson(x.LeaderPerson) : null,
+            Churches = IncludeDetails 
+                ? x.Churches.OrderBy(c => c.Name)
+                    .Select(c => new ChurchViewModel
+                    { 
+                        Id = c.Id,
+                        Name = c.Name,
+                        Description = c.Description,
+                        ShortCode = c.ShortCode,
+                        LeaderPerson = c.LeaderPersonId.HasValue ? ToBasicPerson(c.LeaderPerson) : null,
+                    }).ToList()
+                : null
         });
     }
     

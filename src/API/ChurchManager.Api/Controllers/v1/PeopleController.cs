@@ -1,4 +1,5 @@
-﻿using ChurchManager.Features.People.Commands.AddNewFamily;
+﻿using ChurchManager.Api.Middlewares;
+using ChurchManager.Features.People.Commands.AddNewFamily;
 using ChurchManager.Features.People.Commands.DeletePerson;
 using ChurchManager.Features.People.Commands.DeletePhoto;
 using ChurchManager.Features.People.Commands.EditPhoto;
@@ -104,8 +105,16 @@ namespace ChurchManager.Api.Controllers.v1
             return Ok(groups);
         }
 
-        [HttpGet("duplicate-check")]
+        [HttpGet("duplicate-check")] 
         public async Task<IActionResult> DuplicatePersonCheck([FromQuery] FindPeopleDuplicatesQuery query, CancellationToken token)
+        {
+            return Ok(await Mediator.Send(query, token));
+        }
+        
+        [HttpGet("verify-check")]
+        [AllowAnonymous]
+        [AllowedDomains]
+        public async Task<IActionResult> VerifyPersonCheck([FromQuery] VerifyPersonExistsQuery query, CancellationToken token)
         {
             return Ok(await Mediator.Send(query, token));
         }

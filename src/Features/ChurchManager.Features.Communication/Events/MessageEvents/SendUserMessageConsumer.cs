@@ -1,7 +1,7 @@
-﻿using ChurchManager.Domain.Features.Communication;
-using ChurchManager.Domain.Features.Communication.Events;
-using ChurchManager.Domain.Features.Communication.Repositories;
-using ChurchManager.Domain.Features.Communication.Services;
+﻿using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Communications.Events;
+using ChurchManager.Domain.Features.Communications.Repositories;
+using ChurchManager.Domain.Features.Communications.Services;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 

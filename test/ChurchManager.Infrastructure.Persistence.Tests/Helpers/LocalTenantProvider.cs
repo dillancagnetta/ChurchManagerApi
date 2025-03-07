@@ -1,29 +1,44 @@
 ﻿using CodeBoss.MultiTenant;
 
-namespace ChurchManager.Infrastructure.Persistence.Tests.Helpers
+namespace ChurchManager.Infrastructure.Persistence.Tests.Helpers;
+
+public class LocalTenantProvider : ITenantProvider
 {
-    public class LocalTenantProvider : ITenantProvider
+    public bool Enabled => true;
+    public ITenant[] Tenants()
     {
-        public bool Enabled => true;
-        public ITenant[] Tenants()
+        return new[]
         {
-            return new[]
+            new Tenant
             {
-                new Tenant
-                {
-                    Name = "Tenant1",
-                    ConnectionString =
-                        "Server=localhost;Port=5432;Database=churchmanager_db;User Id=admin;password=P455word1;"
-                }
-            };
-        }
-
-        public ITenant Get(string name) => Tenants().First();
-
-        public ITenant CurrentTenant
-        {
-            get => Get("Tenant1");
-            set => throw new NotImplementedException();
-        }
+                Name = "Tenant1",
+                ConnectionString =
+                    "Server=localhost;Port=5432;Database=churchmanager_db;User Id=admin;password=P455word1;"
+            }
+        };
     }
+
+    public ITenant Get(string name) => Tenants().First();
+
+    public ITenant CurrentTenant
+    {
+        get => Get("Tenant1");
+        set => throw new NotImplementedException();
+    }
+}
+
+public class NoneTenantProvider : ITenantProvider
+{
+    public ITenant[] Tenants()
+    {
+        throw new NotImplementedException();
+    }
+
+    public ITenant Get(string name)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool Enabled { get; } = false;
+    public ITenant CurrentTenant { get; set; }
 }

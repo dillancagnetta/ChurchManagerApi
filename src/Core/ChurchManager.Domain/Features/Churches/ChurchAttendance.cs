@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using ChurchManager.Domain.Common;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
 
@@ -16,19 +18,27 @@ namespace ChurchManager.Domain.Features.Churches
         public int ChurchId { get; set; }
 
         public DateTime AttendanceDate { get; set; }
-
-        public int AttendanceCount { get; set; }
+        
+        public bool? DidNotOccur { get; set; }
+        public int? AttendanceCount { get; set; }
         public int? MalesCount { get; set; }
         public int? FemalesCount { get; set; }
         public int? ChildrenCount { get; set; }
+        public int? TeensCount { get; set; }
         public int? FirstTimerCount { get; set; }
         public int? NewConvertCount { get; set; }
         public int? ReceivedHolySpiritCount { get; set; }
         public string Notes { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the Id of the photos attached for this attendance
+        /// </summary>
+        public List<string> PhotoUrls { get; set; } = new();
 
         #region Navigation
 
         public virtual ChurchAttendanceType ChurchAttendanceType { get; set; }
+        public virtual Church Church { get; set; }
 
         #endregion
     }

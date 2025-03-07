@@ -36,6 +36,16 @@ namespace ChurchManager.Infrastructure.Abstractions.Configuration
         public bool RabbitMqEnabled { get; set; }
         
         /// <summary>
+        ///  Number of messages to prefetch
+        /// </summary>
+        public int RabbitMqPrefetchCount { get; set; }
+        
+        /// <summary>
+        ///  Number of concurrent consumers
+        /// </summary>
+        public int RabbitMqConcurrentMessageLimit { get; set; }
+        
+        /// <summary>
         /// A value indicating whether to send emails 
         /// </summary>
         public bool EmailSendingEnabled { get; set; }

@@ -1,7 +1,7 @@
 ﻿#region
 
-using ChurchManager.Domain.Features.Communication;
-using ChurchManager.Domain.Features.Communication.Events;
+using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Communications.Events;
 using ChurchManager.Infrastructure.Abstractions;
 using EntityFrameworkCore.Triggered;
 

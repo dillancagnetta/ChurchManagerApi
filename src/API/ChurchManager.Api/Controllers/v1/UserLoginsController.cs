@@ -1,4 +1,6 @@
-﻿using ChurchManager.Features.UserLogins.Commands.AddUserLogin;
+﻿using ChurchManager.Domain.Parameters;
+using ChurchManager.Features.UserLogins.Commands.AddUserLogin;
+using ChurchManager.Features.UserLogins.Queries;
 using ChurchManager.SharedKernel.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ChurchManager.Api.Controllers.v1
 {
     [ApiVersion("1.0")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "System Admin")]
     public class UserLoginsController : BaseApiController
     {
         private readonly ILogger<UserLoginsController> _logger;
@@ -30,6 +32,20 @@ namespace ChurchManager.Api.Controllers.v1
             return Ok(response);
         }
         
+        [HttpPost("browse")]
+        public async Task<IActionResult> BrowseUserLogins(SearchTermQueryParameter filter, CancellationToken token)
+        {
+            var response = await Mediator.Send(new UserLoginsQuery(filter.SearchTerm), token);
+            return Ok(response);
+        }
+        
         #endregion
+        
+        [HttpGet("toggle-status")]
+        public async Task<IActionResult> ToggleStatus(Guid userLoginId, CancellationToken token)
+        {
+            var response = await Mediator.Send(new ToggleUserLoginStatusCommand(userLoginId), token);
+            return Ok(response);
+        }
     }
 }

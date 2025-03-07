@@ -27,7 +27,7 @@ namespace ChurchManager.Domain.Features.People.Specifications
 
             Query.OrderBy(x => x.FullName.LastName);
 
-            if(options.IncludeDeceased == false)
+            if(options.IncludeDeceased == true)
             {
                 Query.Where(p => p.DeceasedStatus == null ||
                                      (p.DeceasedStatus != null && p.DeceasedStatus.IsDeceased == false));

@@ -9,5 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\ChurchManager.Application.ViewModels\ChurchManager.Application.ViewModels.csproj" />
     <ProjectReference Include="..\ChurchManager.Domain\ChurchManager.Domain.csproj" />
+    <ProjectReference Include="..\ChurchManager.SharedKernel\ChurchManager.SharedKernel.csproj" />
   </ItemGroup>
 </Project>

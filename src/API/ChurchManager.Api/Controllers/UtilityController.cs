@@ -1,4 +1,4 @@
-﻿using ChurchManager.Domain.Features.Communication.Services;
+﻿using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Features.Groups.Queries.GroupsForPerson;
 using ChurchManager.Infrastructure.Abstractions;
 using ChurchManager.Infrastructure.Abstractions.Persistence;

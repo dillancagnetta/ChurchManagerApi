@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Features.People.Repositories;
+﻿using ChurchManager.Application.Abstractions.Services;
+using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Domain.Features.People.Specifications;
 using ChurchManager.Domain.Parameters;
 using ChurchManager.SharedKernel.Wrappers;
@@ -10,17 +11,20 @@ namespace ChurchManager.Features.People.Queries.PeopleAutocomplete
 
     public class PeopleAutocompleteResults : IRequestHandler<PeopleAutocompleteQuery, ApiResponse>
     {
-        private readonly IPersonDbRepository _dbRepository;
+        private readonly IPersonService _service;
 
-        public PeopleAutocompleteResults(IPersonDbRepository dbRepository)
+        public PeopleAutocompleteResults(IPersonService service)
         {
-            _dbRepository = dbRepository;
+            _service = service;
         }
 
         public async Task<ApiResponse> Handle(PeopleAutocompleteQuery query, CancellationToken ct)
         {
-            var spec = new PeopleAutocompleteSpecification(query.SearchTerm);
+            /*var spec = new PeopleAutocompleteSpecification(query.SearchTerm);
             var results = await _dbRepository.ListAsync(spec, ct);
+            */
+            
+            var results = await _service.PeopleAutocompleteAsync(query.SearchTerm, ct);
 
             return new ApiResponse(results);
         }

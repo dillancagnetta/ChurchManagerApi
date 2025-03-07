@@ -92,6 +92,67 @@ namespace ChurchManager.Domain.Features.Groups
 
             return calendar;
         }
+        
+        /// <summary>
+        /// Creates a Calendar object with a recurring event based on the specified parameters.
+        /// </summary>
+        /// <param name="frequency">The frequency type of the recurrence (e.g., daily, weekly, monthly).</param>
+        /// <param name="startDateTime">The start date and time of the first occurrence.</param>
+        /// <param name="durationMinutes">The duration of each occurrence in minutes.</param>
+        /// <param name="endDateTime">Optional. The end date and time of the recurrence. If not specified, the recurrence continues indefinitely.</param>
+        /// <param name="days">Optional. An array of DayOfWeek values specifying which days of the week the event occurs on. Used for weekly recurrences.</param>
+        /// <param name="occurrenceCount">Optional. The number of times the event should occur. If specified, it overrides the endDateTime.</param>
+        /// <param name="interval">Optional. The interval between occurrences (e.g., every 2 weeks). Default is 1.</param>
+        /// <returns>A Calendar object containing the recurring event with the specified parameters.</returns>
+        public static Calendar CreateCalendarWithRecurrence(
+            FrequencyType frequency,
+            DateTime startDateTime,
+            int durationMinutes,
+            DateTime? endDateTime = null,
+            DayOfWeek[] days = null,
+            int? occurrenceCount = null,
+            int interval = 1,
+            string timezone = null)
+        {
+            var pattern = $"RRULE:FREQ={frequency.ToString().ToUpper()};INTERVAL={interval}";
+        
+            if (days != null && days.Length > 0)
+            {
+                pattern += $";BYDAY={string.Join(",", days.Select(d => d.ToString().Substring(0, 2).ToUpper()))}";
+            }
+        
+            if (endDateTime.HasValue)
+            {
+                pattern += $";UNTIL={endDateTime.Value:yyyyMMddTHHmmssZ}";
+            }
+        
+            if (occurrenceCount.HasValue)
+            {
+                pattern += $";COUNT={occurrenceCount.Value}";
+            }
+        
+            var recurrencePattern = new RecurrencePattern(pattern);
+        
+            // Create the calendar with the recurring event
+            var calendar = new Calendar();
+    
+            if (!timezone.IsNullOrEmpty())
+            {
+                calendar.TimeZones.Add(new VTimeZone(timezone));
+            }
+
+            var calendarEvent = new CalendarEvent
+            {
+                Summary = $"{frequency} Meeting",
+                Start = new CalDateTime(startDateTime, timezone),
+                End = new CalDateTime(startDateTime.AddMinutes(durationMinutes), timezone),
+                RecurrenceRules = new List<RecurrencePattern> { recurrencePattern }
+            };
+
+            calendar.Events.Add(calendarEvent);
+        
+            return calendar;
+        }
 
         public static Calendar CalendarWithWeeklyRecurrence(TimeSpan? meetingTime, DayOfWeek[] days = null, int ? occurrenceCount = null)
         {

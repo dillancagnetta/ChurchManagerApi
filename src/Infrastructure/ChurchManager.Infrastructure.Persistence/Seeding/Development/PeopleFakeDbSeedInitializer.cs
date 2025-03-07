@@ -4,6 +4,7 @@ using Bogus;
 using Bogus.DataSets;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
+using ChurchManager.Domain.Features.Security;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.AspNetCore.Startup;
 using CodeBoss.Extensions;
@@ -68,7 +69,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         private async Task SeedMyDetails()
        {
             var faker = new Faker("en");
-            var cagnettaFamily = new Family {Name = "Cagnetta Family", Language = "English", Address = GenerateAddress(faker)};
+            var cagnettaFamily = new Family {Name = "Cagnetta Family", Language = "English", Address = GenerateAddress(faker), Code = "CAGNETTA10" };
             await _dbContext.SaveChangesAsync();
 
             // Add me as the first Person i.e. with Id 1
@@ -90,7 +91,24 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 BirthDate = new BirthDate {BirthDay = 6, BirthMonth = 11, BirthYear = 1981},
                 ReceivedHolySpirit = true,
                 Occupation = "Pastor",
-                PhoneNumbers = new List<PhoneNumber>(1) {PhoneNumbersFaker()}
+                PhoneNumbers = new List<PhoneNumber>(1) {PhoneNumbersFaker()},
+                ConnectionStatusHistory = new List<ConnectionStatusHistory>
+                {
+                    new ()
+                    {
+                        ConnectionStatusTypeId = 2, // ConnectionStatus.FirstTimer
+                        StartDate = new DateTime(2004, 06, 01),
+                        EndDate = new DateTime(2004, 12, 31),
+                        Notes = "First time at church"        
+                    },
+                    new ()
+                    {
+                        ConnectionStatusTypeId = 1, // ConnectionStatus.Member
+                        StartDate = new DateTime(2005, 01, 01),
+                        EndDate = null,
+                        Notes = "Started as a member"        
+                    }
+                }
             };
 
             var danielle = new Person
@@ -143,21 +161,36 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 ReceivedHolySpirit = true,
             };
 
+            // Church Group Admin gets dynamic access to all churches in their group
+            var permission = new EntityPermission
+            {
+                EntityType = "Church",
+                IsDynamicScope = true,
+                ScopeType = "ChurchGroup",
+                ScopeId = 1, // churchGroupId
+                CanView = true,
+                CanEdit = true,
+                CanDelete = true,
+                IsSystem = true
+            };
+            var systemAdminRole = UserLoginRole.SystemAdminRole;
+            
             var dillanUserLogin = new UserLogin
             {
                 Id = Guid.Parse(SeedingConstants.MainUserLogin),
                 Person = dillan,
                 Username = "dillan",
                 Password = BCrypt.Net.BCrypt.HashPassword("pancake"),
-                Roles = new List<string>{"Admin"},
                 Tenant = _tenant.Name
             };
-
+            dillanUserLogin.AddUserLoginRole(new UserRoleAssignment { UserLogin = dillanUserLogin, Role = systemAdminRole}); // System Admin
+            
             await _dbContext.Person.AddAsync(dillan);
             await _dbContext.Person.AddAsync(danielle);
             await _dbContext.Person.AddAsync(david);
             await _dbContext.Person.AddAsync(daniel);
 
+            await _dbContext.UserLoginRole.AddAsync(systemAdminRole);
             await _dbContext.UserLogin.AddAsync(dillanUserLogin);
 
             await _dbContext.SaveChangesAsync();
@@ -197,7 +230,9 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 var familyFaker = new Faker<Family>()
                     .RuleFor(u => u.Name, f => $"{x.FullName.LastName} Family")
                     .RuleFor(u => u.Language, f => faker.PickRandom(Languages))
-                    .RuleFor(u => u.Address, f => GenerateAddress(faker));
+                    .RuleFor(u => u.Address, f => GenerateAddress(faker))
+                    .RuleFor(u => u.Code, f => x.FullName.LastName.ToUpperInvariant())
+                    ;
 
                 x.Family = familyFaker.Generate();
             });
@@ -247,7 +282,9 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             var familyFaker = new Faker<Family>()
                 .RuleFor(u => u.Name, f => $"{lastName} Family")
                 .RuleFor(u => u.Language, f => faker.PickRandom(Languages))
-                .RuleFor(u => u.Address, f => GenerateAddress(faker));
+                .RuleFor(u => u.Address, f => GenerateAddress(faker))
+                .RuleFor(u => u.Code, f => lastName.ToUpperInvariant())
+                ;
 
             var family = familyFaker.Generate();
 

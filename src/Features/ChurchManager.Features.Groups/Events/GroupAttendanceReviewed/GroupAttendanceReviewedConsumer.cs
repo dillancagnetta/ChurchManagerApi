@@ -1,5 +1,5 @@
 ﻿using ChurchManager.Application.Abstractions.Services;
-using ChurchManager.Domain.Features.Communication;
+using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Groups.Events;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using MassTransit;
@@ -26,7 +26,7 @@ namespace ChurchManager.Features.Groups.Events.GroupAttendanceReviewed
 
         public async Task Consume(ConsumeContext<GroupAttendanceReviewedEvent> context)
         {
-            Logger.LogInformation("------ GroupAttendanceReviewed event received ------");
+            Logger.LogInformation("✔️ ------ GroupAttendanceReviewed event received ------");
 
             var message = context.Message;
 

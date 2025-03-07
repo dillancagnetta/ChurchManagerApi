@@ -1,6 +1,7 @@
 ﻿#region
 
 using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Groups;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -24,7 +25,11 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
                 .HasConversion(
                     v => v.ToString(),
                     v => new CommunicationType(v));
-
+            
+            // Indexes
+            /*builder.HasIndex(x => new { x.GroupId, x.PersonId })
+                .IsUnique();  // Can't register for same group twice*/
+            builder.HasIndex(x => x.RecordStatus); 
         }
     }
 }

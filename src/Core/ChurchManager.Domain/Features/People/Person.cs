@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Churches;
+using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.People.Notes;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
@@ -63,6 +64,43 @@ namespace ChurchManager.Domain.Features.People
         public virtual Church Church { get; set; }
         public virtual ICollection<Note> Notes { get; set; } = new Collection<Note>();
         
+        public virtual ICollection<ConnectionStatusHistory> ConnectionStatusHistory { get; set; } = new Collection<ConnectionStatusHistory>();
+        
+        #endregion
+
+        #region Methods
+
+        public AgeClassification AgeClassificationFromBirthDate()
+        {
+            var age = BirthDate.Age;
+        
+            if (!age.HasValue)
+                return AgeClassification.Unknown;
+
+            return age.Value switch
+            {
+                < 13 => AgeClassification.Child,
+                >= 13 and < 20 => AgeClassification.Teen,
+                >= 20 => AgeClassification.Adult,
+            };
+        }
+
+        public bool HasValidActiveEmail => Email is { IsActive: not null } && Email.IsActive.Value;
+        
+        public static Shared.PersonViewModelBasic ToBasicPerson(Person person)
+        {
+            return new Shared.PersonViewModelBasic
+            {
+                PersonId = person.Id,
+                Gender = person.Gender,
+                FirstName = person.FullName.FirstName,
+                LastName = person.FullName.LastName,
+                AgeClassification = person.AgeClassification,
+                Age = person.BirthDate.Age,
+                PhotoUrl = person.PhotoUrl
+            };
+        }
+
         #endregion
     }
 

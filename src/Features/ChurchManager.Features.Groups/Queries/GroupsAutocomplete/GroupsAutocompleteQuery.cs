@@ -24,3 +24,27 @@ public class GroupsAutocompleteResults : IRequestHandler<GroupsAutocompleteQuery
         return new ApiResponse(results);
     }
 }
+
+/*
+ * ---------------------
+ */
+ 
+public record GetGroupsSelectQuery : IRequest<ApiResponse>;
+
+public class GetGroupsQueryHandler : IRequestHandler<GetGroupsSelectQuery, ApiResponse>
+{
+    private readonly IGroupDbRepository _dbRepository;
+
+    public GetGroupsQueryHandler(IGroupDbRepository dbRepository)
+    {
+        _dbRepository = dbRepository;
+    }
+    
+    public async Task<ApiResponse> Handle(GetGroupsSelectQuery query, CancellationToken ct)
+    {
+        var spec = new GetGroupSelectSpecification();
+        var results = await _dbRepository.ListAsync(spec, ct);
+
+        return new ApiResponse(results);
+    }
+}

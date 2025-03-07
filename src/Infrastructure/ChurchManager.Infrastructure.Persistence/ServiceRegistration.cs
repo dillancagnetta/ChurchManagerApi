@@ -1,12 +1,14 @@
 ﻿#region
 
 using ChurchManager.Domain.Features.Churches.Repositories;
-using ChurchManager.Domain.Features.Communication.Repositories;
-using ChurchManager.Domain.Features.Communication.Services;
+using ChurchManager.Domain.Features.Communications.Repositories;
+using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Domain.Features.Discipleship.Repositories;
+using ChurchManager.Domain.Features.Events.Repositories;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.History;
 using ChurchManager.Domain.Features.People.Repositories;
+using ChurchManager.Domain.Features.Security.Repositories;
 using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;
@@ -71,8 +73,10 @@ namespace ChurchManager.Infrastructure.Persistence
             bool seedDatabaseEnabled = configuration.GetOptions<DbOptions>(nameof(DbOptions)).Seed;
             if (seedDatabaseEnabled)
             {
+                services.AddInitializer<ConnectionTypesDbSeedInitializer>();
                 services.AddInitializer<ChurchAttendanceTypeDbInitializer>();
                 services.AddInitializer<DiscipleshipDbSeedInitializer>();
+                services.AddInitializer<CommunicationTemplatesDbSeedInitializer>();
 
                 if(environment.IsProduction())
                 {
@@ -107,6 +111,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<FollowUpFakeDbSeedInitializer>();
                     services.AddInitializer<MissionsFakeDbSeedInitializer>();
                     services.AddInitializer<MessagesFakeDbSeedInitializer>();
+                    services.AddInitializer<EventsFakeDbSeedInitializer>();
                 }
                 
                 // Jobs
@@ -120,6 +125,7 @@ namespace ChurchManager.Infrastructure.Persistence
 
             // TODO: scan and register these automatically
             services.AddScoped(typeof(IGenericDbRepository<>), typeof(GenericRepositoryBase<>));
+            services.AddScoped(typeof(IReadDbRepository<>), typeof(CachedDbRepository<>));
             services.AddScoped<IGroupAttendanceDbRepository, GroupAttendanceDbRepository>();
             services.AddScoped<IChurchAttendanceDbRepository, ChurchAttendanceDbRepository>();
             services.AddScoped<IDiscipleshipStepDefinitionDbRepository, DiscipleshipDbRepository>();
@@ -131,11 +137,20 @@ namespace ChurchManager.Infrastructure.Persistence
             services.AddScoped<IUserLoginDbRepository, UserLoginDbRepository>();
             services.AddScoped<IGroupMemberAttendanceDbRepository, GroupMemberAttendanceDbRepository>();
             services.AddScoped<IHistoryDbRepository, HistoryDbRepository>();
+            services.AddScoped<ICommunicationDbRepository, CommunicationDbRepository>();
             services.AddScoped<IMessageDbRepository, MessageDbRepository>();
+            services.AddScoped<IEventDbRepository, EventDbRepository>();
+            services.AddScoped<IFamilyDbRepository, FamilyDbRepository>();
+            services.AddScoped<IUserLoginRoleDbRepository, UserLoginRoleDbRepository>();
+            services.AddScoped<IEntityPermissionDbRepository, EntityPermissionDbRepository>();
             services.AddScoped<IPushDeviceDbRepository, PushDeviceDbRepository>();
             services.AddScoped<IPushSubscriptionsService, PushSubscriptionsService>();
             services.AddScoped<ISqlQueryHandler, SqlQueryHandler>();
-
+            services.AddScoped<ITemplateDbRepository, TemplateDbRepository>();
+            
+            // Register the query cache service
+            services.AddScoped<IQueryCache, QueryCache>();
+            
             #endregion
         }
     }

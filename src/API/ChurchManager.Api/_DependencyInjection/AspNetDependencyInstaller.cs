@@ -25,6 +25,9 @@ namespace ChurchManager.Api._DependencyInjection
             services.AddVersionedApiExplorerExtension();
 
             services.AddHealthChecks();
+            
+            // Does not register it globally but only where it is applied
+            services.AddScoped<AwsIpFilterAttribute>();
         }
     }
 }
