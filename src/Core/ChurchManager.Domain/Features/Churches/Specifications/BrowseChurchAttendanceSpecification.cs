@@ -23,6 +23,8 @@ namespace ChurchManager.Domain.Features.Churches.Specifications
             Query.AsNoTracking();
             Query.Include("Church.ChurchGroup");
             Query.Include("ChurchAttendanceType");
+            Query.EnableCache(nameof(BrowseChurchAttendanceSpecification),
+                CacheKeyExtensions.GenerateCacheKey(paging, attendanceTypeIds, churchId, churchGroupId, withFeedback, from, to));
 
             // Type Filter
             if (!attendanceTypeIds.IsNullOrEmpty())

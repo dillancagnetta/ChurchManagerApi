@@ -1,4 +1,5 @@
-﻿using ChurchManager.Features.Churches.Queries.BrowseAttendance;
+﻿using ChurchManager.Features.Churches.Commands.Attendance;
+using ChurchManager.Features.Churches.Queries.BrowseAttendance;
 using ChurchManager.Features.Churches.Queries.RetrieveChurches;
 using ChurchManager.SharedKernel.Common;
 using Microsoft.AspNetCore.Authorization;
@@ -60,6 +61,13 @@ public class ChurchesController : BaseApiController
     {
         var data = await Mediator.Send(query, token);
         return Ok(data);
+    }
+    
+    [HttpPost("submit-attendance")]
+    public async Task<IActionResult> SubmitAttendanceRecord([FromBody] SubmitChurchAttendanceCommand command, CancellationToken token)
+    {
+        var attendances = await Mediator.Send(command, token);
+        return Ok(attendances);
     }
 
     #endregion
