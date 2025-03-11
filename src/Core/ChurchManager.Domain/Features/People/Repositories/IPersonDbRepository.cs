@@ -10,7 +10,7 @@ namespace ChurchManager.Domain.Features.People.Repositories
         IQueryable<Person> FindPersons(PersonMatchQuery searchParameters, bool includeDeceased = false, params string[] includes);
         IQueryable<Person> Queryable(bool includeDeceased);
         IQueryable<Person> Queryable(PersonQueryOptions personQueryOptions);
-        Task<dynamic> DashboardChurchConnectionStatusBreakdown(int? churchId = null, CancellationToken cancellationToken = default);
+        Task<StatisticsViewModel> DashboardChurchConnectionStatusBreakdown(int? churchGroupId = null, int? churchId = null, CancellationToken cancellationToken = default);
         Task<OperationResult<Guid?>> UserLoginIdForPersonAsync(int  personId, CancellationToken cancellationToken = default);
         Task<PersonViewModelBasic> BasicPersonViewModelAsync(int personId, CancellationToken cancellationToken = default);
         Task<string> FamilyCode(int personId, CancellationToken cancellationToken = default);

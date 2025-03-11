@@ -21,9 +21,12 @@ public class ChurchesController : BaseApiController
     #region CRUD
 
     [HttpGet]
-    public async Task<IActionResult> AllChurches(CancellationToken token)
+    public async Task<IActionResult> AllChurches(int? churchGroupId, CancellationToken token)
     {
-        var groups = await Mediator.Send(new ChurchesQuery(), token);
+        var groups = await Mediator.Send(new ChurchesQuery
+        {
+            ChurchGroupId = churchGroupId
+        }, token);
         return Ok(groups);
     }
     

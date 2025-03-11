@@ -21,11 +21,18 @@ public class ChurchAttendanceDbRepository : GenericRepositoryBase<ChurchAttendan
     }
 
     public async Task<IEnumerable<ChurchAttendanceAnnualBreakdownVm>> DashboardChurchAttendanceAsync(
-        DateTime from, DateTime to, int? churchId = null)
+        DateTime from, DateTime to, int? churchGroupId = null, int? churchId = null)
     {
         var query = Queryable().AsNoTracking();
 
-        if (churchId.HasValue && churchId.Value > 0)
+        if (churchGroupId.HasValue)
+        {
+            query.Include(x => x.Church)
+                .ThenInclude(y => y.ChurchGroup);
+            query = query.Where(x => x.Church.ChurchGroup.Id == churchGroupId);
+        }
+            
+        if (churchId is > 0)
         {
             query = query.Where(x => x.ChurchId == churchId.Value);
         }
@@ -105,6 +112,7 @@ public class ChurchAttendanceDbRepository : GenericRepositoryBase<ChurchAttendan
     }
 
     public async Task<AttendanceMetricsComparisonViewModel> AttendanceMetricsComparisonAsync(
+        int? churchGroupId,
         int? churchId,
         ReportPeriodType period, CancellationToken ct)
     {
@@ -114,8 +122,15 @@ public class ChurchAttendanceDbRepository : GenericRepositoryBase<ChurchAttendan
         var previousPeriodStart = period.GetReportPeriodStartDateFrom(periodStart);
 
         var queryable = Queryable().AsNoTracking();
+        
+        if (churchGroupId.HasValue)
+        {
+            queryable.Include(x => x.Church)
+                .ThenInclude(y => y.ChurchGroup);
+            queryable = queryable.Where(x => x.Church.ChurchGroup.Id == churchGroupId);
+        }
 
-        if (churchId.HasValue && churchId.Value > 0)
+        if (churchId is > 0)
         {
             queryable = queryable.Where(x => x.ChurchId == churchId.Value);
         }

@@ -8,7 +8,7 @@ namespace ChurchManager.Domain.Features.Churches.Specifications;
 
 public class ChurchesListSpecification: Specification<Church, ChurchViewModel>
 {
-    public ChurchesListSpecification(IEnumerable<int> allowedChurchIds = null, string searchTerm = null)
+    public ChurchesListSpecification(IEnumerable<int> allowedChurchIds = null, string searchTerm = null, int? churchGroupId = null)
     {
         // Only apply permission filter if allowedIds is not null
         // If null, user is system admin and has unrestricted access
@@ -16,6 +16,11 @@ public class ChurchesListSpecification: Specification<Church, ChurchViewModel>
         {
             // First apply the permissions filter
             Query.Where(x => allowedChurchIds.Contains(x.Id));  
+        }
+
+        if (churchGroupId.HasValue)
+        {
+            Query.Where(x => x.ChurchGroupId == churchGroupId.Value);
         }
         
         // Search Term

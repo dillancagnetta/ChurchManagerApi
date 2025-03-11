@@ -14,6 +14,7 @@ namespace ChurchManager.Features.Churches.Queries.RetrieveChurches;
 
 public class ChurchesQuery : IRequest<ApiResponse>
 {
+    public int? ChurchGroupId { get; set; }
     public string SearchTerm { get; set; }
 }
 
@@ -55,7 +56,7 @@ public class AllChurchQueryHandler : IRequestHandler<ChurchesQuery, ApiResponse>
             .MapTo<Church, ChurchViewModel>()
             .ToListAsync(ct);*/
             
-        var vm = await _service.ChurchListAsync(query.SearchTerm, ct);
+        var vm = await _service.ChurchListAsync(query.SearchTerm, query.ChurchGroupId, ct);
         return new ApiResponse(vm);
 
         return new ApiResponse(vm);

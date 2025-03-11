@@ -9,6 +9,7 @@ public interface IChurchService : ICrudServiceAsync<Church, ChurchViewModel, Edi
 {
     Task<IReadOnlyList<ChurchViewModel>> ChurchListAsync(
         string searchTerm,
+        int? churchGroupId,
         CancellationToken ct = default);
     
     Task<PagedResult<ChurchAttendanceViewModel>> BrowseChurchAttendance(

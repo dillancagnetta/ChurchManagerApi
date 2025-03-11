@@ -68,36 +68,53 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
             return this.Queryable(null, personQueryOptions);
         }
 
-        public async Task<dynamic> DashboardChurchConnectionStatusBreakdown(int? churchId = null, CancellationToken cancellationToken = default)
+        public async Task<StatisticsViewModel> DashboardChurchConnectionStatusBreakdown(int? churchGroupId = null, int? churchId = null, CancellationToken cancellationToken = default)
         {
-            var cacheKey = CacheKeyHelper.CacheKey("DashboardChurchConnectionStatusBreakdown_".ToLower() + (churchId ??= 0));
+            var cacheKey = CacheKeyHelper.CacheKey("DashboardChurchConnectionStatusBreakdown_".ToLower() + (churchGroupId ??= 0) + (churchId ??= 0));
             
-            return await _cache.GetOrSetAsync<dynamic>(cacheKey, async () =>
+            return await _cache.GetOrSetAsync<StatisticsViewModel>(cacheKey, async () =>
             {
                 var query = Queryable(false).AsNoTracking();
+                
+                if (churchGroupId.HasValue)
+                {
+                    query.Include(x => x.Church).ThenInclude(x => x.ChurchGroup);
+                    query = query.Where(x => x.Church.ChurchGroupId == churchGroupId.Value);
+                }
             
                 if (churchId.HasValue && churchId.Value > 0)
                 {
                     query = query.Where(x => x.ChurchId == churchId.Value);
                 }
             
-                var connectionStatus = await query.GroupBy(p => p.ConnectionStatus)
+                /*var connectionStatus = await query.GroupBy(p => p.ConnectionStatus)
                     .Select(g => new { name = g.Key.Value, count = g.Count() })
+                    .ToListAsync(cancellationToken);*/
+                
+                // Assuming 'query' is your IQueryable or IEnumerable source
+                var connectionStatus = await query
+                    .GroupBy(p => p.ConnectionStatus)
+                    .Select(g => new CountItemViewModel { Name = g.Key.Value, Count = g.Count() })
                     .ToListAsync(cancellationToken);
             
                 var gender = await query.GroupBy(p => p.Gender)
-                    .Select(g => new { name = g.Key.Value, count = g.Count() })
+                    .Select(g => new CountItemViewModel { Name = g.Key.Value, Count = g.Count() })
                     .ToListAsync(cancellationToken);
             
                 var age = await query.GroupBy(p => p.AgeClassification)
-                    .Select(g => new { name = g.Key.Value, count = g.Count() })
+                    .Select(g => new  CountItemViewModel { Name = g.Key.Value, Count = g.Count() })
                     .ToListAsync(cancellationToken);
             
-                connectionStatus = connectionStatus.OrderBy(x => x.name).ToList();
-                gender = gender.OrderBy(x => x.name).ToList();
-                age = age.OrderBy(x => x.name).ToList();
+                connectionStatus = connectionStatus.OrderBy(x => x.Name).ToList();
+                gender = gender.OrderBy(x => x.Name).ToList();
+                age = age.OrderBy(x => x.Name).ToList();
+                
+                var statistics = new StatisticsViewModel();
+                statistics.Data.Add("connectionStatus", connectionStatus);
+                statistics.Data.Add("gender", gender);
+                statistics.Data.Add("age", age);
             
-                return new { connectionStatus, gender, age };
+                return statistics;
             }, ct: cancellationToken);
         }
 

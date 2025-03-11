@@ -26,10 +26,10 @@ namespace ChurchManager.Api.Controllers.v1
         }
 
         [HttpGet("church-attendance")]
-        public async Task<IActionResult> ChurchAttendance([FromQuery] DateTime from, DateTime to, int? churchId, CancellationToken token)
+        public async Task<IActionResult> ChurchAttendance([FromQuery] DateTime from, DateTime to, int? churchGroupId, int? churchId, CancellationToken token)
         {
             var attendances =
-                await _attendanceDbRepository.DashboardChurchAttendanceAsync(from, to, churchId);
+                await _attendanceDbRepository.DashboardChurchAttendanceAsync(from, to, churchGroupId, churchId);
             return Ok(attendances);
         }
 
@@ -41,16 +41,17 @@ namespace ChurchManager.Api.Controllers.v1
         }
         
         [HttpGet("church-people-connectionstatus-breakdown")]
-        public async Task<IActionResult> ChurchConnectionStatusBreakdown([FromQuery] int? churchId, CancellationToken token)
+        public async Task<IActionResult> ChurchConnectionStatusBreakdown([FromQuery] int? churchGroupId, int? churchId, CancellationToken token)
         {
-            var breakdown = await _personDbRepository.DashboardChurchConnectionStatusBreakdown(churchId, token);
-            return Ok(breakdown);
+            var breakdown = await _personDbRepository.DashboardChurchConnectionStatusBreakdown(churchGroupId, churchId, token);
+            return Ok(new { connectionStatus = breakdown.Data["connectionStatus"], gender= breakdown.Data["gender"], age= breakdown.Data["age"]  });
         }
         
         [HttpGet("church-attendance-metrics-comparison")]
         public async Task<IActionResult> ChurchAttendanceMetricsComparison([FromQuery] ChurchAttendanceMetricsComparisonQuery query, CancellationToken token)
         {
-            var data = await _attendanceDbRepository.AttendanceMetricsComparisonAsync(query.ChurchId, query.PeriodType, token);
+            var data = await _attendanceDbRepository.AttendanceMetricsComparisonAsync(
+                query.ChurchGroupId, query.ChurchId, query.PeriodType, token);
             return Ok(data);
         }
         

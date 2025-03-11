@@ -20,11 +20,11 @@ public class ChurchService(
     IGenericDbRepository<ChurchAttendance> churchAttendanceDb,
     IMapper mapper) : CrudServiceAsync<Church, ChurchViewModel, EditChurchModel>(dbRepository, mapper), IChurchService
 {
-    public async Task<IReadOnlyList<ChurchViewModel>> ChurchListAsync(string searchTerm, CancellationToken ct = default)
+    public async Task<IReadOnlyList<ChurchViewModel>> ChurchListAsync(string searchTerm, int? churchGroupId, CancellationToken ct = default)
     {
         var allowedIds = await permissions.GetAllowedIdsAsync<Church>(Guid.Parse(currentUser.Id), PermissionAction.View.Value, ct);
         
-        var spec = new ChurchesListSpecification(allowedIds, searchTerm);
+        var spec = new ChurchesListSpecification(allowedIds, searchTerm, churchGroupId);
         
         var vm = await Repository.ListAsync(spec, ct);
     
