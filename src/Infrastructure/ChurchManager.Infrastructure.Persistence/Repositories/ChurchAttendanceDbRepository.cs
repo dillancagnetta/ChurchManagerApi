@@ -6,7 +6,9 @@ using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.Churches.Repositories;
 using ChurchManager.Domain.Shared;
+using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;
+using ChurchManager.Infrastructure.Persistence.Extensions;
 using CodeBoss.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,64 +18,73 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories;
 
 public class ChurchAttendanceDbRepository : GenericRepositoryBase<ChurchAttendance>, IChurchAttendanceDbRepository
 {
-    public ChurchAttendanceDbRepository(ChurchManagerDbContext dbContext) : base(dbContext)
+    private readonly IQueryCache _cache;
+    public ChurchAttendanceDbRepository(ChurchManagerDbContext dbContext, IQueryCache cache) : base(dbContext)
     {
+        _cache = cache;
     }
 
     public async Task<IEnumerable<ChurchAttendanceAnnualBreakdownVm>> DashboardChurchAttendanceAsync(
-        DateTime from, DateTime to, int? churchGroupId = null, int? churchId = null)
+        DateTime from, DateTime to, int? churchGroupId = null, int? churchId = null, CancellationToken ct = default)
     {
-        var query = Queryable().AsNoTracking();
-
-        if (churchGroupId.HasValue)
+        var cacheKey = CacheKeyHelper.CacheKey("DashboardChurchAttendance_".ToLower() 
+                                               + from.ToShortDateString() + to.ToShortDateString() +
+                                               (churchGroupId ??= 0) + (churchId ??= 0));
+        
+        return await _cache.GetOrSetAsync<IEnumerable<ChurchAttendanceAnnualBreakdownVm>>(cacheKey, async () =>
         {
-            query.Include(x => x.Church)
-                .ThenInclude(y => y.ChurchGroup);
-            query = query.Where(x => x.Church.ChurchGroup.Id == churchGroupId);
-        }
+            var query = Queryable().AsNoTracking();
+
+            if (churchGroupId.HasValue)
+            {
+                query.Include(x => x.Church)
+                    .ThenInclude(y => y.ChurchGroup);
+                query = query.Where(x => x.Church.ChurchGroup.Id == churchGroupId);
+            }
             
-        if (churchId is > 0)
-        {
-            query = query.Where(x => x.ChurchId == churchId.Value);
-        }
-
-        var raw = await query
-            .Where(x => x.AttendanceDate >= from && x.AttendanceDate <= to)
-            .Select(x => new
+            if (churchId is > 0)
             {
-                x.AttendanceDate,
-                x.AttendanceCount,
-                x.NewConvertCount,
-                x.FirstTimerCount,
-                x.ReceivedHolySpiritCount
-            })
-            .GroupBy(x => new
+                query = query.Where(x => x.ChurchId == churchId.Value);
+            }
+
+            var raw = await query
+                .Where(x => x.AttendanceDate >= from && x.AttendanceDate <= to)
+                .Select(x => new
                 {
-                    Year = x.AttendanceDate.Year,
-                    Month = x.AttendanceDate.Month
-                },
-                (x, e) => new ChurchAttendanceMonthlyTotalsVm
-                {
-                    Year = x.Year,
-                    Month = x.Month,
-                    TotalAttendance = e.Sum(y => y.AttendanceCount ?? 0),
-                    TotalNewConverts = e.Sum(y => y.NewConvertCount),
-                    TotalFirstTimers = e.Sum(y => y.FirstTimerCount),
-                    TotalHolySpirit = e.Sum(y => y.ReceivedHolySpiritCount),
+                    x.AttendanceDate,
+                    x.AttendanceCount,
+                    x.NewConvertCount,
+                    x.FirstTimerCount,
+                    x.ReceivedHolySpiritCount
                 })
-            .OrderByDescending(x => x.Year).ThenByDescending(x => x.Month)
-            .ToListAsync();
+                .GroupBy(x => new
+                    {
+                        Year = x.AttendanceDate.Year,
+                        Month = x.AttendanceDate.Month
+                    },
+                    (x, e) => new ChurchAttendanceMonthlyTotalsVm
+                    {
+                        Year = x.Year,
+                        Month = x.Month,
+                        TotalAttendance = e.Sum(y => y.AttendanceCount ?? 0),
+                        TotalNewConverts = e.Sum(y => y.NewConvertCount),
+                        TotalFirstTimers = e.Sum(y => y.FirstTimerCount),
+                        TotalHolySpirit = e.Sum(y => y.ReceivedHolySpiritCount),
+                    })
+                .OrderByDescending(x => x.Year).ThenByDescending(x => x.Month)
+                .ToListAsync(ct);
 
-        return raw
-            .GroupBy(x => x.Year)
-            .Select(x => new ChurchAttendanceAnnualBreakdownVm
-            {
-                Year = x.Key,
-                Data = x
-            });
+            return raw
+                .GroupBy(x => x.Year)
+                .Select(x => new ChurchAttendanceAnnualBreakdownVm
+                {
+                    Year = x.Key,
+                    Data = x
+                });
+        }, ct:ct );
     }
 
-    public async Task<dynamic> DashboardChurchAttendanceBreakdownAsync(DateTime from, DateTime to)
+    /*public async Task<dynamic> DashboardChurchAttendanceBreakdownAsync(DateTime from, DateTime to)
     {
         var raw = await Queryable().AsNoTracking()
             .Where(x => x.AttendanceDate >= from && x.AttendanceDate <= to)
@@ -109,7 +120,7 @@ public class ChurchAttendanceDbRepository : GenericRepositoryBase<ChurchAttendan
                 Year = x.Key,
                 Data = x
             });
-    }
+    }*/
 
     public async Task<AttendanceMetricsComparisonViewModel> AttendanceMetricsComparisonAsync(
         int? churchGroupId,
@@ -120,135 +131,150 @@ public class ChurchAttendanceDbRepository : GenericRepositoryBase<ChurchAttendan
         var periodEnd = now;
         var periodStart = period.GetReportPeriodStartDateFrom(now);
         var previousPeriodStart = period.GetReportPeriodStartDateFrom(periodStart);
-
-        var queryable = Queryable().AsNoTracking();
         
-        if (churchGroupId.HasValue)
+        var cacheKey = CacheKeyHelper.CacheKey("AttendanceMetricsComparison_".ToLower() + period + (churchGroupId ??= 0) + (churchId ??= 0));
+        
+        return await _cache.GetOrSetAsync<AttendanceMetricsComparisonViewModel>(cacheKey, async () =>
         {
-            queryable.Include(x => x.Church)
-                .ThenInclude(y => y.ChurchGroup);
-            queryable = queryable.Where(x => x.Church.ChurchGroup.Id == churchGroupId);
-        }
-
-        if (churchId is > 0)
-        {
-            queryable = queryable.Where(x => x.ChurchId == churchId.Value);
-        }
-
-        var result = await queryable
-            .Where(ga => ga.AttendanceDate >= previousPeriodStart
-                         && ga.AttendanceDate < periodEnd
-                         && ga.RecordStatus == RecordStatus.Active)
-            .GroupBy(ga => ga.AttendanceDate >= periodStart)
-            .Select(g => new
+            var queryable = Queryable().AsNoTracking();
+        
+            if (churchGroupId.HasValue)
             {
-                IsRecent = g.Key,
-                NewConvertTotal = g.Sum(x => x.NewConvertCount ?? 0),
-                FirstTimerTotal = g.Sum(x => x.FirstTimerCount ?? 0),
-                ReceivedHolySpiritTotal = g.Sum(x => x.ReceivedHolySpiritCount ?? 0),
-            })
-            .ToListAsync(ct);
+                queryable.Include(x => x.Church).ThenInclude(y => y.ChurchGroup);
+                queryable = queryable.Where(x => x.Church.ChurchGroup.Id == churchGroupId);
+            }
 
-        var recent = result.FirstOrDefault(x => x.IsRecent)?.NewConvertTotal ?? 0;
-        var previous = result.FirstOrDefault(x => !x.IsRecent)?.NewConvertTotal ?? 0;
-        var newConvertMetric = PeriodComparisonResultsViewModel.Create("New Converts", recent, previous);
+            if (churchId is > 0)
+            {
+                queryable = queryable.Where(x => x.ChurchId == churchId.Value);
+            }
 
-        recent = result.FirstOrDefault(x => x.IsRecent)?.FirstTimerTotal ?? 0;
-        previous = result.FirstOrDefault(x => !x.IsRecent)?.FirstTimerTotal ?? 0;
-        var firstTimersMetric = PeriodComparisonResultsViewModel.Create("First Timers", recent, previous);
+            var result = await queryable
+                .Where(ga => ga.AttendanceDate >= previousPeriodStart
+                             && ga.AttendanceDate < periodEnd
+                             && ga.RecordStatus == RecordStatus.Active)
+                .GroupBy(ga => ga.AttendanceDate >= periodStart)
+                .Select(g => new
+                {
+                    IsRecent = g.Key,
+                    NewConvertTotal = g.Sum(x => x.NewConvertCount ?? 0),
+                    FirstTimerTotal = g.Sum(x => x.FirstTimerCount ?? 0),
+                    ReceivedHolySpiritTotal = g.Sum(x => x.ReceivedHolySpiritCount ?? 0),
+                })
+                .ToListAsync(ct);
 
-        recent = result.FirstOrDefault(x => x.IsRecent)?.ReceivedHolySpiritTotal ?? 0;
-        previous = result.FirstOrDefault(x => !x.IsRecent)?.ReceivedHolySpiritTotal ?? 0;
-        var holySpiritMetric = PeriodComparisonResultsViewModel.Create("Holy Spirit", recent, previous);
+            var recent = result.FirstOrDefault(x => x.IsRecent)?.NewConvertTotal ?? 0;
+            var previous = result.FirstOrDefault(x => !x.IsRecent)?.NewConvertTotal ?? 0;
+            var newConvertMetric = PeriodComparisonResultsViewModel.Create("New Converts", recent, previous);
 
-        return new AttendanceMetricsComparisonViewModel
-        {
-            ReportPeriod = period.ConvertToString(),
-            NewConvertMetric = newConvertMetric,
-            FirstTimersMetric = firstTimersMetric,
-            HolySpiritMetric = holySpiritMetric,
-        };
+            recent = result.FirstOrDefault(x => x.IsRecent)?.FirstTimerTotal ?? 0;
+            previous = result.FirstOrDefault(x => !x.IsRecent)?.FirstTimerTotal ?? 0;
+            var firstTimersMetric = PeriodComparisonResultsViewModel.Create("First Timers", recent, previous);
+
+            recent = result.FirstOrDefault(x => x.IsRecent)?.ReceivedHolySpiritTotal ?? 0;
+            previous = result.FirstOrDefault(x => !x.IsRecent)?.ReceivedHolySpiritTotal ?? 0;
+            var holySpiritMetric = PeriodComparisonResultsViewModel.Create("Holy Spirit", recent, previous);
+
+            return new AttendanceMetricsComparisonViewModel
+            {
+                ReportPeriod = period.ConvertToString(),
+                NewConvertMetric = newConvertMetric,
+                FirstTimersMetric = firstTimersMetric,
+                HolySpiritMetric = holySpiritMetric,
+            };
+        }, ct:ct );
     }
 
-    public async Task<YearlyConversionComparison> YearlyConversionComparisonAsync(int? churchId = null,
-        bool includeMonthlyBreakdown = false, CancellationToken ct = default)
+    public async Task<YearlyConversionComparison> YearlyConversionComparisonAsync(
+        int? churchGroupId, int? churchId = null, bool includeMonthlyBreakdown = false, CancellationToken ct = default)
     {
         var currentYear = DateTime.UtcNow.Year;
         var startOfPreviousYear = new DateTime(currentYear - 1, 1, 1);
 
-        var queryable = Queryable().AsNoTracking();
-
-        if (churchId is > 0)
+        var cacheKey = CacheKeyHelper.CacheKey("YearlyConversionComparison_".ToLower() + includeMonthlyBreakdown + (churchGroupId ??= 0) + (churchId ??= 0));
+        
+        return await _cache.GetOrSetAsync<YearlyConversionComparison>(cacheKey, async () =>
         {
-            queryable = queryable.Where(x => x.ChurchId == churchId.Value);
-        }
-
-        if (includeMonthlyBreakdown)
-        {
-            // Group by year and month when breakdown is needed
-            var detailedResult = await queryable
-                .Where(ga => ga.AttendanceDate >= startOfPreviousYear
-                             && ga.RecordStatus == RecordStatus.Active)
-                .GroupBy(ga => new { Year = ga.AttendanceDate.Year, Month = ga.AttendanceDate.Month })
-                .Select(g => new MonthlyData(
-                    g.Key.Year,
-                    g.Key.Month,
-                    g.Sum(x => x.FirstTimerCount ?? 0),
-                    g.Sum(x => x.NewConvertCount ?? 0)
-                ))
-                .ToListAsync(ct);
-
-            var currentYearMetrics = CalculateYearlyMetricsWithBreakdown(
-                detailedResult.Where(x => x.Year == currentYear).ToList(),
-                currentYear
-            );
-
-            var previousYearMetrics = CalculateYearlyMetricsWithBreakdown(
-                detailedResult.Where(x => x.Year == currentYear - 1).ToList(),
-                currentYear - 1
-            );
-
-            return new YearlyConversionComparison
+            var queryable = Queryable().AsNoTracking();
+            
+            if (churchGroupId.HasValue)
             {
-                CurrentYear = currentYearMetrics,
-                PreviousYear = previousYearMetrics,
-                ConversionRateChange =
-                    currentYearMetrics.ConversionPercentage - previousYearMetrics.ConversionPercentage
-            };
-        }
-        else
-        {
-            // Simple yearly totals when breakdown is not needed
-            var yearlyResult = await queryable
-                .Where(ga => ga.AttendanceDate >= startOfPreviousYear
-                             && ga.RecordStatus == RecordStatus.Active)
-                .GroupBy(ga => ga.AttendanceDate.Year)
-                .Select(g => new
+                queryable.Include(x => x.Church).ThenInclude(y => y.ChurchGroup);
+                queryable = queryable.Where(x => x.Church.ChurchGroup.Id == churchGroupId);
+            }
+
+            if (churchId is > 0)
+            {
+                queryable = queryable.Where(x => x.ChurchId == churchId.Value);
+            }
+
+            if (includeMonthlyBreakdown)
+            {
+                // Group by year and month when breakdown is needed
+                var detailedResult = await queryable
+                    .Where(ga => ga.AttendanceDate >= startOfPreviousYear
+                                 && ga.RecordStatus == RecordStatus.Active)
+                    .GroupBy(ga => new { Year = ga.AttendanceDate.Year, Month = ga.AttendanceDate.Month })
+                    .Select(g => new MonthlyData(
+                        g.Key.Year,
+                        g.Key.Month,
+                        g.Sum(x => x.FirstTimerCount ?? 0),
+                        g.Sum(x => x.NewConvertCount ?? 0)
+                    ))
+                    .ToListAsync(ct);
+
+                var currentYearMetrics = CalculateYearlyMetricsWithBreakdown(
+                    detailedResult.Where(x => x.Year == currentYear).ToList(),
+                    currentYear
+                );
+
+                var previousYearMetrics = CalculateYearlyMetricsWithBreakdown(
+                    detailedResult.Where(x => x.Year == currentYear - 1).ToList(),
+                    currentYear - 1
+                );
+
+                return new YearlyConversionComparison
                 {
-                    Year = g.Key,
-                    FirstTimers = g.Sum(x => x.FirstTimerCount ?? 0),
-                    NewConverts = g.Sum(x => x.NewConvertCount ?? 0)
-                })
-                .ToListAsync(ct);
-
-            var currentYearMetrics = CalculateYearlyMetrics(
-                yearlyResult.FirstOrDefault(x => x.Year == currentYear),
-                currentYear
-            );
-
-            var previousYearMetrics = CalculateYearlyMetrics(
-                yearlyResult.FirstOrDefault(x => x.Year == currentYear - 1),
-                currentYear - 1
-            );
-
-            return new YearlyConversionComparison
+                    CurrentYear = currentYearMetrics,
+                    PreviousYear = previousYearMetrics,
+                    ConversionRateChange =
+                        currentYearMetrics.ConversionPercentage - previousYearMetrics.ConversionPercentage
+                };
+            }
+            else
             {
-                CurrentYear = currentYearMetrics,
-                PreviousYear = previousYearMetrics,
-                ConversionRateChange =
-                    currentYearMetrics.ConversionPercentage - previousYearMetrics.ConversionPercentage
-            };
-        }
+                // Simple yearly totals when breakdown is not needed
+                var yearlyResult = await queryable
+                    .Where(ga => ga.AttendanceDate >= startOfPreviousYear
+                                 && ga.RecordStatus == RecordStatus.Active)
+                    .GroupBy(ga => ga.AttendanceDate.Year)
+                    .Select(g => new
+                    {
+                        Year = g.Key,
+                        FirstTimers = g.Sum(x => x.FirstTimerCount ?? 0),
+                        NewConverts = g.Sum(x => x.NewConvertCount ?? 0)
+                    })
+                    .ToListAsync(ct);
+
+                var currentYearMetrics = CalculateYearlyMetrics(
+                    yearlyResult.FirstOrDefault(x => x.Year == currentYear),
+                    currentYear
+                );
+
+                var previousYearMetrics = CalculateYearlyMetrics(
+                    yearlyResult.FirstOrDefault(x => x.Year == currentYear - 1),
+                    currentYear - 1
+                );
+
+                return new YearlyConversionComparison
+                {
+                    CurrentYear = currentYearMetrics,
+                    PreviousYear = previousYearMetrics,
+                    ConversionRateChange =
+                        currentYearMetrics.ConversionPercentage - previousYearMetrics.ConversionPercentage
+                };
+            }
+        }, ct:ct );
     }
 
     private YearlyConversionMetrics CalculateYearlyMetrics(dynamic yearData, int year)

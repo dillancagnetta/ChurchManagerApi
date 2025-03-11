@@ -28,17 +28,16 @@ namespace ChurchManager.Api.Controllers.v1
         [HttpGet("church-attendance")]
         public async Task<IActionResult> ChurchAttendance([FromQuery] DateTime from, DateTime to, int? churchGroupId, int? churchId, CancellationToken token)
         {
-            var attendances =
-                await _attendanceDbRepository.DashboardChurchAttendanceAsync(from, to, churchGroupId, churchId);
+            var attendances = await _attendanceDbRepository.DashboardChurchAttendanceAsync(from, to, churchGroupId, churchId, token);
             return Ok(attendances);
         }
 
-        [HttpGet("church-attendance-breakdown")]
+        /*[HttpGet("church-attendance-breakdown")]
         public async Task<IActionResult> ChurchAttendanceBreakdown([FromQuery] DateTime from, DateTime to, CancellationToken token)
         {
             var breakdown = await _attendanceDbRepository.DashboardChurchAttendanceBreakdownAsync(from, to);
             return Ok(breakdown);
-        }
+        }*/
         
         [HttpGet("church-people-connectionstatus-breakdown")]
         public async Task<IActionResult> ChurchConnectionStatusBreakdown([FromQuery] int? churchGroupId, int? churchId, CancellationToken token)
@@ -56,10 +55,10 @@ namespace ChurchManager.Api.Controllers.v1
         }
         
         [HttpGet("church-annual-conversion-rate-comparison")]
-        public async Task<IActionResult> ChurchYearlyConversionRateComparison(
-            [FromQuery] int? churchId, bool includeMonthlyBreakdown = false,CancellationToken token = default)
+        public async Task<IActionResult> ChurchYearlyConversionRateComparison([FromQuery] int? churchGroupId, 
+            int? churchId, bool includeMonthlyBreakdown = false,CancellationToken token = default)
         {
-            var data = await _attendanceDbRepository.YearlyConversionComparisonAsync(churchId, includeMonthlyBreakdown, token);
+            var data = await _attendanceDbRepository.YearlyConversionComparisonAsync(churchGroupId, churchId, includeMonthlyBreakdown, token);
             return Ok(data);
         }
     }
