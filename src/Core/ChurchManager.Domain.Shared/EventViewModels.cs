@@ -21,14 +21,16 @@ public record EventViewModel
     public DateTime EndDate { get; set; }
     public string Location { get; set; }
     public int Capacity { get; set; }
+    
+    public PersonViewModelBasic ContactPerson { get; set; }
 
     // EventType information
     public string EventTypeName { get; set; }
-    public EventConfiguration Configuration { get; set; }
+    public EventConfigurationViewModel Configuration { get; set; }
     public IEnumerable<EventSessionViewModel> Sessions { get; set; }
 }
 
-public record EventConfiguration
+public record EventConfigurationViewModel
 {
     public string OnlineSupport { get; set; }
     public bool RequiresRegistration { get; set; }
