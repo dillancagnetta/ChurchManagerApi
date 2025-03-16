@@ -39,6 +39,13 @@ namespace ChurchManager.Application.Features
             return _mapper.Map<TViewDto>(await Repository.AddAsync(entity, ct));
         }
 
+        public async Task<TViewDto> AddAsync(TEntity entity, CancellationToken ct = default)
+        {
+            var added = await Repository.AddAsync(entity, ct);
+            var tDto = _mapper.Map<TViewDto>(added);
+            return tDto;
+        }
+
         public virtual async Task DeleteAsync(int id, CancellationToken ct = default)
         {
             var entity = await Repository.GetByIdAsync(id, ct) ?? throw new ArgumentNullException("id", $"Entity with id: {id} not found");

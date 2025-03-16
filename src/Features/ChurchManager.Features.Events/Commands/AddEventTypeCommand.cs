@@ -1,13 +1,11 @@
-﻿using System.Text.RegularExpressions;
+﻿using AutoMapper;
 using ChurchManager.Application.Abstractions.Services;
+using ChurchManager.Domain.Features.Events;
 using ChurchManager.Domain.Features.Groups;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
-using MassTransit.Initializers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Group = ChurchManager.Domain.Features.Groups.Group;
 
 namespace ChurchManager.Features.Events.Commands;
 
@@ -26,26 +24,44 @@ public record AddEventTypeCommand : IRequest<ApiResponse>
     public int? MinChildAge { get; set; }
     public int? MaxChildAge { get; set; }
     public string IconCssClass { get; set; }
+    public string AgeClassification { get; set; }
 };
 
 public class AddEventTypeCommandHandler(
     IEventTypeService service,
-    IReadDbRepository<GroupType> groupTypesDb) : IRequestHandler<AddEventTypeCommand, ApiResponse>
+    IReadDbRepository<GroupType> groupTypesDb,
+    IMapper mapper) : IRequestHandler<AddEventTypeCommand, ApiResponse>
 {
     public async Task<ApiResponse> Handle(AddEventTypeCommand command, CancellationToken ct)
     {
-        var dto = new EditEventTypeModel
+        var entity = new EventType()
         {
-            
+            Name = command.Name,
+            Description = command.Description,
+            IconCssClass = command.IconCssClass,
+            OnlineSupport = command.OnlineSupport,
+            RequiresChildInfo = command.RequiresChildInfo,
+            RequiresRegistration = command.RequiresRegistration,
+            AllowFamilyRegistration = command.AllowFamilyRegistration,
+            AllowNonFamilyRegistration = command.AllowNonFamilyRegistration,
+            TakesAttendance = command.TakesAttendance,
+            ChildCare = command.HasChildCare ? new ChildCare
+            {
+                HasChildCare = command.HasChildCare,
+                MinChildAge = command.MinChildAge,
+                MaxChildAge = command.MaxChildAge,
+            } : null,
+            AgeClassification = command.AgeClassification,
         };
 
-        var vm = await service.AddAsync(dto, ct);
+        var vm = await service.AddAsync(entity, ct);
         
-        //var entity = await service.AddAsync(dto, ct);
         // Needed because we rerender the list - so we need this data
         vm.GroupTypeName = command.GroupTypeId.HasValue
-            ? await groupTypesDb.Queryable().FirstOrDefaultAsync(x => x.Id == command.GroupTypeId.Value, ct)
+            ? await groupTypesDb.Queryable()
+                .Where(x => x.Id == command.GroupTypeId.Value)
                 .Select(x => x.Name)
+                .FirstOrDefaultAsync(cancellationToken: ct)
             : null;
 
         return new ApiResponse(vm);

@@ -28,8 +28,20 @@ public class EventsMappingProfile: Profile, IAutoMapperProfile
                 opt.MapFrom(src => src.Sessions != null ? src.Sessions.Count : 0))
             ;
         
+        // For External Public API
         CreateMap<EventType, EventConfigurationViewModel>().ReverseMap();
         CreateMap<EventSession, EventSessionViewModel>().ReverseMap();
+        
+        // For Internal API
+        CreateMap<EventType, EventTypeViewModel>()
+            .ForMember(d => d.HasChildCare, opt =>
+                opt.MapFrom(src => src.ChildCare != null && src.ChildCare.HasChildCare))
+            .ForMember(d => d.MinChildAge, opt =>
+                opt.MapFrom(src => src.ChildCare != null && src.ChildCare.HasChildCare ? src.ChildCare.MinChildAge : null))
+            .ForMember(d => d.MaxChildAge, opt =>
+                opt.MapFrom(src => src.ChildCare != null && src.ChildCare.HasChildCare ? src.ChildCare.MinChildAge : null))
+            ;
+
     }
    
     public int Order => 1;
