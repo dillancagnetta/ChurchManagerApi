@@ -8,6 +8,7 @@ public record EventTypeViewModel
     public string Name { get; set; }
     public string Description { get; set; }
     public bool IsSystem { get; set; }
+    public string AgeClassification { get; set; }
     public string IconCssClass { get; set; }
     public int? DefaultGroupTypeId { get; set; }
     public string GroupTypeName { get; set; }

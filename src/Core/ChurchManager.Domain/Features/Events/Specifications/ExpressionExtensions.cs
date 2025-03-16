@@ -58,6 +58,7 @@ public static class ExpressionExtensions
             Id = x.Id,
             Name = x.Name,
             Description = x.Description,
+            AgeClassification = x.AgeClassification.Value,
             OnlineSupport = x.OnlineSupport.Value,
             RequiresRegistration = x.RequiresRegistration,
             AllowFamilyRegistration = x.AllowFamilyRegistration,
@@ -68,6 +69,7 @@ public static class ExpressionExtensions
             MinChildAge = x.ChildCare != null ? x.ChildCare.MinChildAge : null,
             MaxChildAge = x.ChildCare != null ? x.ChildCare.MaxChildAge : null,
             IconCssClass = x.IconCssClass,
+            DefaultGroupTypeId = x.DefaultGroupTypeId,
             GroupTypeName = x.DefaultGroupType != null ? x.DefaultGroupType.Name : null,
             IsSystem = x.IsSystem,
             

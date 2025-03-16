@@ -37,8 +37,8 @@ public class EventsFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) : II
                         "Worship Night", "Community Outreach"))
                 .RuleFor(e => e.Description, f => f.Lorem.Sentence())
                 .RuleFor(e => e.IconCssClass,
-                    f => f.PickRandom("fa-church", "fa-book-bible", "fa-users", "fa-hands-praying", "fa-music",
-                        "fa-hands-helping"))
+                    f => f.PickRandom("heroicons_outline:ban", "heroicons_outline:badge-check", "heroicons_outline:book-open", "heroicons_outline:bell", 
+                        "heroicons_outline:cake", "heroicons_outline:calendar"))
                 .RuleFor(e => e.OnlineSupport,
                     f => f.PickRandom(OnlineSupport.NotOnline, OnlineSupport.Both, OnlineSupport.OnlineOnly))
                 .RuleFor(e => e.AgeClassification,
