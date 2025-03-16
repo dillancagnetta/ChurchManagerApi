@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ChurchManager.Domain.Features.Events;
 using ChurchManager.Domain.Shared;
+using ChurchManager.Features.Events.Commands;
 using ChurchManager.Infrastructure.Mapper;
 
 namespace ChurchManager.Features.Events.Infrastructure.Mapper;
@@ -41,6 +42,11 @@ public class EventsMappingProfile: Profile, IAutoMapperProfile
             .ForMember(d => d.MaxChildAge, opt =>
                 opt.MapFrom(src => src.ChildCare != null && src.ChildCare.HasChildCare ? src.ChildCare.MinChildAge : null))
             ;
+
+        CreateMap<EditEventTypeCommand, EditEventTypeModel>().ReverseMap();
+        CreateMap<EditEventTypeModel, EventType>();
+        
+        
 
     }
    

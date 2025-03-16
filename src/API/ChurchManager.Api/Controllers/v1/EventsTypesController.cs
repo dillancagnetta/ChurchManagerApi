@@ -22,5 +22,10 @@ public class EventsTypesController(IEventDbRepository dbRepository) : BaseApiCon
     {
         return Ok(await Mediator.Send(cmd, token));
     }
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] EditEventTypeCommand cmd, CancellationToken token)
+    {
+        return Accepted(await Mediator.Send(cmd, token));
+    }
         
 }

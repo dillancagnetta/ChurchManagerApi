@@ -2,6 +2,7 @@
 using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Domain.Features.Events;
 using ChurchManager.Domain.Features.Groups;
+using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
@@ -13,14 +14,14 @@ public record AddEventTypeCommand : IRequest<ApiResponse>
 {
     public string Name { get; set; }
     public string Description { get; set; } 
-    public int? GroupTypeId { get; set; }
+    public int? DefaultGroupTypeId { get; set; }
     public string OnlineSupport { get; set; } 
     public bool RequiresRegistration { get; set; }
     public bool AllowFamilyRegistration { get; set; }
     public bool AllowNonFamilyRegistration { get; set; }
     public bool RequiresChildInfo { get; set; }
     public bool TakesAttendance { get; set; }
-    public bool HasChildCare { get; set; }
+    public bool? HasChildCare { get; set; }
     public int? MinChildAge { get; set; }
     public int? MaxChildAge { get; set; }
     public string IconCssClass { get; set; }
@@ -38,6 +39,7 @@ public class AddEventTypeCommandHandler(
         {
             Name = command.Name,
             Description = command.Description,
+            DefaultGroupTypeId = command.DefaultGroupTypeId,
             IconCssClass = command.IconCssClass,
             OnlineSupport = command.OnlineSupport,
             RequiresChildInfo = command.RequiresChildInfo,
@@ -45,9 +47,9 @@ public class AddEventTypeCommandHandler(
             AllowFamilyRegistration = command.AllowFamilyRegistration,
             AllowNonFamilyRegistration = command.AllowNonFamilyRegistration,
             TakesAttendance = command.TakesAttendance,
-            ChildCare = command.HasChildCare ? new ChildCare
+            ChildCare = command.HasChildCare.HasValue ? new ChildCare
             {
-                HasChildCare = command.HasChildCare,
+                HasChildCare = command.HasChildCare.Value,
                 MinChildAge = command.MinChildAge,
                 MaxChildAge = command.MaxChildAge,
             } : null,
@@ -57,9 +59,36 @@ public class AddEventTypeCommandHandler(
         var vm = await service.AddAsync(entity, ct);
         
         // Needed because we rerender the list - so we need this data
-        vm.GroupTypeName = command.GroupTypeId.HasValue
+        vm.GroupTypeName = command.DefaultGroupTypeId.HasValue
             ? await groupTypesDb.Queryable()
-                .Where(x => x.Id == command.GroupTypeId.Value)
+                .Where(x => x.Id == command.DefaultGroupTypeId.Value)
+                .Select(x => x.Name)
+                .FirstOrDefaultAsync(cancellationToken: ct)
+            : null;
+
+        return new ApiResponse(vm);
+    }
+}
+
+// ----------------------------------------------------------
+
+public record EditEventTypeCommand : AddEventTypeCommand;
+
+public class EditEventTypeCommandHandler(
+    IEventTypeService service,
+    IReadDbRepository<GroupType> groupTypesDb,
+    IMapper mapper) : IRequestHandler<EditEventTypeCommand, ApiResponse>
+{
+    public async Task<ApiResponse> Handle(EditEventTypeCommand command, CancellationToken ct)
+    {
+        var dto = mapper.Map<EditEventTypeModel>(command);
+        
+        var vm = await service.UpdateAsync(dto, ct);
+        
+        // Needed because we rerender the list - so we need this data
+        vm.GroupTypeName = command.DefaultGroupTypeId.HasValue
+            ? await groupTypesDb.Queryable()
+                .Where(x => x.Id == command.DefaultGroupTypeId.Value)
                 .Select(x => x.Name)
                 .FirstOrDefaultAsync(cancellationToken: ct)
             : null;
