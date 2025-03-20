@@ -59,6 +59,8 @@ public class EventsListSpecification: PermissionSpecification<Event, EventViewMo
             Query.Include(x => x.ChurchGroup);
             Query.Include(x => x.Schedule);
             Query.Include(x => x.Sessions);
+            Query.Include(x => x.ChildCareGroup);
+            Query.Include(x => x.EventRegistrationGroup);
         }
 
         Query.Select(ExpressionExtensions.SelectEventWithDetails);

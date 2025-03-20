@@ -22,6 +22,20 @@ public static class ExpressionExtensions
             ScheduleFriendlyText = x.Schedule != null ? x.Schedule.ToFriendlyScheduleText(false) : null,
             StartDate = x.Schedule.StartDate.GetValueOrDefault(),
             EndDate =  x.Schedule.StartDate.GetValueOrDefault(),
+            ChildCareGroup = x.ChildCareGroupId != null ? new GroupTypeAndGroupViewModel
+            {
+                GroupTypeId = x.ChildCareGroup.GroupTypeId,
+                GroupId = x.ChildCareGroupId,
+                GroupTypeName = x.ChildCareGroup.GroupType.Name,
+                GroupName = x.ChildCareGroup.Name,
+            } : null,
+            EventRegistrationGroup = x.EventRegistrationGroupId != null ? new GroupTypeAndGroupViewModel
+            {
+                GroupTypeId = x.EventRegistrationGroup.GroupTypeId,
+                GroupId = x.EventRegistrationGroupId,
+                GroupTypeName = x.EventRegistrationGroup.GroupType.Name,
+                GroupName = x.EventRegistrationGroup.Name,
+            } : null,
             Configuration = new EventConfigurationViewModel
             {
                 OnlineSupport = x.EventType !=null ? x.EventType.OnlineSupport : OnlineSupport.Unknown.Value,

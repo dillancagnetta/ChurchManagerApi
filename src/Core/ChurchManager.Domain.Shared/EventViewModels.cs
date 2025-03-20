@@ -23,6 +23,9 @@ public record EventViewModel
     public int Capacity { get; set; }
     
     public PersonViewModelBasic ContactPerson { get; set; }
+    
+    public GroupTypeAndGroupViewModel ChildCareGroup { get; set; }
+    public GroupTypeAndGroupViewModel EventRegistrationGroup { get; set; }
 
     // EventType information
     public string EventTypeName { get; set; }
