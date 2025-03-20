@@ -30,11 +30,7 @@ namespace ChurchManager.Api
                     {
                         options.ListenAnyIP(5001, listenOptions =>
                         {
-                            if (!context.HostingEnvironment.IsDevelopment())
-                            {
-                                listenOptions.UseHttps(); // Enable HTTPS only outside development
-                                listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
-                            }
+                            listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
                         });
                     });
                 })
