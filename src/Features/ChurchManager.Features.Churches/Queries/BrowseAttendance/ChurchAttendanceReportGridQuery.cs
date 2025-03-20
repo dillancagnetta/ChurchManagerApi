@@ -22,7 +22,7 @@ public class ChurchAttendanceReportGridHandler(IReadDbRepository<ChurchAttendanc
     {
         var spec = new ChurchAttendanceReportGridSpecification(query.AttendanceTypeIds, query.ChurchGroupId, query.ChurchIds, query.From, query.To);
 
-            var results = await dbRepository.ListAsync<ChurchAttendanceViewModel>(spec, ct);
+        var results = await dbRepository.ListAsync<ChurchAttendanceViewModel>(spec, ct);
 
         return new ApiResponse(results);
     }

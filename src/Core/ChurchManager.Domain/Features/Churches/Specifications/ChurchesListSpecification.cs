@@ -1,22 +1,23 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Shared;
+using ChurchManager.Domain.Specifications;
 using CodeBoss.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Domain.Features.Churches.Specifications;
 
-public class ChurchesListSpecification: Specification<Church, ChurchViewModel>
+public class ChurchesListSpecification: PermissionSpecification<Church, ChurchViewModel>
 {
-    public ChurchesListSpecification(IEnumerable<int> allowedChurchIds = null, string searchTerm = null, int? churchGroupId = null)
+    public ChurchesListSpecification(IEnumerable<int> allowedChurchIds = null, string searchTerm = null, int? churchGroupId = null): base(allowedChurchIds)
     {
         // Only apply permission filter if allowedIds is not null
         // If null, user is system admin and has unrestricted access
-        if (allowedChurchIds is not null)
+        /*if (allowedChurchIds is not null)
         {
             // First apply the permissions filter
             Query.Where(x => allowedChurchIds.Contains(x.Id));  
-        }
+        }*/
 
         if (churchGroupId.HasValue)
         {

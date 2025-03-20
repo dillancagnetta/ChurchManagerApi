@@ -1,6 +1,7 @@
 using Amazon.Runtime;
 using Convey;
 using Convey.Logging;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace ChurchManager.Api
 {
@@ -25,6 +26,17 @@ namespace ChurchManager.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureKestrel((context, options) =>
+                    {
+                        options.ListenAnyIP(5001, listenOptions =>
+                        {
+                            if (!context.HostingEnvironment.IsDevelopment())
+                            {
+                                listenOptions.UseHttps(); // Enable HTTPS only outside development
+                                listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
+                            }
+                        });
+                    });
                 })
                 .ConfigureAppConfiguration((context, config) =>
                 {

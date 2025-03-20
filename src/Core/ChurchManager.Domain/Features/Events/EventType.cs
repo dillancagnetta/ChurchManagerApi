@@ -10,7 +10,7 @@ namespace ChurchManager.Domain.Features.Events;
 
 [Table("EventType")]
 
-public class EventType: AuditableEntity<int>
+public class EventType: AuditableEntity<int>, IAggregateRoot<int>
 {
     [Key]
     public int Id { get; set; }
@@ -42,6 +42,7 @@ public class EventType: AuditableEntity<int>
     #region Navigation
 
     public virtual GroupType DefaultGroupType { get; set; }
+    public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 
     #endregion
 }

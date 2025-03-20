@@ -35,7 +35,7 @@ public class EventDbRepository(ChurchManagerDbContext dbContext) : GenericReposi
                 ScheduleFriendlyText = x.Schedule?.ToFriendlyScheduleText(false),
                 StartDate = x.Schedule.StartDate.GetValueOrDefault(),
                 EndDate =  x.Schedule.StartDate.GetValueOrDefault(),
-                Configuration = new EventConfiguration
+                Configuration = new EventConfigurationViewModel
                 {
                     OnlineSupport = x.EventType?.OnlineSupport,
                     RequiresRegistration = x.EventType.RequiresRegistration,

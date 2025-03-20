@@ -45,3 +45,11 @@ public record ScheduleViewModel
     public string RecurrenceRule { get; set; }
     public string Frequency { get; set; }
 }
+
+public record GroupTypeAndGroupViewModel
+{
+    public int? GroupTypeId { get; set; }
+    public int? GroupId { get; set; }
+    public string GroupTypeName { get; set; }
+    public string GroupName { get; set; }
+}

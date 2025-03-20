@@ -1,7 +1,4 @@
 ﻿using ChurchManager.Application.Abstractions.Services;
-using ChurchManager.Application.Features;
-using ChurchManager.Domain.Features.Churches;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Features.Churches.Services;
 using ChurchManager.Infrastructure;
 using Microsoft.AspNetCore.Builder;

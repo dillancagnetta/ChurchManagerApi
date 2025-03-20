@@ -31,7 +31,6 @@ public class ChurchesMappingProfile : Profile, IAutoMapperProfile
             ;
 
         CreateMap<ChurchGroup, ChurchGroupViewModel>();
-        CreateMap<Church, ChurchViewModel>();
         /*.ForMember(d => d.LeaderPerson, opt =>
             opt.MapFrom(src => src.LeaderPerson != null
                 ? new PersonViewModelBasic

@@ -1,4 +1,6 @@
-﻿using ChurchManager.Infrastructure;
+﻿using ChurchManager.Application.Abstractions.Services;
+using ChurchManager.Features.Events.Services;
+using ChurchManager.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +12,7 @@ public class StartupApplication: IStartupApplication
 {
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
+        services.AddScoped<IEventTypeService, EventTypeService>();
     }
 
     public void Configure(IApplicationBuilder application, IWebHostEnvironment webHostEnvironment)
