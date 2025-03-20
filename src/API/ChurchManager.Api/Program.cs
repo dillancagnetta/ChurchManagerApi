@@ -1,3 +1,5 @@
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using Amazon.Runtime;
 using Convey;
 using Convey.Logging;
@@ -26,12 +28,43 @@ namespace ChurchManager.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                 
                     webBuilder.ConfigureKestrel((context, options) =>
                     {
-                        options.ListenAnyIP(5001, listenOptions =>
+                        if (context.HostingEnvironment.EnvironmentName != "Development")
                         {
-                            listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
-                        });
+                            // Read environment variables for port configuration
+                            var httpPortString = Environment.GetEnvironmentVariable("ASPNETCORE_HTTP_PORTS") ?? "8080";
+                            var httpsPortString = Environment.GetEnvironmentVariable("ASPNETCORE_HTTPS_PORTS") ?? "443";
+                            
+                            // Configure HTTP endpoints
+                            if (int.TryParse(httpPortString, out var httpPort))
+                            {
+                                options.Listen(IPAddress.Any, httpPort);
+                            }
+
+                            // Configure HTTPS endpoints with certificate
+                            if (int.TryParse(httpsPortString, out var httpsPort))
+                            {
+                                options.ListenAnyIP(httpsPort, listenOptions =>
+                                {
+                                    listenOptions.UseHttps(httpsOptions =>
+                                    {
+                                        // Load the certificate from the container path
+                                        httpsOptions.ServerCertificate = new X509Certificate2(
+                                            "certificate.pfx", 
+                                            "YourStrongPassword",
+                                            X509KeyStorageFlags.MachineKeySet | 
+                                            X509KeyStorageFlags.PersistKeySet | 
+                                            X509KeyStorageFlags.Exportable
+                                        );
+                                    });
+                                    
+                                    // Enable HTTP/2/3
+                                    listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
+                                }); 
+                            }
+                        }
                     });
                 })
                 .ConfigureAppConfiguration((context, config) =>
