@@ -47,6 +47,7 @@ namespace ChurchManager.Api
             else
             {
                 app.UseExceptionHandler("/Error");
+                app.UseHttpsRedirection();
             }
 
             app.UseRouting();
