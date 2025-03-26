@@ -69,7 +69,6 @@ public class Event_DomainTest
             Description = "A special event for prayer.",
             Church = church,
             ChurchGroup = churchGroup,
-            ScheduleId = 1,
             ChildCareGroupId = 4,
             EventType = eventType,
             Capacity = 500,

@@ -1,4 +1,5 @@
 using ChurchManager.Domain.Features.Groups;
+using ChurchManager.Domain.Shared;
 using Ical.Net;
 using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
@@ -134,6 +135,31 @@ namespace ChurchManager.Infrastructure.Tests
             var friendlyScheduleText = schedule.ToFriendlyScheduleText(true);
 
             Assert.Contains("Weekly: Friday,Saturday at ", friendlyScheduleText) ;
+        }
+
+        [Fact]
+        public void Schedule_Should_CreateCalendarEventFrom_ScheduleViewModel()
+        {
+            int sessionCount = 3;
+            var model = new ScheduleViewModel
+            {
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(sessionCount),
+                MeetingTime = "14:00",
+                EndMeetingTime = "16:00",
+                RecurrenceRule = "FREQ=DAILY"
+            };
+            
+            var calendar = InetCalendarHelper.CreateCalendarEventFrom(model, "Test Calendar", sessionCount);
+            
+            // Create the schedule based on the calendar
+            var schedule = new Schedule
+            {
+                iCalendarContent = CalendarSerializer.SerializeToString(calendar)
+            };
+
+            // Generate friendly text
+            var friendlyScheduleText = schedule.ToFriendlyScheduleText(true);
         }
     }
 }

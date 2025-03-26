@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Features.Events.Repositories;
+﻿using System.Text.Json;
+using ChurchManager.Domain.Features.Events.Repositories;
 using ChurchManager.Features.Events.Commands;
 using ChurchManager.Features.Events.Queries.Browse;
 using ChurchManager.SharedKernel.Wrappers;
@@ -35,6 +36,19 @@ namespace ChurchManager.Api.Controllers.v1
         public async Task<IActionResult> Browse([FromBody] BrowseEventsQuery query, CancellationToken token)
         {
             return Ok(await Mediator.Send(query, token));
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> Create([FromForm] string eventInfo, IFormFile image, CancellationToken token)
+        {
+            var command = JsonSerializer.Deserialize<AddEventCommand>(eventInfo, 
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true, });
+            
+            if (command == null )return BadRequest("Invalid event data");
+            
+            // Add image
+            command.Image = image;
+            return Ok(await Mediator.Send(command, token));   // AddEventCommand
         }
 
         #endregion

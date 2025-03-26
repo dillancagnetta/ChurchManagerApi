@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using ChurchManager.Domain.Shared;
+using CodeBoss.Extensions;
 
 namespace ChurchManager.Domain.Features.Events.Specifications;
 
@@ -14,22 +15,30 @@ public static class ExpressionExtensions
             PhotoUrl = x.PhotoUrl,
             EventTypeId = x.EventTypeId,
             EventTypeName = x.EventType != null ? x.EventType.Name : null,
-            ChurchId = x.ChurchId,
-            ChurchGroupId = x.ChurchGroupId,
-            ChurchName = x.Church != null ? x.Church.Name : null,
-            ChurchGroupName =  x.Church != null && x.Church.ChurchGroup != null ? x.Church.ChurchGroup.Name : null,
+            ContactPerson =  x.ContactPerson != null ? new PersonViewModelBasic
+            {
+                PersonId = x.ContactPersonId,
+                FirstName = x.ContactPerson.FullName.FirstName,
+                LastName = x.ContactPerson.FullName.LastName,
+                Email = x.ContactPerson.Email.Address,
+                PhotoUrl = x.ContactPerson.PhotoUrl,
+            } : null,
+            ChurchReference = new ChurchReference
+            {
+                ChurchId = x.ChurchId,
+                ChurchGroupId = x.ChurchGroupId,
+                ChurchName =  x.Church != null ? x.Church.Name : null,
+                ChurchGroupName = x.Church != null && x.Church.ChurchGroup != null ? x.Church.ChurchGroup.Name : null
+            },
             Location = x.Location,
-            ScheduleFriendlyText = x.Schedule != null ? x.Schedule.ToFriendlyScheduleText(false) : null,
-            StartDate = x.Schedule.StartDate.GetValueOrDefault(),
-            EndDate =  x.Schedule.StartDate.GetValueOrDefault(),
-            ChildCareGroup = x.ChildCareGroupId != null ? new GroupTypeAndGroupViewModel
+            ChildCareGroup = x.ChildCareGroupId != null ? new GroupReference
             {
                 GroupTypeId = x.ChildCareGroup.GroupTypeId,
                 GroupId = x.ChildCareGroupId,
                 GroupTypeName = x.ChildCareGroup.GroupType.Name,
                 GroupName = x.ChildCareGroup.Name,
             } : null,
-            EventRegistrationGroup = x.EventRegistrationGroupId != null ? new GroupTypeAndGroupViewModel
+            EventRegistrationGroup = x.EventRegistrationGroupId != null ? new GroupReference
             {
                 GroupTypeId = x.EventRegistrationGroup.GroupTypeId,
                 GroupId = x.EventRegistrationGroupId,
@@ -48,7 +57,7 @@ public static class ExpressionExtensions
                 MinChildAge = x.EventType.ChildCare != null ? x.EventType.ChildCare.MinChildAge : null,
                 MaxChildAge =  x.EventType.ChildCare != null ? x.EventType.ChildCare.MaxChildAge : null,
             },
-
+            ApprovalStatus = x.ApprovalStatus.Value,
             NumberOfSessions = x.Sessions != null ? x.Sessions.Count : 0,
             Sessions = x.Sessions != null ? x.Sessions.Select(x => new EventSessionViewModel
             {
@@ -56,8 +65,10 @@ public static class ExpressionExtensions
                 Name = x.Name,
                 Description = x.Description,
                 SessionOrder = x.SessionOrder,
-                StartDateTime = x.StartDateTime,
-                EndDateTime = x.EndDateTime,
+                StartDate = x.SessionStartDateTime().StartDate,
+                StartTime = x.SessionStartDateTime().StartTime.HasValue ? x.SessionStartDateTime().StartTime.Value.ToString(@"hh\:mm") : null,
+                EndDate = x.SessionEndDateTime().EndDate,
+                EndTime = x.SessionEndDateTime().EndTime.HasValue ? x.SessionEndDateTime().EndTime.Value.ToString(@"hh\:mm") : null,
                 Location = x.Location,
                 OnlineSupport = x.OnlineSupport,
                 OnlineMeetingUrl = x.OnlineMeetingUrl,
@@ -95,14 +106,15 @@ public static class ExpressionExtensions
                 PhotoUrl = x.PhotoUrl,
                 EventTypeId = x.EventTypeId,
                 EventTypeName = x.EventType != null ? x.EventType.Name : null,
-                ChurchId = x.ChurchId,
-                ChurchGroupId = x.ChurchGroupId,
-                ChurchName = x.Church != null ? x.Church.Name : null,
-                ChurchGroupName =  x.Church != null && x.Church.ChurchGroup != null ? x.Church.ChurchGroup.Name : null,
+                ChurchReference = new ChurchReference
+                {
+                    ChurchId = x.ChurchId,
+                    ChurchGroupId = x.ChurchGroupId,
+                    ChurchName = x.Church != null ? x.Church.Name : null,
+                    ChurchGroupName =   x.Church != null && x.Church.ChurchGroup != null ? x.Church.ChurchGroup.Name : null,
+                },
                 Location = x.Location,
-                ScheduleFriendlyText = x.Schedule != null ? x.Schedule.ToFriendlyScheduleText(false) : null,
-                StartDate = x.Schedule.StartDate.GetValueOrDefault(),
-                EndDate =  x.Schedule.StartDate.GetValueOrDefault(),
+                ApprovalStatus = x.ApprovalStatus.Value,
             }) : Array.Empty<EventViewModel>()
         };
 }

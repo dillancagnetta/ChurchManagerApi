@@ -84,22 +84,41 @@ public class EventsFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) : II
             // Generate event sessions for each event
             foreach (var evt in events)
             {
-                var sessionDate = DateTime.Now;
                 var sessions = new Faker<EventSession>()
                     .RuleFor(s => s.EventId, evt.Id)
                     .RuleFor(s => s.Name, f => f.Lorem.Word())
-                    .RuleFor(s => s.EndDateTime, sessionDate.AddHours(faker.Random.Number(1, 5)))
-                    .RuleFor(s => s.StartDateTime, sessionDate)
+                    /*.RuleFor(s => s.EndDate, sessionDate.AddHours(faker.Random.Number(1, 5)))
+                    .RuleFor(s => s.StartDateTime, sessionDate)*/
                     .RuleFor(s => s.Description, f => f.Lorem.Sentence())
                     .RuleFor(s => s.Location, f => f.Address.FullAddress())
                     .RuleFor(e => e.AttendanceRequired, f => faker.Random.Bool(0.3f))
+                    .RuleFor(e => e.Capacity, f => f.Random.Number(50, 200))
                     .RuleFor(e => e.SessionOrder, f => f.Random.Number(0, 4))
                     .RuleFor(e => e.OnlineMeetingUrl, f => f.Internet.Url())
                     .RuleFor(e => e.OnlineSupport,
                         f => f.PickRandom(OnlineSupport.NotOnline, OnlineSupport.Both, OnlineSupport.OnlineOnly))
                     .Generate(faker.Random.Number(1, 5));
+                
+                var orderedSessions = sessions.OrderBy(x => x.SessionOrder).ToList();
+                // Add session schedule dates
+                for (int i = 0; i < orderedSessions.Count; i++)
+                {
+                    var sessionDate = DateTime.Today.AddDays(i);
+                    var sessionTime = new TimeSpan(14,0,0); //14:00:00
+                    orderedSessions[i].Schedule = new()
+                    {
+                        Name = $"{orderedSessions[i].Name}-EventSession-Schedule",
+                        StartDate = sessionDate,
+                        EndDate = sessionDate,
+                        StartTime = sessionTime,
+                        EndTime = sessionTime.Add(new TimeSpan(i+1, 0, 0)), // Add i hours
+                        Timezone = "South Africa Standard Time"
+                    };
+                }
 
-                evt.Sessions = sessions.OrderBy(x => x.StartDateTime).ToList();
+                evt.Sessions = orderedSessions;
+
+                /*evt.Sessions = sessions.OrderBy(x => x.StartDateTime).ToList();
 
                 var startDateTime = evt.Sessions.First().StartDateTime;
                 var endDateTime = evt.Sessions.Last().EndDateTime;
@@ -109,19 +128,7 @@ public class EventsFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) : II
                     startDateTime.Value,
                     durationMinutes: faker.Random.Number(60, 240),
                     endDateTime,
-                    timezone: "South Africa Standard Time");
-                
-                evt.Schedule = new Schedule
-                {
-                    Name = $"{evt.Name}-Schedule",
-                    StartDate = startDateTime,
-                    EndDate = endDateTime,
-                    StartTime = startDateTime.Value.TimeOfDay,
-                    EndTime = endDateTime.Value.TimeOfDay,
-                    iCalendarContent = calendarSerializer.SerializeToString(calendar),
-                    Frequency = FrequencyType.Daily.ConvertToString(),
-                    Timezone = "South Africa Standard Time"
-                };
+                    timezone: "South Africa Standard Time");*/
             }
 
             await dbContext.Event.AddRangeAsync(events);

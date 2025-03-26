@@ -34,9 +34,10 @@ public class EventSession : AuditableEntity<int>
     public int EventId { get; set; }
     
     // Schedule information
-    public DateTime? StartDateTime { get; set; }  // Combined date and time
-    
-    public DateTime? EndDateTime { get; set; }    // Combined date and time
+    /// <summary>
+    /// Gets or sets the ScheduleId of the <see cref="Schedule"/> that contains this event belongs to.
+    /// </summary>
+    public int ScheduleId { get; set; }
     
     [MaxLength(200)]
     public string Location { get; set; }
@@ -60,7 +61,22 @@ public class EventSession : AuditableEntity<int>
     /// </summary>
     public virtual Event Event { get; set; }
     
+    public virtual Schedule Schedule { get; set; }
+    
     public virtual ICollection<EventSessionRegistration> SessionRegistrations { get; set; } = Enumerable.Empty<EventSessionRegistration>().ToList();
     
     # endregion
+    
+    #region Methods
+    public (DateTime? StartDate, TimeSpan? StartTime) SessionStartDateTime()
+    {
+        return (Schedule?.StartDate, Schedule?.StartTime);
+    }
+    
+    public (DateTime? EndDate, TimeSpan? EndTime) SessionEndDateTime()
+    {
+        return (Schedule?.EndDate, Schedule?.EndTime);
+    }
+    #endregion
+    
 }

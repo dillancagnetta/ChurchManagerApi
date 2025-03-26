@@ -7,3 +7,7 @@ public interface IEventTypeService: ICrudServiceAsync<EventType, EventTypeViewMo
 {
     Task<IReadOnlyList<EventTypeViewModel>> AllEventsAsync(int? eventTypeId = null, bool? includeDetails = null, CancellationToken ct = default);
 }
+
+public interface IEventService: ICrudServiceAsync<Event, EventViewModel, EditEventViewModel>
+{
+}

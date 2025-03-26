@@ -28,12 +28,6 @@ public class EventsConfiguration : IEntityTypeConfiguration<Event>
             .IsRequired(true)
             .OnDelete(DeleteBehavior.SetNull);
         
-        builder.HasOne(r => r.Schedule)
-            .WithMany()
-            .HasForeignKey(r => r.ScheduleId)
-            .IsRequired(true)
-            .OnDelete(DeleteBehavior.NoAction);
-        
         /* Optional Properties */
         
         builder.HasOne(r => r.Church)
@@ -185,6 +179,12 @@ public class EventSessionConfiguration : IEntityTypeConfiguration<EventSession>
         builder
             .Property(e => e.OnlineSupport)
             .HasEnumerationConversion<OnlineSupport>();
+        
+        builder.HasOne(r => r.Schedule)
+            .WithMany()
+            .HasForeignKey(r => r.ScheduleId)
+            .IsRequired(true)
+            .OnDelete(DeleteBehavior.NoAction);
 
         // Relationships
         builder.HasOne(x => x.Event)

@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class init_db : Migration
+    public partial class Init_db : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -1123,7 +1123,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     EventTypeId = table.Column<int>(type: "integer", nullable: false),
                     ChurchId = table.Column<int>(type: "integer", nullable: true),
                     ChurchGroupId = table.Column<int>(type: "integer", nullable: true),
-                    ScheduleId = table.Column<int>(type: "integer", nullable: false),
                     ChildCareGroupId = table.Column<int>(type: "integer", nullable: true),
                     EventRegistrationGroupId = table.Column<int>(type: "integer", nullable: false),
                     ContactPersonId = table.Column<int>(type: "integer", nullable: false),
@@ -1181,11 +1180,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         principalTable: "Person",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Event_Schedule_ScheduleId",
-                        column: x => x.ScheduleId,
-                        principalTable: "Schedule",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1420,8 +1414,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     AttendanceRequired = table.Column<bool>(type: "boolean", nullable: false),
                     SessionOrder = table.Column<int>(type: "integer", nullable: false),
                     EventId = table.Column<int>(type: "integer", nullable: false),
-                    StartDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    EndDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    ScheduleId = table.Column<int>(type: "integer", nullable: false),
                     Location = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     Notes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     OnlineSupport = table.Column<string>(type: "text", nullable: true),
@@ -1444,6 +1437,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         principalTable: "Event",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventSession_Schedule_ScheduleId",
+                        column: x => x.ScheduleId,
+                        principalTable: "Schedule",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1635,11 +1633,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 columns: new[] { "Name", "RecordStatus" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Event_ScheduleId",
-                table: "Event",
-                column: "ScheduleId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_EventRegistration_EventId_PersonId",
                 table: "EventRegistration",
                 columns: new[] { "EventId", "PersonId" },
@@ -1684,6 +1677,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 name: "IX_EventSession_RecordStatus",
                 table: "EventSession",
                 column: "RecordStatus");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EventSession_ScheduleId",
+                table: "EventSession",
+                column: "ScheduleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EventSessionRegistration_EventRegistrationId_EventSessionId",

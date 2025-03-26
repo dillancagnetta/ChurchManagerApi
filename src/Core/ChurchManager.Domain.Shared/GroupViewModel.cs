@@ -1,7 +1,4 @@
-﻿using ChurchManager.Domain.Shared;
-using PersonViewModel = ChurchManager.Domain.Shared.PersonViewModelBasic;
-
-namespace ChurchManager.Domain.Shared;
+﻿namespace ChurchManager.Domain.Shared;
 
 public record GroupViewModel
 {
@@ -41,15 +38,9 @@ public record ScheduleViewModel
     public string iCalendarContent { get; set; } // Schedule Calendar Content
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
-    public string MeetingTime { get; set; }
+    public string MeetingTime { get; set; } // Start Meeting Time or could be start time of event
+    public string EndMeetingTime { get; set; } // End Meeting Time or end time of event i.e. the final closing time
     public string RecurrenceRule { get; set; }
     public string Frequency { get; set; }
-}
-
-public record GroupTypeAndGroupViewModel
-{
-    public int? GroupTypeId { get; set; }
-    public int? GroupId { get; set; }
-    public string GroupTypeName { get; set; }
-    public string GroupName { get; set; }
+    public string Timezone { get; set; } = "South Africa Standard Time";
 }

@@ -10,27 +10,35 @@ public record EventViewModel
     public string Name { get; set; }
     public string Description { get; set; }
     public string PhotoUrl { get; set; }
-    public int? ChurchId { get; set; }
-    public string ChurchName { get; set; }
-    public int? ChurchGroupId { get; set; }
-    public string ChurchGroupName { get; set; }
-    public string ScheduleFriendlyText { get; set; }
+    public ChurchReference ChurchReference { get; set; }
+
     public string ContactPersonPhoneNumber { get; set; }
     public int NumberOfSessions { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
     public string Location { get; set; }
+    public string ApprovalStatus { get; set; }
     public int Capacity { get; set; }
     
     public PersonViewModelBasic ContactPerson { get; set; }
     
-    public GroupTypeAndGroupViewModel ChildCareGroup { get; set; }
-    public GroupTypeAndGroupViewModel EventRegistrationGroup { get; set; }
+    public GroupReference ChildCareGroup { get; set; }
+    public GroupReference EventRegistrationGroup { get; set; }
 
     // EventType information
     public string EventTypeName { get; set; }
     public EventConfigurationViewModel Configuration { get; set; }
-    public IEnumerable<EventSessionViewModel> Sessions { get; set; }
+
+    private IEnumerable<EventSessionViewModel> _sessions;
+    public IEnumerable<EventSessionViewModel> Sessions
+    {
+        get => _sessions.OrderBy(x => x.SessionOrder);
+        set => _sessions = value;
+    }
+
+    // Schedule
+    public DateTime? StartDate => Sessions.FirstOrDefault()?.StartDate;
+    public DateTime? EndDate => Sessions.LastOrDefault()?.EndDate;
+    public string StartTime => Sessions.FirstOrDefault()?.StartTime;
+    public string EndTime => Sessions.LastOrDefault()?.EndTime;
 }
 
 public record EventConfigurationViewModel
@@ -54,11 +62,19 @@ public record EventSessionViewModel
     public string Name { get; set; }
     public string Description { get; set; }
     public int SessionOrder { get; set; }
-    public DateTime? StartDateTime { get; set; }
-    public DateTime? EndDateTime { get; set; }
+    public int? Capacity { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public string StartTime { get; set; }
+    public string EndTime { get; set; }
     public string Location { get; set; }
     public string OnlineSupport { get; set; }
     public bool IsOnline => !OnlineSupport.Equals("Not Online");
     public string OnlineMeetingUrl { get; set; }
     public bool AttendanceRequired { get; set; }
+}
+
+public record EditEventViewModel
+{
+    
 }

@@ -1026,9 +1026,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("character varying(25)");
 
-                    b.Property<int>("ScheduleId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ChildCareGroupId");
@@ -1044,8 +1041,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.HasIndex("EventTypeId");
 
                     b.HasIndex("Name");
-
-                    b.HasIndex("ScheduleId");
 
                     b.HasIndex("Name", "RecordStatus");
 
@@ -1153,9 +1148,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<DateTime?>("EndDateTime")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<int>("EventId")
                         .HasColumnType("integer");
 
@@ -1195,11 +1187,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("character varying(25)");
 
-                    b.Property<int>("SessionOrder")
+                    b.Property<int>("ScheduleId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("StartDateTime")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<int>("SessionOrder")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -1208,6 +1200,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.HasIndex("Name");
 
                     b.HasIndex("RecordStatus");
+
+                    b.HasIndex("ScheduleId");
 
                     b.ToTable("EventSession");
                 });
@@ -2817,15 +2811,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("ChurchManager.Domain.Features.Events.EventType", "EventType")
-                        .WithMany()
+                        .WithMany("Events")
                         .HasForeignKey("EventTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ChurchManager.Domain.Features.Groups.Schedule", "Schedule")
-                        .WithMany()
-                        .HasForeignKey("ScheduleId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.OwnsOne("ChurchManager.Domain.Common.Review", "Review", b1 =>
@@ -2863,8 +2851,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Navigation("EventType");
 
                     b.Navigation("Review");
-
-                    b.Navigation("Schedule");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventRegistration", b =>
@@ -2908,7 +2894,15 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ChurchManager.Domain.Features.Groups.Schedule", "Schedule")
+                        .WithMany()
+                        .HasForeignKey("ScheduleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("Event");
+
+                    b.Navigation("Schedule");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventSessionRegistration", b =>
@@ -3550,6 +3544,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventSession", b =>
                 {
                     b.Navigation("SessionRegistrations");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Events.EventType", b =>
+                {
+                    b.Navigation("Events");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Groups.Group", b =>

@@ -44,11 +44,7 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
     /// Gets or sets the Id of the <see cref="ChurchGroup"/> that contains this event belongs to.
     /// </summary>
     public int? ChurchGroupId { get; set; }
-
-    /// <summary>
-    /// Gets or sets the Id of the <see cref="ChurchGroup"/> that contains this event belongs to.
-    /// </summary>
-    public int ScheduleId { get; set; }
+    
     
     /// <summary>
     /// Gets or sets the  child care group for the event
@@ -86,16 +82,46 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
     #region Navigation
     public virtual Church Church { get; set; }
     public virtual ChurchGroup ChurchGroup { get; set; }
-    public virtual Schedule Schedule { get; set; }
     public virtual Person ContactPerson { get; set; }
     public virtual Group ChildCareGroup { get; set; }
     public virtual Group EventRegistrationGroup { get; set; }
-    
     public virtual EventType EventType { get; set; }
-
     public virtual ICollection<EventSession> Sessions { get; set; } = Enumerable.Empty<EventSession>().ToList();
-
     public virtual ICollection<EventRegistration> Registrations { get; set; } = Enumerable.Empty<EventRegistration>().ToList();
+
+    #endregion
+
+    #region Methods
+    
+    public EventSession FirstSession()
+    {
+        return Sessions.FirstOrDefault();
+    }
+    
+    public EventSession LastSession()
+    {
+        return Sessions.LastOrDefault();
+    }
+
+    public (DateTime? StartDate, TimeSpan? StartTime, DateTime? EndDate, TimeSpan? EndTime) FirstSessionDateTime()
+    {
+        if (!Sessions.Any()) return (null, null, null, null);
+
+        var session = Sessions.OrderBy(s => s.SessionOrder).First();
+        var (startDate, startTime) = session.SessionStartDateTime();
+        var (endDate, endTime) = session.SessionEndDateTime();
+        return (startDate, startTime, endDate, endTime);
+    }
+    
+    public (DateTime? StartDate, TimeSpan? StartTime, DateTime? EndDate, TimeSpan? EndTime) LastSessionDateTime()
+    {
+        if (!Sessions.Any()) return (null, null, null, null);
+
+        var session = Sessions.OrderBy(s => s.SessionOrder).Last();
+        var (startDate, startTime) = session.SessionStartDateTime();
+        var (endDate, endTime) = session.SessionEndDateTime();
+        return (startDate, startTime, endDate, endTime);
+    }
 
     #endregion
 }

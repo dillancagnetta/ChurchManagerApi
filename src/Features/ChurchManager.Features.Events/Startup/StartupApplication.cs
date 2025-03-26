@@ -13,6 +13,7 @@ public class StartupApplication: IStartupApplication
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IEventTypeService, EventTypeService>();
+        services.AddScoped<IEventService, EventService>();
     }
 
     public void Configure(IApplicationBuilder application, IWebHostEnvironment webHostEnvironment)

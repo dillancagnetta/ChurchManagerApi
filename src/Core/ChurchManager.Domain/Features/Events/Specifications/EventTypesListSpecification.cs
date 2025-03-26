@@ -17,8 +17,10 @@ public class EventTypesListSpecification : PermissionSpecification<EventType, Ev
                 .ThenInclude(x => x.Church)
                 .ThenInclude(x => x.ChurchGroup);
           
-            Query.Include(x => x.Events).ThenInclude(x => x.Sessions);
-            Query.Include(x => x.Events).ThenInclude(x => x.Schedule);
+            Query.Include(x => x.Events)
+                .ThenInclude(x => x.Sessions)
+                    .ThenInclude(x => x.Schedule)
+                ;
         }
 
         Query.Select(x => ExpressionExtensions.SelectEventTypeWithDetails.Compile()(includeDetails ?? false, x));

@@ -42,14 +42,14 @@ public class EventsListSpecification: PermissionSpecification<Event, EventViewMo
         
         if (from.HasValue)
         {
-            Query.Include(x => x.Schedule);
-            Query.Where(x => x.Schedule.StartDate >= from);
+            Query.Include(x => x.Sessions).ThenInclude(x => x.Schedule);
+            Query.Where(x => x.Sessions.Any(x => x.Schedule.StartDate >= from));
         }
         
         if (to.HasValue)
         {
-            Query.Include(x => x.Schedule);
-            Query.Where(x => x.Schedule.EndDate <= from);
+            Query.Include(x => x.Sessions).ThenInclude(x => x.Schedule);
+            Query.Where(x => x.Sessions.Any(x => x.Schedule.EndDate <= to));
         }
 
         if (includeDetails.HasValue)
@@ -57,12 +57,12 @@ public class EventsListSpecification: PermissionSpecification<Event, EventViewMo
             Query.Include(x => x.EventType);
             Query.Include(x => x.Church);
             Query.Include(x => x.ChurchGroup);
-            Query.Include(x => x.Schedule);
-            Query.Include(x => x.Sessions);
+            Query.Include(x => x.Sessions).ThenInclude(x => x.Schedule);
             Query.Include(x => x.ChildCareGroup);
             Query.Include(x => x.EventRegistrationGroup);
+            Query.Include(x => x.ContactPerson);
         }
-
+        
         Query.Select(ExpressionExtensions.SelectEventWithDetails);
     }
 }
