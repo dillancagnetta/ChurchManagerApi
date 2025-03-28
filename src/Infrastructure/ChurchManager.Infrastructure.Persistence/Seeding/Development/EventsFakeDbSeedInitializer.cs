@@ -12,6 +12,7 @@ using Ical.Net;
 using Ical.Net.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Person = ChurchManager.Domain.Features.People.Person;
 
 #endregion
 
@@ -58,49 +59,48 @@ public class EventsFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) : II
         if (!await dbContext.Event.AnyAsync())
         {
             var eventTypes = await dbContext.EventType.ToListAsync();
-            var churches = await dbContext.Church.ToListAsync();
+            var churchGroups = await dbContext.ChurchGroup
+                .Include(x => x.Churches)
+                .Select(x => new ChurchGroupAndChurches
+                {
+                    ChurchesGroupId = x.Id,
+                    ChurchIds = x.Churches.Select(c => c.Id).ToList()
+                })
+                .ToListAsync();
             var people = await dbContext.Person.Take(10).ToListAsync();
             var eventRegistrationGroup =
                 await dbContext.Group.FirstOrDefaultAsync(g => g.Name == "Event Registration Group");
 
-            var events = new Faker<Event>()
-                .RuleFor(e => e.Name, f => string.Join(" ", f.Lorem.Words(3)))
-                .RuleFor(e => e.Description, f => f.Lorem.Paragraph())
-                .RuleFor(e => e.EventTypeId, f => f.PickRandom(eventTypes).Id)
-                .RuleFor(e => e.ChurchId, f => f.PickRandom(churches).Id)
-                .RuleFor(e => e.ContactPersonId, f => f.PickRandom(people).Id)
-                .RuleFor(e => e.ContactEmail, f => f.Person.Email)
-                .RuleFor(s => s.Location, f => f.Address.FullAddress())
-                .RuleFor(e => e.ContactPhone, f => f.Person.Phone)
-                .RuleFor(e => e.ApprovalStatus, f => ApprovalStatus.Approved)
-                .RuleFor(e => e.EventRegistrationGroup, f => eventRegistrationGroup)
-                .RuleFor(e => e.Capacity, f => f.Random.Number(50, 500))
-                .RuleFor(e => e.PhotoUrl, f => f.Image.PicsumUrl())
-                //.RuleFor(e => e.HasChildCare, f => f.Random.Bool())
-                //.RuleFor(e => e.MinChildAge, (f, e) => e.HasChildCare ? f.Random.Number(0, 5) : null)
-                //.RuleFor(e => e.MaxChildAge, (f, e) => e.HasChildCare ? f.Random.Number((int)e.MinChildAge + 1, 12) : null)
-                .Generate(10);
+            // Generate Events at different levels
+            var zonalEvents = GenerateEvents(eventTypes, people, eventRegistrationGroup, count:2);
+            var churchGroup1Events = GenerateEvents(eventTypes, people, eventRegistrationGroup, churchGroup:churchGroups.First(), count:4);
+            var churchGroup2Events = GenerateEvents(eventTypes, people, eventRegistrationGroup, churchGroup:churchGroups.Last(), count:4);
             
+            var events = zonalEvents.Concat(churchGroup1Events).Concat(churchGroup2Events).ToList();
             // Generate event sessions for each event
             foreach (var evt in events)
             {
                 var sessions = new Faker<EventSession>()
                     .RuleFor(s => s.EventId, evt.Id)
                     .RuleFor(s => s.Name, f => f.Lorem.Word())
-                    /*.RuleFor(s => s.EndDate, sessionDate.AddHours(faker.Random.Number(1, 5)))
-                    .RuleFor(s => s.StartDateTime, sessionDate)*/
                     .RuleFor(s => s.Description, f => f.Lorem.Sentence())
                     .RuleFor(s => s.Location, f => f.Address.FullAddress())
                     .RuleFor(e => e.AttendanceRequired, f => faker.Random.Bool(0.3f))
                     .RuleFor(e => e.Capacity, f => f.Random.Number(50, 200))
-                    .RuleFor(e => e.SessionOrder, f => f.Random.Number(0, 4))
-                    .RuleFor(e => e.OnlineMeetingUrl, f => f.Internet.Url())
                     .RuleFor(e => e.OnlineSupport,
                         f => f.PickRandom(OnlineSupport.NotOnline, OnlineSupport.Both, OnlineSupport.OnlineOnly))
                     .Generate(faker.Random.Number(1, 5));
                 
+                // Add Session Order and Online Meeting Urls
+                int sessionOrder = 1;
+                sessions.ForEach(x =>
+                {
+                    x.SessionOrder = sessionOrder; sessionOrder++;
+                    x.OnlineMeetingUrl = x.OnlineSupport == OnlineSupport.NotOnline ? null : faker.Internet.Url();
+                });
+                
                 var orderedSessions = sessions.OrderBy(x => x.SessionOrder).ToList();
-                // Add session schedule dates
+                // Add session Schedule Dates, based on the Session Order
                 for (int i = 0; i < orderedSessions.Count; i++)
                 {
                     var sessionDate = DateTime.Today.AddDays(i);
@@ -135,4 +135,36 @@ public class EventsFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) : II
             await dbContext.SaveChangesAsync();
         }
     }
+
+    private static List<Event> GenerateEvents(
+        List<EventType> eventTypes, List<Person> people, Group eventRegistrationGroup, ChurchGroupAndChurches churchGroup = null, int count = 10)
+    {
+        var events = new Faker<Event>()
+            .RuleFor(e => e.Name, f => string.Join(" ", f.Lorem.Words(3)))
+            .RuleFor(e => e.Description, f => f.Lorem.Paragraph())
+            .RuleFor(e => e.EventTypeId, f => f.PickRandom(eventTypes).Id)
+            .RuleFor(e => e.ChurchGroupId, f => churchGroup?.ChurchesGroupId)
+            .RuleFor(e => e.ChurchId, f =>  churchGroup == null ? null : f.PickRandom(churchGroup.ChurchIds))
+            .RuleFor(e => e.ContactPersonId, f => f.PickRandom(people).Id)
+            .RuleFor(e => e.ContactEmail, f => f.Person.Email)
+            .RuleFor(s => s.Location, f => f.Address.FullAddress())
+            .RuleFor(e => e.ContactPhone, f => f.Person.Phone)
+            .RuleFor(e => e.ApprovalStatus, f => ApprovalStatus.Approved)   
+            .RuleFor(e => e.EventRegistrationGroup, f => eventRegistrationGroup)
+            .RuleFor(e => e.ApprovalStatus,
+                f => f.PickRandom(ApprovalStatus.PendingApproval, ApprovalStatus.Denied, ApprovalStatus.Approved))
+            .RuleFor(e => e.Capacity, f => f.Random.Number(50, 500))
+            .RuleFor(e => e.PhotoUrl, f => f.Image.PicsumUrl())
+            //.RuleFor(e => e.HasChildCare, f => f.Random.Bool())
+            //.RuleFor(e => e.MinChildAge, (f, e) => e.HasChildCare ? f.Random.Number(0, 5) : null)
+            //.RuleFor(e => e.MaxChildAge, (f, e) => e.HasChildCare ? f.Random.Number((int)e.MinChildAge + 1, 12) : null)
+            .Generate(count);
+        return events;
+    }
+}
+
+class ChurchGroupAndChurches
+{
+    public int ChurchesGroupId { get; set; }
+    public IList<int> ChurchIds { get; set; }
 }
