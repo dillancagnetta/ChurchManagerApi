@@ -40,16 +40,23 @@ public class EventsListSpecification: PermissionSpecification<Event, EventViewMo
             Query.Where(x => x.EventType.OnlineSupport != OnlineSupport.NotOnline.Value);
         }
         
-        if (from.HasValue)
+        if (from.HasValue || to.HasValue)
         {
             Query.Include(x => x.Sessions).ThenInclude(x => x.Schedule);
-            Query.Where(x => x.Sessions.Any(x => x.Schedule.StartDate >= from));
-        }
-        
-        if (to.HasValue)
-        {
-            Query.Include(x => x.Sessions).ThenInclude(x => x.Schedule);
-            Query.Where(x => x.Sessions.Any(x => x.Schedule.EndDate <= to));
+    
+            if (from.HasValue && to.HasValue)
+            {
+                Query.Where(x => x.Sessions.All(s => 
+                    s.Schedule.StartDate >= from.Value && s.Schedule.EndDate <= to.Value));
+            }
+            else if (from.HasValue)
+            {
+                Query.Where(x => x.Sessions.All(s => s.Schedule.StartDate >= from.Value));
+            }
+            else if (to.HasValue)
+            {
+                Query.Where(x => x.Sessions.All(s => s.Schedule.EndDate <= to.Value));
+            }
         }
 
         if (includeDetails.HasValue)

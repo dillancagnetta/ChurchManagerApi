@@ -141,7 +141,7 @@ public class EventsFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) : II
     {
         var events = new Faker<Event>()
             .RuleFor(e => e.Name, f => string.Join(" ", f.Lorem.Words(3)))
-            .RuleFor(e => e.Description, f => f.Lorem.Paragraph())
+            .RuleFor(e => e.Description, f => f.Lorem.Sentence())
             .RuleFor(e => e.EventTypeId, f => f.PickRandom(eventTypes).Id)
             .RuleFor(e => e.ChurchGroupId, f => churchGroup?.ChurchesGroupId)
             .RuleFor(e => e.ChurchId, f =>  churchGroup == null ? null : f.PickRandom(churchGroup.ChurchIds))

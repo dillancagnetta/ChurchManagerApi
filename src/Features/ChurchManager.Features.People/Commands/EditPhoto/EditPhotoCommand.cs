@@ -41,6 +41,7 @@ namespace ChurchManager.Features.People.Commands.EditPhoto
                     await _photos.DeletePhotoAsync(publicId);
                 }
 
+                // Add new photo to Cloudinary
                 var operationResult = await _photos.AddPhotoAsync(fileName, command.File, ct);
 
                 if (operationResult.IsSuccess)

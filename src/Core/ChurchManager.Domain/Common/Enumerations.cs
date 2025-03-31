@@ -51,7 +51,7 @@ namespace ChurchManager.Domain.Common
         /// <summary>
         ///  has been submitted but not yet approved or denied
         /// </summary>
-        public static ApprovalStatus PendingApproval = new("PendingApproval");
+        public static ApprovalStatus PendingApproval = new("Pending");
     
         /// <summary>
         ///  has been approved 

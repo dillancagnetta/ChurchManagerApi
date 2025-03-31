@@ -62,6 +62,7 @@ public class EventsMappingProfile: Profile, IAutoMapperProfile
             .ForMember(d => d.EndTime, opt =>
                 opt.MapFrom(src => src.Schedule != null ? src.SessionEndDateTime().EndTime : null))
             ;
+        // For External Public API
         
         // For Internal API
         CreateMap<EventType, EventTypeViewModel>()
@@ -73,11 +74,18 @@ public class EventsMappingProfile: Profile, IAutoMapperProfile
                 opt.MapFrom(src => src.ChildCare != null && src.ChildCare.HasChildCare ? src.ChildCare.MinChildAge : null))
             ;
 
+        // Event Types
         CreateMap<EditEventTypeCommand, EditEventTypeModel>().ReverseMap();
         CreateMap<EditEventTypeModel, EventType>();
         
-        
-
+        // Events
+        CreateMap<EditEventViewModel, EditEventCommand>().ReverseMap();
+        CreateMap<EditEventCommand, Event>()
+            .ForMember(dest => dest.Sessions, opt => opt.Ignore()); // Ignore Sessions;
+        CreateMap<EditEventViewModel, Event>();
+        CreateMap<EventSessionViewModel, EventSession>()
+            .ForMember(d => d.OnlineSupport, opt =>
+                opt.MapFrom(src => new OnlineSupport(src.OnlineSupport)));
     }
    
     public int Order => 1;

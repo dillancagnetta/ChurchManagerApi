@@ -58,15 +58,21 @@ public record EventConfigurationViewModel
 
 public record EventSessionViewModel
 {
-    public int Id { get; set; }
+    public int? Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public int SessionOrder { get; set; }
     public int? Capacity { get; set; }
-    public DateTime? StartDate { get; set; }
+
+    #region Schedule information
+
+     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public string StartTime { get; set; }
     public string EndTime { get; set; }
+
+    #endregion 
+   
     public string Location { get; set; }
     public string OnlineSupport { get; set; }
     public bool IsOnline => !OnlineSupport.Equals("Not Online");
@@ -76,5 +82,28 @@ public record EventSessionViewModel
 
 public record EditEventViewModel
 {
+    public int Id { get; set; }
+    public string Name { get; set; }
+        
+    public string Description { get; set; }
+        
+    public int EventTypeId { get; set; }
+        
+    public int? ChildCareGroupId { get; set; }
     
+    public int? EventRegistrationGroupId { get; set; }
+        
+    public int ContactPersonId { get; set; }
+        
+    public string ContactEmail { get; set; }
+        
+    public string ContactPhone { get; set; }
+    public string Location { get; set; }
+    public int? Capacity { get; set; }
+        
+    public int? ChurchGroupId { get; set; }
+    public int? ChurchId { get; set; }
+    public string PhotoUrl { get; set; }
+    
+    public List<EventSessionViewModel> Sessions { get; set; } = new();
 }

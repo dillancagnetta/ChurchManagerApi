@@ -48,9 +48,30 @@ namespace ChurchManager.Api.Controllers.v1
             
             // Add image
             command.Image = image;
-            return Ok(await Mediator.Send(command, token));   // AddEventCommand
+            await Mediator.Send(command, token);  // AddEventCommand
+            
+            return Accepted();  
+        }
+        
+        [HttpPut]
+        public async Task<IActionResult> Update([FromForm] string eventInfo, IFormFile image, CancellationToken token)
+        {
+            var command = JsonSerializer.Deserialize<EditEventCommand>(eventInfo, 
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true, });
+            
+            if (command == null )return BadRequest("Invalid event data");
+            
+            await Mediator.Send(command, token);
+            return Accepted();
         }
 
         #endregion
+        
+        [HttpPut("approval-status")]
+        public async Task<IActionResult> UpdateApprovalStatus([FromBody] UpdateEventApprovalStatus command, CancellationToken token)
+        {
+            await Mediator.Send(command, token);
+            return Accepted();
+        }
     }
 }
