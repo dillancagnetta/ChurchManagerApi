@@ -146,11 +146,21 @@ public class EditEventCommandCommandHandler(
             eventEntity.Sessions.Remove(session);
         }
         
+        // Photo Removed
+        if (eventEntity.HasPhoto && command.Image is null)
+        {
+            if (eventEntity.PhotoUrl.Contains("cloudinary", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var publicId = eventEntity.PhotoUrl.CloudinaryPublicId();
+                await photos.DeletePhotoAsync(publicId);
+            }
+            eventEntity.PhotoUrl = null;
+        }
         // Update Photo
         if (command.Image is { Length: > 0 })
         {
             // Delete current photo
-            if(!eventEntity.PhotoUrl.IsNullOrEmpty() && !eventEntity.PhotoUrl.Contains("cloudinary", StringComparison.InvariantCultureIgnoreCase))
+            if(eventEntity.HasPhoto && eventEntity.PhotoUrl.Contains("cloudinary", StringComparison.InvariantCultureIgnoreCase))
             {
                 var publicId = eventEntity.PhotoUrl.CloudinaryPublicId();
                 await photos.DeletePhotoAsync(publicId);
@@ -181,19 +191,19 @@ public class EditEventCommandCommandHandler(
             .Select(sessionDto =>
             {
                 var newSession = mapper.Map<EventSession>(sessionDto); // Map basic properties
-        
                 // Create a Schedule entity from sessionDto
                 newSession.Schedule = new Schedule
                 {
+                    Name = $"{eventEntity.Name}-EventSession",
                     StartDate = sessionDto.StartDate,
                     EndDate = sessionDto.EndDate,
                     StartTime = TimeSpan.Parse(sessionDto.StartTime),
                     EndTime = TimeSpan.Parse(sessionDto.EndTime),
                     Timezone = "South Africa Standard Time"
                 };
-
                 return newSession;
             }).ToList();
+        
         foreach (var newSession in newSessions)
         {
             eventEntity.Sessions.Add(newSession);

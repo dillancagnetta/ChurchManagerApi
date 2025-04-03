@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using ChurchManager.Domain.Common;
+using CodeBoss.Extensions;
 using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.People.Notes;
@@ -100,6 +100,8 @@ namespace ChurchManager.Domain.Features.People
                 PhotoUrl = person.PhotoUrl
             };
         }
+        
+        public bool HasPhoto => !PhotoUrl.IsNullOrEmpty();
 
         #endregion
     }

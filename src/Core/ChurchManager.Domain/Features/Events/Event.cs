@@ -5,6 +5,7 @@ using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
+using CodeBoss.Extensions;
 
 namespace ChurchManager.Domain.Features.Events;
 
@@ -122,6 +123,8 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
         var (endDate, endTime) = session.SessionEndDateTime();
         return (startDate, startTime, endDate, endTime);
     }
+
+    public bool HasPhoto => !PhotoUrl.IsNullOrEmpty();
 
     #endregion
 }

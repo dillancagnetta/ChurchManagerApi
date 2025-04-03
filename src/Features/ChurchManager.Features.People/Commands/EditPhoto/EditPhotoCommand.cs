@@ -35,7 +35,7 @@ namespace ChurchManager.Features.People.Commands.EditPhoto
                 var fileName = $"{person.Id}-{person.FullName.FirstName}-{person.FullName.LastName}-{_environment}";
 
                 // Delete current photo
-                if(!person.PhotoUrl.IsNullOrEmpty() && person.PhotoUrl.Contains("cloudinary", StringComparison.InvariantCultureIgnoreCase))
+                if(person.HasPhoto && person.PhotoUrl.Contains("cloudinary", StringComparison.InvariantCultureIgnoreCase))
                 {
                     var publicId = person.CloudinaryPublicId();
                     await _photos.DeletePhotoAsync(publicId);

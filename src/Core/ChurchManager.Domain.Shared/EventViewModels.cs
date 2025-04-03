@@ -12,7 +12,8 @@ public record EventViewModel
     public string PhotoUrl { get; set; }
     public ChurchReference ChurchReference { get; set; }
 
-    public string ContactPersonPhoneNumber { get; set; }
+    public string ContactPhone { get; set; }
+    public string ContactEmail { get; set; }
     public int NumberOfSessions { get; set; }
     public string Location { get; set; }
     public string ApprovalStatus { get; set; }

@@ -15,6 +15,8 @@ public static class ExpressionExtensions
             PhotoUrl = x.PhotoUrl,
             EventTypeId = x.EventTypeId,
             EventTypeName = x.EventType != null ? x.EventType.Name : null,
+            ContactPhone = x.ContactPhone,
+            ContactEmail = x.ContactEmail,
             ContactPerson =  x.ContactPerson != null ? new PersonViewModelBasic
             {
                 PersonId = x.ContactPersonId,
@@ -106,6 +108,8 @@ public static class ExpressionExtensions
                 PhotoUrl = x.PhotoUrl,
                 EventTypeId = x.EventTypeId,
                 EventTypeName = x.EventType != null ? x.EventType.Name : null,
+                ContactPhone = x.ContactPhone,
+                ContactEmail = x.ContactEmail,
                 ChurchReference = new ChurchReference
                 {
                     ChurchId = x.ChurchId,
