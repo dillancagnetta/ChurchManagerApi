@@ -17,7 +17,7 @@ namespace ChurchManager.Features.Common.Startup
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(OpenTelemetryBehavior<,>));
 
-            services.AddAspNetCurrentUser<ICognitoCurrentUser, CognitoCurrentUser>();
+            services.AddAspNetCurrentUser<IAppCurrentUser, AppCurrentUser>();
         }
 
         public void Configure(IApplicationBuilder application, IWebHostEnvironment webHostEnvironment)

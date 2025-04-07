@@ -19,6 +19,12 @@ public class Communication : AuditableEntity<int>, IAggregateRoot<int>
     [MaxLength( 100 )]
     public string? Subject { get; set; }
     
+    /// <summary>
+    /// Gets or sets the category of the communication.
+    /// </summary>
+    [MaxLength( 100 )]
+    public string? Category { get; set; }
+    
     [MaxLength( 50 )]
     public CommunicationType CommunicationType  { get;  set; }
     

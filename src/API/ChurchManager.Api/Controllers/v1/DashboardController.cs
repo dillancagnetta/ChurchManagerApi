@@ -11,12 +11,12 @@ namespace ChurchManager.Api.Controllers.v1
     [Authorize]
     public class DashboardController : BaseApiController
     {
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
         private readonly IChurchAttendanceDbRepository _attendanceDbRepository;
         private readonly IPersonDbRepository _personDbRepository;
 
         public DashboardController(
-            ICognitoCurrentUser currentUser,
+            IAppCurrentUser currentUser,
             IChurchAttendanceDbRepository attendanceDbRepository,
             IPersonDbRepository personDbRepository)
         {

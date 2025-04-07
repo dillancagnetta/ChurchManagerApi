@@ -11,9 +11,9 @@ namespace ChurchManager.Api.Controllers.v1
     [Authorize]
     public class MissionsController : BaseApiController
     {
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
 
-        public MissionsController(ICognitoCurrentUser currentUser)
+        public MissionsController(IAppCurrentUser currentUser)
         {
             _currentUser = currentUser;
         }

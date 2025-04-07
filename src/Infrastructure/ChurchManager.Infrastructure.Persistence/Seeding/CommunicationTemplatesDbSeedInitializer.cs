@@ -23,16 +23,16 @@ public class CommunicationTemplatesDbSeedInitializer(IServiceScopeFactory scopeF
 
         if (!await dbContext.CommunicationTemplate.AnyAsync())
         {
-            var template1 = await CreateCommunicationTemplate(DomainConstants.Communication.Email.Templates.FollowUpTemplate);
-            var template2 = await CreateCommunicationTemplate(DomainConstants.Communication.Email.Templates.FamilyCodeRequest);
-            var baseTemplate = await CreateCommunicationTemplate(DomainConstants.Communication.Email.Templates.Layout, true);
+            var template1 = await CreateCommunicationTemplate(DomainConstants.Communication.Email.Templates.FollowUpTemplate, supportedTypes:[CommunicationType.Email]);
+            var template2 = await CreateCommunicationTemplate(DomainConstants.Communication.Email.Templates.FamilyCodeRequest, supportedTypes:[CommunicationType.Email]);
+            var baseTemplate = await CreateCommunicationTemplate(DomainConstants.Communication.Email.Templates.Layout, true, [CommunicationType.Email]);
             
             await dbContext.CommunicationTemplate.AddRangeAsync(template1, template2, baseTemplate);
             await dbContext.SaveChangesAsync();
         }
     }
 
-    public async Task<CommunicationTemplate> CreateCommunicationTemplate(string name, bool isBaseTemplate = false)
+    public async Task<CommunicationTemplate> CreateCommunicationTemplate(string name, bool isBaseTemplate = false, IList<CommunicationType> supportedTypes = null)
     {
         var path = DomainConstants.Communication.Email.Template(name);
         string content = await File.ReadAllTextAsync(path);
@@ -44,7 +44,8 @@ public class CommunicationTemplatesDbSeedInitializer(IServiceScopeFactory scopeF
             Content = content,
             IsBaseTemplate = isBaseTemplate,
             IsSystem = true,
-            LogoFileUrl = isBaseTemplate ? "https://churchmanager-assets.s3.us-east-1.amazonaws.com/logo.svg" : null
+            LogoFileUrl = isBaseTemplate ? "https://churchmanager-assets.s3.us-east-1.amazonaws.com/logo.svg" : null,
+            SupportedTypes = supportedTypes
         };
     }
 }

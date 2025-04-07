@@ -9,9 +9,9 @@ namespace ChurchManager.Api.Controllers.v1
     [Authorize]
     public class DiscipleshipController : BaseApiController
     {
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
 
-        public DiscipleshipController(ICognitoCurrentUser currentUser)
+        public DiscipleshipController(IAppCurrentUser currentUser)
         {
             _currentUser = currentUser;
         }

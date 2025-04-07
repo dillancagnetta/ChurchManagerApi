@@ -21,7 +21,7 @@ public class CommunicationStatus : Enumeration<CommunicationStatus, string>
     /// <summary>
     /// Communication has been submitted but not yet approved or denied
     /// </summary>
-    public static CommunicationStatus PendingApproval = new("PendingApproval");
+    public static CommunicationStatus PendingApproval = new("Pending");
     
     /// <summary>
     /// Communication has been approved for sending

@@ -17,7 +17,7 @@ namespace ChurchManager.Features.People.Services
         IPersonDbRepository dbRepository,
         IMapper mapper, 
         IPermissionContext permissions,
-        ICognitoCurrentUser currentUser) : IPersonService
+        IAppCurrentUser currentUser) : IPersonService
     {
 
         public async Task<PagedResult<PersonViewModel>> BrowseAsync(PeopleAdvancedSearchQuery query,

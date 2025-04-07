@@ -17,7 +17,7 @@ public record BrowseChurchGroups(string SearchTerm = null, bool IncludeDetails =
 public class BrowseChurchGroupsQueryHandler(
     IGenericDbRepository<ChurchGroup> dbRepository,
     IPermissionContext permissions,
-    ICognitoCurrentUser currentUser) : IRequestHandler<BrowseChurchGroups, ApiResponse>
+    IAppCurrentUser currentUser) : IRequestHandler<BrowseChurchGroups, ApiResponse>
 {
     public async Task<ApiResponse> Handle(BrowseChurchGroups query, CancellationToken ct)
     {

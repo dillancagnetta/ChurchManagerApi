@@ -10,7 +10,7 @@ namespace ChurchManager.Api.Controllers.v1;
 [ApiVersion("1.0")]
 [Authorize]
 public class MessagesController(
-    ICognitoCurrentUser currentUser,
+    IAppCurrentUser currentUser,
     IMessageDbRepository dbRepository) : BaseApiController
 {
     [HttpGet("current-user")]

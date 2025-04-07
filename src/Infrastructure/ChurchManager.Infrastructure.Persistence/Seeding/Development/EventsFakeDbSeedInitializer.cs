@@ -32,6 +32,8 @@ public class EventsFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) : II
         // Event Types
         if (!await dbContext.EventType.AnyAsync())
         {
+            var defaultGroupTypeId = await dbContext.GroupType.Where(x =>  x.Name == "Events").Select(x => x.Id).FirstOrDefaultAsync();
+            
             var eventTypes = new Faker<EventType>()
                 .RuleFor(e => e.Name,
                     f => f.PickRandom("Super Sunday", "ReachOut World", "Youth Conference", "Prayer Conference",
@@ -48,7 +50,7 @@ public class EventsFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) : II
                 .RuleFor(e => e.AllowFamilyRegistration, f => faker.Random.Bool(0.8f))
                 .RuleFor(e => e.AllowNonFamilyRegistration, f => faker.Random.Bool(0.8f))
                 .RuleFor(e => e.RequiresChildInfo, f => faker.Random.Bool(0.3f))
-                .RuleFor(e => e.DefaultGroupTypeId, f => 2)
+                .RuleFor(e => e.DefaultGroupTypeId, f => defaultGroupTypeId)
                 .Generate(4);
 
             await dbContext.EventType.AddRangeAsync(eventTypes);

@@ -14,7 +14,8 @@ public record CreateCommunicationCommand : IRequest<ApiResponse>
     public int? CommunicationTemplateId { get; set; } 
     public int? SenderPersonId { get; set; }
     public DateTime? SendDateTime { get; set; }
-    public int? ListGroupId { get; private set; }
+    public int? ListGroupId { get;  set; }
+    public bool IsBulkCommunication { get;  set; }
 }
 
 public class CreateCommunicationHandler(ICommunicationDbRepository dbRepository) : IRequestHandler<CreateCommunicationCommand, ApiResponse>
@@ -27,11 +28,11 @@ public class CreateCommunicationHandler(ICommunicationDbRepository dbRepository)
             Subject = command.Subject,
             SenderPersonId = command.SenderPersonId,
             FutureSendDateTime = command.SendDateTime,
-            ListGroupId = command.ListGroupId,
+            ListGroupId = command.ListGroupId,  
             CommunicationTemplateId = command.CommunicationTemplateId,
             CommunicationContent = command.Content,
             Recipients = command.PersonIds.Select(id => new CommunicationRecipient { PersonId = id }).ToList(),
-            IsBulkCommunication = command.PersonIds.Length > 1
+            IsBulkCommunication = command.IsBulkCommunication
         };
 
         await dbRepository.AddAsync(communication, ct);

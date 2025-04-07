@@ -24,11 +24,11 @@ namespace ChurchManager.Features.FollowUp.Queries.BrowseFollowUp
     public class BrowseFollowUp : IRequestHandler<BrowseFollowUpQuery, PagedResponse<FollowUpViewModel>>
     {
         private readonly IGenericDbRepository<Domain.Features.People.FollowUp> _dbRepository;
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
 
         public BrowseFollowUp(
             IGenericDbRepository<Domain.Features.People.FollowUp> dbRepository,
-            ICognitoCurrentUser currentUser)
+            IAppCurrentUser currentUser)
         {
             _dbRepository = dbRepository;
             _currentUser = currentUser;

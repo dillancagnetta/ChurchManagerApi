@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using ChurchManager.Api.Middlewares;
 using ChurchManager.Features.Communication.Commands;
+using ChurchManager.Features.Communication.Queries;
 using ChurchManager.SharedKernel.Common;
 using ChurchManager.SharedKernel.Wrappers;
 using CodeBoss.Extensions;
@@ -126,6 +127,18 @@ public class CommunicationsController(ILogger<CommunicationsController> logger) 
     {
         return Ok(await Mediator.Send(command, token));
     }
+
+    #region CRUD
+
+    [HttpPost("browse")]
+    public async Task<IActionResult> Browse([FromBody] BrowseCommunicationsQuery query, CancellationToken token)
+    {
+        return Ok(await Mediator.Send(query, token));
+    }
+
+    #endregion
+    
+    
 }
 
 public record SnsMessage

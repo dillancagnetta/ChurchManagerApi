@@ -20,13 +20,13 @@ namespace ChurchManager.Features.People.Commands.AddNewFamily
     {
         private readonly IPersonDbRepository _dbRepository;
         private readonly IDomainEventPublisher _eventPublisher;
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
         private readonly ILogger<AddNewFamilyHandler> _logger;
 
         public AddNewFamilyHandler(
             IPersonDbRepository dbRepository, 
             IDomainEventPublisher eventPublisher,
-            ICognitoCurrentUser currentUser,
+            IAppCurrentUser currentUser,
             ILogger<AddNewFamilyHandler> logger)
         {
             _dbRepository = dbRepository;

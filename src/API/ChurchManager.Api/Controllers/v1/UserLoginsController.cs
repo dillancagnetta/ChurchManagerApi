@@ -12,11 +12,11 @@ namespace ChurchManager.Api.Controllers.v1
     public class UserLoginsController : BaseApiController
     {
         private readonly ILogger<UserLoginsController> _logger;
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
 
         public UserLoginsController(
             ILogger<UserLoginsController> logger,
-            ICognitoCurrentUser currentUser)
+            IAppCurrentUser currentUser)
         {
             _logger = logger;
             _currentUser = currentUser;

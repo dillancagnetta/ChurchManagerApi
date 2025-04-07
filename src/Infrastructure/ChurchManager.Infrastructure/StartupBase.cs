@@ -137,6 +137,7 @@ namespace ChurchManager.Infrastructure
             
             Console.WriteLine($"[AppConfig] RabbitMqEnabled: {config.RabbitMqEnabled}");
             Console.WriteLine($"[AppConfig] EmailSendingEnabled: {config.EmailSendingEnabled}");
+            Console.WriteLine($"[AppConfig] SMSSendingEnabled: {config.SMSSendingEnabled}");
 
             //Load plugins
             PluginManager.Load(mvcCoreBuilder, config);

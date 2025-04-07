@@ -13,9 +13,9 @@ namespace ChurchManager.Api.Controllers.v1
     [Authorize]
     public class CellMinistryController : BaseApiController
     {
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
 
-        public CellMinistryController(ICognitoCurrentUser currentUser)
+        public CellMinistryController(IAppCurrentUser currentUser)
         {
             _currentUser = currentUser;
         }

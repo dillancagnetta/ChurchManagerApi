@@ -7,7 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Features.Groups.Queries.GrroupsByGroupType
 {
-    public record GroupsByGroupTypeSelectItemQuery(int GroupTypeId) : IRequest<ApiResponse>;
+    public record GroupsByGroupTypeSelectItemQuery : IRequest<ApiResponse>
+    {
+        public int GroupTypeId { get; set; }
+        public bool IncludeParentGroups { get; set; } = true;
+    }
 
     public class GroupsByGroupTypeSelectItemHandler : IRequestHandler<GroupsByGroupTypeSelectItemQuery, ApiResponse>
     {
@@ -28,6 +32,7 @@ namespace ChurchManager.Features.Groups.Queries.GrroupsByGroupType
                         .Queryable()
                         .AsNoTracking()
                         .Where(x => x.GroupTypeId == query.GroupTypeId)
+                        .Where(x => query.IncludeParentGroups || x.ParentGroupId != null)
                         .OrderBy(x => x.Name)
                     )
                 .ToListAsync(ct);

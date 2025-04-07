@@ -16,11 +16,11 @@ namespace ChurchManager.Features.Groups.Commands.GroupAttendanceFeedback
 
     public class GroupAttendanceFeedbackHandler : IRequestHandler<SubmitGroupAttendanceFeedbackCommand, Unit>
     {
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
         private readonly IGroupAttendanceDbRepository _dbRepository;
 
         public GroupAttendanceFeedbackHandler(
-            ICognitoCurrentUser currentUser,
+            IAppCurrentUser currentUser,
             IGroupAttendanceDbRepository dbRepository)
         {
             _currentUser = currentUser;

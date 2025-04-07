@@ -66,7 +66,7 @@ namespace ChurchManager.Api.Middlewares
                 if (options.Value.Enabled)
                 {
                     var bugsnagClient = context.RequestServices.GetRequiredService<IClient>();
-                    var currentUser = context.RequestServices.GetService<ICognitoCurrentUser>();
+                    var currentUser = context.RequestServices.GetService<IAppCurrentUser>();
 
                     if (currentUser is not null)
                     {

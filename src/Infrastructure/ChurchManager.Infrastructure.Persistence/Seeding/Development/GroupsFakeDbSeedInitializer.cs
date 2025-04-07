@@ -27,6 +27,8 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         private readonly GroupType _sectionGroupType = new() { Name = "Section", Description = "Group Section", IconCssClass = "heroicons_outline:folder", TakesAttendance = false, IsSystem = true};
         private readonly GroupType _cellGroupType = new() { Name = "Cell", Description = "Cell Ministry", IconCssClass = "heroicons_outline:squares-2x2", IsSystem = true };
         private readonly GroupType _eventsGroupType = new() { Name = "Events", Description = "Event Registration", IconCssClass = "heroicons_outline:calendar", IsSystem = true };
+        private readonly GroupType _communicationsGroupType = new() { Name = "Communications", Description = "Storing lists of people to communicate to", 
+            GroupTerm = "List", GroupMemberTerm = "Recipient", IconCssClass = "heroicons_outline:chat-bubble-left", IsSystem = true, TakesAttendance = false };
 
         private GroupTypeRole _cellLeaderRole;
         private GroupTypeRole _cellAssistantRole;
@@ -46,6 +48,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 await _dbContext.GroupType.AddAsync(_sectionGroupType);
                 await _dbContext.GroupType.AddAsync(_cellGroupType);
                 await _dbContext.GroupType.AddAsync(_eventsGroupType);
+                await _dbContext.GroupType.AddAsync(_communicationsGroupType);
                 await _dbContext.SaveChangesAsync();
             }
 
@@ -98,6 +101,35 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                     CreatedDate = DateTime.UtcNow,
                 };
                 await _dbContext.Group.AddAsync(eventRegistrationGroup);
+                await _dbContext.SaveChangesAsync();
+                
+                // Communication List Groups
+                var communicationsSectionParentGroup = new Group
+                {
+                    GroupType = _communicationsGroupType,
+                    Name = "Communication Lists",
+                    Description = "Grouping section for communication lists",
+                    CreatedDate = DateTime.UtcNow
+                };
+                var communicationsMembersList = new Group
+                {
+                    GroupType = _communicationsGroupType,
+                    Name = "Members",
+                    Description = "Church members communication list",
+                    CreatedDate = DateTime.UtcNow,
+                    ChurchId = 1,
+                    ParentGroup = communicationsSectionParentGroup
+                };
+                var communicationsParentsList = new Group
+                {
+                    GroupType = _communicationsGroupType,
+                    Name = "Parents of Children",
+                    Description = "Parents of Children communication list",
+                    CreatedDate = DateTime.UtcNow,
+                    ChurchId = 1,
+                    ParentGroup = communicationsSectionParentGroup
+                };
+                await _dbContext.Group.AddRangeAsync(communicationsSectionParentGroup, communicationsMembersList, communicationsParentsList);
                 await _dbContext.SaveChangesAsync();
             }
         }
@@ -158,7 +190,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                     StartDate = DateTimeOffset.UtcNow,
                     IsOnline = i % 2 == 0,
                     Address = faker.Address.FullAddress(),
-                    Schedule = GenerateSchedule(),
+                    Schedule = parentGroup.Name == "Cell Groups" ? GenerateSchedule() : null,
                     ParentGroup = parentGroup
                 };
 

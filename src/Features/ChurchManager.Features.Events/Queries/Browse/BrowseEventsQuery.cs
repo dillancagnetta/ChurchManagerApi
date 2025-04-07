@@ -25,7 +25,7 @@ public record BrowseEventsQuery: QueryParameter,  IRequest<PagedResponse<EventVi
 public class BrowseEventsQueryHandler(
     IReadDbRepository<Event> readDb,
     IPermissionContext permissions,
-    ICognitoCurrentUser currentUser) : IRequestHandler<BrowseEventsQuery, PagedResponse<EventViewModel>>
+    IAppCurrentUser currentUser) : IRequestHandler<BrowseEventsQuery, PagedResponse<EventViewModel>>
 {
     public async Task<PagedResponse<EventViewModel>> Handle(BrowseEventsQuery query, CancellationToken ct)
     {

@@ -22,9 +22,9 @@ namespace ChurchManager.Api.Controllers.v1
     [Authorize]
     public class GroupsController : BaseApiController
     {
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
 
-        public GroupsController(ICognitoCurrentUser currentUser)
+        public GroupsController(IAppCurrentUser currentUser)
         {
             _currentUser = currentUser;
         }
@@ -65,10 +65,10 @@ namespace ChurchManager.Api.Controllers.v1
             return Ok(await Mediator.Send(new GroupsForChurchSelectItemQuery(churchId), token));
         }
 
-        [HttpGet("type/{groupTypeId}/select")]
-        public async Task<IActionResult> GetGroupsByGroupTypeSelectItem(int groupTypeId, CancellationToken token)
+        [HttpGet("groupType/select")]
+        public async Task<IActionResult> GetGroupsByGroupTypeSelectItem([FromQuery] GroupsByGroupTypeSelectItemQuery query, CancellationToken token)
         {
-            var group = await Mediator.Send(new GroupsByGroupTypeSelectItemQuery(groupTypeId), token);
+            var group = await Mediator.Send(query, token);
             return Ok(group);
         }
 

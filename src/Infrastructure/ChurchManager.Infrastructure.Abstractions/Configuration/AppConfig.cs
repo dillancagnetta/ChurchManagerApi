@@ -49,6 +49,11 @@ namespace ChurchManager.Infrastructure.Abstractions.Configuration
         /// A value indicating whether to send emails 
         /// </summary>
         public bool EmailSendingEnabled { get; set; }
+        
+        /// <summary>
+        /// A value indicating whether to send sms's 
+        /// </summary>
+        public bool SMSSendingEnabled { get; set; }
 
         /// <summary>
         /// A list of plugins to be ignored during start application - pattern

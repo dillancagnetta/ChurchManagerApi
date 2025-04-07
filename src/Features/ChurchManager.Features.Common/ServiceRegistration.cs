@@ -24,6 +24,6 @@ namespace ChurchManager.Features.Common
 
             #endregion
 
-            services.AddAspNetCurrentUser<ICognitoCurrentUser, CognitoCurrentUser>(); }
+            services.AddAspNetCurrentUser<IAppCurrentUser, AppCurrentUser>(); }
     }
 }

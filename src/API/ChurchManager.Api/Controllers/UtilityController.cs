@@ -20,7 +20,7 @@ namespace ChurchManager.Api.Controllers
     {
         private readonly ILogger<UtilityController> _logger;
         private readonly IMediator _mediator;
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
         private readonly IChurchManagerDbContext _dbContext;
         private readonly IDomainEventPublisher _events;
         // Push Notifications
@@ -31,7 +31,7 @@ namespace ChurchManager.Api.Controllers
         public UtilityController(
             ILogger<UtilityController> logger,
             IMediator mediator,
-            ICognitoCurrentUser currentUser,
+            IAppCurrentUser currentUser,
             IChurchManagerDbContext dbContext,
             IDomainEventPublisher events,
             // Push Notifications

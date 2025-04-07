@@ -19,7 +19,7 @@ public class SecurityService(IPermissionContext permissions,
     IReadDbRepository<UserLoginRole> rolesDb,
     IGenericDbRepository<UserLoginRole> rolesWriteDb,
     IGenericDbRepository<EntityPermission> permissionsDb,
-    ICognitoCurrentUser currentUser,
+    IAppCurrentUser currentUser,
     IEntityPermissionsResolver permissionsResolver
     ) : ISecurityService
 {

@@ -18,10 +18,10 @@ namespace ChurchManager.Features.Communication.Commands
 
     public class WebPushSubscriptionHandler : IRequestHandler<SubscribeToWebPushCommand, Unit>
     {
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
         private readonly IPushSubscriptionsService _push;
 
-        public WebPushSubscriptionHandler(ICognitoCurrentUser currentUser, IPushSubscriptionsService push)
+        public WebPushSubscriptionHandler(IAppCurrentUser currentUser, IPushSubscriptionsService push)
         {
             _currentUser = currentUser;
             _push = push;

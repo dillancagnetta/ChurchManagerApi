@@ -11,9 +11,9 @@ namespace ChurchManager.Api.Controllers.v1;
 [Authorize]
 public class ChurchesController : BaseApiController
 {
-    private readonly ICognitoCurrentUser _currentUser;
+    private readonly IAppCurrentUser _currentUser;
 
-    public ChurchesController(ICognitoCurrentUser currentUser)
+    public ChurchesController(IAppCurrentUser currentUser)
     {
         _currentUser = currentUser;
     }
