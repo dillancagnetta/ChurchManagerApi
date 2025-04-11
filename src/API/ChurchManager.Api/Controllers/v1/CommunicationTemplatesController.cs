@@ -15,4 +15,16 @@ public class CommunicationTemplatesController(ILogger<CommunicationTemplatesCont
         
         return Ok(templates);
     }
+    
+    [HttpGet("{templateId}/content")]
+    public async Task<IActionResult> GetTemplate(int templateId, CancellationToken token = default)
+    {
+        return Ok(await Mediator.Send(new GetCommunicationTemplateContentQuery(templateId), token));
+    }
+
+    #region CRUD
+
+    
+
+    #endregion
 }

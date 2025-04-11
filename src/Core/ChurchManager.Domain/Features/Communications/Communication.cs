@@ -65,7 +65,7 @@ public class Communication : AuditableEntity<int>, IAggregateRoot<int>
     public DateTime? FutureSendDateTime { get;  set; }
     
     [MaxLength( 100 )]
-    public CommunicationStatus Status { get;  set; }
+    public CommunicationStatus Status { get;  set; } =  CommunicationStatus.PendingApproval.Value;
     
     public CommunicationReview Review { get; set; } = new();
     

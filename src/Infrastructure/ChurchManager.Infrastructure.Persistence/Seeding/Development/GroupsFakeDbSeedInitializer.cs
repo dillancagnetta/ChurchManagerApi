@@ -25,7 +25,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 
         // Cell Group Type
         private readonly GroupType _sectionGroupType = new() { Name = "Section", Description = "Group Section", IconCssClass = "heroicons_outline:folder", TakesAttendance = false, IsSystem = true};
-        private readonly GroupType _cellGroupType = new() { Name = "Cell", Description = "Cell Ministry", IconCssClass = "heroicons_outline:squares-2x2", IsSystem = true };
+        private readonly GroupType _cellGroupType = new() { Name = SeedingConstants.CellGroupType, Description = "Cell Ministry", IconCssClass = "heroicons_outline:squares-2x2", IsSystem = true };
         private readonly GroupType _eventsGroupType = new() { Name = "Events", Description = "Event Registration", IconCssClass = "heroicons_outline:calendar", IsSystem = true };
         private readonly GroupType _communicationsGroupType = new() { Name = "Communications", Description = "Storing lists of people to communicate to", 
             GroupTerm = "List", GroupMemberTerm = "Recipient", IconCssClass = "heroicons_outline:chat-bubble-left", IsSystem = true, TakesAttendance = false };

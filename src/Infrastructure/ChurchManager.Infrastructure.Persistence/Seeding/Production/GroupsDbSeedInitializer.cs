@@ -20,7 +20,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Production
         private ChurchManagerDbContext _dbContext;
 
         // Cell Group Type
-        private readonly GroupType _cellGroupType  = new() { Name = "Cell", Description = "Cell Ministry" };
+        private readonly GroupType _cellGroupType  = new() { Name = SeedingConstants.CellGroupType, Description = "Cell Ministry" };
 
         public GroupsDbSeedInitializer(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
 

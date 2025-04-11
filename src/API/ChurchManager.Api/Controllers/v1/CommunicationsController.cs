@@ -116,19 +116,27 @@ public class CommunicationsController(ILogger<CommunicationsController> logger) 
       "senderPersonId": 1
     }
     */
-    [HttpPost("create-communication")]
-    public async Task<IActionResult> CreateCommunication([FromBody] CreateCommunicationCommand command, CancellationToken token)
-    {
-        return Ok(await Mediator.Send(command, token));
-    }
+   
     
     [HttpPost("approve-communication")]
     public async Task<IActionResult> ApproveCommunication([FromBody] ApproveCommunicationCommand command, CancellationToken token)
     {
         return Ok(await Mediator.Send(command, token));
     }
+    
+    [HttpPost("recipients/browse")]
+    public async Task<IActionResult> BrowseRecipients([FromBody] BrowseRecipientsQuery query, CancellationToken token)
+    {
+        return Ok(await Mediator.Send(query, token));
+    }
 
     #region CRUD
+    
+    [HttpPost]
+    public async Task<IActionResult> CreateCommunication([FromBody] CreateCommunicationCommand command, CancellationToken token)
+    {
+        return Ok(await Mediator.Send(command, token));
+    }
 
     [HttpPost("browse")]
     public async Task<IActionResult> Browse([FromBody] BrowseCommunicationsQuery query, CancellationToken token)

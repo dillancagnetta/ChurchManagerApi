@@ -103,6 +103,8 @@ namespace ChurchManager.Domain.Features.People
         
         public bool HasPhoto => !PhotoUrl.IsNullOrEmpty();
 
+        public PhoneNumber MessagingPhoneNumber => PhoneNumbers.FirstOrDefault(x => x.IsMessagingEnabled);
+
         #endregion
     }
 

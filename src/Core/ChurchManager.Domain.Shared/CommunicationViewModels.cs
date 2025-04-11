@@ -5,6 +5,8 @@ public record CommunicationViewModel
     public int Id { get; set; }
     public string Name { get; set; }
     public string Subject { get; set; }
+    public string Content { get; set; }
+    public string Category { get; set; }
     public string CommunicationType  { get;  set; }
     public GroupReference ListGroup { get;  set; }
     public int? CommunicationTemplateId { get;  set; }
@@ -26,4 +28,15 @@ public record CommunicationReviewViewModel
     public string ReviewerNote { get; set; }
     public DateTime? ReviewedDateTime { get; set; }
     public int? ReviewerPersonId { get; set; }
+}
+
+public record CommunicationRecipientViewModel
+{
+    public PersonViewModelBasic RecipientPerson { get;   set; }
+    public string Status { get; set; }
+    public string StatusNote { get; set; }
+    public DateTime? SendDateTime { get; set; }
+    public DateTime? OpenedDateTime { get; set; }
+    public string UniqueMessageId { get; set; }
+    public int AttemptCount  { get; set; }
 }

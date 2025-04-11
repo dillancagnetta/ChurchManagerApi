@@ -1,5 +1,6 @@
 ﻿using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Communications.Repositories;
+using ChurchManager.SharedKernel.Common;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 
@@ -9,25 +10,28 @@ public record CreateCommunicationCommand : IRequest<ApiResponse>
 {
     public int[] PersonIds { get; set; }
     public string CommunicationType { get; set; } 
+    public string Name { get; set; } 
+    public string Category { get; set; } 
     public string Subject { get; set; } 
     public string Content { get; set; } 
     public int? CommunicationTemplateId { get; set; } 
-    public int? SenderPersonId { get; set; }
     public DateTime? SendDateTime { get; set; }
     public int? ListGroupId { get;  set; }
     public bool IsBulkCommunication { get;  set; }
 }
 
-public class CreateCommunicationHandler(ICommunicationDbRepository dbRepository) : IRequestHandler<CreateCommunicationCommand, ApiResponse>
+public class CreateCommunicationHandler(ICommunicationDbRepository dbRepository, IAppCurrentUser currentUser) : IRequestHandler<CreateCommunicationCommand, ApiResponse>
 {
     public async Task<ApiResponse> Handle(CreateCommunicationCommand command, CancellationToken ct)
     {
         var communication = new Domain.Features.Communications.Communication
         {
+            Name = command.Name,
             CommunicationType = command.CommunicationType,
             Subject = command.Subject,
-            SenderPersonId = command.SenderPersonId,
+            SenderPersonId = currentUser.PersonId,
             FutureSendDateTime = command.SendDateTime,
+            Category = command.Category,
             ListGroupId = command.ListGroupId,  
             CommunicationTemplateId = command.CommunicationTemplateId,
             CommunicationContent = command.Content,
@@ -45,9 +49,9 @@ public class CreateCommunicationHandler(ICommunicationDbRepository dbRepository)
  * ----------------------------------------
  */
 
-public record ApproveCommunicationCommand(int CommunicationId, int ApproverPersonId, string Note) : IRequest<ApiResponse>;
+public record ApproveCommunicationCommand(int CommunicationId,  string Note) : IRequest<ApiResponse>;
 
-public class ApproveCommunicationHandler(ICommunicationDbRepository dbRepository)  : IRequestHandler<ApproveCommunicationCommand, ApiResponse>
+public class ApproveCommunicationHandler(ICommunicationDbRepository dbRepository, IAppCurrentUser currentUser)  : IRequestHandler<ApproveCommunicationCommand, ApiResponse>
 {
     public async Task<ApiResponse> Handle(ApproveCommunicationCommand command, CancellationToken ct)
     {
@@ -58,7 +62,7 @@ public class ApproveCommunicationHandler(ICommunicationDbRepository dbRepository
             communication.Approve(new CommunicationReview
             {
                 ReviewedDateTime = DateTime.UtcNow,
-                ReviewerPersonId = command.ApproverPersonId,
+                ReviewerPersonId = currentUser.PersonId,
                 ReviewerNote = command.Note
             });
         

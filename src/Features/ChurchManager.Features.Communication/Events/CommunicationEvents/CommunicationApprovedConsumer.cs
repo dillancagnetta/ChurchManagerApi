@@ -101,7 +101,37 @@ public class CommunicationApprovedConsumer: IConsumer<CommunicationApprovedEvent
                 // SMS
                 if (communication.CommunicationType == CommunicationType.SMS.Value)
                 {
+                    var recipients = communication.Recipients.Where(x => x.Status == CommunicationRecipientStatus.Pending.Value);
+                    var recipientPersonIds = recipients.Select(x => x.PersonId).ToList();
+                    var people = await _peopleDb.Queryable()
+                        .Include(x => x.PhoneNumbers)
+                        .AsNoTracking()
+                        .Where(x => recipientPersonIds.Contains(x.Id))
+                        .Select(x => new { x.Id, PhoneNumber = x.PhoneNumbers.FirstOrDefault(x => x.IsMessagingEnabled) })
+                        .ToListAsync(context.CancellationToken);
                     
+                    var peopleWithActiveSms = people.Where(x => x.PhoneNumber != null);
+
+                    // Set failure status for recipients without active email addresses
+                    var peopleWithoutActiveSms = recipientPersonIds.Except(peopleWithActiveSms.Select(x => x.Id));
+                    foreach (var personWithoutActiveEmail in peopleWithoutActiveSms)
+                    {
+                        var recipient = recipients.FirstOrDefault(x => x.PersonId == personWithoutActiveEmail);
+                        recipient.Status = CommunicationRecipientStatus.Failed.Value;
+                        recipient.StatusNote = "Phone number not found that is messaging enabled.";
+                    }
+                    
+                    // Send to recipients with active sms phone numbers
+                    var activeRecipients = recipients.Where(
+                        x => peopleWithActiveSms.Select(x => x.Id).Contains(x.PersonId));
+                    await context.Publish(new SendSmsToRecipientsEvent(
+                        communication.Id,
+                        RecipientIds:activeRecipients.Select(x => x.Id).ToArray()
+                    ), context.CancellationToken);
+                        
+                    // Save changes
+                    communication.SendDateTime = DateTime.UtcNow;
+                    _dbRepository.SaveChangesAsync();
                 }
             }
         }

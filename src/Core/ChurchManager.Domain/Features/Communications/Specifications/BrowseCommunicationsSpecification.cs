@@ -1,9 +1,11 @@
 ﻿using Ardalis.Specification;
+using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Shared;
 using ChurchManager.Domain.Specifications;
 using CodeBoss.Extensions;
+using Convey.CQRS.Queries;
 using Microsoft.EntityFrameworkCore;
 using PersonViewModel = ChurchManager.Domain.Shared.PersonViewModelBasic;
 
@@ -12,6 +14,7 @@ namespace ChurchManager.Domain.Features.Churches.Specifications;
 public class BrowseCommunicationsSpecification: PermissionSpecification<Communication, CommunicationViewModel>
 {
     public BrowseCommunicationsSpecification(
+        IPagedQuery paging,
         IEnumerable<string> types  = null,
         string status  = null,
         string searchTerm = null, 
@@ -71,11 +74,17 @@ public class BrowseCommunicationsSpecification: PermissionSpecification<Communic
         
         Query.OrderBy(x => x.Name);
         
+        Query
+            .Skip(paging.CalculateSkip())
+            .Take(paging.CalculateTake());
+        
         Query.Select(x => new CommunicationViewModel
         {
             Id = x.Id,
             Name = x.Name,  
             Subject = x.Subject,
+            Content = x.CommunicationContent,
+            Category = x.Category,
             SenderPerson = x.SenderPersonId.HasValue ? ToBasicPerson(x.SenderPerson) : null,
             ListGroup = x.ListGroupId.HasValue ? new GroupReference { GroupId = x.ListGroup.Id, GroupName = x.ListGroup.Name } : null,
             CommunicationType = x.CommunicationType,

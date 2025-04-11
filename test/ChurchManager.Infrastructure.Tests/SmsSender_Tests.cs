@@ -26,8 +26,8 @@ public class BulkSmsSenderIntegration_Tests
         var configValues = new Dictionary<string, string>
         {
             {$"{nameof(BulkSmsOptions)}:ApiUrl", "https://api.bulksms.com/v1/messages"},
-            {$"{nameof(BulkSmsOptions)}:TokenId", "<INSERT FROM BULKSMS>"},
-            {$"{nameof(BulkSmsOptions)}:TokenSecret", "<INSERT FROM BULKSMS>"},
+            {$"{nameof(BulkSmsOptions)}:TokenId", "6167A0E81D4A4BF6A7F46BA2303394E0-01-A"},
+            {$"{nameof(BulkSmsOptions)}:TokenSecret", "M3KD#wMlZkF2XAQJOvgNUeSMbKhqd"},
             {$"Application:SMSSendingEnabled", "true"}
         };
 
@@ -57,11 +57,16 @@ public class BulkSmsSenderIntegration_Tests
     public async Task SendSmsAsync_SuccessfulRequest_ReturnsSuccessResult()
     {
         // Arrange
-        var message = new SmsMessage
+        var message = new BulkSmsMessage
         {
             Body = "This is a test message from integration test.",
             From = "+27737378631",
-            To = new List<string> { "+27737378631" }
+            To = new List<SmsRecipient> {  new SmsRecipient()
+            {
+                PersonId = 1,
+                PhoneNumber = "+27737378631"
+            }},
+            DeduplicationId = new Random().Next(1, 1000000)
         };
 
         // Act
@@ -69,5 +74,6 @@ public class BulkSmsSenderIntegration_Tests
 
         // Assert
         Assert.True(result.IsSuccess);
+        Assert.NotEmpty(result.Result);
     }
 }

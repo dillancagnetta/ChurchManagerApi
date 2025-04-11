@@ -59,7 +59,7 @@ public class SendEmailToRecipientConsumer : IConsumer<SendEmailToRecipientEvent>
             Logger.LogInformation($"SendEmailAsync success: [{result.IsSuccess}] ------");
             
             recipient.AttemptCount++;
-            recipient.Status = result.IsSuccess? CommunicationRecipientStatus.Sent : CommunicationRecipientStatus.Failed.Value;
+            recipient.Status = result.IsSuccess? CommunicationRecipientStatus.Sent.Value : CommunicationRecipientStatus.Failed.Value;
             recipient.StatusNote = result.IsSuccess? null : result.Errors.First().Message;
             recipient.UniqueMessageId = result.IsSuccess? result.Result : null;
             recipient.SendDateTime = result.IsSuccess? DateTime.UtcNow : null;
