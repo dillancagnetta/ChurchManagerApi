@@ -100,7 +100,32 @@ public class Communication : AuditableEntity<int>, IAggregateRoot<int>
     
     public bool IsTemplatedCommunication() => CommunicationTemplateId.HasValue;
 
+    public void FormatTemplatedContent(string content)
+    {
+        content
+            .Replace("{Title}", "{{Model.Title}}")
+            .Replace("{FirstName}", "{{Model.FirstName}}")
+            .Replace("{LastName}", "{{Model.LastName}}")
+            ;
+    }
+
     #endregion
+
+    public void UpdateStatus(string status, string note, int reviewerPersonId)
+    {
+        Status = status;
+        AddReview(note, reviewerPersonId);
+    }
+    
+    public void AddReview(string note, int reviewerPersonId)
+    {
+        Review = new CommunicationReview
+        {
+            ReviewedDateTime = DateTime.UtcNow,
+            ReviewerPersonId = reviewerPersonId,
+            ReviewerNote = note
+        };
+    }
 }
 
 [Owned]

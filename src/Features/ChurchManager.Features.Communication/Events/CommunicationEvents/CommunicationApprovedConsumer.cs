@@ -120,6 +120,10 @@ public class CommunicationApprovedConsumer: IConsumer<CommunicationApprovedEvent
                         recipient.Status = CommunicationRecipientStatus.Failed.Value;
                         recipient.StatusNote = "Phone number not found that is messaging enabled.";
                     }
+                                            
+                    // Save changes
+                    communication.SendDateTime = DateTime.UtcNow;
+                    _dbRepository.SaveChangesAsync();
                     
                     // Send to recipients with active sms phone numbers
                     var activeRecipients = recipients.Where(
@@ -128,10 +132,6 @@ public class CommunicationApprovedConsumer: IConsumer<CommunicationApprovedEvent
                         communication.Id,
                         RecipientIds:activeRecipients.Select(x => x.Id).ToArray()
                     ), context.CancellationToken);
-                        
-                    // Save changes
-                    communication.SendDateTime = DateTime.UtcNow;
-                    _dbRepository.SaveChangesAsync();
                 }
             }
         }

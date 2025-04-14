@@ -124,6 +124,12 @@ public class CommunicationsController(ILogger<CommunicationsController> logger) 
         return Ok(await Mediator.Send(command, token));
     }
     
+    [HttpPost("update-status")]
+    public async Task<IActionResult> UpdateCommunicationStatus([FromBody] UpdateCommunicationStatusCommand command, CancellationToken token)
+    {
+        return Ok(await Mediator.Send(command, token));
+    }
+    
     [HttpPost("recipients/browse")]
     public async Task<IActionResult> BrowseRecipients([FromBody] BrowseRecipientsQuery query, CancellationToken token)
     {

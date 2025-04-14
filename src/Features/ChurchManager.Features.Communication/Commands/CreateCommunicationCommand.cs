@@ -2,6 +2,7 @@
 using ChurchManager.Domain.Features.Communications.Repositories;
 using ChurchManager.SharedKernel.Common;
 using ChurchManager.SharedKernel.Wrappers;
+using CodeBoss.Extensions;
 using MediatR;
 
 namespace ChurchManager.Features.Communication.Commands;
@@ -12,7 +13,8 @@ public record CreateCommunicationCommand : IRequest<ApiResponse>
     public string CommunicationType { get; set; } 
     public string Name { get; set; } 
     public string Category { get; set; } 
-    public string Subject { get; set; } 
+    public string Subject { get; set; }
+    public string Status { get; set; } = CommunicationStatus.PendingApproval.Value;
     public string Content { get; set; } 
     public int? CommunicationTemplateId { get; set; } 
     public DateTime? SendDateTime { get; set; }
@@ -32,16 +34,22 @@ public class CreateCommunicationHandler(ICommunicationDbRepository dbRepository,
             SenderPersonId = currentUser.PersonId,
             FutureSendDateTime = command.SendDateTime,
             Category = command.Category,
+            Status = command.Status,
             ListGroupId = command.ListGroupId,  
             CommunicationTemplateId = command.CommunicationTemplateId,
-            CommunicationContent = command.Content,
+            //CommunicationContent = command.Content,
             Recipients = command.PersonIds.Select(id => new CommunicationRecipient { PersonId = id }).ToList(),
             IsBulkCommunication = command.IsBulkCommunication
         };
 
+        if (!command.Content.IsNullOrEmpty())
+        {
+            communication.FormatTemplatedContent(command.Content);
+        }
+        
         await dbRepository.AddAsync(communication, ct);
         
-        return new ApiResponse("Communication created successfully.");
+        return new ApiResponse("Communication created.");
     }
 }
 
@@ -49,28 +57,3 @@ public class CreateCommunicationHandler(ICommunicationDbRepository dbRepository,
  * ----------------------------------------
  */
 
-public record ApproveCommunicationCommand(int CommunicationId,  string Note) : IRequest<ApiResponse>;
-
-public class ApproveCommunicationHandler(ICommunicationDbRepository dbRepository, IAppCurrentUser currentUser)  : IRequestHandler<ApproveCommunicationCommand, ApiResponse>
-{
-    public async Task<ApiResponse> Handle(ApproveCommunicationCommand command, CancellationToken ct)
-    {
-        var communication = await dbRepository.GetByIdAsync(command.CommunicationId, ct);
-
-        if (communication is not null && communication.Status != CommunicationStatus.Approved.Value)
-        {
-            communication.Approve(new CommunicationReview
-            {
-                ReviewedDateTime = DateTime.UtcNow,
-                ReviewerPersonId = currentUser.PersonId,
-                ReviewerNote = command.Note
-            });
-        
-            await dbRepository.UpdateAsync(communication, ct);
-            
-            return new ApiResponse("Communication approved successfully.");
-        }
-        
-        return new ApiResponse("Communication not found.");
-    }
-}
