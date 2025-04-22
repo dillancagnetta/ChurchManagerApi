@@ -11,7 +11,7 @@ namespace ChurchManager.Domain.Features.People;
 /// Maintains history of someone's journey from event registrant to member
 /// Can have multiple classifications (e.g., both EVENT_REGISTRANT and VISITOR)
 /// </summary>
-public class ConnectionStatusType : Entity<int>
+public class ConnectionStatusType : Entity<int>, IAggregateRoot<int>
 {
     [Required, MaxLength(50)]
     public ConnectionStatus Name { get; set; }

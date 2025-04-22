@@ -93,7 +93,10 @@ public class EventDbRepository(ChurchManagerDbContext dbContext) : GenericReposi
                     OnlineSupport = x.OnlineSupport,
                     OnlineMeetingUrl = x.OnlineMeetingUrl,
                     AttendanceRequired = x.AttendanceRequired,
-                })
+                }),
+            
+                RegistrationStartDate = x.RegistrationDates?.StartDate,
+                RegistrationEndDate = x.RegistrationDates?.EndDate,
             });
         
         return vm;

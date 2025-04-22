@@ -92,6 +92,7 @@ public class BrowseCommunicationsSpecification: PermissionSpecification<Communic
             CommunicationContent = x.CommunicationContent,
             IsBulkCommunication = x.IsBulkCommunication,
             SendDateTime = x.SendDateTime,
+            CreatedDateTime = x.CreatedDate,
             Status = x.Status.Value,
             RecipientCount = x.Recipients.Count,
             SystemCommunicationId = x.SystemCommunicationId,

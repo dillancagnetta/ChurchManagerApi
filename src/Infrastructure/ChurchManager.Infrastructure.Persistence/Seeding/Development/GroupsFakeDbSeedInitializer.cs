@@ -32,7 +32,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 
         private GroupTypeRole _cellLeaderRole;
         private GroupTypeRole _cellAssistantRole;
-        private GroupTypeRole _cellMemberRole;
+        private GroupTypeRole _groupMemberRole;
 
         private static readonly CalendarSerializer CalendarSerializer = new();
 
@@ -62,12 +62,23 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 };
                 _cellAssistantRole = new GroupTypeRole
                     { Name = "Assistant", Description = "Assistant Leader", GroupType = _cellGroupType, IsLeader = true };
-                _cellMemberRole = new GroupTypeRole
-                    { Name = "Member", Description = "Group Member", GroupType = _cellGroupType };
+                _groupMemberRole = new GroupTypeRole { Name = "Member", Description = "Group Member"};
 
+                _groupMemberRole.GroupType = _cellGroupType;
                 await _dbContext.GroupTypeRole.AddAsync(_cellLeaderRole);
                 await _dbContext.GroupTypeRole.AddAsync(_cellAssistantRole);
-                await _dbContext.GroupTypeRole.AddAsync(_cellMemberRole);
+                await _dbContext.GroupTypeRole.AddAsync(_groupMemberRole);
+                
+                // Communications
+                _groupMemberRole.GroupType = _communicationsGroupType;
+                await _dbContext.GroupTypeRole.AddAsync(_groupMemberRole);
+                // Regisrations
+                var registrantRole = new GroupTypeRole
+                {
+                    Name = "Registrant", Description = "Event Registrant",
+                    GroupType = _eventsGroupType
+                };
+                await _dbContext.GroupTypeRole.AddAsync(registrantRole);
 
                 await _dbContext.SaveChangesAsync();
             }
@@ -234,7 +245,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 
             var cellMember = new Faker<GroupMember>()
                 .RuleFor(u => u.PersonId, f => random.Next((totalPeopleInDb / 2)+1, totalPeopleInDb))
-                .RuleFor(u => u.GroupRoleId, f => _cellMemberRole.Id);
+                .RuleFor(u => u.GroupRoleId, f => _groupMemberRole.Id);
 
             var cellGroupMembers = cellMember.Generate(random.Next(1, 16));
 

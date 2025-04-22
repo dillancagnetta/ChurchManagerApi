@@ -13,7 +13,8 @@ namespace ChurchManager.Application.Features
         protected readonly IGenericDbRepository<TEntity> Repository;
         private readonly IMapper _mapper;
 
-        public CrudServiceAsync(IGenericDbRepository<TEntity> repository, IMapper mapper)
+        public CrudServiceAsync(
+            IGenericDbRepository<TEntity> repository, IMapper mapper)
         {
             Repository = repository;
             _mapper = mapper;
@@ -39,7 +40,7 @@ namespace ChurchManager.Application.Features
             return _mapper.Map<TViewDto>(await Repository.AddAsync(entity, ct));
         }
 
-        public async Task<TViewDto> AddAsync(TEntity entity, CancellationToken ct = default)
+        public virtual async  Task<TViewDto> AddAsync(TEntity entity, CancellationToken ct = default)
         {
             var added = await Repository.AddAsync(entity, ct);
             var tDto = _mapper.Map<TViewDto>(added);

@@ -4,6 +4,7 @@ using ChurchManager.Features.People.Commands.DeletePerson;
 using ChurchManager.Features.People.Commands.DeletePhoto;
 using ChurchManager.Features.People.Commands.EditPhoto;
 using ChurchManager.Features.People.Commands.UpdatePerson;
+using ChurchManager.Features.People.Queries;
 using ChurchManager.Features.People.Queries.BrowsePeople;
 using ChurchManager.Features.People.Queries.FindDuplicates;
 using ChurchManager.Features.People.Queries.PeopleAutocomplete;
@@ -109,6 +110,12 @@ namespace ChurchManager.Api.Controllers.v1
         public async Task<IActionResult> DuplicatePersonCheck([FromQuery] FindPeopleDuplicatesQuery query, CancellationToken token)
         {
             return Ok(await Mediator.Send(query, token));
+        }
+        
+        [HttpGet("connection-status-types")]
+        public async Task<IActionResult> GetConnectionStatusTypes([FromQuery] PeopleAutocompleteQuery query, CancellationToken token)
+        {
+            return Ok(await Mediator.Send(new ConnectionStatusTypesQuery(), token));
         }
         
         [HttpGet("verify-check")]

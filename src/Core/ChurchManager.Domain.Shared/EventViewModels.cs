@@ -40,6 +40,10 @@ public record EventViewModel
     public DateTime? EndDate => Sessions.LastOrDefault()?.EndDate;
     public string StartTime => Sessions.FirstOrDefault()?.StartTime;
     public string EndTime => Sessions.LastOrDefault()?.EndTime;
+    
+    // Registration
+    public DateTime? RegistrationStartDate  { get; set; }
+    public DateTime? RegistrationEndDate  { get; set; }
 }
 
 public record EventConfigurationViewModel

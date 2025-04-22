@@ -75,7 +75,10 @@ public static class ExpressionExtensions
                 OnlineSupport = x.OnlineSupport,
                 OnlineMeetingUrl = x.OnlineMeetingUrl,
                 AttendanceRequired = x.AttendanceRequired,
-            }) : Array.Empty<EventSessionViewModel>()
+            }) : Array.Empty<EventSessionViewModel>(),
+            
+            RegistrationStartDate = x.RegistrationDates != null ? x.RegistrationDates.StartDate : null,
+            RegistrationEndDate = x.RegistrationDates != null ? x.RegistrationDates.EndDate : null,
         };
     
     
@@ -119,6 +122,8 @@ public static class ExpressionExtensions
                 },
                 Location = x.Location,
                 ApprovalStatus = x.ApprovalStatus.Value,
+                RegistrationStartDate = x.RegistrationDates != null ? x.RegistrationDates.StartDate : null,
+                RegistrationEndDate = x.RegistrationDates != null ? x.RegistrationDates.EndDate : null,
             }) : Array.Empty<EventViewModel>()
         };
 }

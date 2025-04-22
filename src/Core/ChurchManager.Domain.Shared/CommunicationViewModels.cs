@@ -15,6 +15,7 @@ public record CommunicationViewModel
     public bool IsBulkCommunication { get;  set; }
     public DateTime? SendDateTime { get;  set; }
     public DateTime? FutureSendDateTime { get;  set; }
+    public DateTime? CreatedDateTime { get;  set; }
     public string Status { get;  set; }
     public CommunicationReviewViewModel Review { get; set; }
     public Dictionary<string, object> Metadata { get; set; }

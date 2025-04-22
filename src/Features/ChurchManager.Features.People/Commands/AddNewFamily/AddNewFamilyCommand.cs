@@ -1,10 +1,14 @@
 ﻿using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Events;
 using ChurchManager.Domain.Features.People.Repositories;
+using ChurchManager.Domain.Features.People.Specifications;
 using ChurchManager.Infrastructure.Abstractions;
+using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Common;
 using CodeBoss.Extensions;
+using Codeboss.Types;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ChurchManager.Features.People.Commands.AddNewFamily
@@ -19,19 +23,28 @@ namespace ChurchManager.Features.People.Commands.AddNewFamily
     public class AddNewFamilyHandler : IRequestHandler<AddNewFamilyCommand, Unit>
     {
         private readonly IPersonDbRepository _dbRepository;
+        private readonly IReadDbRepository<ConnectionStatusType> _connectionStatusDb;
+        private readonly IGenericDbRepository<ConnectionStatusHistory> _connectionStatusHistoryDb;
         private readonly IDomainEventPublisher _eventPublisher;
         private readonly IAppCurrentUser _currentUser;
+        private readonly IDateTimeProvider _dateTime;
         private readonly ILogger<AddNewFamilyHandler> _logger;
 
         public AddNewFamilyHandler(
             IPersonDbRepository dbRepository, 
+            IReadDbRepository<ConnectionStatusType> connectionStatusDb, 
+            IGenericDbRepository<ConnectionStatusHistory> connectionStatusHistoryDb, 
             IDomainEventPublisher eventPublisher,
             IAppCurrentUser currentUser,
+            IDateTimeProvider dateTimeProvider,
             ILogger<AddNewFamilyHandler> logger)
         {
             _dbRepository = dbRepository;
+            _connectionStatusDb = connectionStatusDb;
+            _connectionStatusHistoryDb = connectionStatusHistoryDb;
             _eventPublisher = eventPublisher;
             _currentUser = currentUser;
+            _dateTime = dateTimeProvider;
             _logger = logger;
         }
 
@@ -92,6 +105,19 @@ namespace ChurchManager.Features.People.Commands.AddNewFamily
                 await _dbRepository.AddRangeAsync(members, ct);
 
                 await SendFollowUpAssignments(command, members, ct);
+
+                // Connection status history
+                var connectionStatusTypes = await _connectionStatusDb.ListAsync(new ConnectionStatusSelectSpecification(), ct);
+                var histories = new List<ConnectionStatusHistory>(members.Length);
+                histories.AddRange(members.Select(person => new ConnectionStatusHistory
+                {
+                    PersonId = person.Id,
+                    ConnectionStatusTypeId = connectionStatusTypes.First(x => x.Name == person.ConnectionStatus).Id,
+                    StartDate = _dateTime.Now,
+                    Notes = $"New family added"
+                }));
+                await _connectionStatusHistoryDb.AddRangeAsync(histories, ct);
+
             }
             catch(Exception ex)
             {

@@ -6,6 +6,7 @@ using ChurchManager.Domain.Features.People;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
 using CodeBoss.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Domain.Features.Events;
 
@@ -70,6 +71,8 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
     
     public Review Review { get; set; }
     
+    public Registration RegistrationDates { get; set; }
+    
     public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.PendingApproval;
     
     /// <summary>
@@ -127,4 +130,18 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
     public bool HasPhoto => !PhotoUrl.IsNullOrEmpty();
 
     #endregion
+}
+
+[Owned]
+public record Registration
+{
+    /// <summary>
+    /// When does the registration start
+    /// </summary>
+    public DateTime? StartDate { get; set; }
+    
+    /// <summary>
+    /// When does the registration end
+    /// </summary>
+    public DateTime? EndDate { get; set; }
 }
