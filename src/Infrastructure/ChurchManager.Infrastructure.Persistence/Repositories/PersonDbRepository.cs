@@ -1,7 +1,6 @@
 ﻿#region
 
 using System.Linq.Dynamic.Core;
-using ChurchManager.Domain;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Queries;
@@ -12,7 +11,6 @@ using ChurchManager.Infrastructure.Persistence.Contexts;
 using ChurchManager.Infrastructure.Persistence.Extensions;
 using CodeBoss.Extensions;
 using Codeboss.Results;
-using MassTransit.Initializers;
 using Microsoft.EntityFrameworkCore;
 
 #endregion
@@ -153,8 +151,9 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
             return Queryable()
                 .AsNoTracking()
                     .Include(x => x.Family)
-                .FirstOrDefaultAsync(x=> x.Id == personId, cancellationToken)
-                .Select(x => x.Family.Code);
+                .Where(x=> x.Id == personId)
+                .Select(x => x.Family.Code)
+                .FirstOrDefaultAsync(cancellationToken);
         }
 
         private IQueryable<Person> Queryable(string[] includes, PersonQueryOptions personQueryOptions)

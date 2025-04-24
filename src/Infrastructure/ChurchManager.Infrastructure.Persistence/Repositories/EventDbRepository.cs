@@ -1,10 +1,8 @@
-﻿using ChurchManager.Application.ViewModels;
-using ChurchManager.Domain.Features.Events;
+﻿using ChurchManager.Domain.Features.Events;
 using ChurchManager.Domain.Features.Events.Repositories;
 using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.Extensions;
-using MassTransit.Initializers;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories;
@@ -20,26 +18,26 @@ public class EventDbRepository(ChurchManagerDbContext dbContext) : GenericReposi
             .Include(x => x.EventType)
             .Include(x => x.ContactPerson)
             .Include(x => x.Sessions)
-                .ThenInclude(x => x.Schedule)
+            .ThenInclude(x => x.Schedule)
             .Include(x => x.EventRegistrationGroup)
-                .ThenInclude(x => x.GroupType)
+            .ThenInclude(x => x.GroupType)
             .Include(x => x.ChildCareGroup)
-             .ThenInclude(x => x.GroupType)
-            .FirstOrDefaultAsync(x => x.Id == eventId, ct)
+            .ThenInclude(x => x.GroupType)
+            .Where(x => x.Id == eventId)
             .Select(x => new EventViewModel
             {
-                Id = x.Id,
+               Id = x.Id,
                 Name = x.Name,
                 Description = x.Description,
                 PhotoUrl = x.PhotoUrl,
                 EventTypeId = x.EventTypeId,
-                EventTypeName = x.EventType?.Name,
+                EventTypeName = x.EventType != null ? x.EventType.Name : null,
                 ChurchReference = new ChurchReference
                 {
                     ChurchId = x.ChurchId,
                     ChurchGroupId = x.ChurchGroupId,
-                    ChurchName = x.Church?.Name,
-                    ChurchGroupName = x.ChurchGroup?.Name
+                    ChurchName =  x.Church != null ? x.Church.Name : null,
+                    ChurchGroupName =  x.ChurchGroup != null ? x.ChurchGroup.Name : null
                 },
                 Location = x.Location,
                 ContactPerson = x.ContactPerson != null ? new PersonViewModelBasic
@@ -48,56 +46,58 @@ public class EventDbRepository(ChurchManagerDbContext dbContext) : GenericReposi
                     Gender = x.ContactPerson.Gender,
                     FirstName = x.ContactPerson.FullName.FirstName,
                     LastName = x.ContactPerson.FullName.LastName,
-                    AgeClassification = x.ContactPerson.AgeClassification,
+                    AgeClassification = x.ContactPerson.AgeClassification.Value,
                     Age = x.ContactPerson.BirthDate.Age,
                     PhotoUrl = x.ContactPerson.PhotoUrl
                 } : null,
                 Configuration = new EventConfigurationViewModel
                 {
-                    OnlineSupport = x.EventType?.OnlineSupport,
+                    OnlineSupport = x.EventType.OnlineSupport,
                     RequiresRegistration = x.EventType.RequiresRegistration,
                     AllowFamilyRegistration = x.EventType.AllowFamilyRegistration,
                     AllowNonFamilyRegistration = x.EventType.AllowNonFamilyRegistration,
                     RequiresChildInfo = x.EventType.RequiresChildInfo,
                     TakesAttendance = x.EventType.TakesAttendance,
-                    HasChildCare = x.EventType.ChildCare?.HasChildCare,
-                    MinChildAge = x.EventType.ChildCare?.MinChildAge,   
-                    MaxChildAge = x.EventType.ChildCare?.MaxChildAge,
+                    HasChildCare = x.EventType.ChildCare != null ? x.EventType.ChildCare.HasChildCare : null,
+                    MinChildAge = x.EventType.ChildCare != null ? x.EventType.ChildCare.MinChildAge : null,   
+                    MaxChildAge = x.EventType.ChildCare != null ? x.EventType.ChildCare.MaxChildAge : null,
                 },
                 EventRegistrationGroup = x.EventRegistrationGroupId.HasValue ? new GroupReference
                 {
                     GroupId = x.EventRegistrationGroupId,
-                    GroupName = x.EventRegistrationGroup?.Name,
-                    GroupTypeId = x.EventRegistrationGroup?.GroupTypeId,
-                    GroupTypeName = x.EventRegistrationGroup?.GroupType?.Name
+                    GroupName = x.EventRegistrationGroup != null ? x.EventRegistrationGroup.Name : null,
+                    GroupTypeId = x.EventRegistrationGroup != null ? x.EventRegistrationGroup.GroupTypeId : null,
+                    GroupTypeName = x.EventRegistrationGroup != null && x.EventRegistrationGroup.GroupType != null
+                        ? x.EventRegistrationGroup.GroupType.Name : null
                 } : null,
                 ChildCareGroup = x.ChildCareGroupId.HasValue ? new GroupReference
                 {
                     GroupId = x.ChildCareGroupId,
-                    GroupName = x.ChildCareGroup?.Name,
-                    GroupTypeId = x.ChildCareGroup?.GroupTypeId,
-                    GroupTypeName = x.ChildCareGroup?.GroupType?.Name
+                    GroupName = x.ChildCareGroup != null ? x.ChildCareGroup.Name : null,
+                    GroupTypeId = x.ChildCareGroup != null ? x.ChildCareGroup.GroupTypeId : null,
+                    GroupTypeName = x.ChildCareGroup != null && x.ChildCareGroup.GroupType != null
+                        ? x.ChildCareGroup.GroupType.Name : null
                 } : null,
                 NumberOfSessions = x.Sessions.Count,
-                Sessions = x.Sessions?.Select(x => new EventSessionViewModel
+                Sessions = x.Sessions != null && x.Sessions.Any() ? x.Sessions.Select(x => new EventSessionViewModel
                 {
                     Id = x.Id,
                     Name = x.Name,
                     Description = x.Description,
                     SessionOrder = x.SessionOrder,
                     StartDate = x.SessionStartDateTime().StartDate,
-                    StartTime = x.SessionStartDateTime().StartTime?.ToTimeUtcString(),
+                    StartTime = x.SessionStartDateTime().StartTime.HasValue ? x.SessionStartDateTime().StartTime.Value.ToTimeUtcString() : null,
                     EndDate = x.SessionEndDateTime().EndDate,
-                    EndTime = x.SessionEndDateTime().EndTime?.ToTimeUtcString(),
+                    EndTime = x.SessionEndDateTime().EndTime.HasValue ? x.SessionEndDateTime().EndTime.Value.ToTimeUtcString() : null,
                     Location = x.Location,
                     OnlineSupport = x.OnlineSupport,
                     OnlineMeetingUrl = x.OnlineMeetingUrl,
                     AttendanceRequired = x.AttendanceRequired,
-                }),
-            
-                RegistrationStartDate = x.RegistrationDates?.StartDate,
-                RegistrationEndDate = x.RegistrationDates?.EndDate,
-            });
+                }) : Array.Empty<EventSessionViewModel>()
+            })
+            .FirstOrDefaultAsync(ct);
+        
+        
         
         return vm;
     }

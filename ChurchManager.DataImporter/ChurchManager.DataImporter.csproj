@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <CodeBossVersion>8.0.11</CodeBossVersion>
   </PropertyGroup>
@@ -10,7 +10,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="DotNetCore.NPOI" />
     <PackageReference Include="CodeBoss" VersionOverride="$(CodeBossVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" VersionOverride="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\Core\ChurchManager.Domain\ChurchManager.Domain.csproj" />

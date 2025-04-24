@@ -1,4 +1,5 @@
-﻿using ChurchManager.Infrastructure.Abstractions.MassTransit;
+﻿/*
+using ChurchManager.Infrastructure.Abstractions.MassTransit;
 using MassTransit;
 using MassTransit.SignalR.Contracts;
 using MassTransit.SignalR.Utils;
@@ -32,3 +33,4 @@ namespace ChurchManager.Infrastructure.Shared.SignalR
         }
     }
 }
+*/

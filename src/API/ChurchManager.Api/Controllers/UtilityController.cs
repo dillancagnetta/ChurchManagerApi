@@ -25,8 +25,7 @@ namespace ChurchManager.Api.Controllers
         private readonly IDomainEventPublisher _events;
         // Push Notifications
         private readonly IPushNotificationsService _pusher;
-        private readonly IPublishEndpoint _publisher;
-        private readonly IBusControl _busControl;
+
 
         public UtilityController(
             ILogger<UtilityController> logger,
@@ -35,9 +34,7 @@ namespace ChurchManager.Api.Controllers
             IChurchManagerDbContext dbContext,
             IDomainEventPublisher events,
             // Push Notifications
-            IPushNotificationsService pusher,
-            IPublishEndpoint publisher,
-            IBusControl busControl)
+            IPushNotificationsService pusher)
         {
             _logger = logger;
             _mediator = mediator;
@@ -45,8 +42,6 @@ namespace ChurchManager.Api.Controllers
             _dbContext = dbContext;
             _events = events;
             _pusher = pusher;
-            _publisher = publisher;
-            _busControl = busControl;
         }
 
         [HttpGet]

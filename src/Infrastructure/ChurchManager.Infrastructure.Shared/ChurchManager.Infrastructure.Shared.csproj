@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
@@ -13,8 +13,7 @@
     <PackageReference Include="WebPush" />
   </ItemGroup>
   <ItemGroup>
-    <!--<PackageReference Include="MassTransit.RabbitMQ" />-->
-    <PackageReference Include="MassTransit.SignalR" />
+    <PackageReference Include="WolverineFx" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OpenTelemetry" />

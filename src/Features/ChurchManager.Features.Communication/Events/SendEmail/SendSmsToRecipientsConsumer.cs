@@ -3,13 +3,13 @@ using ChurchManager.Domain.Features.Communications.Events;
 using ChurchManager.Domain.Features.Communications.Repositories;
 using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Domain.Shared;
+using ChurchManager.Infrastructure.Abstractions;
 using Codeboss.Results;
-using MassTransit;
 using Microsoft.Extensions.Logging;
 
 namespace ChurchManager.Features.Communication.Events.SendEmail;
 
-public class SendSmsToRecipientsConsumer : IConsumer<SendSmsToRecipientsEvent>
+public class SendSmsToRecipientsConsumer : IDomainEventHandler
 {
     private readonly ICommunicationDbRepository _communicationDb;
     private readonly ITemplateDbRepository _templateDb;
@@ -28,12 +28,12 @@ public class SendSmsToRecipientsConsumer : IConsumer<SendSmsToRecipientsEvent>
         Logger = logger;
     }
     
-    public async Task Consume(ConsumeContext<SendSmsToRecipientsEvent> context)
+    public async Task Handle(SendSmsToRecipientsEvent message, CancellationToken ct)
     {
         Logger.LogInformation("✔️------ SendSmsToRecipientsEvent event received ------");
 
-        var communicationId = context.Message.CommunicationId;
-        var recipientIds = context.Message.RecipientIds;
+        var communicationId = message.CommunicationId;
+        var recipientIds = message.RecipientIds;
         var (content, hasTemplate, recipients, template, isBulk) = await _communicationDb.SmsCommunicationToSendAsync(
             communicationId,
             recipientIds
@@ -52,10 +52,10 @@ public class SendSmsToRecipientsConsumer : IConsumer<SendSmsToRecipientsEvent>
                     PersonId = recipient.PersonId,
                     PhoneNumber = recipient.RecipientPerson.MessagingPhoneNumber.FullNumber
                 }).ToList(),
-                DeduplicationId = context.Message.CommunicationId
+                DeduplicationId = message.CommunicationId
             };
             
-            var operationResult = await _sms.SendBulkSmsAsync(bulkSmsMessage, context.CancellationToken);
+            var operationResult = await _sms.SendBulkSmsAsync(bulkSmsMessage, ct);
             Logger.LogInformation($"SendSmsToRecipient isBulk success: [{operationResult.IsSuccess}] ------");
             
             var recipientResults = operationResult.Result.ToDictionary(r => r.PersonId, r => r);
@@ -78,7 +78,7 @@ public class SendSmsToRecipientsConsumer : IConsumer<SendSmsToRecipientsEvent>
                 }
             }
             
-            _communicationDb.SaveChangesAsync(context.CancellationToken);
+            _communicationDb.SaveChangesAsync(ct);
             return;
         }
         
@@ -100,7 +100,7 @@ public class SendSmsToRecipientsConsumer : IConsumer<SendSmsToRecipientsEvent>
             });
             
             var recipientResults = new Dictionary<int, OperationResult<SmsOperationResult>>();
-            await foreach (var result in _sms.SendSmsAsync(smsMessages, templateInfo, context.CancellationToken))
+            await foreach (var result in _sms.SendSmsAsync(smsMessages, templateInfo, ct))
             {
                 recipientResults[result.Result.PersonId] = result;
                 Logger.LogInformation($"SendSmsToRecipients hasTemplate success: [{result.IsSuccess}] ------");
@@ -125,7 +125,7 @@ public class SendSmsToRecipientsConsumer : IConsumer<SendSmsToRecipientsEvent>
                 }
             }
 
-            await _communicationDb.SaveChangesAsync(context.CancellationToken);
+            await _communicationDb.SaveChangesAsync(ct);
         }
         
     }

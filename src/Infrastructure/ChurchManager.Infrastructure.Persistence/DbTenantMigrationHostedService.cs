@@ -65,7 +65,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     // Fixes issues with PostgreSQL not reloading types after migration e.g. hstore extension
                     // https://github.com/npgsql/efcore.pg/issues/292#issuecomment-388608426
                     await dbContext.Database.OpenConnectionAsync(ct);
-                    await ((NpgsqlConnection)dbContext.Database.GetDbConnection()).ReloadTypesAsync(ct);
+                    await ((NpgsqlConnection)dbContext.Database.GetDbConnection()).ReloadTypesAsync();
                     await dbContext.Database.CloseConnectionAsync();
                     // ------------------------------------------------------------------------------
                 

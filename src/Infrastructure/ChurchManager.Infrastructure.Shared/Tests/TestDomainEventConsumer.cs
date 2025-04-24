@@ -1,10 +1,11 @@
 ﻿using ChurchManager.Domain.Shared;
-using MassTransit;
+using ChurchManager.Infrastructure.Abstractions;
 using Microsoft.Extensions.Logging;
+using Wolverine;
 
 namespace ChurchManager.Infrastructure.Shared.Tests
 {
-    public class TestDomainEventConsumer : IConsumer<TestDomainEvent>
+    public class TestDomainEventConsumer: IDomainEventHandler  
     {
         public ILogger<TestDomainEventConsumer> Logger { get; }
 
@@ -13,9 +14,9 @@ namespace ChurchManager.Infrastructure.Shared.Tests
             Logger = logger;
         }
 
-        public Task Consume(ConsumeContext<TestDomainEvent> context)
+        public Task Handle(TestDomainEvent message, IMessageContext context)
         {
-            Logger.LogInformation($"✔️ Message Received: {context.Message.Content}");
+            Logger.LogInformation($"✔️ Message Received: {message.Content}");
             return Task.CompletedTask;
         }
     }

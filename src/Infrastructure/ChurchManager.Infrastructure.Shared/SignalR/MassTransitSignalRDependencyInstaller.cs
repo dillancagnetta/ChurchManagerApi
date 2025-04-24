@@ -13,9 +13,9 @@ namespace ChurchManager.Infrastructure.Shared.SignalR
         {
             // MassTransit SignalR Hubs
             //services.AddTransient<IPushNotificationsService<INotification, IPublishEndpoint>, MassTransitSignalRPushNotificationsService>();
-            services.AddTransient<IPushNotificationsService, MassTransitSignalRPushNotificationsService>(); //<-- use this for easy referencing
+            services.AddTransient<IPushNotificationsService, WolverineSignalRPushNotificationsService>(); //<-- use this for easy referencing
 
-            services.AddTransient<IUserNotificationsHubService, MassTransitUserNotificationsSignalRHubService>();
+            services.AddTransient<IUserNotificationsHubService, WolverineUserNotificationsSignalRHubService>();
             
             services.AddSingleton<IConnectionTracker, SignalRConnectionTracker>();
         }

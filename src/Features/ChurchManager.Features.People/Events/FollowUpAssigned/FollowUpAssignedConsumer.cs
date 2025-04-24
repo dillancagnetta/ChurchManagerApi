@@ -4,16 +4,17 @@ using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Events;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Domain.Shared;
+using ChurchManager.Infrastructure.Abstractions;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Shared.Bugsnag;
 using Codeboss.Types;
-using MassTransit;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Wolverine;
 
 namespace ChurchManager.Features.People.Events.FollowUpAssigned
 {
-    public class FollowUpAssignedConsumer : IConsumer<FollowUpAssignedEvent>
+    public class FollowUpAssignedConsumer : IDomainEventHandler 
     {
         private readonly IGenericDbRepository<FollowUp> _dbRepository;
         private readonly IPersonDbRepository _personDbRepository;
@@ -35,10 +36,8 @@ namespace ChurchManager.Features.People.Events.FollowUpAssigned
             _bugsnagOptions = bugsnagOptions.Value;
         }
 
-        public async Task Consume(ConsumeContext<FollowUpAssignedEvent> context)
+        public async Task Handle(FollowUpAssignedEvent message, IMessageContext context)
         {
-            var message = context.Message;
-
             Logger.LogInformation("------ FollowUpAssignedEvent event received {@message)------", message);
 
             await _dbRepository.AddAsync(new FollowUp
@@ -71,7 +70,7 @@ namespace ChurchManager.Features.People.Events.FollowUpAssigned
                         PersonId = followUpAssignedPerson.Id,
                         EmailAddress = followUpAssignedPerson.Email.Address
                     };
-                    await context.Publish(new SendEmailEvent(
+                    await context.PublishAsync(new SendEmailEvent(
                         "Follow Up Assignment",
                         DomainConstants.Communication.Email.Templates.FollowUpTemplate,
                         recipient

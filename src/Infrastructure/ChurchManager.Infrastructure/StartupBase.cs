@@ -1,24 +1,24 @@
 ﻿using System.Reflection;
 using AutoMapper;
+using ChurchManager.Infrastructure.Abstractions;
 using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.Infrastructure.Mapper;
 using ChurchManager.Infrastructure.Plugins;
 using ChurchManager.Infrastructure.Roslyn;
-using ChurchManager.Infrastructure.Shared.SignalR.Hubs;
 using ChurchManager.Infrastructure.Shared.Tests;
 using ChurchManager.Infrastructure.TypeConverters;
 using ChurchManager.Infrastructure.TypeSearcher;
 using ChurchManager.SharedKernel;
 using ChurchManager.SharedKernel.Extensions;
-using FluentValidation.AspNetCore;
-using MassTransit;
-using MassTransit.SignalR;
+using JasperFx.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Wolverine;
+using Wolverine.RabbitMQ;
 
 namespace ChurchManager.Infrastructure
 {
@@ -62,24 +62,7 @@ namespace ChurchManager.Infrastructure
             //register automapper
             AutoMapperConfig.Init(config);
         }
-
-        /// <summary>
-        /// Add FluenValidation
-        /// </summary>
-        /// <param name="mvcCoreBuilder"></param>
-        /// <param name="typeSearcher"></param>
-        private static void AddFluentValidation(IMvcCoreBuilder mvcCoreBuilder, ITypeSearcher typeSearcher)
-        {
-            //Add fluentValidation
-            mvcCoreBuilder.AddFluentValidation(configuration =>
-            {
-                var assemblies = typeSearcher.GetAssemblies();
-                configuration.RegisterValidatorsFromAssemblies(assemblies);
-                configuration.DisableDataAnnotationsValidation = true;
-                //implicit/automatic validation of child properties
-                configuration.ImplicitlyValidateChildProperties = true;
-            });
-        }
+        
 
         /// <summary>
         /// Register type Converters
@@ -143,7 +126,7 @@ namespace ChurchManager.Infrastructure
             PluginManager.Load(mvcCoreBuilder, config);
 
             //Load CTX sctipts
-            RoslynCompiler.Load(mvcCoreBuilder.PartManager, config);
+            //RoslynCompiler.Load(mvcCoreBuilder.PartManager, config);
         }
 
         /// <summary>
@@ -161,25 +144,59 @@ namespace ChurchManager.Infrastructure
         /// Add Mass Transit RabbitMq message broker
         /// </summary>
         /// <param name="services"></param>
-        private static void AddMassTransitRabbitMq(
+        private static void AddWolverineRabbitMq(
             IServiceCollection services, IConfiguration configuration, AppTypeSearcher typeSearcher, AppConfig config)
         {
 
-            #region MassTransit
+            #region Wolverine
 
-            services.AddMassTransit(x =>
+            services.AddWolverine(x =>
             {
-                x.AddConsumers(typeSearcher.GetAssemblies().ToArray());
-                x.AddConsumers(typeof(TestDomainEventConsumer).Assembly); // Testing
+                // Load handlers from multiple assemblies
+                var handlerTypes = typeSearcher.GetAssemblies()
+                    .SelectMany(a => a.GetTypes()
+                        .Where(t => typeof(IDomainEventHandler)
+                        .IsAssignableFrom(t) && t is { IsClass: true, IsAbstract: false }));
+                foreach (var type in handlerTypes)
+                {
+                    x.Discovery.IncludeType(type);
+                    //x.Discovery.IncludeAssembly(assembly);
+                }
+                x.Discovery.IncludeAssembly(typeof(TestDomainEventConsumer).Assembly); // Testing
 
                 // ** Add Hubs Here **
-                x.AddSignalRHub<NotificationHub>();
+                //x.AddSignalRHub<NotificationHub>();
 
                 if (config.RabbitMqEnabled)
                 {
                     var connectionString = configuration.GetConnectionString(RabbitMqSectionName);
+      
+                    x.UseRabbitMq(cfg =>
+                    {
+                        cfg.Uri = new Uri(connectionString);
+                    })
+                    .AutoProvision()
+                    .UseConventionalRouting(r =>
+                    {
+                        // Customize the naming convention for the outgoing exchanges
+                        r.ExchangeNameForSending(type => type.Name);
+
+                        // Customize the naming convention for incoming queues
+                        r.QueueNameForListener(type => type.FullName
+                            .Replace("ChurchManager.Domain.Features.", "")
+                        );
+                    });
                     
-                    x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                    /*x.PublishAllMessages().ToRabbitQueue("outgoing")
+                        .UseDurableOutbox();
+                    
+                    // Set up a listener for a queue
+                    x.ListenToRabbitQueue("outgoing")
+                        .PreFetchCount(100)
+                        .ListenerCount(5) // use 5 parallel listeners
+                        .UseDurableInbox();*/
+                    
+                    /*x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
                     {
                         cfg.Host(new Uri(connectionString), h => { });
 
@@ -187,15 +204,9 @@ namespace ChurchManager.Infrastructure
                         
                         cfg.PrefetchCount = config.RabbitMqPrefetchCount; // Number of messages to prefetch
                         cfg.ConcurrentMessageLimit = config.RabbitMqConcurrentMessageLimit; // Number of concurrent consumers
-                    })); 
+                    })); */
                 }
-                else
-                {
-                    x.UsingInMemory((context, cfg) =>
-                    {
-                        cfg.ConfigureEndpoints(context);
-                    });
-                }
+                // Setup in-memory transport/queue
             });
 
             // services.AddMassTransitHostedService();
@@ -287,10 +298,7 @@ namespace ChurchManager.Infrastructure
             //register mapper configurations
             InitAutoMapper(services, typeSearcher);
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
-            //add fluenvalidation
-            AddFluentValidation(mvcBuilder, typeSearcher);
-
+            
             //Register custom type converters
             RegisterTypeConverter(typeSearcher);
 
@@ -301,7 +309,7 @@ namespace ChurchManager.Infrastructure
             AddMediator(services, typeSearcher);
 
             //Add MassTransit
-            AddMassTransitRabbitMq(services, configuration, typeSearcher, config);
+            AddWolverineRabbitMq(services, configuration, typeSearcher, config);
 
             //Register startup
             var instancesAfter = startupConfigurations

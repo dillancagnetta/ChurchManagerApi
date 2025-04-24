@@ -5,9 +5,9 @@ using System.Runtime.Loader;
 using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.SharedKernel.Extensions;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.CodeAnalysis;
+/*using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
+using Microsoft.CodeAnalysis.Scripting;*/
 
 namespace ChurchManager.Infrastructure.Roslyn
 {
@@ -26,7 +26,7 @@ namespace ChurchManager.Infrastructure.Roslyn
 
         #endregion
 
-        public static void Load(ApplicationPartManager applicationPartManager, AppConfig config)
+        /*public static void Load(ApplicationPartManager applicationPartManager, AppConfig config)
         {
             if (applicationPartManager == null)
                 throw new ArgumentNullException(nameof(applicationPartManager));
@@ -113,7 +113,7 @@ namespace ChurchManager.Infrastructure.Roslyn
                 var fail = new Exception(msg, ex);
                 throw fail;
             }
-        }
+        }*/
 
         /// <summary>
         /// Returns a collection of all referenced assemblies 
@@ -125,7 +125,7 @@ namespace ChurchManager.Infrastructure.Roslyn
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public static ResultCompiler ResultCompiledScript(string code)
+        /*public static ResultCompiler ResultCompiledScript(string code)
         {
             var result = new ResultCompiler();
             var sourceFileResolver = new SourceFileResolver(ImmutableArray<string>.Empty, AppContext.BaseDirectory);
@@ -148,6 +148,6 @@ namespace ChurchManager.Infrastructure.Roslyn
                 }
             }
             return result;
-        }
+        }*/
     }
 }

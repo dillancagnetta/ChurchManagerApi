@@ -1,14 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
   <Import Project="..\..\Build\ChurchManager.Common.props" />
   <ItemGroup>
     <PackageReference Include="AutoMapper" />
-    <PackageReference Include="FluentValidation" />
-    <PackageReference Include="FluentValidation.AspNetCore" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" />
+
     <PackageReference Include="MediatR" />
     <PackageReference Include="Serilog.AspNetCore" />
   </ItemGroup>
@@ -17,7 +14,6 @@
     <ProjectReference Include="..\ChurchManager.Infrastructure.Shared\ChurchManager.Infrastructure.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MassTransit.RabbitMQ" />
-    <PackageReference Include="MassTransit.SignalR" />
+    <PackageReference Include="WolverineFx.RabbitMQ" />
   </ItemGroup>
 </Project>

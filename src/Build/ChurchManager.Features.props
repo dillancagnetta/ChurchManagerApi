@@ -1,9 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <PackageReference Include="AutoMapper" />
-    <PackageReference Include="FluentValidation" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
-<!--<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />-->
     <PackageReference Include="MediatR" />
   </ItemGroup>
 </Project>

@@ -4,7 +4,6 @@ using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using CodeBoss.MultiTenant;
 using DotLiquid.Util;
-using MassTransit.Initializers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -111,8 +110,10 @@ public class AddUserLoginHandler : IRequestHandler<AddOrUpdateUserLoginCommand, 
             var role = await _roleRepository
                 .Queryable()
                 .AsNoTracking()
-                .FirstOrDefaultAsync(r => r.Id == roleId, ct)
-                .Select(x => x.Id);
+                .Where(r => r.Id == roleId)
+                .Select(x => x.Id)
+                .FirstOrDefaultAsync(ct)
+               ;
 
             if (role != 0) roles.Add(role);
   
