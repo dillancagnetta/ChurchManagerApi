@@ -11,10 +11,10 @@ namespace ChurchManager.Features.FollowUp.Queries.BrowseFollowUp
     public record BrowseFollowUpQuery
         : SearchTermQueryParameter, IRequest<PagedResponse<FollowUpViewModel>>
     {
-        public string[] Types { get; set; } = { };
+        public string[] Types { get; set; } = [];
         public AutocompleteResult Person { get; set; }
         public AutocompleteResult AssignedPerson { get; set; }
-        public string[] Severity { get; set; } =  {};
+        public string[] Severity { get; set; } =  [];
         public bool? WithAction { get; set; }
         public bool? AssignedToMe { get; set; } // Assigned to current user
         public DateTime? From { get; set; }

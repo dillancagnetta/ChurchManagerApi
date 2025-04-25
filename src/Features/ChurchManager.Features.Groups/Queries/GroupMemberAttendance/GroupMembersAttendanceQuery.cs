@@ -8,7 +8,7 @@ using MediatR;
 
 namespace ChurchManager.Features.Groups.Queries.GroupMemberAttendance;
 
-public record GroupMembersAttendanceQuery(int GroupId, PeriodType Period) : IRequest<ApiResponse>;
+public record GroupMembersAttendanceQuery(int GroupId, PeriodType Period = PeriodType.ThisMonth) : IRequest<ApiResponse>;
 
 public class GroupMembersAttendanceHandler : IRequestHandler<GroupMembersAttendanceQuery, ApiResponse>
 {
@@ -108,7 +108,7 @@ public class GroupAttendance2Handler : IRequestHandler<GroupAttendanceQuery, Api
  * ------------------GroupsAverageAttendanceRateQuery-------------------------------------------------------------------------------------------
  */
  
-public record GroupsAverageAttendanceRateQuery(IEnumerable<int> GroupIds, PeriodType Period) : IRequest<IEnumerable<GroupsAverageAttendanceRate>>
+public record GroupsAverageAttendanceRateQuery(IEnumerable<int> GroupIds, PeriodType Period = PeriodType.ThisMonth) : IRequest<IEnumerable<GroupsAverageAttendanceRate>>
 {
     public int? ChurchId { get; set; }
     public int? GroupTypeId { get; set; }

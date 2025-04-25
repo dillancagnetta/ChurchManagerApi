@@ -9,7 +9,7 @@ namespace ChurchManager.Features.Groups.Queries.Reports.AttendanceReportGrid
     public record AttendanceReportGridQuery : IRequest<ApiResponse>
     {
         public int GroupTypeId { get; set; }
-        public IList<int> GroupId { get; set; }
+        public IList<int> GroupId { get; set; } = [];
         public DateTime From { get; set; }
         public DateTime To { get; set; }
     }

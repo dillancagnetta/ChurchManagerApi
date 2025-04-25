@@ -11,7 +11,7 @@ namespace ChurchManager.Features.Groups.Commands.GroupAttendanceFeedback
     {
         [Required] public int AttendanceId { get; set; }
 
-        public string Feedback { get; set; }
+        public string? Feedback { get; set; }
     }
 
     public class GroupAttendanceFeedbackHandler : IRequestHandler<SubmitGroupAttendanceFeedbackCommand, Unit>

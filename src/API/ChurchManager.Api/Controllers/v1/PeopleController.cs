@@ -113,7 +113,7 @@ namespace ChurchManager.Api.Controllers.v1
         }
         
         [HttpGet("connection-status-types")]
-        public async Task<IActionResult> GetConnectionStatusTypes([FromQuery] PeopleAutocompleteQuery query, CancellationToken token)
+        public async Task<IActionResult> GetConnectionStatusTypes(CancellationToken token)
         {
             return Ok(await Mediator.Send(new ConnectionStatusTypesQuery(), token));
         }

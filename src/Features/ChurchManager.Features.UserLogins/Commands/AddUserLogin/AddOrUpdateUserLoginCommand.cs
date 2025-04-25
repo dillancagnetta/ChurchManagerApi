@@ -12,7 +12,7 @@ namespace ChurchManager.Features.UserLogins.Commands.AddUserLogin;
 public record AddOrUpdateUserLoginCommand : IRequest<ApiResponse>
 {
     public int PersonId { get; set; }
-    public string Password { get; set; }
+    public string? Password { get; set; }
     public List<int> UserLoginRoleIds { get; set; } = new(0); // RoleIds
 }
 

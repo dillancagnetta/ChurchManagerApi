@@ -5,7 +5,7 @@ using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 
 namespace ChurchManager.Features.Communication.Commands;
-public record ApproveCommunicationCommand(int CommunicationId,  string Note) : IRequest<ApiResponse>;
+public record ApproveCommunicationCommand(int CommunicationId,  string? Note) : IRequest<ApiResponse>;
 
 public class ApproveCommunicationHandler(ICommunicationDbRepository dbRepository, IAppCurrentUser currentUser)  : IRequestHandler<ApproveCommunicationCommand, ApiResponse>
 {

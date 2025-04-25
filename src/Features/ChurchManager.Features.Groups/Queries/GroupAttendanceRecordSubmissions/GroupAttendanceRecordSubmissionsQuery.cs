@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Features.Groups.Queries.GroupAttendanceRecordSubmissions
 {
-    public record GroupAttendanceRecordSubmissionsQuery(int ChurchId, PeriodType PeriodType) : IRequest<ApiResponse>;
+    public record GroupAttendanceRecordSubmissionsQuery(int ChurchId, PeriodType PeriodType = PeriodType.ThisMonth) : IRequest<ApiResponse>;
 
     public class GroupAttendanceRecordSubmissionsHandler : IRequestHandler<GroupAttendanceRecordSubmissionsQuery, ApiResponse>
     {

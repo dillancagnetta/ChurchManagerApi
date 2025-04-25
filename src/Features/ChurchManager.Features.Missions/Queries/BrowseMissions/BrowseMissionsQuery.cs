@@ -13,9 +13,9 @@ namespace ChurchManager.Features.Missions.Queries.BrowseMissions
         public int? PersonId { get; set; }
         public int? GroupId { get; set; }
         public int? ChurchId { get; set; }
-        public string[] Types { get; set; }
-        public string[] Categories { get; set; }
-        public string[] Streams { get; set; }
+        public string[] Types { get; set; } = [];
+        public string[] Categories { get; set; } = [];
+        public string[] Streams { get; set; } = [];
         public DateTime? From { get; set; }
         public DateTime? To { get; set; }
     

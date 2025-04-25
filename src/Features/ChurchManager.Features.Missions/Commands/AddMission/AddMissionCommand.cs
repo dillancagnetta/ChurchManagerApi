@@ -12,7 +12,7 @@ namespace ChurchManager.Features.Missions.Commands.AddMission
         public string Name { get; set; }
 
         [MaxLength(100)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [MaxLength(100)]
         public string Type { get; set; } // InReach, OutReach etc
@@ -47,7 +47,7 @@ namespace ChurchManager.Features.Missions.Commands.AddMission
 
         public Attendance Attendance { get; set; }
 
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
     }
 
     public class AddMissionHandler : IRequestHandler<AddMissionCommand, Unit>

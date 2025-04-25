@@ -11,7 +11,7 @@ public record BrowseChurchAttendanceQuery : QueryParameter, IRequest<PagedRespon
     public int[] AttendanceTypeIds { get; set; }
     public int ChurchId { get; set; }
     public int? ChurchGroupId { get; set; }
-    public bool WithFeedBack { get; set; }
+    public bool WithFeedBack { get; set; } = false;
     public DateTime? From { get; set; }
     public DateTime? To { get; set; }
 }

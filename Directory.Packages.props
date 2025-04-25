@@ -30,7 +30,7 @@
     <PackageVersion Include="DotLiquid" Version="2.2.518" />
     <PackageVersion Include="DotNetCore.NPOI" Version="1.2.3" />
     <PackageVersion Include="EntityFrameworkCore.Triggered" Version="3.2.2" />
-    <PackageVersion Include="Flagsmith" Version="5.4.3" />
+    <PackageVersion Include="Flagsmith" Version="7.1.1" />
     <PackageVersion Include="Ical.Net" Version="4.2.0" />
     <PackageVersion Include="LinqKit.Microsoft.EntityFrameworkCore" Version="9.0.8" />
     <PackageVersion Include="MediatR" Version="12.4.1" />

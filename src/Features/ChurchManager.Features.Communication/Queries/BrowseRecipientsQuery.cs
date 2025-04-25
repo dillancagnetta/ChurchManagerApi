@@ -12,7 +12,7 @@ namespace ChurchManager.Features.Communication.Queries;
 
 public record BrowseRecipientsQuery : QueryParameter, IRequest<ApiResponse>
 {
-    public string Status { get; set; }
+    public string Status { get; set; } = Feature.CommunicationRecipientStatus.Pending.Value;
     public int? PersonId { get; set; }
     public int CommunicationId { get; set; }
     public bool? IsSent { get; set; }

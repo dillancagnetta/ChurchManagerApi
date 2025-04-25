@@ -13,12 +13,12 @@ namespace ChurchManager.Features.Communication.Queries;
 
 public record BrowseCommunicationsQuery : SearchTermQueryParameter, IRequest<ApiResponse>
 {
-    public string CommunicationStatus { get; set; }
+    public string CommunicationStatus { get; set; } = Feature.CommunicationStatus.PendingApproval.Value;
     public DateTime? From { get; set; }
     public DateTime? To { get; set; }
     public int? RecipientPersonId { get; set; }
     public int? CommunicationTemplateId { get; set; }
-    public IEnumerable<string> CommunicationTypes { get; set; }
+    public IEnumerable<string> CommunicationTypes { get; set; } = [];
 }
 
 public class BrowseCommunicationsHandler(

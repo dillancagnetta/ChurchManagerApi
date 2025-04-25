@@ -17,13 +17,13 @@ namespace ChurchManager.Features.Groups.Commands.NewGroup
         public int GroupTypeId { get; set; }
         public ParentChurchGroup ParentChurchGroup { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
-        public string Address { get; set; }
+        public string? Description { get; set; }
+        public string? Address { get; set; }
         public bool? IsOnline { get; set; }
-        public string MeetingTime { get; set; }
+        public string? MeetingTime { get; set; }
         public DateTime? Start { get; set; }
         public DateTime? End { get; set; }
-        public string Recurrence { get; set; }
+        public string? Recurrence { get; set; }
     }
 
     public record ParentChurchGroup
