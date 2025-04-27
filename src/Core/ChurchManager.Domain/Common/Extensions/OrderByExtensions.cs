@@ -11,16 +11,16 @@ namespace ChurchManager.Domain.Common.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="propertyName">Name of the property.</param>
         /// <returns></returns>
-        public static Expression<Func<T, object>> ToLambda<T>(this string propertyName)
+        public static Expression<Func<T, object?>> ToLambda<T>(this string propertyName)
         {
             var parameter = Expression.Parameter(typeof(T));
             var property = Expression.Property(parameter, propertyName);
             var propAsObject = Expression.Convert(property, typeof(object));
 
-            return Expression.Lambda<Func<T, object>>(propAsObject, parameter);
+            return Expression.Lambda<Func<T, object?>>(propAsObject, parameter);
         }
 
-        public static Expression<Func<TEntity, TResult>> ToLambda<TEntity, TResult>(this string prop)
+        public static Expression<Func<TEntity, TResult?>> ToLambda<TEntity, TResult>(this string prop)
         {
             var param = Expression.Parameter(typeof(TEntity), "p");
             var parts = prop.Split('.');
@@ -28,7 +28,7 @@ namespace ChurchManager.Domain.Common.Extensions
             var parent = parts.Aggregate<string, Expression>(param, Expression.Property);
             Expression conversion = Expression.Convert(parent, typeof(object));
 
-            return Expression.Lambda<Func<TEntity, TResult>>(conversion, param);
+            return Expression.Lambda<Func<TEntity, TResult?>>(conversion, param);
         }
 
 
@@ -36,7 +36,7 @@ namespace ChurchManager.Domain.Common.Extensions
             this ISpecificationBuilder<T> specificationBuilder,
             string propertyName)
         {
-            var orderExpression = propertyName.ToLambda<T, object>();
+            var orderExpression = propertyName.ToLambda<T, object?>();
 
             return specificationBuilder.OrderBy(orderExpression);
         }
@@ -45,7 +45,7 @@ namespace ChurchManager.Domain.Common.Extensions
             this ISpecificationBuilder<T> specificationBuilder,
             string propertyName)
         {
-            var orderExpression = propertyName.ToLambda<T, object>();
+            var orderExpression = propertyName.ToLambda<T, object?>();
 
             return specificationBuilder.OrderByDescending(orderExpression);
         }

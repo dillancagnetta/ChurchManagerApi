@@ -15,9 +15,9 @@ namespace ChurchManager.Features.People.Commands.AddNewFamily
 {
     public record AddNewFamilyCommand : IRequest<Unit>
     {
-        public string FamilyName { get; set; }
-        public IEnumerable<FamilyMember> Members { get; set; }
-        public Address Address { get; set; }
+        public required string FamilyName { get; set; }
+        public IEnumerable<FamilyMember> Members { get; set; } = [];
+        public Address Address { get; set; } = new();
     }
 
     public class AddNewFamilyHandler : IRequestHandler<AddNewFamilyCommand, Unit>
@@ -103,6 +103,7 @@ namespace ChurchManager.Features.People.Commands.AddNewFamily
                 }).ToArray(); // <----------------   the fix for the Id's
 
                 await _dbRepository.AddRangeAsync(members, ct);
+                await _dbRepository.SaveChangesAsync(ct);
 
                 await SendFollowUpAssignments(command, members, ct);
 
@@ -117,7 +118,7 @@ namespace ChurchManager.Features.People.Commands.AddNewFamily
                     Notes = $"New family added"
                 }));
                 await _connectionStatusHistoryDb.AddRangeAsync(histories, ct);
-
+                await _dbRepository.SaveChangesAsync(ct);
             }
             catch(Exception ex)
             {
@@ -135,8 +136,8 @@ namespace ChurchManager.Features.People.Commands.AddNewFamily
                 .Select(x => new { x.Person, x.AssignedFollowUpPerson });
 
             var personFollowUps = members.Join(followUpRequests, // Join lists
-                member => member.FullName.FirstName + member.FullName.LastName + member.Email?.Address, // Join key
-                followUp => followUp.Person.FirstName + followUp.Person.LastName + followUp.Person.EmailAddress, // Join key
+                member => member.FullName!.FirstName + member.FullName.LastName + member.Email?.Address, // Join key
+                followUp => followUp.Person!.FirstName + followUp.Person.LastName + followUp.Person.EmailAddress, // Join key
                 (person, followUps) => new { Person = person, followUps.AssignedFollowUpPerson }); // Selection
 
             foreach (var followUp in personFollowUps)

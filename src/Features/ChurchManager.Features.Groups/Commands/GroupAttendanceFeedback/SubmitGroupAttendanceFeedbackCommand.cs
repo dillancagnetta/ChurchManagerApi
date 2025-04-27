@@ -29,7 +29,7 @@ namespace ChurchManager.Features.Groups.Commands.GroupAttendanceFeedback
 
         public async Task<Unit> Handle(SubmitGroupAttendanceFeedbackCommand command, CancellationToken ct)
         {
-            var attendance = await _dbRepository.GetByIdAsync(command.AttendanceId);
+            var attendance = await _dbRepository.GetByIdAsync(command.AttendanceId, ct);
 
             if (attendance.AttendanceReview is null)
             {

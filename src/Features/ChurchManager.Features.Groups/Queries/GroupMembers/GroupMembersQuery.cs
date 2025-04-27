@@ -7,7 +7,7 @@ namespace ChurchManager.Features.Groups.Queries.GroupMembers
 {
     public record GroupMembersQuery(int GroupId) : IRequest<ApiResponse>
     {
-        public string RecordStatus { get; set; }
+        public string RecordStatus { get; set; } = "Active";
     }
 
     public class GroupMembersHandler : IRequestHandler<GroupMembersQuery, ApiResponse>

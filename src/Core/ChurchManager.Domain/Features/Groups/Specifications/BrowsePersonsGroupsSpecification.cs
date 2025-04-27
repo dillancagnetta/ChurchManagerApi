@@ -52,7 +52,7 @@ namespace ChurchManager.Domain.Features.Groups.Specifications
                 Description = x.Description,
                 ParentGroupId = x.ParentGroupId,
                 GroupType = x.GroupType!.Name,
-                GroupRole = x.Members.First(m => m.PersonId == personId).GroupRole!.Name,
+                GroupRole = x.Members.First(m => m.PersonId == personId).GroupRole!.Name!,
                 RecordStatus = x.RecordStatus.ToString(),
                 TakesAttendance = x.GroupType.TakesAttendance,
                 IsLeader = x.Members.First(m => m.PersonId == personId).GroupRole!.IsLeader,

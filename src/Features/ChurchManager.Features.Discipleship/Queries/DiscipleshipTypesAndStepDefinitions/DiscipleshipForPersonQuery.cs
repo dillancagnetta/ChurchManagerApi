@@ -32,7 +32,7 @@ namespace ChurchManager.Features.Discipleship.Queries.DiscipleshipTypesAndStepDe
                 {
                     Program = new DiscipleshipProgramViewModel
                     {
-                        Id = step.Definition.DiscipleshipProgram.Id,
+                        Id = step.Definition!.DiscipleshipProgram!.Id,
                         Name = step.Definition.DiscipleshipProgram.Name,
                         Description = step.Definition.DiscipleshipProgram.Description,
                         Category = step.Definition.DiscipleshipProgram.Category,
@@ -50,7 +50,7 @@ namespace ChurchManager.Features.Discipleship.Queries.DiscipleshipTypesAndStepDe
                         }
                     }
                 })
-                .OrderBy(x => x.Step.StepDefinition.Order)
+                .OrderBy(x => x.Step!.StepDefinition!.Order)
                 .ToListAsync(ct);
 
             // This is done in memory
@@ -76,12 +76,12 @@ namespace ChurchManager.Features.Discipleship.Queries.DiscipleshipTypesAndStepDe
                     Steps = steps.Select(x =>
                         new DiscipleshipStepViewModel
                         {
-                            CompletionDate = x.CompletionDate,
+                            CompletionDate = x!.CompletionDate,
                             Status = x.Status,
                             IsComplete = x.IsComplete,
                             StepDefinition = new StepDefinitionViewModel
                             {
-                                Order = x.StepDefinition.Order, Id = x.StepDefinition.Id,
+                                Order = x.StepDefinition!.Order, Id = x.StepDefinition.Id,
                                 Description = x.StepDefinition.Description, Name = x.StepDefinition.Name
                             }
                         })

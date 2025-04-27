@@ -83,7 +83,7 @@ public class CommunicationApprovedConsumer: IDomainEventHandler
                         // Send to recipients with active email addresses
                         foreach (var personWithActiveEmail in peopleWithActiveEmail)
                         {
-                            var recipient = recipients.FirstOrDefault(x => x.PersonId == personWithActiveEmail.Id);
+                            var recipient = recipients.First(x => x.PersonId == personWithActiveEmail.Id);
                             
                             await context.PublishAsync(new SendEmailToRecipientEvent(
                                 communication.Id,
@@ -93,7 +93,7 @@ public class CommunicationApprovedConsumer: IDomainEventHandler
                         
                         // Save changes
                         communication.SendDateTime = DateTime.UtcNow;
-                        _dbRepository.SaveChangesAsync();
+                        await _dbRepository.SaveChangesAsync(ct);
                     }  
                 }
                 

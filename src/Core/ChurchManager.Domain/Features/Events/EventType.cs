@@ -28,7 +28,7 @@ public class EventType: AuditableEntity<int>, IAggregateRoot<int>
     
     public bool IsSystem { get; set; } = false;
 
-    public string IconCssClass { get; set; } = "heroicons_solid:academic-cap";
+    public string? IconCssClass { get; set; } = "heroicons_solid:academic-cap";
 
     public ChildCare? ChildCare { get; set; }
 

@@ -15,8 +15,9 @@ namespace ChurchManager.Features.Groups.Commands.NewGroup
     public record AddGroupCommand : IRequest<ApiResponse>
     {
         public int GroupTypeId { get; set; }
-        public ParentChurchGroup ParentChurchGroup { get; set; }
-        public string Name { get; set; }
+        public int? ChurchId { get; set; }
+        public ParentChurchGroup? ParentChurchGroup { get; set; }
+        public required string Name { get; set; }
         public string? Description { get; set; }
         public string? Address { get; set; }
         public bool? IsOnline { get; set; }
@@ -45,43 +46,48 @@ namespace ChurchManager.Features.Groups.Commands.NewGroup
 
         public async Task<ApiResponse> Handle(AddGroupCommand command, CancellationToken ct)
         {
-            var weeklyTimeOfDay = TimeSpan.Parse(command.MeetingTime);
-
-            //Repeat daily for 5 days
-            var rrule = new RecurrencePattern(command.Recurrence);
-            var days = rrule.ByDay;
-
-            var e = new CalendarEvent
-            {
-                Start = command.Start.HasValue
-                    ? new CalDateTime(command.Start.Value.Year, command.Start.Value.Month, command.Start.Value.Day,
-                        weeklyTimeOfDay.Hours, weeklyTimeOfDay.Minutes, weeklyTimeOfDay.Seconds)
-                    : CalDateTime.Today,
-                End = command.End.HasValue ? new CalDateTime(command.End.Value) : CalDateTime.Today.AddYears(5),
-                RecurrenceRules = new List<RecurrencePattern> {rrule}
-            };
-
-            var calendar = new Calendar();
-            calendar.Events.Add(e);
-
-            var serializer = new CalendarSerializer();
-            var serializedCalendar = serializer.SerializeToString(calendar);
-
             // 
-            var parentGroupId = command.ParentChurchGroup.GroupId is DomainConstants.Groups.NoParentGroupId
+            var parentGroupId = command.ParentChurchGroup?.GroupId is DomainConstants.Groups.NoParentGroupId
                 ? null
-                : command.ParentChurchGroup.GroupId;
+                : command.ParentChurchGroup?.GroupId;
 
             var group = new Group
             {
                 Name = command.Name, Description = command.Description,
                 GroupTypeId = command.GroupTypeId,
-                ChurchId = command.ParentChurchGroup.ChurchId,
+                ChurchId = command.ParentChurchGroup?.ChurchId ?? command.ChurchId,
                 ParentGroupId = parentGroupId,
                 Address = command.Address,
                 IsOnline = command.IsOnline,
-                StartDate = DateTimeOffset.UtcNow,
-                Schedule = new Schedule
+                StartDate = DateTimeOffset.UtcNow
+            };
+
+            // Add Schedule if provided and valid meeting time and recurrence
+            if (!command.MeetingTime.IsNullOrWhiteSpace() && !command.Recurrence.IsNullOrWhiteSpace())
+            {
+                var weeklyTimeOfDay = TimeSpan.Parse(command.MeetingTime);
+
+                //Repeat daily for 5 days
+                var rrule = new RecurrencePattern(command.Recurrence);
+                var days = rrule.ByDay;
+
+                var e = new CalendarEvent
+                {
+                    Start = command.Start.HasValue
+                        ? new CalDateTime(command.Start.Value.Year, command.Start.Value.Month, command.Start.Value.Day,
+                            weeklyTimeOfDay.Hours, weeklyTimeOfDay.Minutes, weeklyTimeOfDay.Seconds)
+                        : CalDateTime.Today,
+                    End = command.End.HasValue ? new CalDateTime(command.End.Value) : CalDateTime.Today.AddYears(5),
+                    RecurrenceRules = new List<RecurrencePattern> {rrule}
+                };
+
+                var calendar = new Calendar();
+                calendar.Events.Add(e);
+
+                var serializer = new CalendarSerializer();
+                var serializedCalendar = serializer.SerializeToString(calendar);
+
+                group.Schedule = new Schedule
                 {
                     StartDate = command.Start,
                     EndDate = command.End,
@@ -90,9 +96,9 @@ namespace ChurchManager.Features.Groups.Commands.NewGroup
                     WeeklyTimeOfDay = weeklyTimeOfDay,
                     WeeklyDayOfWeek = days.FirstOrDefault()?.DayOfWeek,
                     Frequency = rrule.Frequency.ConvertToString()
-                }
-            };
-
+                };
+            }
+            
             await _dbRepository.AddAsync(group, ct);
 
             return new ApiResponse(group.Id);

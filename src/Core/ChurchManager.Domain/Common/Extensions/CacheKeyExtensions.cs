@@ -6,21 +6,21 @@ namespace ChurchManager.Domain.Common.Extensions;
 
 public static class CacheKeyExtensions
 {
-    public static string ToCacheKey<T>(this IEnumerable<T> values)
+    public static string? ToCacheKey<T>(this IEnumerable<T> values)
     {
         if(values.IsNullOrEmpty()) return string.Empty;
         
         return string.Join("_", values);
     }
 
-    public static string ToCacheKey(this Dictionary<string, int> data)
+    public static string? ToCacheKey(this Dictionary<string, int> data)
     {
         if(data.IsNullOrEmpty()) return string.Empty;
         
         return string.Join("_", data.Select(kv => $"{kv.Key}-{kv.Value}"));
     }
 
-    public static string ToCacheKey(this IPagedQuery paging) =>
+    public static string? ToCacheKey(this IPagedQuery paging) =>
         $"{paging.Page}_{paging.Results}_{paging.OrderBy}_{paging.SortOrder}";
     
     public static string ToCacheKey(this DateTime dt) => dt.ToString("yyyy-MM-dd");
@@ -49,7 +49,7 @@ public static class CacheKeyExtensions
             }
 
 
-            string keyPart = param switch
+            string? keyPart = param switch
             {
                 IEnumerable<int> enumerable => enumerable.ToCacheKey(),
                 IEnumerable<string> enumerable => enumerable.ToCacheKey(),

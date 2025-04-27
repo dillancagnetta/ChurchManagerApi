@@ -14,11 +14,11 @@ namespace ChurchManager.Domain.Features.People.Queries
         /// <param name="lastName">The last name.</param>
         /// <param name="email">The email.</param>
         /// <param name="mobilePhone">The mobile phone.</param>
-        public PersonMatchQuery(string firstName, string lastName, string email, string mobilePhone)
+        public PersonMatchQuery(string? firstName, string? lastName, string? email, string? mobilePhone)
         {
-            FirstName = !firstName.IsNullOrEmpty() ? firstName.Trim() : string.Empty;
-            LastName = !lastName.IsNullOrEmpty() ? lastName.Trim() : string.Empty;
-            Email = !email.IsNullOrEmpty() ? email.Trim() : string.Empty;
+            FirstName = !firstName.IsNullOrEmpty() ? firstName!.Trim() : string.Empty;
+            LastName = !lastName.IsNullOrEmpty() ? lastName!.Trim() : string.Empty;
+            Email = !email.IsNullOrEmpty() ? email!.Trim() : string.Empty;
             MobilePhone = !mobilePhone.IsNullOrEmpty() ? PhoneNumber.CleanNumber(mobilePhone) : string.Empty;
             Gender = null;
             BirthDate = null;
@@ -75,7 +75,7 @@ namespace ChurchManager.Domain.Features.People.Queries
         /// <value>
         /// The first name.
         /// </value>
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         /// <summary>
         /// Gets or sets the last name.
@@ -83,7 +83,7 @@ namespace ChurchManager.Domain.Features.People.Queries
         /// <value>
         /// The last name.
         /// </value>
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         /// <summary>
         /// Gets or sets the email.
@@ -91,7 +91,7 @@ namespace ChurchManager.Domain.Features.People.Queries
         /// <value>
         /// The email.
         /// </value>
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         /// <summary>
         /// Gets or sets the mobile phone.
@@ -99,7 +99,7 @@ namespace ChurchManager.Domain.Features.People.Queries
         /// <value>
         /// The mobile phone.
         /// </value>
-        public string MobilePhone { get; set; }
+        public string? MobilePhone { get; set; }
 
         /// <summary>
         /// Gets or sets the gender.
@@ -107,7 +107,7 @@ namespace ChurchManager.Domain.Features.People.Queries
         /// <value>
         /// The gender.
         /// </value>
-        public Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
 
         /// <summary>
         /// Gets or sets the birth date.

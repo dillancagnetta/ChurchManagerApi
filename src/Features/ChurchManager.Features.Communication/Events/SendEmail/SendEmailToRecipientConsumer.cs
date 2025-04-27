@@ -42,7 +42,7 @@ public class SendEmailToRecipientConsumer : IDomainEventHandler
         {
             var emailRecipient = new EmailRecipient
             {
-                EmailAddress = recipient.RecipientPerson.Email.Address,
+                EmailAddress = recipient.RecipientPerson!.Email!.Address!,
                 PersonId = recipient.PersonId
             };
 
@@ -63,7 +63,7 @@ public class SendEmailToRecipientConsumer : IDomainEventHandler
             recipient.StatusNote = result.IsSuccess? null : result.Errors.First().Message;
             recipient.UniqueMessageId = result.IsSuccess? result.Result : null;
             recipient.SendDateTime = result.IsSuccess? DateTime.UtcNow : null;
-            _communicationDb.SaveChangesAsync();
+            await _communicationDb.SaveChangesAsync(ct);
         }
     }
 }

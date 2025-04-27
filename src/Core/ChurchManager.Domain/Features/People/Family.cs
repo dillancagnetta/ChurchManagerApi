@@ -12,7 +12,7 @@ namespace ChurchManager.Domain.Features.People
     public class Family : Entity<int>, IAggregateRoot<int>
     {
         public string? Name { get; set; }
-        [Required] public Address Address { get; set; }
+        [Required] public Address? Address { get; set; }
         public string? Language { get; set; }
         
         [MaxLength(50)]

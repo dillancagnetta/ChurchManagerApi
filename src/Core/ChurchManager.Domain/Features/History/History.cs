@@ -25,7 +25,7 @@ public class History : AuditableEntity<int>, IAggregateRoot<int>
 
     [MaxLength(20)] public HistoryChangeType? ChangeType { get; set; }
 
-    [MaxLength(250)] public string ValueName { get; set; }
+    [MaxLength(250)] public string? ValueName { get; set; }
     public string? NewValue { get; set; }
     public string? NewRawValue { get; set; }
     public string? OldValue { get; set; }

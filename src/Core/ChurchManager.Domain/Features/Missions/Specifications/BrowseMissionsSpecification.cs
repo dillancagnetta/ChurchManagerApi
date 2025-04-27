@@ -81,7 +81,7 @@ namespace ChurchManager.Domain.Features.Missions.Specifications
             Query.Select(x => new MissionViewModel
             {
                 Id = x.Id,
-                Name = x.Name,
+                Name = x.Name!,
                 Description = x.Description,
                 Type = x.Type,
                 Category = x.Category,
@@ -89,9 +89,9 @@ namespace ChurchManager.Domain.Features.Missions.Specifications
                 IconCssClass = x.IconCssClass,
                 StartDateTime = x.StartDateTime,
                 EndDateTime = x.EndDateTime,
-                Person = x.PersonId != null ? new PeopleAutocompleteViewModel(x.PersonId, x.Person.FullName.ToString(), x.Person.PhotoUrl, x.Person.ConnectionStatus) : null,
-                Church = x.ChurchId != null ? new AutocompleteResult(x.Church.Id, x.Church.Name) : null,
-                Group = x.GroupId != null ? new AutocompleteResult(x.Group.Id, x.Group.Name) : null,
+                Person = x.PersonId != null ? new PeopleAutocompleteViewModel(x.PersonId, x.Person!.FullName!.ToString(), x.Person.PhotoUrl, x.Person!.ConnectionStatus) : null,
+                Church = x.ChurchId != null ? new AutocompleteResult(x.Church!.Id, x.Church.Name) : null,
+                Group = x.GroupId != null ? new AutocompleteResult(x.Group!.Id, x.Group.Name) : null,
                 Attendance = new AttendanceViewModel
                 {
                     AttendanceCount = x.Attendance.AttendanceCount, 

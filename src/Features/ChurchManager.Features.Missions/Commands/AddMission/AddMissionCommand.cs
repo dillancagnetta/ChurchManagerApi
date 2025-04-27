@@ -9,16 +9,16 @@ namespace ChurchManager.Features.Missions.Commands.AddMission
     public record AddMissionCommand : IRequest<Unit>
     {
         [Required, MaxLength(50)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [MaxLength(100)]
         public string? Description { get; set; }
 
         [MaxLength(100)]
-        public string Type { get; set; } // InReach, OutReach etc
+        public string? Type { get; set; } // InReach, OutReach etc
 
         [MaxLength(200)]
-        public string Category { get; set; } // ROSA, Healing Streams etc
+        public string? Category { get; set; } // ROSA, Healing Streams etc
 
         /// <summary>
         /// Gets or sets the icon CSS class.
@@ -45,7 +45,7 @@ namespace ChurchManager.Features.Missions.Commands.AddMission
         /// </summary>
         public int? GroupId { get; set; }
 
-        public Attendance Attendance { get; set; }
+        public Attendance? Attendance { get; set; }
 
         public string? Notes { get; set; }
     }

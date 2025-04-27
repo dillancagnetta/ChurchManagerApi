@@ -48,7 +48,7 @@ public class GroupYearlyConversionRateComparisonHandler : IRequestHandler<GroupY
     public async Task<ApiResponse> Handle(GroupYearlyConversionRateComparisonQuery query, CancellationToken cancellationToken)
     {
         var result = await _dbRepository.YearlyConversionComparisonAsync(
-            groupTypeId: query.GroupTypeId.Value,
+            groupTypeId: query.GroupTypeId!.Value,
             churchId: query.ChurchId,
             groupId: query.GroupId,
             includeMonthlyBreakdown: query.IncludeMonthlyBreakdown,

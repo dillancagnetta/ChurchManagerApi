@@ -31,17 +31,17 @@ public class UserLoginsSpecification : PermissionSpecification<UserLogin, UserLo
             Id = x.Id,
             Username = x.Username,
             RecordStatus = x.RecordStatus.ToString(),
-            Person = Person.ToBasicPerson(x.Person),
+            Person = Person.ToBasicPerson(x.Person!),
             Roles = x.UserRoles.Select(ur => new UserLoginRoleViewModel
             {
-                Id = ur.Role.Id,
-                Name = ur.Role.Name,
+                Id = ur.Role!.Id,
+                Name = ur.Role!.Name!,
                 Description = ur.Role.Description,
                 IsSystem = ur.Role.IsSystem,
                 RecordStatus = ur.Role.RecordStatus.ToString(),
                 Permissions = ur.Role.PermissionAssignments.Select(pa => new PermissionViewModel
                 {
-                    Id = pa.Permission.Id,
+                    Id = pa.Permission!.Id,
                     IsDynamicScope = pa.Permission.IsDynamicScope,
                     EntityType = pa.Permission.EntityType,
                     ScopeType = pa.Permission.ScopeType,

@@ -20,9 +20,9 @@ namespace ChurchManager.Features.Events.Commands;
 public record AddEventCommand : IRequest<ApiResponse>
 {
     [Required]
-    public string Name { get; set; }
+    public required string Name { get; set; }
         
-    public string Description { get; set; }
+    public string? Description { get; set; }
         
     public int EventTypeId { get; set; }
         
@@ -32,19 +32,19 @@ public record AddEventCommand : IRequest<ApiResponse>
         
     public int ContactPersonId { get; set; }
         
-    public string ContactEmail { get; set; }
+    public string? ContactEmail { get; set; }
         
-    public string ContactPhone { get; set; }
-    public string Location { get; set; }
+    public string? ContactPhone { get; set; }
+    public string? Location { get; set; }
     public int? Capacity { get; set; }
         
     public int? ChurchGroupId { get; set; }
     public int? ChurchId { get; set; }
 
         
-    public List<EventSessionViewModel> Sessions { get; set; } = new();
+    public List<EventSessionViewModel> Sessions { get; set; } = [];
     
-    public IFormFile Image { get; set; }
+    public IFormFile? Image { get; set; }
 }
 
 public class AddEventCommandHandler(
@@ -85,9 +85,9 @@ public class AddEventCommandHandler(
                 {
                     Name = $"{x.Name}-EventSession",
                     StartDate = x.StartDate,
-                    StartTime = TimeSpan.Parse(x.StartTime),
+                    StartTime = x.StartTime != null ? TimeSpan.Parse(x.StartTime) :null,
                     EndDate = x.EndDate,
-                    EndTime =  TimeSpan.Parse(x.EndTime),
+                    EndTime = x.EndTime !=null ? TimeSpan.Parse(x.EndTime) : null,
                     Timezone = "South Africa Standard Time"
                 }
             }).ToList()
@@ -143,13 +143,13 @@ public class EditEventCommandCommandHandler(
         
         foreach (var session in removedSessions)
         {
-            eventEntity.Sessions.Remove(session);
+            eventEntity!.Sessions.Remove(session);
         }
         
         // Photo Removed
         if (eventEntity.HasPhoto && command.Image is null)
         {
-            if (eventEntity.PhotoUrl.Contains("cloudinary", StringComparison.InvariantCultureIgnoreCase))
+            if (eventEntity.PhotoUrl!.Contains("cloudinary", StringComparison.InvariantCultureIgnoreCase))
             {
                 var publicId = eventEntity.PhotoUrl.CloudinaryPublicId();
                 await photos.DeletePhotoAsync(publicId);
@@ -160,7 +160,7 @@ public class EditEventCommandCommandHandler(
         if (command.Image is { Length: > 0 })
         {
             // Delete current photo
-            if(eventEntity.HasPhoto && eventEntity.PhotoUrl.Contains("cloudinary", StringComparison.InvariantCultureIgnoreCase))
+            if(eventEntity.HasPhoto && eventEntity.PhotoUrl!.Contains("cloudinary", StringComparison.InvariantCultureIgnoreCase))
             {
                 var publicId = eventEntity.PhotoUrl.CloudinaryPublicId();
                 await photos.DeletePhotoAsync(publicId);
@@ -197,8 +197,8 @@ public class EditEventCommandCommandHandler(
                     Name = $"{eventEntity.Name}-EventSession",
                     StartDate = sessionDto.StartDate,
                     EndDate = sessionDto.EndDate,
-                    StartTime = TimeSpan.Parse(sessionDto.StartTime),
-                    EndTime = TimeSpan.Parse(sessionDto.EndTime),
+                    StartTime = sessionDto.StartTime != null ? TimeSpan.Parse(sessionDto.StartTime) : null,
+                    EndTime = sessionDto.EndTime != null ? TimeSpan.Parse(sessionDto.EndTime) :  null,
                     Timezone = "South Africa Standard Time"
                 };
                 return newSession;

@@ -16,7 +16,7 @@ namespace ChurchManager.Infrastructure.Plugins
             return value;
         }
 
-        public static IList<string> ParseInstalledPluginsFile(string filePath)
+        public static IList<string>? ParseInstalledPluginsFile(string filePath)
         {
             if (!File.Exists(filePath))
                 return new List<string>();

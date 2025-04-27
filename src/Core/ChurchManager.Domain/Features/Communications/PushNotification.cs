@@ -15,7 +15,7 @@ namespace ChurchManager.Domain.Features.Communications
             Body = body;
         }
 
-        public PushNotification(string title, string body)
+        public PushNotification(string title, string? body)
         {
             Title = title;
             Body = body;

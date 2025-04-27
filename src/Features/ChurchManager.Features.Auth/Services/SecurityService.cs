@@ -210,8 +210,8 @@ public class SecurityService(IPermissionContext permissions,
             .Where(x => x.IsDynamicScope)
             .GroupBy(x => x.ScopeType)
             .ToDictionary(
-                g => g.Key,
-                g => g.Select(p => p.ScopeId).Where(id => id.HasValue).Select(id => id.Value).ToArray()
+                g => g.Key!,
+                g => g.Select(p => p.ScopeId).Where(id => id.HasValue).Select(id => id!.Value).ToArray()
             );
 
         // Resolve the permission entities and scopes
@@ -242,13 +242,13 @@ public class SecurityService(IPermissionContext permissions,
             // Key into entity or scope then to the specified entity or scope id
             if (viewModel.IsDynamicScope)
             {
-                var scopeResolved = resolvedPermissions[viewModel.ScopeType.Replace(" ", "")];
-                var scopeName = scopeResolved[viewModel.ScopeId.Value];
+                var scopeResolved = resolvedPermissions[viewModel.ScopeType!.Replace(" ", "")];
+                var scopeName = scopeResolved[viewModel.ScopeId!.Value];
                 viewModel.ScopeName = scopeName.FirstOrDefault();
             }
             else
             {
-                var entityResolved = resolvedPermissions[viewModel.EntityType.Replace(" ", "")];
+                var entityResolved = resolvedPermissions[viewModel.EntityType!.Replace(" ", "")];
                 var entityNames = viewModel.EntityIds.SelectMany(id => entityResolved[id]).ToList();
                 viewModel.EntityNames = entityNames;
             }

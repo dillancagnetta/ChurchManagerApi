@@ -40,8 +40,8 @@ public class BrowseRecipientsSpecification : Specification<Communication, Commun
          RecipientPerson = new PersonViewModelBasic
          {
             PersonId = x.PersonId,
-            FirstName = x.RecipientPerson.FullName.FirstName,
-            LastName = x.RecipientPerson.FullName.LastName,
+            FirstName = x.RecipientPerson!.FullName!.FirstName!,
+            LastName = x.RecipientPerson!.FullName!.LastName!,
             Gender = x.RecipientPerson.Gender,
             AgeClassification = x.RecipientPerson.AgeClassification,
             PhotoUrl = x.RecipientPerson.PhotoUrl,

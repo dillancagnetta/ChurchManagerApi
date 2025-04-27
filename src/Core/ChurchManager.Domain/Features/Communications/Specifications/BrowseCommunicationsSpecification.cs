@@ -81,9 +81,9 @@ public class BrowseCommunicationsSpecification: PermissionSpecification<Communic
         Query.Select(x => new CommunicationViewModel
         {
             Id = x.Id,
-            Name = x.Name,  
+            Name = x.Name!,  
             Subject = x.Subject,
-            Content = x.CommunicationContent,
+            Content = x.CommunicationContent!,
             Category = x.Category,
             SenderPerson = x.SenderPersonId.HasValue ? ToBasicPerson(x.SenderPerson!) : null,
             ListGroup = x.ListGroupId.HasValue ? new GroupReference { GroupId = x.ListGroup!.Id, GroupName = x.ListGroup.Name } : null,
@@ -112,10 +112,10 @@ public class BrowseCommunicationsSpecification: PermissionSpecification<Communic
         {
             PersonId = person.Id,
             Gender = person.Gender,
-            FirstName = person.FullName.FirstName,
-            LastName = person.FullName.LastName,
+            FirstName = person.FullName!.FirstName!,
+            LastName = person.FullName!.LastName!,
             AgeClassification = person.AgeClassification,
-            Age = person.BirthDate.Age,
+            Age = person.BirthDate?.Age,
             PhotoUrl = person.PhotoUrl
         };
     }

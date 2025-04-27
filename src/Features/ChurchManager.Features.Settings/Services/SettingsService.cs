@@ -68,7 +68,7 @@ public class SettingsService(
         return _setting ?? Activator.CreateInstance(type) as ISettings;
     }
     
-    public virtual Task<T> LoadSettingAsync<T>(int? churchGroupId = null, int? churchId = null, int? personId = null,
+    public virtual Task<T?> LoadSettingAsync<T>(int? churchGroupId = null, int? churchId = null, int? personId = null,
         CancellationToken ct = default) where T : ISettings, new()
     {
          return Task.FromResult((T)LoadSetting(typeof(T), churchGroupId, churchId, personId));

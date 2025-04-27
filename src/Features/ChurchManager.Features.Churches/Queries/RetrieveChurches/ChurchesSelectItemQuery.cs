@@ -15,7 +15,7 @@ namespace ChurchManager.Features.Churches.Queries.RetrieveChurches;
 public class ChurchesQuery : IRequest<ApiResponse>
 {
     public int? ChurchGroupId { get; set; }
-    public string SearchTerm { get; set; }
+    public string? SearchTerm { get; set; }
 }
 
 public class AllChurchQueryHandler : IRequestHandler<ChurchesQuery, ApiResponse>
@@ -57,8 +57,6 @@ public class AllChurchQueryHandler : IRequestHandler<ChurchesQuery, ApiResponse>
             .ToListAsync(ct);*/
             
         var vm = await _service.ChurchListAsync(query.SearchTerm, query.ChurchGroupId, ct);
-        return new ApiResponse(vm);
-
         return new ApiResponse(vm);
     }
 }
@@ -146,8 +144,6 @@ public class EditChurchCommandHandler(
         };
         
         await service.UpdateAsync(dto, ct);
-
-        return new ApiResponse();
 
         return new ApiResponse();
     }

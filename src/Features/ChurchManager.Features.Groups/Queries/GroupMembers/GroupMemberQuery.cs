@@ -23,7 +23,7 @@ namespace ChurchManager.Features.Groups.Queries.GroupMembers
         {
             var spec = new GroupMemberSpecification(query.GroupMemberId);
 
-            var member = await _dbRepository.GetBySpecAsync<GroupMemberEditViewModel>(spec, ct);
+            var member = await _dbRepository.FirstOrDefaultAsync(spec, ct);
 
             return new ApiResponse(member);
         }

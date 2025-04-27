@@ -63,7 +63,7 @@ public class AwsIpRangeLoader : IAwsIpRangeLoader
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to fetch AWS IP ranges");
-            return new HashSet<string>();
+            return [];
         }
     }
 }

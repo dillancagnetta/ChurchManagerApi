@@ -25,7 +25,7 @@ public class HistoryDbRepository : GenericRepositoryBase<History>, IHistoryDbRep
     {
         if (changes.Any())
         {
-            AddChanges(modelType, category, entityId, changes, caption, relatedModelType, relatedEntityId, modifiedByPersonId);
+            await AddChanges(modelType, category, entityId, changes, caption, relatedModelType, relatedEntityId, modifiedByPersonId, cts);
             if (commitSave)
             {
                await DbContext.SaveChangesAsync(cts);

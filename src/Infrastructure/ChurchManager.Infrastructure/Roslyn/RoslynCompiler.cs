@@ -118,7 +118,7 @@ namespace ChurchManager.Infrastructure.Roslyn
         /// <summary>
         /// Returns a collection of all referenced assemblies 
         /// </summary>
-        public static IEnumerable<ResultCompiler> ReferencedScripts { get; set; }
+        public static IEnumerable<ResultCompiler> ReferencedScripts { get; set; } = [];
 
         /// <summary>
         /// Method for compiling the code for testing in admin panel

@@ -25,7 +25,7 @@ public class GroupMembersAttendanceHandler : IRequestHandler<GroupMembersAttenda
         var results = await _attendanceDbRepository.ListAsync(spec, ct);
 
         var groupByMember = results
-            .GroupBy(x => new { x.GroupMemberId , x.GroupMember.PersonId, FullName = x.GroupMember.Person.FullName.ToString()})
+            .GroupBy(x => new { x.GroupMemberId , x.GroupMember!.PersonId, FullName = x.GroupMember!.Person!.FullName!.ToString()})
             .ToList();
 
         var groupMemberAttendances = groupByMember.Select(@group => new GroupMemberAttendanceAnalysisViewModel
@@ -76,7 +76,7 @@ public class GroupAttendance2Handler : IRequestHandler<GroupAttendanceQuery, Api
             .ToList();
 
         var groupByMember = attendances.SelectMany(x => x.Attendees)
-            .GroupBy(x => new { x.GroupMemberId, x.GroupMember.PersonId, x.GroupMember.FirstName, x.GroupMember.LastName })
+            .GroupBy(x => new { x.GroupMemberId, x.GroupMember!.PersonId, x.GroupMember.FirstName, x.GroupMember.LastName })
             .ToList();
 
         var groupMemberAttendances = groupByMember.Select(@group => new GroupMemberAttendanceAnalysisViewModel

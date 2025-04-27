@@ -15,10 +15,10 @@ namespace ChurchManager.Domain.Features.Groups
     public class Schedule : Entity<int>
     {
         [MaxLength(50)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [MaxLength(100)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets the Date that the Schedule becomes effective/active. This property is inclusive, and the schedule will be inactive before this date. 
@@ -38,12 +38,12 @@ namespace ChurchManager.Domain.Features.Groups
         /// <value>
         /// A <see cref="System.String"/>representing the  content of the iCalendar.
         /// </value>
-        public string iCalendarContent
+        public string? iCalendarContent
         {
             get => _iCalendarContent ?? string.Empty;
             set => _iCalendarContent = value;
         }
-        private string _iCalendarContent;
+        private string? _iCalendarContent;
 
         public DayOfWeek? WeeklyDayOfWeek { get; set; }
 
@@ -63,11 +63,11 @@ namespace ChurchManager.Domain.Features.Groups
         /// Gets or sets the meeting frequence e.g. WEEKLY
         /// </summary>
         [MaxLength(100)]
-        public string Frequency { get; set; }
-        
+        public string? Frequency { get; set; }
+
         [MaxLength(100)]
         [DefaultValue("South Africa Standard Time")]
-        public string Timezone { get; set; }
+        public string Timezone { get; set; } = "South Africa Standard Time";
 
         #region Methods
 
@@ -118,7 +118,7 @@ namespace ChurchManager.Domain.Features.Groups
         public string ToFriendlyScheduleText(bool condensed)
         {
             // init the result to just the schedule name just in case we can't figure out the FriendlyText
-            string result = Name;
+            string? result = Name;
 
             var calendarEvent = GetICalEvent();
             if(calendarEvent != null && calendarEvent.DtStart != null)

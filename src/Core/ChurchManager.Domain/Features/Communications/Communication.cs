@@ -24,9 +24,8 @@ public class Communication : AuditableEntity<int>, IAggregateRoot<int>
     /// </summary>
     [MaxLength( 100 )]
     public string? Category { get; set; }
-    
-    [MaxLength( 50 )]
-    public CommunicationType CommunicationType  { get;  set; }
+
+    [MaxLength(50)] public CommunicationType CommunicationType { get; set; } = CommunicationType.Email.Value;
     
     /// <summary>
     /// Gets or sets the <see cref="Group">list</see> that email is being sent to.
@@ -111,13 +110,13 @@ public class Communication : AuditableEntity<int>, IAggregateRoot<int>
 
     #endregion
 
-    public void UpdateStatus(string status, string note, int reviewerPersonId)
+    public void UpdateStatus(string status, string? note, int reviewerPersonId)
     {
         Status = status;
         AddReview(note, reviewerPersonId);
     }
     
-    public void AddReview(string note, int reviewerPersonId)
+    public void AddReview(string? note, int reviewerPersonId)
     {
         Review = new CommunicationReview
         {

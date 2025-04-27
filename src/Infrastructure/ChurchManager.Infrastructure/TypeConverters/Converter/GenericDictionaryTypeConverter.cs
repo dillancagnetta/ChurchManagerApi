@@ -34,7 +34,7 @@ namespace ChurchManager.Infrastructure.TypeConverters.Converter
         /// <param name="context">Context</param>
         /// <param name="sourceType">Source type</param>
         /// <returns>Result</returns>
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
         {
             if (sourceType == typeof(string))
                 return true;
@@ -49,20 +49,20 @@ namespace ChurchManager.Infrastructure.TypeConverters.Converter
         /// <param name="culture">Culture</param>
         /// <param name="value">Value</param>
         /// <returns>Result</returns>
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
         {
             if (value is string input)
             {
-                string[] items = string.IsNullOrEmpty(input) ? new string[0] : input.Split(';').Select(x => x.Trim()).ToArray();
+                string[] items = string.IsNullOrEmpty(input) ? [] : input.Split(';').Select(x => x.Trim()).ToArray();
 
                 var result = new Dictionary<K, V>();
                 foreach (var s in items)
                 {
-                    string[] keyValueStr = string.IsNullOrEmpty(s) ? new string[0] : s.Split(',').Select(x => x.Trim()).ToArray();
+                    string[] keyValueStr = string.IsNullOrEmpty(s) ? [] : s.Split(',').Select(x => x.Trim()).ToArray();
                     if (keyValueStr.Length == 2)
                     {
-                        object dictionaryKey = typeConverterKey.ConvertFromInvariantString(keyValueStr[0]);
-                        object dictionaryValue = typeConverterKey.ConvertFromInvariantString(keyValueStr[1]);
+                        object? dictionaryKey = typeConverterKey.ConvertFromInvariantString(keyValueStr[0]);
+                        object? dictionaryValue = typeConverterKey.ConvertFromInvariantString(keyValueStr[1]);
                         if (dictionaryKey != null && dictionaryValue != null)
                         {
                             if (!result.ContainsKey((K)dictionaryKey))
@@ -87,7 +87,7 @@ namespace ChurchManager.Infrastructure.TypeConverters.Converter
         /// <param name="value">Value</param>
         /// <param name="destinationType">Destination type</param>
         /// <returns>Result</returns>
-        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
         {
             if (destinationType == typeof(string))
             {

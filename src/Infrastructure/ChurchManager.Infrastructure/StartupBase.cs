@@ -44,7 +44,7 @@ namespace ChurchManager.Infrastructure
             //create and sort instances of mapper configurations
             var instances = mapperConfigurations
                 .Where(mapperConfiguration => PluginExtensions.OnlyInstalledPlugins(mapperConfiguration))
-                .Select(mapperConfiguration => (IAutoMapperProfile)Activator.CreateInstance(mapperConfiguration))
+                .Select(mapperConfiguration => (IAutoMapperProfile)Activator.CreateInstance(mapperConfiguration)!)
                 .OrderBy(mapperConfiguration => mapperConfiguration.Order);
 
             //create AutoMapper configuration
@@ -75,7 +75,7 @@ namespace ChurchManager.Infrastructure
 
             //create and sort instances of typeConverter 
             var instances = converters
-                .Select(converter => (ITypeConverter)Activator.CreateInstance(converter))
+                .Select(converter => (ITypeConverter)Activator.CreateInstance(converter)!)
                 .OrderBy(converter => converter.Order);
 
             foreach (var item in instances)
@@ -169,7 +169,8 @@ namespace ChurchManager.Infrastructure
 
                 if (config.RabbitMqEnabled)
                 {
-                    var connectionString = configuration.GetConnectionString(RabbitMqSectionName);
+                    var connectionString = configuration.GetConnectionString(RabbitMqSectionName) 
+                        ?? throw new ArgumentNullException(nameof(RabbitMqSectionName));
       
                     x.UseRabbitMq(cfg =>
                     {
@@ -182,7 +183,7 @@ namespace ChurchManager.Infrastructure
                         r.ExchangeNameForSending(type => type.Name);
 
                         // Customize the naming convention for incoming queues
-                        r.QueueNameForListener(type => type.FullName
+                        r.QueueNameForListener(type => type.FullName!
                             .Replace("ChurchManager.Domain.Features.", "")
                         );
                     });
@@ -285,7 +286,7 @@ namespace ChurchManager.Infrastructure
             //Register startup
             var instancesBefore = startupConfigurations
                 .Where(startup => PluginExtensions.OnlyInstalledPlugins(startup))
-                .Select(startup => (IStartupApplication)Activator.CreateInstance(startup))
+                .Select(startup => (IStartupApplication)Activator.CreateInstance(startup)!)
                 .Where(startup => startup.BeforeConfigure)
                 .OrderBy(startup => startup.Priority);
 
@@ -314,7 +315,7 @@ namespace ChurchManager.Infrastructure
             //Register startup
             var instancesAfter = startupConfigurations
                 .Where(startup => PluginExtensions.OnlyInstalledPlugins(startup))
-                .Select(startup => (IStartupApplication)Activator.CreateInstance(startup))
+                .Select(startup => (IStartupApplication)Activator.CreateInstance(startup)!)
                 .Where(startup => !startup.BeforeConfigure)
                 .OrderBy(startup => startup.Priority);
 
@@ -342,7 +343,7 @@ namespace ChurchManager.Infrastructure
             //create and sort instances of startup configurations
             var instances = startupConfigurations
                 .Where(startup => PluginExtensions.OnlyInstalledPlugins(startup))
-                .Select(startup => (IStartupApplication)Activator.CreateInstance(startup))
+                .Select(startup => (IStartupApplication)Activator.CreateInstance(startup)!)
                 .OrderBy(startup => startup.Priority);
 
             //configure request pipeline
@@ -358,7 +359,7 @@ namespace ChurchManager.Infrastructure
 
             //create and sort instances of startup configurations
             var instances = startupBaseConfigurations
-                .Select(startup => (IStartupBase)Activator.CreateInstance(startup))
+                .Select(startup => (IStartupBase)Activator.CreateInstance(startup)!)
                 .OrderBy(startup => startup.Priority);
 
             //execute

@@ -20,9 +20,9 @@ namespace ChurchManager.Features.People.Infrastructure.Mapper
 
             CreateMap<Person, PersonViewModelBasic>()
                 .ForMember(d => d.PersonId, opt => opt.MapFrom(src => src.Id))
-                .ForMember(d => d.Title, opt => opt.MapFrom(src => src.FullName.Title))
-                .ForMember(d => d.FirstName, opt => opt.MapFrom(src => src.FullName.FirstName))
-                .ForMember(d => d.LastName, opt => opt.MapFrom(src => src.FullName.LastName))
+                .ForMember(d => d.Title, opt => opt.MapFrom(src => src.FullName!.Title))
+                .ForMember(d => d.FirstName, opt => opt.MapFrom(src => src.FullName!.FirstName))
+                .ForMember(d => d.LastName, opt => opt.MapFrom(src => src.FullName!.LastName))
                 .ForMember(d => d.Email, opt => 
                     opt.MapFrom(src => src.Email != null ? src.Email.Address : null))
                 .ForMember(d => d.Age, opt => 
@@ -45,18 +45,18 @@ namespace ChurchManager.Features.People.Infrastructure.Mapper
                 .ForMember(d => d.Email, opt => opt.MapFrom(src => 
                     !string.IsNullOrEmpty(src.Email) ? new Email() {Address = src.Email} : null))
                 .ForMember(d => d.AgeClassification, opt => opt.MapFrom(src => 
-                    new AgeClassification(src.AgeClassification)))
+                    new AgeClassification(src.AgeClassification!)))
                 .ForMember(d => d.PhotoUrl, opt => opt.MapFrom(src => src.PhotoUrl))
                 //.ForAllMembers(opt => opt.Ignore())
                 ;
 
             CreateMap<Person, GroupMemberViewModel>()
                 .ForMember(d => d.FirstName,
-                    opt => opt.MapFrom(src => src.FullName.FirstName))
+                    opt => opt.MapFrom(src => src.FullName!.FirstName))
                 .ForMember(d => d.LastName,
-                    opt => opt.MapFrom(src => src.FullName.LastName))
+                    opt => opt.MapFrom(src => src.FullName!.LastName))
                 .ForMember(d => d.MiddleName,
-                    opt => opt.MapFrom(src => src.FullName.MiddleName))
+                    opt => opt.MapFrom(src => src.FullName!.MiddleName))
                 .ForMember(d => d.PhotoUrl,
                     opt => opt.MapFrom(src => src.PhotoUrl))
                 .ForMember(d => d.PersonId,
@@ -109,8 +109,8 @@ namespace ChurchManager.Features.People.Infrastructure.Mapper
                             .Select(x => new PersonViewModelBasic
                             {
                                 PersonId = x.Id,
-                                FirstName = x.FullName.FirstName,
-                                LastName = x.FullName.LastName,
+                                FirstName = x.FullName!.FirstName!,
+                                LastName = x.FullName!.LastName!,
                                 AgeClassification = x.AgeClassification,
                                 // BirthDate = x.BirthDate,  // AUTOMAPPED
                                 Gender = x.Gender,

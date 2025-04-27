@@ -57,10 +57,10 @@ public class ChurchGroupsQuerySpecification: PermissionSpecification<ChurchGroup
         {
             PersonId = person.Id,
             Gender = person.Gender,
-            FirstName = person.FullName.FirstName,
-            LastName = person.FullName.LastName,
+            FirstName = person.FullName!.FirstName!,
+            LastName = person.FullName.LastName!,
             AgeClassification = person.AgeClassification,
-            Age = person.BirthDate.Age,
+            Age = person.BirthDate?.Age,
             PhotoUrl = person.PhotoUrl
         };
     }

@@ -13,8 +13,8 @@ namespace ChurchManager.Features.People.Queries.FindDuplicates;
 
 public record FindPeopleDuplicatesQuery : IRequest<ApiResponse>
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
     public string? Email { get; set; } 
 }
 
@@ -70,24 +70,24 @@ public class VerifyPersonExistsHandler(
                 {
                     Id = x.Id,
                     FullName = x.FullName,
-                    FamilyCode = x.Family.Code,
+                    FamilyCode = x.Family!.Code,
                     Email = x.Email
                 })
                 .FirstOrDefaultAsync(ct);
             
             var templateData = new Dictionary<string, string>
             {
-                ["Title"] = person!.FullName.Title,
-                ["FirstName"] = person!.FullName.FirstName,
-                ["LastName"] = person!.FullName.LastName,
-                ["FamilyCode"] = person!.FamilyCode,
+                ["Title"] = person!.FullName!.Title!,
+                ["FirstName"] = person!.FullName.FirstName!,
+                ["LastName"] = person!.FullName!.LastName!,
+                ["FamilyCode"] = person!.FamilyCode!,
                 ["CreationDate"] = DateTime.UtcNow.ToShortTimeString()
             };
             
             var recipient = new EmailRecipient
             {
                 PersonId = person.Id,
-                EmailAddress = person.Email.Address
+                EmailAddress = person!.Email!.Address!
             };
             
             await publisher.PublishAsync(new SendEmailEvent(

@@ -8,7 +8,7 @@ namespace ChurchManager.SharedKernel.Wrappers
         {
         }
 
-        public ApiResponse(dynamic data, string message = null)
+        public ApiResponse(dynamic? data, string? message = null)
         {
             Succeeded = true;
             Message = message;

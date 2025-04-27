@@ -42,12 +42,12 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
 
         public virtual IQueryable<T> Queryable(params string[] includes) => QueryableIncludes(ObjectSet, includes);
 
-        public virtual async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
+        /*public virtual async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
         {
             await ObjectSet.AddRangeAsync(entities, cancellationToken);
 
             await SaveChangesAsync(cancellationToken);
-        }
+        }*/
 
         /// <inheritdoc/>
         public virtual async Task<PagedResult<T>> BrowseAsync(IPagedQuery query, ISpecification<T> specification, CancellationToken ct = default)

@@ -80,7 +80,7 @@ namespace ChurchManager.Infrastructure.Plugins
         /// </summary>
         public virtual bool Installed { get; set; }
 
-        public virtual T Instance<T>(IServiceProvider serviceProvider) where T : class, IPlugin
+        public virtual T? Instance<T>(IServiceProvider serviceProvider) where T : class, IPlugin
         {
             object instance;
             try
@@ -97,7 +97,7 @@ namespace ChurchManager.Infrastructure.Plugins
             return typedInstance;
         }
 
-        public IPlugin Instance(IServiceProvider serviceProvider)
+        public IPlugin? Instance(IServiceProvider serviceProvider)
         {
             return Instance<IPlugin>(serviceProvider);
         }

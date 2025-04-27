@@ -12,10 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace ChurchManager.Features.Communication.Queries;
 
-public record CommunicationTemplatesSelectQuery(): IRequest<ApiResponse>
+public record CommunicationTemplatesSelectQuery: IRequest<ApiResponse>
 {
     public bool IncludeBaseTemplates { get; set; } = false;
-    public List<string> CommunicationTypes { get; set; } = new List<string>();
+    public List<string> CommunicationTypes { get; set; } = [];
 }
 
 public class CommunicationTempatesSelectHandler(

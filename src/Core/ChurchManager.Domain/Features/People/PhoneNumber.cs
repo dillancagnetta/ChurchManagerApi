@@ -17,22 +17,22 @@ namespace ChurchManager.Domain.Features.People
         /// <summary>
         /// Gets or sets the country code.
         /// </summary>
-        public string CountryCode { get; set; }
+        public string? CountryCode { get; set; }
 
         /// <summary>
         /// Gets or sets the phone number without country code. The number is stored without any string formatting. (i.e. (502) 555-1212 will be stored as 5025551212). This property is required.
         /// </summary>
-        public string Number { get; set; }
+        public string? Number { get; set; }
 
         /// <summary>
         /// Gets or sets the extension (if any) that would need to be dialed to contact the owner. 
         /// </summary>
-        public string Extension { get; set; }
+        public string? Extension { get; set; }
 
         /// <summary>
         /// Gets or sets an optional description of the PhoneNumber.
         /// </summary>
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets a flag indicating whether the number has been opted in for SMS
@@ -53,7 +53,7 @@ namespace ChurchManager.Domain.Features.People
                 return _fullNumber;
             }
         }
-        private string _fullNumber;
+        private string? _fullNumber;
 
         #region Methods
 
@@ -62,7 +62,7 @@ namespace ChurchManager.Domain.Features.People
         /// </summary>
         /// <param name="number">A <see cref="System.String"/> containing the phone number to clean.</param>
         /// <returns>A <see cref="System.String"/> containing the phone number with all non numeric characters removed. </returns>
-        public static string CleanNumber(string number)
+        public static string CleanNumber(string? number)
         {
             if(!string.IsNullOrEmpty(number))
             {

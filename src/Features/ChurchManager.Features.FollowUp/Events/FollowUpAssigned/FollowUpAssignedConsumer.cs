@@ -56,9 +56,9 @@ namespace ChurchManager.Features.FollowUp.Events.FollowUpAssigned
 
                 var templateData = new Dictionary<string, string>
                 {
-                    ["Title"] = followUpAssignedPerson!.FullName.Title,
-                    ["FirstName"] = followUpAssignedPerson!.FullName.FirstName,
-                    ["LastName"] = followUpAssignedPerson!.FullName.LastName,
+                    ["Title"] = followUpAssignedPerson!.FullName!.Title!,
+                    ["FirstName"] = followUpAssignedPerson!.FullName.FirstName!,
+                    ["LastName"] = followUpAssignedPerson!.FullName.LastName!,
                     ["PersonUrl"] = GeneratedPersonUrl(message.PersonId),
                     ["CreationDate"] = _dateTimeProvider.ConvertFromUtc(DateTime.UtcNow).ToShortDateString()
                 };
@@ -68,7 +68,7 @@ namespace ChurchManager.Features.FollowUp.Events.FollowUpAssigned
                     var recipient = new EmailRecipient
                     {
                         PersonId = followUpAssignedPerson.Id,
-                        EmailAddress = followUpAssignedPerson.Email.Address
+                        EmailAddress = followUpAssignedPerson.Email!.Address!
                     };
                     await context.PublishAsync(new SendEmailEvent(
                         "Follow Up Assignment",

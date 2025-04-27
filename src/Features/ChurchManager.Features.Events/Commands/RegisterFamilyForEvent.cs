@@ -15,7 +15,7 @@ public record SelectedMember
 {
     public int PersonId { get; set; }
     public bool IsSelected { get; set; } = false;
-    public ChildInfo ChildInfo { get; set; }
+    public ChildInfo? ChildInfo { get; set; }
     public Dictionary<int, SessionPreference> SessionPreferences { get; set; } = new();
 }
 

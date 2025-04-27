@@ -33,7 +33,7 @@ namespace ChurchManager.Domain.Features.People
         public DateTime? AnniversaryDate { get; set; }
 
         [Required] public Email? Email { get; set; }
-        public ICollection<PhoneNumber> PhoneNumbers { get; set; } = new Collection<PhoneNumber>();
+        public ICollection<PhoneNumber>? PhoneNumbers { get; set; } = new Collection<PhoneNumber>();
         public CommunicationType? CommunicationPreference { get; set; }
 
         public string? PhotoUrl { get; set; }
@@ -93,10 +93,10 @@ namespace ChurchManager.Domain.Features.People
             {
                 PersonId = person.Id,
                 Gender = person.Gender,
-                FirstName = person.FullName.FirstName,
-                LastName = person.FullName.LastName,
+                FirstName = person!.FullName!.FirstName!,
+                LastName = person!.FullName!.LastName!,
                 AgeClassification = person.AgeClassification,
-                Age = person.BirthDate.Age,
+                Age = person.BirthDate?.Age,
                 PhotoUrl = person.PhotoUrl
             };
         }

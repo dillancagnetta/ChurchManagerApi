@@ -50,7 +50,7 @@ public class SendSmsToRecipientsConsumer : IDomainEventHandler
                     .Select(recipient => new SmsRecipient
                 {
                     PersonId = recipient.PersonId,
-                    PhoneNumber = recipient.RecipientPerson.MessagingPhoneNumber.FullNumber
+                    PhoneNumber = recipient.RecipientPerson!.MessagingPhoneNumber.FullNumber
                 }).ToList(),
                 DeduplicationId = message.CommunicationId
             };
@@ -78,7 +78,7 @@ public class SendSmsToRecipientsConsumer : IDomainEventHandler
                 }
             }
             
-            _communicationDb.SaveChangesAsync(ct);
+            await _communicationDb.SaveChangesAsync(ct);
             return;
         }
         
@@ -95,7 +95,7 @@ public class SendSmsToRecipientsConsumer : IDomainEventHandler
                 Recipient = new SmsRecipient
                 {
                     PersonId = recipient.PersonId,
-                    PhoneNumber = recipient.RecipientPerson.MessagingPhoneNumber.FullNumber
+                    PhoneNumber = recipient.RecipientPerson!.MessagingPhoneNumber.FullNumber
                 },
             });
             

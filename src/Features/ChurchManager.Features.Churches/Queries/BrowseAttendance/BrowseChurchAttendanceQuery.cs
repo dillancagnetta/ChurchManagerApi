@@ -8,7 +8,7 @@ namespace ChurchManager.Features.Churches.Queries.BrowseAttendance;
 
 public record BrowseChurchAttendanceQuery : QueryParameter, IRequest<PagedResponse<ChurchAttendanceViewModel>>
 {
-    public int[] AttendanceTypeIds { get; set; }
+    public int[] AttendanceTypeIds { get; set; } = [];
     public int ChurchId { get; set; }
     public int? ChurchGroupId { get; set; }
     public bool WithFeedBack { get; set; } = false;

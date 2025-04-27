@@ -18,10 +18,15 @@ namespace ChurchManager.Features.Groups.Services
             CancellationToken ct = default)
         {
             var groupTypeSpec = new GroupTypeForGroupSpecification(groupId);
-            var groupType = await _groupDb.GetBySpecAsync<GroupType>(groupTypeSpec, ct);
-
+            var groupType = await _groupDb.FirstOrDefaultAsync(groupTypeSpec, ct);
+            
+            if (groupType is null)
+            {
+                throw new ArgumentNullException(nameof(groupType), $"Cannot find groupType for groupId: {groupId}");
+            }
+            
             var groupTypeRoles = _groupDb.DbContext.Set<GroupTypeRole>()
-                .Where(x => x.GroupTypeId == groupType.Id);
+                .Where(x => x.GroupTypeId == groupType!.Id);
             return groupTypeRoles;
         }
     }

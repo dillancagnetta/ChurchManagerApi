@@ -35,7 +35,7 @@ public class SendUserMessageConsumer: IDomainEventHandler
         var message = await _dbRepository.GetByIdAsync(messageId, ct);
 
         // Only send the message if it is pending and not already sent.
-        if (message.Status == MessageStatus.Pending.Value)
+        if (message!.Status == MessageStatus.Pending.Value)
         {
             await _sender.SendAsync(message, ct);
             Logger.LogInformation($"*** [{nameof(MessageForUserAddedEvent)}] Message Sent: {@event.MessageId}");

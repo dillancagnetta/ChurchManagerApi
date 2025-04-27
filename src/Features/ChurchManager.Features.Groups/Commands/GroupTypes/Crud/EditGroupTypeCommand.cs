@@ -10,7 +10,7 @@ namespace ChurchManager.Features.Groups.Commands.GroupTypes.Crud;
 public record EditGroupTypeCommand : IRequest<ApiResponse>
 {
     [Required] public int Id { get; set; }
-    public string Name { get; set; }
+    public string? Name { get; set; }
     public string? Description { get; set; }
     public string GroupTerm { get; set; } = "Group";
     public string GroupMemberTerm { get; set; } = "Member";

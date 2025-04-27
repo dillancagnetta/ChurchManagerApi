@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
 using ChurchManager.Infrastructure.Roslyn;
+using CodeBoss.Extensions;
 
 namespace ChurchManager.Infrastructure.TypeSearcher
 {
@@ -30,7 +31,7 @@ namespace ChurchManager.Infrastructure.TypeSearcher
             {
                 foreach (var a in assemblies)
                 {
-                    Type[] types = null;
+                    Type[]? types = null;
                     types = a.GetTypes();
                     if (types == null)
                         continue;
@@ -122,15 +123,15 @@ namespace ChurchManager.Infrastructure.TypeSearcher
                 if (referencedAssemblies.Where(x => x.FullName == currentAssem.FullName).Any()
                     || product?.Product == "grandnode")
                 {
-                    if (!addedAssemblyNames.Contains(assembly.FullName))
+                    if (!addedAssemblyNames.Contains(assembly.FullName!))
                     {
                         assemblies.Add(assembly);
-                        addedAssemblyNames.Add(assembly.FullName);
+                        addedAssemblyNames.Add(assembly.FullName!);
                     }
                 }
             }
             //add scripts
-            if (RoslynCompiler.ReferencedScripts != null)
+            if (!RoslynCompiler.ReferencedScripts.IsNullOrEmpty())
                 foreach (var scripts in RoslynCompiler.ReferencedScripts)
                 {
                     if (!string.IsNullOrEmpty(scripts.ReferencedAssembly.FullName))
@@ -157,7 +158,7 @@ namespace ChurchManager.Infrastructure.TypeSearcher
             var loadedAssemblyNames = new List<string>();
             foreach (Assembly a in GetAssemblies())
             {
-                loadedAssemblyNames.Add(a.FullName);
+                loadedAssemblyNames.Add(a.FullName!);
             }
         }
 

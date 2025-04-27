@@ -69,7 +69,7 @@ namespace ChurchManager.Features.People.Queries.GetFamily
 
             var spec = new FamilyWithMembersSpecification(query.FamilyId, query.IncludePeople);
 
-            var vm = await _dbRepository.GetBySpecAsync<FamilyViewModel>(spec, ct);
+            var vm = await _dbRepository.FirstOrDefaultAsync(spec, ct);
 
             return new ApiResponse(vm);
         }

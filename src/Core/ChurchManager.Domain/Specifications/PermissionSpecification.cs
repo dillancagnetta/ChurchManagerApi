@@ -51,10 +51,4 @@ public class PermissionCriteria<T> where T : class, Codeboss.Types.IEntity<int>
         // Add the criteria to the query
         query.Where(e => allowedIds.Contains(e.Id));
     }
-    
-    // defer the permission check to when the query is executed
-    private static Expression<Func<T, bool>> BuildPermissionExpression(Guid userId, IPermissionService service, string permission = "View")
-    {
-        return entity => service.HasPermissionAsync<T>(userId, entity.Id, permission, new CancellationToken()).GetAwaiter().GetResult();
-    }
 }

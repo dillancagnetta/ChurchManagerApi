@@ -38,6 +38,7 @@ public class CachedDbRepository<T> : IReadDbRepository<T> where T : class, IAggr
         return _sourceRepository.GetByIdAsync(id, cancellationToken);
     }
 
+    [Obsolete("Use FirstOrDefaultAsync<T> or SingleOrDefaultAsync<T> instead. The SingleOrDefaultAsync<T> can be applied only to SingleResultSpecification<T> specifications.")]
     public Task<T> GetBySpecAsync(ISpecification<T> specification, CancellationToken cancellationToken = new CancellationToken())
     {
         if(specification.CacheEnabled)
@@ -47,12 +48,13 @@ public class CachedDbRepository<T> : IReadDbRepository<T> where T : class, IAggr
             return _cache.GetOrSetAsync(key, () =>
             {
                 _logger.LogWarning("Fetching source data for " + key);
-                return _sourceRepository.GetBySpecAsync(specification, cancellationToken);
+                return _sourceRepository.FirstOrDefaultAsync(specification, cancellationToken);
             }, ct:cancellationToken);
         }
-        return _sourceRepository.GetBySpecAsync(specification, cancellationToken);
+        return _sourceRepository.FirstOrDefaultAsync(specification, cancellationToken);
     }
 
+    [Obsolete("Use FirstOrDefaultAsync<T> or SingleOrDefaultAsync<T> instead. The SingleOrDefaultAsync<T> can be applied only to SingleResultSpecification<T> specifications.")]
     public Task<TResult> GetBySpecAsync<TResult>(ISpecification<T, TResult> specification,
         CancellationToken cancellationToken = new CancellationToken())
     {
@@ -63,10 +65,10 @@ public class CachedDbRepository<T> : IReadDbRepository<T> where T : class, IAggr
             return _cache.GetOrSetAsync(key, () =>
             {
                 _logger.LogWarning("Fetching source data for " + key);
-                return _sourceRepository.GetBySpecAsync(specification, cancellationToken);
+                return _sourceRepository.FirstOrDefaultAsync(specification, cancellationToken);
             }, ct:cancellationToken);
         }
-        return _sourceRepository.GetBySpecAsync(specification, cancellationToken);
+        return _sourceRepository.FirstOrDefaultAsync(specification, cancellationToken);
     }
 
     public Task<T> FirstOrDefaultAsync(ISpecification<T> specification, CancellationToken cancellationToken = new CancellationToken())

@@ -42,7 +42,7 @@ public class Message : IAggregateRoot<int>, IHaveUserId<Guid>
     public Guid UserId { get; set; } 
     
     // Sent properties
-    public MessageStatus Status { get;  set; }
+    public MessageStatus Status { get; set; } = MessageStatus.Pending.Value;
     
     [MaxLength( 200 )]
     public string? LastError { get;   set; }
@@ -90,7 +90,7 @@ public class Message : IAggregateRoot<int>, IHaveUserId<Guid>
     
     #region Navigation
 
-    public virtual UserLogin UserLogin { get; set; }
+    public virtual UserLogin? UserLogin { get; set; }
 
     #endregion
 }

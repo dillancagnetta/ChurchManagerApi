@@ -86,7 +86,7 @@ public static class ExpressionExtensions
         new EventTypeViewModel
         {
             Id = x.Id,
-            Name = x.Name,
+            Name = x.Name!,
             Description = x.Description,
             AgeClassification = x.AgeClassification!.Value,
             OnlineSupport = x.OnlineSupport.Value,

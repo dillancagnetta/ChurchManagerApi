@@ -83,7 +83,7 @@
         /// <summary>
         /// Gets or sets application base path
         /// </summary>
-        public static string BaseDirectory { get; set; }
+        public static string? BaseDirectory { get; set; }
 
         /// <summary>
         /// Maps a virtual path to a physical disk path (for tenants).
@@ -115,7 +115,7 @@
         /// <summary>
         /// Gets or sets web application content files
         /// </summary>
-        public static string WebHostEnvironment { get; set; }
+        public static string? WebHostEnvironment { get; set; }
 
     }
 }

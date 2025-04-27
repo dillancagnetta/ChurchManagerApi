@@ -9,9 +9,9 @@ namespace ChurchManager.Features.Churches.Queries.BrowseAttendance;
 
 public record ChurchAttendanceReportGridQuery : IRequest<ApiResponse>
 {
-    public int[] AttendanceTypeIds { get; set; }
+    public int[] AttendanceTypeIds { get; set; } = [];
     public int? ChurchGroupId { get; set; }
-    public int[] ChurchIds { get; set; }
+    public int[] ChurchIds { get; set; } = [];
     public DateTime From { get; set; }
     public DateTime To { get; set; }
 }

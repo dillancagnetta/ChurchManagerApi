@@ -87,7 +87,7 @@ namespace ChurchManager.Domain.Features.People.Specifications
             // Baptism
             if(query.Filters.Contains("baptised") || query.Filters.Contains("notBaptised"))
             {
-                Expression<Func<Person, bool>> baptismCriteria = null;
+                Expression<Func<Person, bool>>? baptismCriteria = null;
 
                 if(query.Filters.Contains("baptised"))
                 {
@@ -109,7 +109,7 @@ namespace ChurchManager.Domain.Features.People.Specifications
             // Holy Spirit
             if(query.Filters.Contains("holySpirit") || query.Filters.Contains("noHolySpirit"))
             {
-                Expression<Func<Person, bool>> holySpiritCriteria = null;
+                Expression<Func<Person, bool>>? holySpiritCriteria = null;
 
                 if(query.Filters.Contains("holySpirit"))
                 {
