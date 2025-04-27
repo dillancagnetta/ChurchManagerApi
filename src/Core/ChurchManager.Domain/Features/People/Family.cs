@@ -11,12 +11,12 @@ namespace ChurchManager.Domain.Features.People
 
     public class Family : Entity<int>, IAggregateRoot<int>
     {
-        public string Name { get; set; }
+        public string? Name { get; set; }
         [Required] public Address Address { get; set; }
-        public string Language { get; set; }
+        public string? Language { get; set; }
         
         [MaxLength(50)]
-        public string Code { get; set; }
+        public string? Code { get; set; }
 
         #region Navigation
 
@@ -28,10 +28,10 @@ namespace ChurchManager.Domain.Features.People
     [Owned]
     public record Address
     {
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string Country { get; set; }
-        public string Province { get; set; }
-        public string PostalCode { get; set; }
+        public string? Street { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
+        public string? Province { get; set; }
+        public string? PostalCode { get; set; }
     }
 }

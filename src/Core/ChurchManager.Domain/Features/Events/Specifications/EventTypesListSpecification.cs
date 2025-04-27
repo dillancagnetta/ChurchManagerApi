@@ -6,7 +6,7 @@ namespace ChurchManager.Domain.Features.Events.Specifications;
 
 public class EventTypesListSpecification : PermissionSpecification<EventType, EventTypeViewModel>
 {
-    public EventTypesListSpecification(IEnumerable<int> allowedEventTypeIds = null, bool? includeDetails = null): base(allowedEventTypeIds)
+    public EventTypesListSpecification(IEnumerable<int>? allowedEventTypeIds = null, bool? includeDetails = null): base(allowedEventTypeIds)
     {
         Query.AsNoTracking();
         Query.Include(x => x.DefaultGroupType);

@@ -6,7 +6,7 @@ namespace ChurchManager.Domain.Features.Events.Specifications;
 
 public class EventsListSpecification: PermissionSpecification<Event, EventViewModel>
 {
-    public EventsListSpecification(IEnumerable<int> allowedEventIds = null, 
+    public EventsListSpecification(IEnumerable<int>? allowedEventIds = null, 
         int? eventTypeId = null, 
         int? churchGroupId = null, 
         int? churchId = null, 

@@ -35,10 +35,10 @@ namespace ChurchManager.Domain.Features.Discipleship
         public DateTime? EndDateTime { get; set; }
 
         [MaxLength(100)]
-        public string Status { get; set; }
+        public string Status { get; set; } = "Active";
 
         [MaxLength(200)]
-        public string Note { get; set; }
+        public string? Note { get; set; }
 
 
         /// <summary>
@@ -49,8 +49,8 @@ namespace ChurchManager.Domain.Features.Discipleship
 
         #region Navigation
 
-        public virtual DiscipleshipStepDefinition Definition { get; set; }
-        public virtual Person Person { get; set; }
+        public virtual DiscipleshipStepDefinition? Definition { get; set; }
+        public virtual Person? Person { get; set; }
 
         #endregion
     }

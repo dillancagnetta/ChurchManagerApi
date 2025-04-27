@@ -7,12 +7,12 @@
         /// <summary>
         /// Gets or sets the subscription endpoint.
         /// </summary>
-        public string Endpoint { get; set; }
+        public required string Endpoint { get; set; }
 
         /// <summary>
         /// Gets or sets client keys shared as part of subscription.
         /// </summary>
-        public IDictionary<string, string> Keys { get; set; }
+        public IDictionary<string, string>? Keys { get; set; }
 
         #endregion
 
@@ -22,9 +22,9 @@
         /// </summary>
         /// <param name="keyName">The key name.</param>
         /// <returns>The key.</returns>
-        public string GetKey(PushEncryptionKeyName keyName)
+        public string? GetKey(PushEncryptionKeyName keyName)
         {
-            string key = null;
+            string? key = null;
 
             if(Keys != null)
             {

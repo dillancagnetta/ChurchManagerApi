@@ -10,13 +10,13 @@ namespace ChurchManager.Domain.Common;
 
 public class UserLogin : Entity<int>, IAggregateRoot<int>
 {
-    public Guid Id { get; set; }
+    public new Guid Id { get; set; }
     [Required]
     [MaxLength(255)]
-    public string Username { get; set; }
+    public required string Username { get; set; }
     [MaxLength(128)]
-    public string Password { get; set; }
-    public string RefreshToken { get; set; }
+    public required string Password { get; set; }
+    public string? RefreshToken { get; set; }
     public DateTime? RefreshTokenExpiryTime { get; set; }
     
     // Many-to-many relationship with Role through UserRoleAssignment
@@ -27,11 +27,11 @@ public class UserLogin : Entity<int>, IAggregateRoot<int>
     [Required]
     [MaxLength(50)]
     [DefaultValue("Tenant1")]
-    public string Tenant { get; set; }
+    public required string Tenant { get; set; }
 
     #region Navigation Properties
 
-    public virtual Person Person { get; set; }
+    public virtual Person? Person { get; set; }
 
     #endregion
 
@@ -83,9 +83,9 @@ public class UserLogin : Entity<int>, IAggregateRoot<int>
 public class UserLoginRole : AuditableEntity<int>, IAggregateRoot<int>
 {
     [MaxLength(50)]
-    public string Name { get; set; }
+    public string? Name { get; init; }
     
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     public bool IsSystem { get; set; }
     
@@ -151,18 +151,18 @@ public class UserLoginRole : AuditableEntity<int>, IAggregateRoot<int>
 public class UserRoleAssignment : AuditableEntity<int>, IAggregateRoot<int>
 {
     public Guid UserLoginId { get; set; }
-    public virtual UserLogin UserLogin { get; set; }
+    public virtual UserLogin? UserLogin { get; set; }
     
     public int UserLoginRoleId { get; set; }
-    public virtual UserLoginRole Role { get; set; }
+    public virtual UserLoginRole? Role { get; set; }
 }
 
 // Junction table for many-to-many relationship between Role and Permission
 public class RolePermissionAssignment : AuditableEntity<int>
 {
     public int RoleId { get; set; }
-    public virtual UserLoginRole Role { get; set; }
+    public virtual UserLoginRole? Role { get; set; }
     
     public int EntityPermissionId { get; set; }
-    public virtual EntityPermission Permission { get; set; }
+    public virtual EntityPermission? Permission { get; set; } 
 }

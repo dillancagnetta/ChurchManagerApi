@@ -12,9 +12,9 @@ namespace ChurchManager.Domain.Features.Churches
     public class ChurchGroup : Entity<int>, IAggregateRoot<int>
     {
         [Required, MaxLength(50)]
-        public string Name { get; set; }
+        public required string Name { get; set; }
         [MaxLength(100)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets the Id of the <see cref="Person"/> that is the leader of the campus.
@@ -30,7 +30,7 @@ namespace ChurchManager.Domain.Features.Churches
         /// </summary>
         public virtual ICollection<Church> Churches { get; set; } = new Collection<Church>();
 
-        public virtual Person LeaderPerson { get; set; }
+        public virtual Person? LeaderPerson { get; set; }
         
         #endregion
     }

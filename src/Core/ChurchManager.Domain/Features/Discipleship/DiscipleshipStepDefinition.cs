@@ -15,10 +15,10 @@ namespace ChurchManager.Domain.Features.Discipleship
         
         [MaxLength(100)]
         [Required]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         [MaxLength(200)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public int Order { get; set; }
 
@@ -35,7 +35,7 @@ namespace ChurchManager.Domain.Features.Discipleship
 
         #region Navigation
 
-        public virtual DiscipleshipProgram DiscipleshipProgram { get; set; }
+        public virtual DiscipleshipProgram? DiscipleshipProgram { get; set; }
 
         public virtual ICollection<DiscipleshipStep> Steps { get; set; } = new Collection<DiscipleshipStep>();
 

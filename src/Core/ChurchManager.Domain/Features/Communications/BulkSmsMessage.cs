@@ -5,9 +5,9 @@
 /// </summary>
 public class BulkSmsMessage
 {
-    public string Body { get; set; }
+    public required string Body { get; set; }
     public ICollection<SmsRecipient> To { get; set; } = new List<SmsRecipient>();
-    public string From { get; set; }
+    public string? From { get; set; }
     
     /// <summary>
     /// Safeguards against the possibility of sending the same messages more than once.
@@ -15,24 +15,24 @@ public class BulkSmsMessage
     /// </summary>
     public int DeduplicationId { get; set; }
 
-    public FutureSendInfo SendSchedule { get; set; }
+    public FutureSendInfo? SendSchedule { get; set; }
 }
 
 public class SmsMessage
 {
-    public string Body { get; set; }
-    public SmsRecipient Recipient { get; set; }
-    public string From { get; set; }
+    public string? Body { get; set; }
+    public SmsRecipient? Recipient { get; set; }
+    public string? From { get; set; }
 }
 
 public record SmsRecipient
 {
     public int PersonId { get; set; }
-    public string PhoneNumber { get; set; }
+    public required string PhoneNumber { get; set; }
 }
 
 public record FutureSendInfo
 {
     public DateTime ScheduleDate { get; set; }
-    public string ScheduleDescription { get; set; }
+    public string? ScheduleDescription { get; set; }
 }

@@ -21,7 +21,7 @@ namespace ChurchManager.Features.Profile.Services
         {
             var spec = new ProfileByUserLoginSpecification(userLoginId);
 
-            var entity = await _dbRepository.GetBySpecAsync(spec, ct);
+            var entity = await _dbRepository.FirstOrDefaultAsync(spec, ct);
 
             var vm = _mapper.Map<PersonViewModel>(entity);
 
@@ -32,7 +32,7 @@ namespace ChurchManager.Features.Profile.Services
         {
             var spec = new ProfileByPersonSpecification(personId, condensed);
 
-            var entity = await _dbRepository.GetBySpecAsync(spec, ct);
+            var entity = await _dbRepository.FirstOrDefaultAsync(spec, ct);
 
             var vm = _mapper.Map<PersonViewModel>(entity);
 

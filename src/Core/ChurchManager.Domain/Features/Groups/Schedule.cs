@@ -77,7 +77,7 @@ namespace ChurchManager.Domain.Features.Groups
         /// <value>
         /// A <see cref="CalendarEvent"/> representing the iCalendar event for this Schedule.
         /// </value>
-        public virtual CalendarEvent GetICalEvent() => InetCalendarHelper.CreateCalendarEvent(iCalendarContent);
+        public virtual CalendarEvent? GetICalEvent() => InetCalendarHelper.CreateCalendarEvent(iCalendarContent);
 
         /// <summary>
         /// Gets the type of the schedule.

@@ -35,7 +35,7 @@ namespace ChurchManager.Domain.Features.Churches.Specifications
             // Group Filter
             if (churchGroupId.HasValue)
             {
-                Query.Where(g => g.Church.ChurchGroupId == churchGroupId);
+                Query.Where(g => g.Church!.ChurchGroupId == churchGroupId);
             }
             
             // Church Filter

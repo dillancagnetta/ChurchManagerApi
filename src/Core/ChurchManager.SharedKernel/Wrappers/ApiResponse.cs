@@ -22,9 +22,9 @@ namespace ChurchManager.SharedKernel.Wrappers
         }
 
         public bool Succeeded { get; set; }
-        public string Message { get; set; }
-        public List<string> Errors { get; set; }
-        public dynamic Data { get; set; }
+        public string? Message { get; set; }
+        public List<string> Errors { get; set; } = [];
+        public dynamic? Data { get; set; }
         
         public static ApiResponse Success() => new() {Succeeded = true };
         public static ApiResponse FromOperation(OperationResult op) => new()

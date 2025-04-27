@@ -10,7 +10,7 @@ namespace ChurchManager.Domain.Features.Churches.Specifications;
 
 public class ChurchGroupsQuerySpecification: PermissionSpecification<ChurchGroup, ChurchGroupViewModel>
 {
-    public ChurchGroupsQuerySpecification(string searchTerm = null, bool IncludeDetails = true, IEnumerable<int> allowedIds = null)
+    public ChurchGroupsQuerySpecification(string? searchTerm = null, bool IncludeDetails = true, IEnumerable<int>? allowedIds = null)
         : base(allowedIds)
     {
         if (IncludeDetails)

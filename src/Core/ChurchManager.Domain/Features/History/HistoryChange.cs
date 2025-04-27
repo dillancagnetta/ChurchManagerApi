@@ -52,7 +52,7 @@ public class HistoryChange
     /// <value>
     /// The verb.
     /// </value>
-    public string Verb { get; set; }
+    public string? Verb { get; set; }
 
     /// <summary>
     /// Gets or sets the type of the change.
@@ -60,7 +60,7 @@ public class HistoryChange
     /// <value>
     /// The type of the change.
     /// </value>
-    public string ChangeType { get; set; }
+    public string? ChangeType { get; set; }
 
     /// <summary>
     /// Gets or sets the name of the value.
@@ -68,7 +68,7 @@ public class HistoryChange
     /// <value>
     /// The name of the value.
     /// </value>
-    public string ValueName { get; set; }
+    public string? ValueName { get; set; }
 
     /// <summary>
     /// Gets or sets the new value.
@@ -76,7 +76,7 @@ public class HistoryChange
     /// <value>
     /// The new value.
     /// </value>
-    public string NewValue { get; set; }
+    public string? NewValue { get; set; }
 
     /// <summary>
     /// Creates new rawvalue.
@@ -84,7 +84,7 @@ public class HistoryChange
     /// <value>
     /// The new raw value.
     /// </value>
-    public string NewRawValue { get; set; }
+    public string? NewRawValue { get; set; }
 
     /// <summary>
     /// Gets or sets the old value.
@@ -92,7 +92,7 @@ public class HistoryChange
     /// <value>
     /// The old value.
     /// </value>
-    public string OldValue { get; set; }
+    public string? OldValue { get; set; }
 
     /// <summary>
     /// Gets or sets the old raw value.
@@ -100,7 +100,7 @@ public class HistoryChange
     /// <value>
     /// The old raw value.
     /// </value>
-    public string OldRawValue { get; set; }
+    public string? OldRawValue { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether this instance is sensitive.
@@ -117,7 +117,7 @@ public class HistoryChange
     /// <value>
     /// The related entity type identifier.
     /// </value>
-    public string RelatedEntityType { get; set; }
+    public string? RelatedEntityType { get; set; }
 
     /// <summary>
     /// Gets or sets the related entity identifier.
@@ -133,7 +133,7 @@ public class HistoryChange
     /// <value>
     /// The related data.
     /// </value>
-    public string RelatedData { get; set; }
+    public string? RelatedData { get; set; }
 
     /// <summary>
     /// Gets the caption.
@@ -141,7 +141,7 @@ public class HistoryChange
     /// <value>
     /// The caption.
     /// </value>
-    public string Caption { get; set; }
+    public string? Caption { get; set; }
 
     /// <summary>
     /// Gets or sets the date on which the change occurred.
@@ -169,6 +169,7 @@ public class HistoryChange
     /// </summary>
     /// <param name="relatedData">The related data.</param>
     /// <param name="relatedEntityTypeId">The related entity type identifier.</param>
+    /// <param name="relatedEntityType"></param>
     /// <param name="relatedEntityId">The related entity identifier.</param>
     /// <returns></returns>
     public HistoryChange SetRelatedData(string relatedData, string relatedEntityType, int? relatedEntityId)
@@ -247,7 +248,7 @@ public class HistoryChange
         // create a temporary history object and set it's properties so that we can get the ToString() (the formatted summary)
         History history = new History();
         this.CopyToHistory(history);
-        return history.ToString();
+        return history.ToString()!;
     }
 
     /// <summary>

@@ -9,7 +9,7 @@ namespace ChurchManager.Domain.Features.Churches.Specifications;
 
 public class BrowseRecipientsSpecification : Specification<Communication, CommunicationRecipientViewModel>
 {
-   public BrowseRecipientsSpecification(IPagedQuery paging, int communicationId, string status = null, int? personId = null)
+   public BrowseRecipientsSpecification(IPagedQuery paging, int communicationId, string? status = null, int? personId = null)
    {
       Query.AsNoTracking();
       Query.Include(x => x.Recipients);

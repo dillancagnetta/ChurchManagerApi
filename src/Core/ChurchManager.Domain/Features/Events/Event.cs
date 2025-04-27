@@ -29,11 +29,11 @@ Given these requirements:
 public class Event : AuditableEntity<int>, IAggregateRoot<int>
 {
     [MaxLength( 100 ), Required]
-    public string Name { get; set; }
+    public required string Name { get; set; }
     
-    public string Description { get; set; }
+    public string? Description { get; set; }
     
-    public string PhotoUrl { get; set; }
+    public string? PhotoUrl { get; set; }
     
     public int EventTypeId { get; set; }
 
@@ -64,14 +64,14 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
     public int ContactPersonId { get; set; }
     
     [MaxLength( 75 )]
-    public string ContactEmail { get; set; }
+    public string? ContactEmail { get; set; }
     
     [MaxLength( 50 )]
-    public string ContactPhone { get; set; }
+    public string? ContactPhone { get; set; }
     
-    public Review Review { get; set; }
+    public Review? Review { get; set; }
     
-    public Registration RegistrationDates { get; set; }
+    public Registration? RegistrationDates { get; set; }
     
     public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.PendingApproval;
     
@@ -81,15 +81,15 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
     public int? Capacity { get; set; }
     
     [MaxLength(200)]
-    public string Location { get; set; }
+    public string? Location { get; set; }
     
     #region Navigation
-    public virtual Church Church { get; set; }
-    public virtual ChurchGroup ChurchGroup { get; set; }
-    public virtual Person ContactPerson { get; set; }
-    public virtual Group ChildCareGroup { get; set; }
-    public virtual Group EventRegistrationGroup { get; set; }
-    public virtual EventType EventType { get; set; }
+    public virtual Church? Church { get; set; }
+    public virtual ChurchGroup? ChurchGroup { get; set; }
+    public virtual Person? ContactPerson { get; set; }
+    public virtual Group? ChildCareGroup { get; set; }
+    public virtual Group? EventRegistrationGroup { get; set; }
+    public virtual EventType? EventType { get; set; }
     public virtual ICollection<EventSession> Sessions { get; set; } = Enumerable.Empty<EventSession>().ToList();
     public virtual ICollection<EventRegistration> Registrations { get; set; } = Enumerable.Empty<EventRegistration>().ToList();
 
@@ -97,12 +97,12 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
 
     #region Methods
     
-    public EventSession FirstSession()
+    public EventSession? FirstSession()
     {
         return Sessions.FirstOrDefault();
     }
     
-    public EventSession LastSession()
+    public EventSession? LastSession()
     {
         return Sessions.LastOrDefault();
     }

@@ -8,7 +8,7 @@ namespace ChurchManager.Api.Controllers.v1;
 
 [ApiVersion("1.0")]
 [Authorize]
-public class EventsTypesController(IEventDbRepository dbRepository) : BaseApiController
+public class EventsTypesController: BaseApiController
 {
         
     [HttpGet]

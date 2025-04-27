@@ -8,7 +8,7 @@ public static class StringExtensions
     /// <param name="str"></param>
     /// <param name="maxLength"></param>
     /// <returns></returns>
-    public static string Truncate( this string str, int maxLength )
+    public static string? Truncate( this string str, int maxLength )
     {
         return Truncate( str, maxLength, true );
     }
@@ -20,7 +20,7 @@ public static class StringExtensions
     /// <param name="maxLength">The maximum length of the return value, including the ellipsis if added.</param>
     /// <param name="addEllipsis">if set to <c>true</c> add an ellipsis to the end of the truncated string.</param>
     /// <returns></returns>
-    public static string Truncate( this string str, int maxLength, bool addEllipsis )
+    public static string? Truncate( this string? str, int maxLength, bool addEllipsis )
     {
         if ( str == null )
         {

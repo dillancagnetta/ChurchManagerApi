@@ -19,11 +19,11 @@ public static class InetCalendarHelper
     /// </summary>
     /// <param name="iCalendarContent">RFC 5545 ICal Content</param>
     /// <returns></returns>
-    public static CalendarEvent CreateCalendarEvent(string iCalendarContent)
+    public static CalendarEvent? CreateCalendarEvent(string iCalendarContent)
     {
         var stringReader = new StringReader(iCalendarContent);
         var calendarList = Calendar.Load(stringReader);
-        CalendarEvent calendarEvent = null;
+        CalendarEvent? calendarEvent = null;
 
         //// iCal is stored as a list of Calendar's each with a list of Events, etc.  
         //// We just need one Calendar and one Event
@@ -48,7 +48,7 @@ public static class InetCalendarHelper
         DateTime? startDateTime = null,
         DateTime? endDateTime = null,
         TimeSpan? meetingTime = null,
-        DayOfWeek[] days = null,
+        DayOfWeek[]? days = null,
         int? occurrenceCount = null)
     {
         var today = DateTime.UtcNow;
@@ -110,10 +110,10 @@ public static class InetCalendarHelper
         DateTime startDateTime,
         int durationMinutes,
         DateTime? endDateTime = null,
-        DayOfWeek[] days = null,
+        DayOfWeek[]? days = null,
         int? occurrenceCount = null,
         int interval = 1,
-        string timezone = null)
+        string? timezone = null)
     {
         var pattern = $"RRULE:FREQ={frequency.ToString().ToUpper()};INTERVAL={interval}";
         
@@ -155,7 +155,7 @@ public static class InetCalendarHelper
         return calendar;
     }
 
-    public static Calendar CalendarWithWeeklyRecurrence(TimeSpan? meetingTime, DayOfWeek[] days = null, int ? occurrenceCount = null)
+    public static Calendar CalendarWithWeeklyRecurrence(TimeSpan? meetingTime, DayOfWeek[]? days = null, int? occurrenceCount = null)
     {
         return CalendarWithWeeklyRecurrence(null, null, meetingTime, days, occurrenceCount);
     }

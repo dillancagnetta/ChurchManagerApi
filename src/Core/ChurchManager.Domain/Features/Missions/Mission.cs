@@ -14,19 +14,19 @@ namespace ChurchManager.Domain.Features.Missions
     public class Mission : AuditableEntity<int>, IAggregateRoot<int>
     {
         [Required, MaxLength(50)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
         
         [MaxLength(100)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [MaxLength(100)]
-        public string Type { get; set; } // InReach, OutReach etc
+        public string? Type { get; set; } // InReach, OutReach etc
 
         [MaxLength(200)]
-        public string Category { get; set; } // ROSA, Healing Streams etc
+        public string? Category { get; set; } // ROSA, Healing Streams etc
 
         [MaxLength(100)]
-        public string Stream { get; set; } // Person, Group or Church
+        public string? Stream { get; set; } // Person, Group or Church
 
         /// <summary>
         /// Gets or sets the icon CSS class.
@@ -56,20 +56,20 @@ namespace ChurchManager.Domain.Features.Missions
         [Required]
         public Attendance Attendance { get; set; } = new();
         
-        public Money Offering { get; set; }
+        public Money? Offering { get; set; }
 
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
 
         /// <summary>
         /// Gets or sets the Urls of the photos attached for this entity
         /// </summary>
-        public List<string> PhotoUrls { get; set; } = new();
+        public List<string> PhotoUrls { get; set; } = [];
 
         #region Navigation
 
-        public virtual Person Person { get; set; }
-        public virtual Church Church { get; set; }
-        public virtual Group Group { get; set; }
+        public virtual Person? Person { get; set; }
+        public virtual Church? Church { get; set; }
+        public virtual Group? Group { get; set; }
 
         #endregion
     }

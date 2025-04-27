@@ -13,10 +13,10 @@ public class Message : IAggregateRoot<int>, IHaveUserId<Guid>
     public int Id { get; set; }
     
     [Required, MaxLength(100)]
-    public string Title { get;  set; }
+    public string? Title { get;  set; }
     
     [Required]
-    public string Body { get; set; }
+    public string? Body { get; set; }
     
     public DateTime? SentDateTime { get; set; }
     

@@ -15,16 +15,16 @@ public class BrowseCommunicationsSpecification: PermissionSpecification<Communic
 {
     public BrowseCommunicationsSpecification(
         IPagedQuery paging,
-        IEnumerable<string> types  = null,
-        string status  = null,
-        string searchTerm = null, 
+        IEnumerable<string>? types  = null,
+        string? status  = null,
+        string? searchTerm = null, 
         DateTime? from  = null,  DateTime? to  = null, 
         int? recipientPersonId  = null, 
         int? communicationTemplateId  = null,
         int? churchGroupId  = null,
         int? churchId = null,
         int? listGroupId  = null,
-        IEnumerable<int> allowedIds = null)
+        IEnumerable<int>? allowedIds = null)
         : base(allowedIds)
     {
         Query.Include(cg => cg.ListGroup);
@@ -85,8 +85,8 @@ public class BrowseCommunicationsSpecification: PermissionSpecification<Communic
             Subject = x.Subject,
             Content = x.CommunicationContent,
             Category = x.Category,
-            SenderPerson = x.SenderPersonId.HasValue ? ToBasicPerson(x.SenderPerson) : null,
-            ListGroup = x.ListGroupId.HasValue ? new GroupReference { GroupId = x.ListGroup.Id, GroupName = x.ListGroup.Name } : null,
+            SenderPerson = x.SenderPersonId.HasValue ? ToBasicPerson(x.SenderPerson!) : null,
+            ListGroup = x.ListGroupId.HasValue ? new GroupReference { GroupId = x.ListGroup!.Id, GroupName = x.ListGroup.Name } : null,
             CommunicationType = x.CommunicationType,
             CommunicationTemplateId = x.CommunicationTemplateId,
             CommunicationContent = x.CommunicationContent,

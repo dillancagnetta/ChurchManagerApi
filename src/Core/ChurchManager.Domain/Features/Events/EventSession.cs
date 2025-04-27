@@ -15,9 +15,9 @@ namespace ChurchManager.Domain.Features.Events;
 public class EventSession : AuditableEntity<int>
 {
     [MaxLength( 100 )]
-    public string Name { get; set; }
+    public required string Name { get; set; }
     
-    public string Description { get; set; }
+    public string? Description { get; set; }
     
     public int? Capacity { get; set; }
     
@@ -40,28 +40,28 @@ public class EventSession : AuditableEntity<int>
     public int ScheduleId { get; set; }
     
     [MaxLength(200)]
-    public string Location { get; set; }
+    public string? Location { get; set; }
     
     [MaxLength(500)]
-    public string Notes { get; set; }
-    
-    public OnlineSupport OnlineSupport { get; set; }
+    public string? Notes { get; set; }
+
+    public OnlineSupport OnlineSupport { get; set; } = OnlineSupport.Unknown.Value;
    
     [MaxLength(200)]
-    public string OnlineMeetingUrl { get; set; }
+    public string? OnlineMeetingUrl { get; set; }
     
     public bool IsCancelled { get; set; }
     
-    public string CancellationReason { get; set; }
+    public string? CancellationReason { get; set; }
     
     # region Navigation
     
     /// <summary>
     /// The event (id) that this session belongs to.
     /// </summary>
-    public virtual Event Event { get; set; }
+    public virtual Event? Event { get; set; }
     
-    public virtual Schedule Schedule { get; set; }
+    public virtual Schedule? Schedule { get; set; }
     
     public virtual ICollection<EventSessionRegistration> SessionRegistrations { get; set; } = Enumerable.Empty<EventSessionRegistration>().ToList();
     

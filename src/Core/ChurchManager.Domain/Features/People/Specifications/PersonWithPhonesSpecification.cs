@@ -2,7 +2,7 @@
 
 namespace ChurchManager.Domain.Features.People.Specifications
 {
-    public class PersonWithPhonesSpecification : Specification<Person>, ISingleResultSpecification
+    public class PersonWithPhonesSpecification : Specification<Person>, ISingleResultSpecification<Person>
     {
         public PersonWithPhonesSpecification(int personId)
         {

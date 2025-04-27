@@ -18,7 +18,7 @@ public class SettingsService(
     public virtual async Task SetSettingAsync<T>(string key, T value, int? churchGroupId = null, int? churchId = null, int? personId = null,
         CancellationToken ct = default)
     {
-        ArgumentNullException.ThrowIfNull(key);
+        ArgumentException.ThrowIfNullOrEmpty(key);
         
         key = key.Trim().ToLowerInvariant();
         var query =  SettingsByNameQuery(key);
@@ -89,7 +89,7 @@ public class SettingsService(
     
     private IQueryable<Setting> SettingsByNameQuery(string name)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(name);
+        ArgumentException.ThrowIfNullOrEmpty(name);
         
         name = name.ToLowerInvariant();
         return Repository.Queryable().Where(x => x.Name == name);
@@ -100,15 +100,15 @@ public class SettingsService(
     {
         if (churchGroupId.HasValue)
         {
-            query.Where(x => x.ChurchGroupId == churchGroupId);
+            query= query.Where(x => x.ChurchGroupId == churchGroupId);
         }
         if (churchId.HasValue)
         {
-            query.Where(x => x.ChurchId == churchId);
+            query=  query.Where(x => x.ChurchId == churchId);
         }
         if (personId.HasValue)
         {
-            query.Where(x => x.PersonId == personId);
+            query=query.Where(x => x.PersonId == personId);
         }
         
         return query;

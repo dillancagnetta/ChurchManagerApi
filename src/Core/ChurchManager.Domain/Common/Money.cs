@@ -5,7 +5,7 @@ namespace ChurchManager.Domain.Common
     public record Money
     {
         [MaxLength(5)]
-        public string Currency { get; set; }
+        public string? Currency { get; set; }
         public decimal Amount { get; set; }
 
         // ORM required

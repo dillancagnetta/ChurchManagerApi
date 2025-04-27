@@ -3,7 +3,7 @@ using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Domain.Features.Groups.Specifications
 {
-    public class GroupMemberSpecification : Specification<GroupMember, GroupMemberEditViewModel>, ISingleResultSpecification
+    public class GroupMemberSpecification : Specification<GroupMember, GroupMemberEditViewModel>, ISingleResultSpecification<GroupMember>
     {
         public GroupMemberSpecification(int groupMemberId)
         {

@@ -9,7 +9,7 @@ namespace ChurchManager.Domain.Features.Security.Specifications;
 
 public class EntityPermissionsSpecification : Specification<EntityPermission, PermissionViewModel>
 {
-    public EntityPermissionsSpecification(IEnumerable<int> excludeIds = null, int? UserLoginRoleId = null)
+    public EntityPermissionsSpecification(IEnumerable<int>? excludeIds = null, int? UserLoginRoleId = null)
     {
         Query
             .AsNoTracking()

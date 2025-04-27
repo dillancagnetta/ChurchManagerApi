@@ -7,7 +7,7 @@ namespace ChurchManager.Domain.Common.Extensions
         /// <summary>
         /// Adds the INTERVAL value; as by default CalendarEvent does not add it if `Interval=1`
         /// </summary>
-        public static string WithInterval(this Schedule schedule)
+        public static string? WithInterval(this Schedule schedule)
         {
             if (schedule?.GetICalEvent() == null) return null;
 

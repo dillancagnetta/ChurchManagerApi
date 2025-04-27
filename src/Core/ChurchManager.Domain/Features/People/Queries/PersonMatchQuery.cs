@@ -37,7 +37,7 @@ namespace ChurchManager.Domain.Features.People.Queries
         /// <param name="birthDay">The birth day.</param>
         /// <param name="birthYear">The birth year.</param>
         /// <param name="suffixValueId">The suffix value identifier.</param>
-        public PersonMatchQuery(string firstName, string lastName, string email, string mobilePhone, Gender gender = null, int? birthMonth = null, int? birthDay = null, int? birthYear = null, int? suffixValueId = null)
+        public PersonMatchQuery(string firstName, string lastName, string email, string mobilePhone, Gender? gender = null, int? birthMonth = null, int? birthDay = null, int? birthYear = null, int? suffixValueId = null)
         {
             FirstName = !firstName.IsNullOrEmpty() ? firstName.Trim() : string.Empty;
             LastName = !lastName.IsNullOrEmpty() ? lastName.Trim() : string.Empty;
@@ -58,7 +58,7 @@ namespace ChurchManager.Domain.Features.People.Queries
         /// <param name="gender">The gender.</param>
         /// <param name="birthDate">The birth date.</param>
         /// <param name="suffixValueId">The suffix value identifier.</param>
-        public PersonMatchQuery(string firstName, string lastName, string email, string mobilePhone, Gender gender = null, DateTime? birthDate = null, int? suffixValueId = null)
+        public PersonMatchQuery(string firstName, string lastName, string email, string mobilePhone, Gender? gender = null, DateTime? birthDate = null, int? suffixValueId = null)
         {
             FirstName = !firstName.IsNullOrEmpty() ? firstName.Trim() : string.Empty;
             LastName = !lastName.IsNullOrEmpty() ? lastName.Trim() : string.Empty;

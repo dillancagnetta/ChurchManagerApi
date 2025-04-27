@@ -7,7 +7,7 @@ namespace ChurchManager.Api.Controllers.v1
 {
     [ApiVersion("1.0")]
     [Authorize(Roles = "System Admin")]
-    public class SecurityController(IAppCurrentUser currentUser) : BaseApiController
+    public class SecurityController : BaseApiController
     {
         [HttpPost("roles")]
         public async Task<IActionResult> GetUserLoginRoles(UserLoginRolesQuery query, CancellationToken token)

@@ -10,7 +10,7 @@ namespace ChurchManager.Infrastructure.Abstractions.Persistence
     {
         /*DbContext DbContext { get; }
         IQueryable<T> Queryable(params string[] includes);*/
-        Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
+        //Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
     }
 
     public interface IPaginatedDbRepository<T> where T : class, Codeboss.Types.IEntity<int>

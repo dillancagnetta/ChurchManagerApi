@@ -15,9 +15,9 @@ namespace ChurchManager.Domain.Features.Groups
     public class GroupTypeRole : Entity<int>, IAggregateRoot<int>
     {
         [MaxLength(50)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
         [MaxLength(100)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public bool IsLeader { get; set; }
 
         public bool CanView { get; set; }
@@ -34,7 +34,7 @@ namespace ChurchManager.Domain.Features.Groups
         /// <summary>
         /// Gets or sets the <see cref="GroupType"/> that this GroupRole belongs to.
         /// </summary>
-        public virtual GroupType GroupType { get; set; }
+        public virtual GroupType? GroupType { get; set; }
 
         #endregion
     }

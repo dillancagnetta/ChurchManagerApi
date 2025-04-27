@@ -24,7 +24,7 @@ public class CommunicationRecipient : Entity<int>
     /// <summary>
     /// Gets or sets the status note.
     /// </summary>
-    public string StatusNote { get; set; }
+    public string? StatusNote { get; set; }
     
     /// <summary>
     /// Gets or sets the datetime that communication was sent.
@@ -40,7 +40,7 @@ public class CommunicationRecipient : Entity<int>
     /// Gets or sets the unique message identifier.
     /// </summary>
     [MaxLength( 100 )]
-    public string UniqueMessageId { get; set; }
+    public string? UniqueMessageId { get; set; }
 
     /// <summary>
     /// Number of attempts made to send 
@@ -49,8 +49,8 @@ public class CommunicationRecipient : Entity<int>
 
     # region Navigation
     
-    public virtual Communication Communication { get; set; }
-    public virtual Person RecipientPerson { get; set; }
+    public virtual Communication? Communication { get; set; }
+    public virtual Person? RecipientPerson { get; set; }
     
     # endregion
 }

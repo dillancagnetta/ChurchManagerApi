@@ -6,7 +6,7 @@ namespace ChurchManager.Api.Controllers.v1;
 
 [ApiVersion("1.0")]
 [Authorize]
-public class CommunicationTemplatesController(ILogger<CommunicationTemplatesController> logger) : BaseApiController
+public class CommunicationTemplatesController : BaseApiController
 {
     [HttpPost]
     public async Task<IActionResult> GetSelectList([FromBody] CommunicationTemplatesSelectQuery query, CancellationToken token = default)

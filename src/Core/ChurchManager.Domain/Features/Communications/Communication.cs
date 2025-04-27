@@ -11,7 +11,7 @@ namespace ChurchManager.Domain.Features.Communications;
 public class Communication : AuditableEntity<int>, IAggregateRoot<int>
 {
     [MaxLength( 100 )]
-    public string Name { get;  set; }
+    public string? Name { get;  set; }
     
     /// <summary>
     /// Gets or sets the subject or title of the communication.
@@ -41,7 +41,7 @@ public class Communication : AuditableEntity<int>, IAggregateRoot<int>
     /// <summary>
     /// Gets or sets the content if no template was used.
     /// </summary>
-    public string CommunicationContent { get; set; }
+    public string? CommunicationContent { get; set; }
 
     /// <summary>
     /// Gets or sets the sender <see cref="Person"/> identifier.
@@ -67,24 +67,24 @@ public class Communication : AuditableEntity<int>, IAggregateRoot<int>
     [MaxLength( 100 )]
     public CommunicationStatus Status { get;  set; } =  CommunicationStatus.PendingApproval.Value;
     
-    public CommunicationReview Review { get; set; } = new();
+    public CommunicationReview? Review { get; set; }
     
     /// <summary>
     /// Gets or sets the message meta data.
     /// </summary>
-    public Dictionary<string, object> Metadata { get; set; }
+    public Dictionary<string, object>? Metadata { get; set; }
     
     public int? SystemCommunicationId { get; set; }
 
     
     # region Navigation Properties
-    
-    public virtual ICollection<CommunicationRecipient> Recipients { get; set; }
-    public virtual ICollection<CommunicationAttachment> Attachments { get; set; }
-    public virtual CommunicationTemplate CommunicationTemplate { get; set; }
-    public virtual Group ListGroup { get; set; }
-    public virtual SystemCommunication SystemCommunication { get; set; }
-    public virtual Person SenderPerson { get; set; }
+
+    public virtual ICollection<CommunicationRecipient> Recipients { get; set; } = [];
+    public virtual ICollection<CommunicationAttachment> Attachments { get; set; } = [];
+    public virtual CommunicationTemplate? CommunicationTemplate { get; set; }
+    public virtual Group? ListGroup { get; set; }
+    public virtual SystemCommunication? SystemCommunication { get; set; }
+    public virtual Person? SenderPerson { get; set; }
     
     # endregion
 
@@ -100,9 +100,9 @@ public class Communication : AuditableEntity<int>, IAggregateRoot<int>
     
     public bool IsTemplatedCommunication() => CommunicationTemplateId.HasValue;
 
-    public void FormatTemplatedContent(string content)
+    public string FormatTemplatedContent(string content)
     {
-        content
+        return content
             .Replace("{Title}", "{{Model.Title}}")
             .Replace("{FirstName}", "{{Model.FirstName}}")
             .Replace("{LastName}", "{{Model.LastName}}")
@@ -131,7 +131,7 @@ public class Communication : AuditableEntity<int>, IAggregateRoot<int>
 [Owned]
 public record CommunicationReview
 {
-    public string ReviewerNote { get; set; }
+    public string? ReviewerNote { get; set; }
     public DateTime? ReviewedDateTime { get; set; }
     public int? ReviewerPersonId { get; set; }
 }

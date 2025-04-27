@@ -2,10 +2,8 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Features\Groups\Specifications\GroupAttendanceSpecification.cs~RF7d7b0.TMP" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Convey.CQRS.Queries" />
     <PackageReference Include="Ical.Net" />
