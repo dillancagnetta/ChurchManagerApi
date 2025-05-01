@@ -60,6 +60,7 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
                 .AsNoTracking()
                 .Include(x => x.GroupType)
                 .Include(x => x.Schedule)
+                //.Include(x => x.ParentGroup)
                 .Where(x => x.ParentGroupId == parentGroupId) // null will start at the root of the tree
                 .Select(GroupProjection(maxDepth))
                 ;
@@ -152,7 +153,9 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
                 StartDate = group.StartDate,
                 ChurchId = group.ChurchId,
                 ParentGroupId = group.ParentGroupId,
-                ParentGroupName = group.ParentGroup.Name,
+                ParentGroupChurchId = group.ParentGroup!.ChurchId,
+                ParentGroupTypeId = group.ParentGroup!.GroupTypeId,
+                ParentGroupName = group.ParentGroup!.Name,
                 IsOnline = group.IsOnline,
                 GroupType = _mapper.Map<GroupTypeViewModel>(group.GroupType),
                 CreatedDate = group.CreatedDate,

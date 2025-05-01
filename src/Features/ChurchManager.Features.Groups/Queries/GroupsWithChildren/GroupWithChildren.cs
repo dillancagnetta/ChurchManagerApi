@@ -5,7 +5,7 @@ using MediatR;
 
 namespace ChurchManager.Features.Groups.Queries.GroupsWithChildren
 {
-    public record GroupWithChildrenQuery(int GroupId) : IRequest<ApiResponse>
+    public record GroupWithChildrenQuery(int GroupId, int MaxDepth = 2) : IRequest<ApiResponse>
     {
     }
 
@@ -20,7 +20,7 @@ namespace ChurchManager.Features.Groups.Queries.GroupsWithChildren
 
         public async Task<ApiResponse> Handle(GroupWithChildrenQuery query, CancellationToken ct)
         {
-            var groups = await _dbRepository.GroupWithChildrenAsync(query.GroupId, maxDepth:2, ct: ct);
+            var groups = await _dbRepository.GroupWithChildrenAsync(query.GroupId, maxDepth:query.MaxDepth, ct: ct);
 
             // Ordering
             groups = groups.OrderBy(x => x.Name);

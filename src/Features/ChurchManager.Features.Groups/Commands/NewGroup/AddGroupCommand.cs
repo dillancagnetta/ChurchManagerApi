@@ -16,7 +16,7 @@ namespace ChurchManager.Features.Groups.Commands.NewGroup
     {
         public int GroupTypeId { get; set; }
         public int? ChurchId { get; set; }
-        public ParentChurchGroup? ParentChurchGroup { get; set; }
+        public GroupReference? ParentGroup { get; set; }
         public required string Name { get; set; }
         public string? Description { get; set; }
         public string? Address { get; set; }
@@ -47,15 +47,15 @@ namespace ChurchManager.Features.Groups.Commands.NewGroup
         public async Task<ApiResponse> Handle(AddGroupCommand command, CancellationToken ct)
         {
             // 
-            var parentGroupId = command.ParentChurchGroup?.GroupId is DomainConstants.Groups.NoParentGroupId
+            var parentGroupId = command.ParentGroup?.GroupId is DomainConstants.Groups.NoParentGroupId
                 ? null
-                : command.ParentChurchGroup?.GroupId;
+                : command.ParentGroup?.GroupId;
 
             var group = new Group
             {
                 Name = command.Name, Description = command.Description,
                 GroupTypeId = command.GroupTypeId,
-                ChurchId = command.ParentChurchGroup?.ChurchId ?? command.ChurchId,
+                ChurchId = command.ChurchId,
                 ParentGroupId = parentGroupId,
                 Address = command.Address,
                 IsOnline = command.IsOnline,

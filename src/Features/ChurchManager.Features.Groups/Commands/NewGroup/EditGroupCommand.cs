@@ -1,5 +1,6 @@
 ﻿using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.Groups.Repositories;
+using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
 using CodeBoss.Extensions;
 using Codeboss.Types;
@@ -36,10 +37,10 @@ namespace ChurchManager.Features.Groups.Commands.NewGroup
             group.Name = command.Name;
             group.Description = command.Description;
             group.GroupTypeId = command.GroupTypeId;
-            group.ChurchId = command.ParentChurchGroup?.ChurchId ?? command.ChurchId;
-            /*group.ParentGroupId = command.ParentChurchGroup.GroupId is DomainConstants.Groups.NoParentGroupId
+            group.ChurchId = command.ChurchId;
+            group.ParentGroupId = command.ParentGroup.GroupId is DomainConstants.Groups.NoParentGroupId
                 ? null
-                : command.ParentChurchGroup.GroupId;*/
+                : command.ParentGroup.GroupId;
             group.Address = command.Address;
             group.IsOnline = command.IsOnline;
 
