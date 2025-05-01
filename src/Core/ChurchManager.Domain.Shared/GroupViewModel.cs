@@ -5,6 +5,7 @@ public record GroupViewModel
     public int Id { get; set; }
     public GroupTypeViewModel? GroupType { get; set; }
     public int? ChurchId { get; set; }
+    public string? ChurchName { get; set; }
     public int? ParentGroupId { get; set; }
     public int? ParentGroupTypeId { get; set; }
     public int? ParentGroupChurchId { get; set; }
