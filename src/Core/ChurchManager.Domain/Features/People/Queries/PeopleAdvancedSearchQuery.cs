@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Domain.Parameters;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Domain.Features.People.Queries
 {
@@ -7,9 +8,9 @@ namespace ChurchManager.Domain.Features.People.Queries
         public IList<string> ConnectionStatus { get; set; } = [];
         public IList<string> AgeClassification { get; set; } = [];
         public IList<string> Gender { get; set; } =[];
+        public IList<string> Source { get; set; } = [];
         public IList<string> RecordStatus { get; set; } = [];
         public IList<string> Filters { get; set; } = [];
-
-        public int? ChurchId { get; set; }
+        public ChurchReference? ChurchReference { get; set; }
     }
 }

@@ -28,6 +28,12 @@ namespace ChurchManager.Api.Controllers.v1
             _logger = logger;
             _currentUser = currentUser;
         }
+        
+        [HttpPost("filter")]
+        public async Task<IActionResult> GetPeopleByFilter([FromBody] GetPeopleByFilterQuery query, CancellationToken token)
+        {
+            return Ok(await Mediator.Send(query, token));
+        }
 
         [HttpPost("family/new")]
         public async Task<IActionResult> NewFamily([FromBody] AddNewFamilyCommand command, CancellationToken token)

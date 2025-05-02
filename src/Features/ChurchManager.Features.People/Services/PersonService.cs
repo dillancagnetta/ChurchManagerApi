@@ -43,5 +43,19 @@ namespace ChurchManager.Features.People.Services
             
             return vm;
         }
+
+        public async Task<IReadOnlyList<PersonViewModel>> FilterPeopleAsync(IList<int> personIds, CancellationToken ct = default)
+        {
+            var allowedIds = await permissions.GetAllowedIdsAsync<Person>(
+                Guid.Parse(currentUser.Id), PermissionAction.View,   ct);
+
+            var spec = new FilterPeopleQuerySpecification(personIds, allowedIds);
+            
+            var list = await dbRepository.ListAsync(spec, ct);
+            
+            var vm = mapper.Map<IList<PersonViewModel>>(list);
+            
+            return vm.AsReadOnly();
+        }
     }
 }

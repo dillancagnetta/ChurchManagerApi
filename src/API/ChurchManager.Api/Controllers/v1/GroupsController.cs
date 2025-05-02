@@ -110,6 +110,13 @@ namespace ChurchManager.Api.Controllers.v1
         {
             return Ok(await Mediator.Send(command, token));
         }
+        
+        [HttpPost("{groupId}/add-members")]
+        public async Task<IActionResult> AddGroupMembers([FromBody] AddGroupMembersCommand command,
+            CancellationToken token)
+        {
+            return Ok(await Mediator.Send(command, token));
+        }
 
         [HttpPost("update-member")]
         public async Task<IActionResult> UpdateGroupMember([FromBody] UpdateGroupMemberCommand command,

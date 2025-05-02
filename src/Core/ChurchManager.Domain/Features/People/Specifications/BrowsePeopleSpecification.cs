@@ -26,12 +26,20 @@ namespace ChurchManager.Domain.Features.People.Specifications
                         EF.Functions.ILike(person.FullName.LastName, $"%{query.SearchTerm}%"));
             }
             
-            // Church, 0 is for searching all Churches
-            if (query.ChurchId.HasValue && query.ChurchId > 0)
+            if (query.ChurchReference is not null)
             {
-                Query.Where(x => x.ChurchId == query.ChurchId.Value);
+                // ChurchGroup, 0 is for searching all ChurchGroups
+                if (query.ChurchReference.ChurchGroupId is > 0)
+                {
+                    Query.Where(x => x.Church!.ChurchGroupId == query.ChurchReference.ChurchGroupId.Value);
+                }
+                // Church, 0 is for searching all Churches
+                if (query.ChurchReference.ChurchId is > 0)
+                {
+                    Query.Where(x => x.ChurchId == query.ChurchReference.ChurchId.Value);
+                }
             }
-
+            
             // Connection Status
             if (query.ConnectionStatus.Any())
             {
@@ -56,6 +64,19 @@ namespace ChurchManager.Domain.Features.People.Specifications
                 }
 
                 Query.Where(ageClassificationCriteria);
+            }
+            
+            // Source
+            if(query.Source.Any())
+            {
+                Expression<Func<Person, bool>> sourceCriteria = person => false;
+                foreach(var source in query.Source)
+                {
+                    Expression<Func<Person, bool>> sourceFilter = g => g.Source == source;
+                    sourceCriteria = sourceCriteria.Or(sourceFilter);
+                }
+
+                Query.Where(sourceCriteria);
             }
 
             // Age Classification
@@ -132,6 +153,25 @@ namespace ChurchManager.Domain.Features.People.Specifications
             if(query.Filters.Contains("noPhoto"))
             {
                 Query.Where(x => x.PhotoUrl == null);
+            }
+            
+            // No noActiveEmail
+            if(query.Filters.Contains("noActiveEmail"))
+            {
+                Query.Where(x => x.Email == null || x.Email.IsActive == false);
+            }
+            
+            // No noPhoneNumber
+            if(query.Filters.Contains("noPhoneNumber"))
+            {
+                Query.Include(x => x.PhoneNumbers);
+                Query.Where(x => x.PhoneNumbers == null || !x.PhoneNumbers.Any());
+            }
+            
+            // No First Visit Date Filter
+            if(query.Filters.Contains("noFirstVisitDate"))
+            {
+                Query.Where(x => x.FirstVisitDate == null);
             }
 
             // Ordering
