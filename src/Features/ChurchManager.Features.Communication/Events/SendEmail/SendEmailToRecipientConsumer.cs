@@ -2,13 +2,13 @@
 using ChurchManager.Domain.Features.Communications.Events;
 using ChurchManager.Domain.Features.Communications.Repositories;
 using ChurchManager.Domain.Features.Communications.Services;
+using ChurchManager.Infrastructure.Abstractions;
 using Codeboss.Results;
-using MassTransit;
 using Microsoft.Extensions.Logging;
 
 namespace ChurchManager.Features.Communication.Events.SendEmail;
 
-public class SendEmailToRecipientConsumer : IConsumer<SendEmailToRecipientEvent>
+public class SendEmailToRecipientConsumer : IDomainEventHandler
 {
     private readonly ICommunicationDbRepository _communicationDb;
     private readonly ITemplateDbRepository _templateDb;
@@ -27,12 +27,12 @@ public class SendEmailToRecipientConsumer : IConsumer<SendEmailToRecipientEvent>
         Logger = logger;
     }
     
-    public async Task Consume(ConsumeContext<SendEmailToRecipientEvent> context)
+    public async Task Handle(SendEmailToRecipientEvent message,  CancellationToken ct)
     {
         Logger.LogInformation("✔️------ SendEmailToRecipientEvent event received ------");
 
-        var communicationId = context.Message.CommunicationId;
-        var recipientId = context.Message.RecipientId;
+        var communicationId = message.CommunicationId;
+        var recipientId = message.RecipientId;
         var (subject, content, hasTemplate, recipient, template) = await _communicationDb.CommunicationToSendAsync(
             communicationId,
             recipientId
@@ -42,7 +42,7 @@ public class SendEmailToRecipientConsumer : IConsumer<SendEmailToRecipientEvent>
         {
             var emailRecipient = new EmailRecipient
             {
-                EmailAddress = recipient.RecipientPerson.Email.Address,
+                EmailAddress = recipient.RecipientPerson!.Email!.Address!,
                 PersonId = recipient.PersonId
             };
 
@@ -50,11 +50,11 @@ public class SendEmailToRecipientConsumer : IConsumer<SendEmailToRecipientEvent>
             if (hasTemplate)
             {
                 var templateInfo = new TemplateInfo(template.Name, null);
-                result = await _email.SendEmailAsync(emailRecipient, subject, templateInfo, context.CancellationToken);
+                result = await _email.SendEmailAsync(emailRecipient, subject, templateInfo, ct);
             }
             else
             {
-                result = await _email.SendEmailAsync(emailRecipient, subject, content, context.CancellationToken);
+                result = await _email.SendEmailAsync(emailRecipient, subject, content, ct);
             }
             Logger.LogInformation($"SendEmailAsync success: [{result.IsSuccess}] ------");
             
@@ -63,7 +63,7 @@ public class SendEmailToRecipientConsumer : IConsumer<SendEmailToRecipientEvent>
             recipient.StatusNote = result.IsSuccess? null : result.Errors.First().Message;
             recipient.UniqueMessageId = result.IsSuccess? result.Result : null;
             recipient.SendDateTime = result.IsSuccess? DateTime.UtcNow : null;
-            _communicationDb.SaveChangesAsync();
+            await _communicationDb.SaveChangesAsync(ct);
         }
     }
 }

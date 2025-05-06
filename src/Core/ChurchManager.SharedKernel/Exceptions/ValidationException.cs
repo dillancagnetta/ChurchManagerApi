@@ -1,6 +1,4 @@
-﻿using FluentValidation.Results;
-
-namespace ChurchManager.SharedKernel.Exceptions
+﻿namespace ChurchManager.SharedKernel.Exceptions
 {
     public class ValidationException : Exception
     {
@@ -9,11 +7,13 @@ namespace ChurchManager.SharedKernel.Exceptions
             Errors = new List<string>();
         }
 
+        /*
         public ValidationException(IEnumerable<ValidationFailure> failures)
             : this()
         {
             foreach (var failure in failures) Errors.Add(failure.ErrorMessage);
         }
+        */
 
         public ValidationException(string message) : base(message)
         {
@@ -23,6 +23,6 @@ namespace ChurchManager.SharedKernel.Exceptions
         {
         }
 
-        public List<string> Errors { get; }
+        public List<string> Errors { get; } = [];
     }
 }

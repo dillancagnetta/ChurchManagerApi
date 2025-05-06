@@ -1,4 +1,4 @@
-﻿using ChurchManager.Features.Churches.Commands.AddChurchGroup;
+﻿using ChurchManager.Features.Churches.Commands.ChurchGroups;
 using ChurchManager.Features.Churches.Queries.RetrieveChurchGroups;
 using ChurchManager.SharedKernel.Common;
 using Microsoft.AspNetCore.Authorization;

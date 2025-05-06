@@ -8,13 +8,13 @@ namespace ChurchManager.Features.Groups.Commands.GroupTypes.Crud;
 
 public record AddGroupTypeCommand : IRequest<ApiResponse>
 {
-    [Required] public string Name { get; set; }
-    public string Description { get; set; }
-    [Required] public string GroupTerm { get; set; }
-    [Required] public string GroupMemberTerm { get; set; }
+    [Required] public required string Name { get; set; }
+    public string? Description { get; set; }
+    [Required] public string GroupTerm { get; set; } = "Group";
+    [Required] public string GroupMemberTerm { get; set; } = "Member";
     [Required] public bool TakesAttendance { get; set; }
     [Required] public bool IsSystem { get; set; }
-    public string IconCssClass { get; set; }
+    public string? IconCssClass { get; set; }
 }
 
 public class GroupTypeAddedHandler : IRequestHandler<AddGroupTypeCommand, ApiResponse>

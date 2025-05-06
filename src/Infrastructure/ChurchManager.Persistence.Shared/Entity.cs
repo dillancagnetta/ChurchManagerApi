@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using ChurchManager.Domain.Shared;
+using ChurchManager.Infrastructure.Abstractions;
 using Codeboss.Types;
 
 namespace ChurchManager.Persistence.Shared
@@ -18,7 +18,7 @@ namespace ChurchManager.Persistence.Shared
         #region Domain Events
 
         [NotMapped]
-        private readonly List<IDomainEvent> _domainEvents = new(0);
+        private readonly List<IDomainEvent> _domainEvents = [];
         [NotMapped]
         public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
         public void AddDomainEvent(IDomainEvent @event) => _domainEvents?.Add(@event);

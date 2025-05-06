@@ -2,13 +2,13 @@
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.Groups.Specifications;
-using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Groups.Queries.GroupMemberAttendance;
 
-public record GroupMembersAttendanceQuery(int GroupId, PeriodType Period) : IRequest<ApiResponse>;
+public record GroupMembersAttendanceQuery(int GroupId, PeriodType Period = PeriodType.ThisMonth) : IRequest<ApiResponse>;
 
 public class GroupMembersAttendanceHandler : IRequestHandler<GroupMembersAttendanceQuery, ApiResponse>
 {
@@ -25,7 +25,7 @@ public class GroupMembersAttendanceHandler : IRequestHandler<GroupMembersAttenda
         var results = await _attendanceDbRepository.ListAsync(spec, ct);
 
         var groupByMember = results
-            .GroupBy(x => new { x.GroupMemberId , x.GroupMember.PersonId, FullName = x.GroupMember.Person.FullName.ToString()})
+            .GroupBy(x => new { x.GroupMemberId , x.GroupMember!.PersonId, FullName = x.GroupMember!.Person!.FullName!.ToString()})
             .ToList();
 
         var groupMemberAttendances = groupByMember.Select(@group => new GroupMemberAttendanceAnalysisViewModel
@@ -76,7 +76,7 @@ public class GroupAttendance2Handler : IRequestHandler<GroupAttendanceQuery, Api
             .ToList();
 
         var groupByMember = attendances.SelectMany(x => x.Attendees)
-            .GroupBy(x => new { x.GroupMemberId, x.GroupMember.PersonId, x.GroupMember.FirstName, x.GroupMember.LastName })
+            .GroupBy(x => new { x.GroupMemberId, x.GroupMember!.PersonId, x.GroupMember.FirstName, x.GroupMember.LastName })
             .ToList();
 
         var groupMemberAttendances = groupByMember.Select(@group => new GroupMemberAttendanceAnalysisViewModel
@@ -108,7 +108,7 @@ public class GroupAttendance2Handler : IRequestHandler<GroupAttendanceQuery, Api
  * ------------------GroupsAverageAttendanceRateQuery-------------------------------------------------------------------------------------------
  */
  
-public record GroupsAverageAttendanceRateQuery(IEnumerable<int> GroupIds, PeriodType Period) : IRequest<IEnumerable<GroupsAverageAttendanceRate>>
+public record GroupsAverageAttendanceRateQuery(IEnumerable<int> GroupIds, PeriodType Period = PeriodType.ThisMonth) : IRequest<IEnumerable<GroupsAverageAttendanceRate>>
 {
     public int? ChurchId { get; set; }
     public int? GroupTypeId { get; set; }

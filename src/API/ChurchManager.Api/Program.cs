@@ -106,13 +106,19 @@ namespace ChurchManager.Api
                         listenOptions.UseHttps(httpsOptions =>
                         {
                             // Load the certificate from the container path
-                            httpsOptions.ServerCertificate = new X509Certificate2(
+                            /*httpsOptions.ServerCertificate = new X509Certificate2(
                                 "certificate.pfx", 
                                 "YourStrongPassword",
                                 X509KeyStorageFlags.MachineKeySet | 
                                 X509KeyStorageFlags.PersistKeySet | 
                                 X509KeyStorageFlags.Exportable
-                            );
+                            );*/
+                            // Load the certificate from the container path
+                            httpsOptions.ServerCertificate = X509CertificateLoader.LoadPkcs12FromFile("certificate.pfx", 
+                                "YourStrongPassword",
+                                X509KeyStorageFlags.MachineKeySet | 
+                                X509KeyStorageFlags.PersistKeySet | 
+                                X509KeyStorageFlags.Exportable);
                         });
                                     
                         // Enable HTTP/2/3

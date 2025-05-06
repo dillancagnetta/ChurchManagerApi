@@ -55,8 +55,8 @@ public class SignalRConnectionTracker(IDistributedCache cache) : IConnectionTrac
         var data = await cache.GetAsync(key);
         if (data != null)
         {
-            return JsonSerializer.Deserialize<HashSet<string>>(data) ?? new HashSet<string>();
+            return JsonSerializer.Deserialize<HashSet<string>>(data) ?? [];
         }
-        return new HashSet<string>();
+        return [];
     }
 }

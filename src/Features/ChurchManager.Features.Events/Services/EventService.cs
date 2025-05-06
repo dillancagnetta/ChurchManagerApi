@@ -3,9 +3,9 @@ using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Application.Features;
 using ChurchManager.Domain.Features.Events;
 using ChurchManager.Domain.Features.Security.Services;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using CodeBoss.MultiTenant;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Events.Services;
 

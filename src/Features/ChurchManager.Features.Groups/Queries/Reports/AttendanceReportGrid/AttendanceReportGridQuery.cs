@@ -1,15 +1,15 @@
 ﻿using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.Groups.Specifications;
-using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Groups.Queries.Reports.AttendanceReportGrid
 {
     public record AttendanceReportGridQuery : IRequest<ApiResponse>
     {
         public int GroupTypeId { get; set; }
-        public IList<int> GroupId { get; set; }
+        public IList<int> GroupId { get; set; } = [];
         public DateTime From { get; set; }
         public DateTime To { get; set; }
     }

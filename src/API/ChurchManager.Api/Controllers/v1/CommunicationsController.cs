@@ -37,7 +37,7 @@ public class CommunicationsController(ILogger<CommunicationsController> logger) 
         // Parse the raw message
         var message = ParseSnsMessage(rawMessage);
 
-        switch (message.Type)
+        switch (message?.Type)
         {
             case "SubscriptionConfirmation":
                 await ConfirmSubscription(message.SubscribeURL);
@@ -46,14 +46,14 @@ public class CommunicationsController(ILogger<CommunicationsController> logger) 
                 await ProcessNotification(message);
                 break;
             default:
-                logger.LogWarning($"Received unknown message type: {message.Type}");
+                logger.LogWarning($"Received unknown message type: {message?.Type}");
                 break;
         }
 
         return Ok();
     }
     
-    private SnsMessage ParseSnsMessage(object rawMessage)
+    private SnsMessage? ParseSnsMessage(object rawMessage)
     {
         if (rawMessage is string stringMessage)
         {
@@ -68,17 +68,17 @@ public class CommunicationsController(ILogger<CommunicationsController> logger) 
                 var formData = System.Web.HttpUtility.ParseQueryString(stringMessage);
                 return new SnsMessage
                 {
-                    Type = formData["Type"],
-                    MessageId = formData["MessageId"],
-                    TopicArn = formData["TopicArn"],
-                    Message = formData["Message"],
-                    Timestamp = formData["Timestamp"],
-                    SignatureVersion = formData["SignatureVersion"],
-                    Signature = formData["Signature"],
-                    SigningCertURL = formData["SigningCertURL"],
-                    UnsubscribeURL = formData["UnsubscribeURL"],
-                    SubscribeURL = formData["SubscribeURL"],
-                    Token = formData["Token"]
+                    Type = formData["Type"]!,
+                    MessageId = formData["MessageId"]!,
+                    TopicArn = formData["TopicArn"]!,
+                    Message = formData["Message"]!,
+                    Timestamp = formData["Timestamp"]!,
+                    SignatureVersion = formData["SignatureVersion"]!,
+                    Signature = formData["Signature"]!,
+                    SigningCertURL = formData["SigningCertURL"]!,
+                    UnsubscribeURL = formData["UnsubscribeURL"]!,
+                    SubscribeURL = formData["SubscribeURL"]!,
+                    Token = formData["Token"]!
                 };
             }
         }
@@ -97,10 +97,11 @@ public class CommunicationsController(ILogger<CommunicationsController> logger) 
         logger.LogInformation($"Subscription confirmed: {subscribeUrl}");
     }
     
-    private async Task ProcessNotification(SnsMessage message)
+    private Task ProcessNotification(SnsMessage message)
     {
         // Your existing code for handling SNS messages
         logger.LogInformation($"Processing SNS message: {message.Message}");
+        return Task.CompletedTask;
     }
 
     
@@ -157,17 +158,17 @@ public class CommunicationsController(ILogger<CommunicationsController> logger) 
 
 public record SnsMessage
 {
-    public string Type { get; set; }
-    public string MessageId { get; set; }
-    public string TopicArn { get; set; }
-    public string Message { get; set; }
-    public string Timestamp { get; set; }
-    public string SignatureVersion { get; set; }
-    public string Signature { get; set; }
-    public string SigningCertURL { get; set; }
-    public string UnsubscribeURL { get; set; }
+    public string? Type { get; set; }
+    public string? MessageId { get; set; }
+    public string? TopicArn { get; set; }
+    public string? Message { get; set; }
+    public string? Timestamp { get; set; }
+    public string? SignatureVersion { get; set; }
+    public string? Signature { get; set; }
+    public string? SigningCertURL { get; set; }
+    public string? UnsubscribeURL { get; set; }
     
     // Added for subscription confirmation
-    public string SubscribeURL { get; set; }
-    public string Token { get; set; }
+    public string? SubscribeURL { get; set; }
+    public string? Token { get; set; }
 }

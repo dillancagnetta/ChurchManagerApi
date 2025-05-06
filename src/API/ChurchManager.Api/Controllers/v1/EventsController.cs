@@ -38,7 +38,7 @@ namespace ChurchManager.Api.Controllers.v1
             return Ok(await Mediator.Send(query, token));
         }
         
-        [HttpPost]
+        [HttpPost]  
         public async Task<IActionResult> Create([FromForm] string eventInfo, IFormFile image, CancellationToken token)
         {
             var command = JsonSerializer.Deserialize<AddEventCommand>(eventInfo, 

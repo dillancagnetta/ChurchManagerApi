@@ -14,30 +14,30 @@ namespace ChurchManager.Domain.Features.People
     [Table("Person")]
     public class Person : Entity<int>, IAggregateRoot<int>
     {
-        [Required] public FullName FullName { get; set; }
-        public ConnectionStatus ConnectionStatus { get; set; }
-        [Required] public DeceasedStatus DeceasedStatus { get; set; }
-        public AgeClassification AgeClassification { get; set; }
-        public Gender Gender { get; set; }
-        [Required] public BirthDate BirthDate { get; set; }
+        [Required] public FullName? FullName { get; set; }
+        public ConnectionStatus ConnectionStatus { get; set; } = ConnectionStatus.Unknown;
+        [Required] public DeceasedStatus? DeceasedStatus { get; set; }
+        public AgeClassification AgeClassification { get; set; } = AgeClassification.Unknown;
+        public Gender Gender { get; set; } = Gender.Unknown;
+        [Required] public BirthDate? BirthDate { get; set; }
 
         /// <summary>
         /// Where this person came from e.g. Cell, Outreach, Church, Online etc
         /// </summary>
-        public string Source { get; set; }
+        public string? Source { get; set; }
         public DateTime? FirstVisitDate { get; set; }
 
-        [Required] public Baptism BaptismStatus { get; set; }
+        [Required] public Baptism? BaptismStatus { get; set; }
 
-        public string MaritalStatus { get; set; }
+        public string? MaritalStatus { get; set; }
         public DateTime? AnniversaryDate { get; set; }
 
-        [Required] public Email Email { get; set; }
-        public ICollection<PhoneNumber> PhoneNumbers { get; set; } = new Collection<PhoneNumber>();
-        public CommunicationType CommunicationPreference { get; set; }
+        [Required] public Email? Email { get; set; }
+        public ICollection<PhoneNumber>? PhoneNumbers { get; set; } = new Collection<PhoneNumber>();
+        public CommunicationType? CommunicationPreference { get; set; }
 
-        public string PhotoUrl { get; set; }
-        public string Occupation { get; set; }
+        public string? PhotoUrl { get; set; }
+        public string? Occupation { get; set; }
 
         public int? FamilyId { get; set; }
         public bool? ReceivedHolySpirit { get; set; } = false;
@@ -53,15 +53,15 @@ namespace ChurchManager.Domain.Features.People
         /// <summary>
         /// Gets or sets the user login id from AWS Cognito
         /// </summary>
-        public string UserLoginId { get; set; }
+        public string? UserLoginId { get; set; }
 
         public int? ViewedCount { get; set; }
 
 
         #region Navigation
 
-        public virtual Family Family { get; set; }
-        public virtual Church Church { get; set; }
+        public virtual Family? Family { get; set; }
+        public virtual Church? Church { get; set; }
         public virtual ICollection<Note> Notes { get; set; } = new Collection<Note>();
         
         public virtual ICollection<ConnectionStatusHistory> ConnectionStatusHistory { get; set; } = new Collection<ConnectionStatusHistory>();
@@ -93,10 +93,10 @@ namespace ChurchManager.Domain.Features.People
             {
                 PersonId = person.Id,
                 Gender = person.Gender,
-                FirstName = person.FullName.FirstName,
-                LastName = person.FullName.LastName,
+                FirstName = person!.FullName!.FirstName!,
+                LastName = person!.FullName!.LastName!,
                 AgeClassification = person.AgeClassification,
-                Age = person.BirthDate.Age,
+                Age = person.BirthDate?.Age,
                 PhotoUrl = person.PhotoUrl
             };
         }
@@ -119,12 +119,12 @@ namespace ChurchManager.Domain.Features.People
     [Owned]
     public class FullName
     {
-        public string Title { get; set; }
-        public string FirstName { get; set; }
-        public string NickName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastName { get; set; }
-        public string Suffix { get; set; }
+        public string? Title { get; set; }
+        public string? FirstName { get; set; }
+        public string? NickName { get; set; }
+        public string? MiddleName { get; set; }
+        public string? LastName { get; set; }
+        public string? Suffix { get; set; }
 
         public override string ToString() => $"{FirstName} {LastName}";
     }
@@ -197,7 +197,7 @@ namespace ChurchManager.Domain.Features.People
     [Owned]
     public class Email
     {
-        public string Address { get; set; }
+        public string? Address { get; set; }
         public bool? IsActive { get; set; }
     }
 }

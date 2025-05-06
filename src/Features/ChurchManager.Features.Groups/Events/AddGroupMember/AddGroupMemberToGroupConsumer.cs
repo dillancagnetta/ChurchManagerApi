@@ -1,24 +1,23 @@
 ﻿using ChurchManager.Domain.Features.Events.DomainEvents;
 using ChurchManager.Domain.Features.Groups.Repositories;
-using MassTransit;
+using ChurchManager.Infrastructure.Abstractions;
 using Microsoft.Extensions.Logging;
 
 namespace ChurchManager.Features.Groups.Events.AddGroupMember;
 
 public class AddGroupMemberToGroupConsumer(
     IGroupMemberDbRepository groupMemberDb,
-    ILogger<AddGroupMemberToGroupConsumer> logger) : IConsumer<PersonRegisteredForEvent>
+    ILogger<AddGroupMemberToGroupConsumer> logger): IDomainEventHandler
 {
-    public async Task Consume(ConsumeContext<PersonRegisteredForEvent> context)
+    public async Task Handle(PersonRegisteredForEvent message, CancellationToken ct)
     {
         logger.LogInformation("✔️ ------ PersonRegisteredForEvent event received ------");
         
-        var message = context.Message;
         
         await groupMemberDb.AddGroupMember(
             message.GroupId, 
             message.PersonId,
             message.GroupRoleId, 
-            ct: context.CancellationToken);
+            ct: ct);
     }
 }

@@ -34,7 +34,11 @@ public class SmsDependencyInstaller: IDependencyInstaller
             });
 
             services.AddScoped<ISmsSender, BulkSmsSender>();
-            services.AddScoped<ISmsOrchestrator, SmsOrchestrator>();
         }
+        else
+        {
+            services.AddScoped<ISmsSender, FakeSmsSender>();
+        }
+        services.AddScoped<ISmsOrchestrator, SmsOrchestrator>();
     }
 }

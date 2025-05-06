@@ -324,7 +324,8 @@ namespace ChurchManager.DataImporter
                                     Id = Guid.Parse(import.UserLoginId),
                                     PersonId = person.Id,
                                     Username = "dillan",
-                                    Password = BCrypt.Net.BCrypt.HashPassword("81118599")
+                                    Password = BCrypt.Net.BCrypt.HashPassword("81118599"),
+                                    Tenant = "Tenant1",
                                 };
                                 _userLogin.AddUserLoginRole(systemAdminRole);
                                 dbContext.UserLogin.Add(_userLogin);
@@ -337,8 +338,8 @@ namespace ChurchManager.DataImporter
                                     PersonId = person.Id,
                                     Username = import.Email.ToLower(),
                                     Password = BCrypt.Net.BCrypt.HashPassword("pancake"),
-                                    
-                                };
+                                    Tenant = "Tenant1",
+                                    };
                                 dbContext.UserLogin.Add(_userLogin);
                             }
                                 
@@ -424,7 +425,7 @@ namespace ChurchManager.DataImporter
                     IsOnline = isOnline,
                     ParentGroupName = parentGroup,
                     Church = church,
-                    StartDate = startDate,
+                    StartDate = DateOnly.FromDateTime(startDate.Value),
                     MeetingDay = meetingDay,
                     MeetingTime = meetingTime
                 };

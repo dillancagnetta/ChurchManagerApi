@@ -20,8 +20,8 @@ public static class ExpressionExtensions
             ContactPerson =  x.ContactPerson != null ? new PersonViewModelBasic
             {
                 PersonId = x.ContactPersonId,
-                FirstName = x.ContactPerson.FullName.FirstName,
-                LastName = x.ContactPerson.FullName.LastName,
+                FirstName = x.ContactPerson.FullName!.FirstName!,
+                LastName = x.ContactPerson.FullName.LastName!,
                 Email = x.ContactPerson.Email.Address,
                 PhotoUrl = x.ContactPerson.PhotoUrl,
             } : null,
@@ -35,22 +35,22 @@ public static class ExpressionExtensions
             Location = x.Location,
             ChildCareGroup = x.ChildCareGroupId != null ? new GroupReference
             {
-                GroupTypeId = x.ChildCareGroup.GroupTypeId,
+                GroupTypeId = x.ChildCareGroup!.GroupTypeId,
                 GroupId = x.ChildCareGroupId,
-                GroupTypeName = x.ChildCareGroup.GroupType.Name,
+                GroupTypeName = x.ChildCareGroup!.GroupType!.Name!,
                 GroupName = x.ChildCareGroup.Name,
             } : null,
             EventRegistrationGroup = x.EventRegistrationGroupId != null ? new GroupReference
             {
-                GroupTypeId = x.EventRegistrationGroup.GroupTypeId,
+                GroupTypeId = x.EventRegistrationGroup!.GroupTypeId,
                 GroupId = x.EventRegistrationGroupId,
-                GroupTypeName = x.EventRegistrationGroup.GroupType.Name,
+                GroupTypeName = x.EventRegistrationGroup!.GroupType!.Name,
                 GroupName = x.EventRegistrationGroup.Name,
             } : null,
             Configuration = new EventConfigurationViewModel
             {
                 OnlineSupport = x.EventType !=null ? x.EventType.OnlineSupport : OnlineSupport.Unknown.Value,
-                RequiresRegistration = x.EventType.RequiresRegistration,
+                RequiresRegistration = x.EventType!.RequiresRegistration,
                 AllowFamilyRegistration = x.EventType.AllowFamilyRegistration,
                 AllowNonFamilyRegistration = x.EventType.AllowNonFamilyRegistration,
                 RequiresChildInfo = x.EventType.RequiresChildInfo,
@@ -68,9 +68,9 @@ public static class ExpressionExtensions
                 Description = x.Description,
                 SessionOrder = x.SessionOrder,
                 StartDate = x.SessionStartDateTime().StartDate,
-                StartTime = x.SessionStartDateTime().StartTime.HasValue ? x.SessionStartDateTime().StartTime.Value.ToString(@"hh\:mm") : null,
+                StartTime = x.SessionStartDateTime().StartTime,
                 EndDate = x.SessionEndDateTime().EndDate,
-                EndTime = x.SessionEndDateTime().EndTime.HasValue ? x.SessionEndDateTime().EndTime.Value.ToString(@"hh\:mm") : null,
+                EndTime = x.SessionEndDateTime().EndTime,
                 Location = x.Location,
                 OnlineSupport = x.OnlineSupport,
                 OnlineMeetingUrl = x.OnlineMeetingUrl,
@@ -86,9 +86,9 @@ public static class ExpressionExtensions
         new EventTypeViewModel
         {
             Id = x.Id,
-            Name = x.Name,
+            Name = x.Name!,
             Description = x.Description,
-            AgeClassification = x.AgeClassification.Value,
+            AgeClassification = x.AgeClassification!.Value,
             OnlineSupport = x.OnlineSupport.Value,
             RequiresRegistration = x.RequiresRegistration,
             AllowFamilyRegistration = x.AllowFamilyRegistration,

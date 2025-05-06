@@ -7,9 +7,9 @@ using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Domain.Features.People.Specifications;
 using ChurchManager.Domain.Features.Security;
 using ChurchManager.Domain.Features.Security.Services;
-using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Common;
 using Convey.CQRS.Queries;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.People.Services
 {
@@ -42,6 +42,20 @@ namespace ChurchManager.Features.People.Services
             var vm = await dbRepository.ListAsync(spec, ct);
             
             return vm;
+        }
+
+        public async Task<IReadOnlyList<PersonViewModel>> FilterPeopleAsync(IList<int> personIds, CancellationToken ct = default)
+        {
+            var allowedIds = await permissions.GetAllowedIdsAsync<Person>(
+                Guid.Parse(currentUser.Id), PermissionAction.View,   ct);
+
+            var spec = new FilterPeopleQuerySpecification(personIds, allowedIds);
+            
+            var list = await dbRepository.ListAsync(spec, ct);
+            
+            var vm = mapper.Map<IList<PersonViewModel>>(list);
+            
+            return vm.AsReadOnly();
         }
     }
 }

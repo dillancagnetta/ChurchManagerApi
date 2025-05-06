@@ -1,16 +1,16 @@
 ﻿using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Domain.Parameters;
-using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
 using Codeboss.Results;
 using MediatR;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.UserLogins.Queries;
 
 public record BrowsePermissionsQuery : QueryParameter,  IRequest<PagedResponse<PermissionViewModel>>
 {
-    public string EntityType { get; set; }
-    public string ScopeType { get; set; }
+    public string? EntityType { get; set; }
+    public string? ScopeType { get; set; }
     public int? EntityId { get; set; }
     public bool? IsDynamicScope { get; set; }
 }
@@ -31,15 +31,15 @@ public class PermissionsQueryHandler(ISecurityService service) : IRequestHandler
  
 public record CreatePermissionCommand : IRequest<ApiResponse>
 {
-    public string EntityType { get; set; }
-    public string PermissionType { get; set; }
-    public IEnumerable<int> EntityIds { get; set; }
+    public string? EntityType { get; set; }
+    public string? PermissionType { get; set; }
+    public IEnumerable<int> EntityIds { get; set; } = [];
     public bool CanView { get; set; }
     public bool CanEdit { get; set; }
     public bool CanDelete { get; set; }
     public bool CanManageUsers { get; set; }
     public int? ScopeId { get; set; }
-    public string ScopeType { get; set; }
+    public string? ScopeType { get; set; }
 }
 
 public class CreatePermissionHandler(ISecurityService service) : IRequestHandler<CreatePermissionCommand, ApiResponse>
@@ -155,7 +155,7 @@ public class ToggleRoleStatusForUserHandler(ISecurityService service) : IRequest
  * ---------------------------------------------------------
  */
 
-public record AddRoleCommand(string Name, string Description) : IRequest<ApiResponse>;
+public record AddRoleCommand(string Name, string? Description) : IRequest<ApiResponse>;
 
 public class AddRoleCommandHandler(ISecurityService service) : IRequestHandler<AddRoleCommand, ApiResponse>
 {

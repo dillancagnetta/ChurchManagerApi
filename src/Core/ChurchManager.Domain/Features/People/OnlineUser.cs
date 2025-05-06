@@ -12,14 +12,14 @@ namespace ChurchManager.Domain.Features.People
         public int PersonId { get; set; }
 
         [MaxLength(50)]
-        public string ConnectionId { get; set; }
+        public string? ConnectionId { get; set; }
         [MaxLength(20)] 
         public string Status { get; set; } = "online"; // offline
         public DateTimeOffset LastOnlineDateTime { get; set; } = DateTimeOffset.UtcNow;
 
         #region Navigation
 
-        public virtual Person Person { get; set; }
+        public virtual Person? Person { get; set; }
 
         #endregion
 

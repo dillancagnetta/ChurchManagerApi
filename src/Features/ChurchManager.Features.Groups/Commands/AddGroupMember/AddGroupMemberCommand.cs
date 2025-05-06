@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Features.Groups;
+﻿using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
@@ -11,7 +12,7 @@ namespace ChurchManager.Features.Groups.Commands.AddGroupMember
         public int GroupId { get; set; }    
         public int PersonId { get; set; }
         public int GroupRoleId { get; set; }
-        public string CommunicationPreference { get; set; }
+        public string CommunicationPreference { get; set; } = CommunicationType.None.Value;
         public DateTime? FirstVisitDate { get; set; }
     }
 

@@ -15,7 +15,7 @@ namespace ChurchManager.Domain.Features.Communications
             Body = body;
         }
 
-        public PushNotification(string title, string body)
+        public PushNotification(string title, string? body)
         {
             Title = title;
             Body = body;
@@ -23,7 +23,7 @@ namespace ChurchManager.Domain.Features.Communications
 
         public PushNotification(Message message)
         {
-            Title = message.Title;
+            Title = message.Title!;
             Body = message.Body;
             Tag = message.Id.ToString();
             Timestamp = message.SentDateTime ?? DateTime.UtcNow;
@@ -31,13 +31,13 @@ namespace ChurchManager.Domain.Features.Communications
 
         public string Title { get; set; } = "Push Demo";
         public string Lang { get; set; } = "en";
-        public string Body { get; set; }
-        public string Tag { get; set; }
+        public string? Body { get; set; }
+        public string? Tag { get; set; }
         /// <summary>
         /// Displaying a large image below the notification's title and message.
         /// Common sizes: 512x256px or 1440x720px
         /// </summary>
-        public string Image { get; set; }
+        public string? Image { get; set; }
         /// <summary>
         /// Displays to the side of the notification's title and message. Usually the logo:
         /// Recommended: 256x256 or larger
@@ -50,7 +50,7 @@ namespace ChurchManager.Domain.Features.Communications
         public string Badge { get; set; } = "assets/images/logo/badge.png";
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
         public bool RequireInteraction { get; set; } = true;
-        public IDictionary<string, object> Data { get; set; }
+        public IDictionary<string, object>? Data { get; set; }
         public List<int> Vibrate { get; set; } = new(3) { 100, 50, 200 };
         public List<NotificationAction> Actions { get; set; } = new(0);
     }

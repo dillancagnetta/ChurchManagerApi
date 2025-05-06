@@ -4,6 +4,6 @@ namespace ChurchManager.Domain.Features.Communications.Services
 {
     public interface IUserNotificationsHubService : IUserHubService
     {
-        Task SendMessageToUserAsync(Message message, CancellationToken ct = default);
+        ValueTask SendMessageToUserAsync(Message message, CancellationToken ct = default);
     }
 }

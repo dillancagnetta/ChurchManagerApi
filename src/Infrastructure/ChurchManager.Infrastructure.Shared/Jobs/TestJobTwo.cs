@@ -12,11 +12,11 @@ public class TestJobTwo(IServiceJobRepository repository, ILogger<CodeBossJob> l
     {
         var jobParams = ServiceJob?.JobParameters;
         
-        Console.Out.WriteLineAsync($"Hello from TestJobTwo, Cron description: [{ServiceJob?.CronDescription}]" +
+        await Console.Out.WriteLineAsync($"Hello from TestJobTwo, Cron description: [{ServiceJob?.CronDescription}]" +
                                    $", has {jobParams?.Count ?? 0} parameters.");
         
         
-        UpdateStatusMessagesAsync($"Run at [{DateTime.Now}]", "Success");
+        await UpdateStatusMessagesAsync($"Run at [{DateTime.Now}]", "Success");
 
         //await repository.SaveChangesAsync(ct);
     }

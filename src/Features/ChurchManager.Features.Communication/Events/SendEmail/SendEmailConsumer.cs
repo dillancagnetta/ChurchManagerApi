@@ -2,21 +2,21 @@
 using ChurchManager.Domain.Features.Communications.Repositories;
 using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Domain.Features.People;
-using ChurchManager.Domain.Shared;
+using ChurchManager.Infrastructure.Abstractions;
 using ChurchManager.Infrastructure.Abstractions.Communication;
 using ChurchManager.Infrastructure.Shared.Templating;
 using CodeBoss.Extensions;
-using MassTransit;
-using Microsoft.Extensions.Logging;
 using DotLiquid;
-using DotLiquid.FileSystems;
-using Microsoft.Extensions.Caching.Distributed; // Add this if you're using DotLiquid
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
+
+// Add this if you're using DotLiquid
 
 // https://github.com/dotliquid/dotliquid/blob/master/src/DotLiquid/Tags/Extends.cs
 
 namespace ChurchManager.Features.Communication.Events.SendEmail
 {
-    public class SendEmailConsumer : IConsumer<SendEmailEvent>
+    public class SendEmailConsumer : IDomainEventHandler
     {
         private readonly IEmailSender _sender;
         private readonly ITemplateParser _templateParser;
@@ -38,12 +38,10 @@ namespace ChurchManager.Features.Communication.Events.SendEmail
             Logger = logger;
         }
 
-        public async Task Consume(ConsumeContext<SendEmailEvent> context)
+        public async Task Handle(SendEmailEvent message, CancellationToken ct)
         {
             Logger.LogInformation("✔️------ SendEmailConsumer event received ------");
             
-            var message = context.Message;
-
             try
             {
                 if(!message.Recipient.EmailAddress.IsNullOrEmpty())
@@ -53,7 +51,7 @@ namespace ChurchManager.Features.Communication.Events.SendEmail
                     // Set up the file system for includes
                     //Template.FileSystem = new LocalFileSystem(DomainConstants.Communication.Email.TemplatePath);
                 
-                    var template = await _templateDb.TemplateByNameAsync(message.Template, context.CancellationToken);
+                    var template = await _templateDb.TemplateByNameAsync(message.Template, ct);
                     Template.FileSystem = new DatabaseTemplateFileSystem(_templateDb, _cache);
                 
                     object model = new { Model = message.TemplateData };

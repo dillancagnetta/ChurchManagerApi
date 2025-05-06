@@ -9,17 +9,17 @@ namespace ChurchManager.Features.Communication.Commands;
 
 public record CreateCommunicationCommand : IRequest<ApiResponse>
 {
-    public int[] PersonIds { get; set; }
-    public string CommunicationType { get; set; } 
-    public string Name { get; set; } 
-    public string Category { get; set; } 
-    public string Subject { get; set; }
+    public int[] PersonIds { get; set; } = [];
+    public required string CommunicationType { get; set; } 
+    public required string Name { get; set; } 
+    public string? Category { get; set; } 
+    public string? Subject { get; set; }
     public string Status { get; set; } = CommunicationStatus.PendingApproval.Value;
-    public string Content { get; set; } 
+    public required string Content { get; set; } 
     public int? CommunicationTemplateId { get; set; } 
     public DateTime? SendDateTime { get; set; }
     public int? ListGroupId { get;  set; }
-    public bool IsBulkCommunication { get;  set; }
+    public bool IsBulkCommunication { get;  set; } = false;
 }
 
 public class CreateCommunicationHandler(ICommunicationDbRepository dbRepository, IAppCurrentUser currentUser) : IRequestHandler<CreateCommunicationCommand, ApiResponse>
@@ -44,7 +44,7 @@ public class CreateCommunicationHandler(ICommunicationDbRepository dbRepository,
 
         if (!command.Content.IsNullOrEmpty())
         {
-            communication.FormatTemplatedContent(command.Content);
+            command.Content = communication.FormatTemplatedContent(command.Content);
         }
         
         await dbRepository.AddAsync(communication, ct);

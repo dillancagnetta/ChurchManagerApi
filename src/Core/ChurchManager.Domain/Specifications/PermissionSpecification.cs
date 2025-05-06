@@ -6,7 +6,7 @@ namespace ChurchManager.Domain.Specifications;
 
 public class PermissionSpecification<T> : Specification<T> where T : class, Codeboss.Types.IEntity<int>
 {
-    protected PermissionSpecification(IEnumerable<int> allowedIds = null)
+    protected PermissionSpecification(IEnumerable<int>? allowedIds = null)
     {
         // Only apply permission filter if allowedIds is not null
         // If null, user is system admin and has unrestricted access
@@ -20,7 +20,7 @@ public class PermissionSpecification<T> : Specification<T> where T : class, Code
 
 public class PermissionSpecification<T, V> : Specification<T, V> where T : class, Codeboss.Types.IEntity<int>
 {
-    protected PermissionSpecification(IEnumerable<int> allowedIds = null)
+    protected PermissionSpecification(IEnumerable<int>? allowedIds = null)
     {
         // Only apply permission filter if allowedIds is not null
         // If null, user is system admin and has unrestricted access
@@ -50,11 +50,5 @@ public class PermissionCriteria<T> where T : class, Codeboss.Types.IEntity<int>
         
         // Add the criteria to the query
         query.Where(e => allowedIds.Contains(e.Id));
-    }
-    
-    // defer the permission check to when the query is executed
-    private static Expression<Func<T, bool>> BuildPermissionExpression(Guid userId, IPermissionService service, string permission = "View")
-    {
-        return entity => service.HasPermissionAsync<T>(userId, entity.Id, permission, new CancellationToken()).GetAwaiter().GetResult();
     }
 }

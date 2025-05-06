@@ -18,21 +18,21 @@ namespace ChurchManager.Domain.Specifications
             DateTime? from, DateTime? to)
         {
             // Group Type Filter
-            Expression<Func<GroupAttendance, bool>> groupTypeFilter = g => g.Group.GroupTypeId == groupTypeId;
+            Expression<Func<GroupAttendance, bool>> groupTypeFilter = g => g.Group!.GroupTypeId == groupTypeId;
 
             Criteria = groupTypeFilter;
 
             // Church Filter
             if (churchId.HasValue)
             {
-                Expression<Func<GroupAttendance, bool>> churchFilter = g => g.Group.ChurchId.HasValue && g.Group.ChurchId.Value == churchId;
+                Expression<Func<GroupAttendance, bool>> churchFilter = g => g.Group!.ChurchId.HasValue && g.Group.ChurchId.Value == churchId;
                 Criteria = Criteria.And(churchFilter);
             }
 
             // Group Filter
             if(groupId.HasValue && groupId != AllGroupsId)
             {
-                Expression<Func<GroupAttendance, bool>> groupFilter = g => g.Group.Id == groupId;
+                Expression<Func<GroupAttendance, bool>> groupFilter = g => g.Group!.Id == groupId;
                 Criteria = Criteria.And(groupFilter);
             }
 

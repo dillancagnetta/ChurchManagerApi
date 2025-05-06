@@ -13,8 +13,8 @@ namespace ChurchManager.Persistence.Shared
     public abstract class Specification<T> : ISpecification<T> where T : class, IAggregateRoot<int>
     {
         public Expression<Func<T, bool>> Criteria { get; set; }
-        public List<Expression<Func<T, object>>> Includes { get; } = new();
-        public List<string> IncludeStrings { get; } = new();
+        public List<Expression<Func<T, object>>> Includes { get; } = [];
+        public List<string> IncludeStrings { get; } = [];
 
         protected virtual void AddInclude(Expression<Func<T, object>> includeExpression)
         {

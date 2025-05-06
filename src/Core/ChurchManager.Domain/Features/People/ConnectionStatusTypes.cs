@@ -13,11 +13,10 @@ namespace ChurchManager.Domain.Features.People;
 /// </summary>
 public class ConnectionStatusType : Entity<int>, IAggregateRoot<int>
 {
-    [Required, MaxLength(50)]
-    public ConnectionStatus Name { get; set; }
+    [Required, MaxLength(50)] public ConnectionStatus Name { get; set; } = ConnectionStatus.Unknown;
     
     [Required, MaxLength(200)]
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
     /// <summary>
     /// 0 is the highest priority, and higher numbers are lower priority
@@ -39,13 +38,13 @@ public class ConnectionStatusHistory: AuditableEntity<int>, IAggregateRoot<int>
     public DateTime? EndDate { get; set; }
     
     [MaxLength(500)]
-    public string Notes { get; set; }
+    public string? Notes { get; set; }
 
     #region Navigation
 
-    public virtual Person Person { get; set; }
+    public virtual Person? Person { get; set; }
     
-    public virtual ConnectionStatusType ConnectionStatusType { get; set; }
+    public virtual ConnectionStatusType? ConnectionStatusType { get; set; }
 
     #endregion
 }

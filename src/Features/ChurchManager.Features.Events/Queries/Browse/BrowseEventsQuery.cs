@@ -3,11 +3,11 @@ using ChurchManager.Domain.Features.Events.Specifications;
 using ChurchManager.Domain.Features.Security;
 using ChurchManager.Domain.Features.Security.Services;
 using ChurchManager.Domain.Parameters;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Common;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Events.Queries.Browse;
 
@@ -16,8 +16,8 @@ public record BrowseEventsQuery: QueryParameter,  IRequest<PagedResponse<EventVi
     public int? EventTypeId { get; set; }
     public int? ChurchGroupId { get; set; }
     public int? ChurchId { get; set; }
-    public DateTime? From { get; set; }
-    public DateTime? To { get; set; }
+    public DateOnly? From { get; set; }
+    public DateOnly? To { get; set; }
     public bool? IsOnline { get; set; }
     public bool? IncludeDetails { get; set; }
 }

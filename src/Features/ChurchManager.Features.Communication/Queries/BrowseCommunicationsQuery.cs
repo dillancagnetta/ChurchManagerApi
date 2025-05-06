@@ -2,23 +2,23 @@
 using ChurchManager.Domain.Features.Security;
 using ChurchManager.Domain.Features.Security.Services;
 using ChurchManager.Domain.Parameters;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Common;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 using Feature = ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Communication.Queries;
 
 public record BrowseCommunicationsQuery : SearchTermQueryParameter, IRequest<ApiResponse>
 {
-    public string CommunicationStatus { get; set; }
+    public string CommunicationStatus { get; set; } = Feature.CommunicationStatus.PendingApproval.Value;
     public DateTime? From { get; set; }
     public DateTime? To { get; set; }
     public int? RecipientPersonId { get; set; }
     public int? CommunicationTemplateId { get; set; }
-    public IEnumerable<string> CommunicationTypes { get; set; }
+    public IEnumerable<string> CommunicationTypes { get; set; } = [];
 }
 
 public class BrowseCommunicationsHandler(

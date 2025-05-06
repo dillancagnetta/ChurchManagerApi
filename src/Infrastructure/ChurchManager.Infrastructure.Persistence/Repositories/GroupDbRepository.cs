@@ -6,9 +6,9 @@ using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.Groups.Specifications;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
+using ChurchManager.Domain.Shared;
 
 #endregion
 
@@ -60,6 +60,7 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
                 .AsNoTracking()
                 .Include(x => x.GroupType)
                 .Include(x => x.Schedule)
+                .Include(x => x.Church)
                 .Where(x => x.ParentGroupId == parentGroupId) // null will start at the root of the tree
                 .Select(GroupProjection(maxDepth))
                 ;
@@ -76,6 +77,7 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
                     .AsNoTracking()
                     .Include(x => x.GroupType)
                     .Include(x => x.Schedule)
+                    .Include(x => x.Church)
                     .Where(x => x.Id == groupId) 
                     .Select(GroupProjection(maxDepth))
                 ;
@@ -151,8 +153,11 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
                 Address = group.Address,
                 StartDate = group.StartDate,
                 ChurchId = group.ChurchId,
+                ChurchName = group.Church!.Name,
                 ParentGroupId = group.ParentGroupId,
-                ParentGroupName = group.ParentGroup.Name,
+                ParentGroupChurchId = group.ParentGroup!.ChurchId,
+                ParentGroupTypeId = group.ParentGroup!.GroupTypeId,
+                ParentGroupName = group.ParentGroup!.Name,
                 IsOnline = group.IsOnline,
                 GroupType = _mapper.Map<GroupTypeViewModel>(group.GroupType),
                 CreatedDate = group.CreatedDate,

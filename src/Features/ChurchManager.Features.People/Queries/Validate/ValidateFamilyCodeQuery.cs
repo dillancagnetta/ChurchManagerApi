@@ -1,11 +1,11 @@
 ﻿using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Communications.Events;
 using ChurchManager.Domain.Features.People.Repositories;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.People.Queries.Validate;
 
@@ -42,17 +42,17 @@ public class RequestFamilyCodeHandler(
         {
             var templateData = new Dictionary<string, string>
             {
-                ["Title"] = person!.FullName.Title,
-                ["FirstName"] = person!.FullName.FirstName,
-                ["LastName"] = person!.FullName.LastName,
-                ["FamilyCode"] = person!.Family.Code,
+                ["Title"] = person!.FullName!.Title!,
+                ["FirstName"] = person!.FullName.FirstName!,
+                ["LastName"] = person!.FullName.LastName!,
+                ["FamilyCode"] = person!.Family!.Code!,
                 ["CreationDate"] = DateTime.UtcNow.ToShortTimeString()
             };
             
             var recipient = new EmailRecipient
             {
                 PersonId = person.Id,
-                EmailAddress = person.Email.Address
+                EmailAddress = person!.Email!.Address!
             };
             
             await publisher.PublishAsync(new SendEmailEvent(

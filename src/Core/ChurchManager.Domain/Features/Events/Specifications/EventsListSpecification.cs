@@ -6,12 +6,12 @@ namespace ChurchManager.Domain.Features.Events.Specifications;
 
 public class EventsListSpecification: PermissionSpecification<Event, EventViewModel>
 {
-    public EventsListSpecification(IEnumerable<int> allowedEventIds = null, 
+    public EventsListSpecification(IEnumerable<int>? allowedEventIds = null, 
         int? eventTypeId = null, 
         int? churchGroupId = null, 
         int? churchId = null, 
-        DateTime? from = null, 
-        DateTime? to = null, 
+        DateOnly? from = null, 
+        DateOnly? to = null, 
         bool? isOnline = null,
         bool? includeDetails = null): base(allowedEventIds)
     {
@@ -47,15 +47,15 @@ public class EventsListSpecification: PermissionSpecification<Event, EventViewMo
             if (from.HasValue && to.HasValue)
             {
                 Query.Where(x => x.Sessions.All(s => 
-                    s.Schedule.StartDate >= from.Value && s.Schedule.EndDate <= to.Value));
+                    s.Schedule!.StartDate >= from.Value && s.Schedule.EndDate <= to.Value));
             }
             else if (from.HasValue)
             {
-                Query.Where(x => x.Sessions.All(s => s.Schedule.StartDate >= from.Value));
+                Query.Where(x => x.Sessions.All(s => s.Schedule!.StartDate >= from.Value));
             }
             else if (to.HasValue)
             {
-                Query.Where(x => x.Sessions.All(s => s.Schedule.EndDate <= to.Value));
+                Query.Where(x => x.Sessions.All(s => s.Schedule!.EndDate <= to.Value));
             }
         }
 

@@ -1,13 +1,14 @@
-﻿using ChurchManager.Domain.Features.Communications;
+﻿using System.Runtime.CompilerServices;
+using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Communications.Repositories;
 using ChurchManager.Domain.Features.Communications.Services;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Communication;
 using ChurchManager.Infrastructure.Shared.Templating;
 using Codeboss.Results;
 using DotLiquid;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Infrastructure.Shared.SMS;
 
@@ -62,7 +63,7 @@ public class SmsOrchestrator(
         }
     }
 
-    public async IAsyncEnumerable<OperationResult<SmsOperationResult>> SendSmsAsync(IEnumerable<SmsMessage> messages, TemplateInfo templateInfo, CancellationToken ct = default)
+    public async IAsyncEnumerable<OperationResult<SmsOperationResult>> SendSmsAsync(IEnumerable<SmsMessage> messages, TemplateInfo templateInfo, [EnumeratorCancellation] CancellationToken ct = default)
     {
         foreach (var message in messages)
         {

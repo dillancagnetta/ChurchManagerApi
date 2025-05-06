@@ -10,11 +10,11 @@ namespace ChurchManager.Features.People.Commands.UpdatePerson
     public record UpdateGeneralInfoCommand : IRequest<Unit>
     {
         public int PersonId { get; set; }
-        public string Occupation { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Email { get; set; }
-        public string MaritalStatus { get; set; }
-        public BirthDate BirthDate { get; set; }
+        public string? Occupation { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? Email { get; set; }
+        public string? MaritalStatus { get; set; }
+        public BirthDate? BirthDate { get; set; }
     }
 
     public class UpdateGeneralInfoCommandHandler : IRequestHandler<UpdateGeneralInfoCommand, Unit>
@@ -30,7 +30,7 @@ namespace ChurchManager.Features.People.Commands.UpdatePerson
         {
             var spec = new PersonWithPhonesSpecification(command.PersonId);
 
-            var person = await _dbRepository.GetBySpecAsync(spec, ct) ??
+            var person = await _dbRepository.FirstOrDefaultAsync(spec, ct) ??
                          throw new ArgumentNullException(nameof(Person));
 
             if (person.PhoneNumbers.Any())

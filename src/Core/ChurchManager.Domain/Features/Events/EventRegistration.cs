@@ -52,18 +52,18 @@ public class EventRegistration : AuditableEntity<int>
     /// </summary>
     public int EventId { get; set; }
 
-    public RegistrationStatus Status { get; set; }
+    public RegistrationStatus Status { get; set; } = string.Empty;
 
     # region Navigation
     
     /// <summary>
     /// The event (id) that this session belongs to.
     /// </summary>
-    public virtual Event Event { get; set; }
+    public virtual Event? Event { get; set; }
     
-    public virtual Person Person { get; set; }
-    public virtual Group Group { get; set; }
-    public virtual Person RegisteredByPerson { get; set; }
+    public virtual Person? Person { get; set; }
+    public virtual Group? Group { get; set; }
+    public virtual Person? RegisteredByPerson { get; set; }
     
     public virtual ICollection<EventSessionRegistration> SessionRegistrations { get; set; } = Enumerable.Empty<EventSessionRegistration>().ToList();
     

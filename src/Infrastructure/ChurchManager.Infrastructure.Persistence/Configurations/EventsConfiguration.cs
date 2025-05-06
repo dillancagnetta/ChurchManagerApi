@@ -45,7 +45,7 @@ public class EventsConfiguration : IEntityTypeConfiguration<Event>
         builder.HasOne(r => r.EventRegistrationGroup)
             .WithMany()
             .HasForeignKey(r => r.EventRegistrationGroupId)
-            .IsRequired(true)
+            .IsRequired(false)
             .OnDelete(DeleteBehavior.SetNull);
         
         builder.HasOne(r => r.ChildCareGroup)

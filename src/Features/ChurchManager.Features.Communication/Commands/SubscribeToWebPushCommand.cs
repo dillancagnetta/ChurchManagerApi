@@ -7,8 +7,8 @@ namespace ChurchManager.Features.Communication.Commands
 {
     public record SubscribeToWebPushCommand(PushSubscription Subscription) : IRequest<Unit>
     {
-        public string Device { get; set; }
-        public string UniqueIdentification { get; set; }
+        public required string Device { get; set; }
+        public required string UniqueIdentification { get; set; }
     }
 
     public record UnsubscribeToWebPushCommand(PushSubscription Subscription) : IRequest<Unit>;

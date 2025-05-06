@@ -1,5 +1,4 @@
-﻿using System.Linq.Dynamic.Core;
-using ChurchManager.Domain.Shared;
+﻿using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using CodeBoss.Extensions;
@@ -7,15 +6,12 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Feature = ChurchManager.Domain.Features.Communications;
 
-using NpgsqlTypes;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
-
 namespace ChurchManager.Features.Communication.Queries;
 
-public record CommunicationTemplatesSelectQuery(): IRequest<ApiResponse>
+public record CommunicationTemplatesSelectQuery: IRequest<ApiResponse>
 {
     public bool IncludeBaseTemplates { get; set; } = false;
-    public List<string> CommunicationTypes { get; set; } = new List<string>();
+    public List<string> CommunicationTypes { get; set; } = [];
 }
 
 public class CommunicationTempatesSelectHandler(

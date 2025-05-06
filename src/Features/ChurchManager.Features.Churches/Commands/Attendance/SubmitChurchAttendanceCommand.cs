@@ -1,5 +1,4 @@
 ﻿using ChurchManager.Domain.Features.Churches;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
@@ -11,7 +10,7 @@ public record SubmitChurchAttendanceCommand : IRequest<ApiResponse>
     public DateTime AttendanceDate { get; set; }
     public int AttendanceTypeId { get; set; }
     public int ChurchId { get; set; }
-    public bool DidNotOccur { get; set; }
+    public bool DidNotOccur { get; set; } = false;
     public string Notes { get; set; } = string.Empty;
     public int? FirstTimerCount { get; set; }
     public int? NewConvertCount { get; set; }

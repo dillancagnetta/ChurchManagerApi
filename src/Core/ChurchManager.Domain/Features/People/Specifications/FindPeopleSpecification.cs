@@ -7,7 +7,7 @@ namespace ChurchManager.Domain.Features.People.Specifications
 {
     public class FindPeopleSpecification : Specification<Person>
     {
-        public FindPeopleSpecification(PersonMatchQuery query, PersonQueryOptions options = null, params string[] includes)
+        public FindPeopleSpecification(PersonMatchQuery query, PersonQueryOptions? options = null, params string[] includes)
         {
             options ??= new PersonQueryOptions();
 

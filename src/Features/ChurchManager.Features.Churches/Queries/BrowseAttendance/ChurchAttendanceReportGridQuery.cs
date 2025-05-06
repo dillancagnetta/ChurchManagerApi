@@ -1,17 +1,17 @@
 ﻿using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.Churches.Specifications;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Churches.Queries.BrowseAttendance;
 
 public record ChurchAttendanceReportGridQuery : IRequest<ApiResponse>
 {
-    public int[] AttendanceTypeIds { get; set; }
+    public int[] AttendanceTypeIds { get; set; } = [];
     public int? ChurchGroupId { get; set; }
-    public int[] ChurchIds { get; set; }
+    public int[] ChurchIds { get; set; } = [];
     public DateTime From { get; set; }
     public DateTime To { get; set; }
 }

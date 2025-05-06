@@ -11,7 +11,7 @@ namespace ChurchManager.DataImporter.Models
         public bool? IsOnline { get; set; }
         public string ParentGroupName { get; set; }
         public string Church { get; set; }
-        public DateTime? StartDate { get; set; }
+        public DateOnly? StartDate { get; set; }
         public string MeetingDay { get; set; }
         public string MeetingTime { get; set; }
 
@@ -22,7 +22,7 @@ namespace ChurchManager.DataImporter.Models
             if (!string.IsNullOrWhiteSpace(import.MeetingDay) &&
                 Enum.TryParse(import.MeetingDay, out DayOfWeek meetingDay))
             {
-                TimeSpan.TryParse(import.MeetingTime, out var meetingTime);
+                TimeOnly.TryParse(import.MeetingTime, out var meetingTime);
 
                 var iCalendarContent =
                     Program.CalendarSerializer.SerializeToString(
@@ -45,7 +45,7 @@ namespace ChurchManager.DataImporter.Models
                 Address = import.Address,
                 ChurchId = churches.FirstOrDefault(x => x.Name == import.Church)?.Id,
                 IsOnline = import.IsOnline,
-                StartDate = import.StartDate,
+                StartDate = import.StartDate?.ToDateTime(TimeOnly.MinValue) ?? DateTimeOffset.UtcNow,
                 GroupTypeId = 1,
                 ParentGroupId = groups?.FirstOrDefault(x => x.Name == import.ParentGroupName)?.Id,
                 Schedule = schedule

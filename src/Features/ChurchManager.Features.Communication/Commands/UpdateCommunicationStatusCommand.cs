@@ -6,7 +6,7 @@ using MediatR;
 
 namespace ChurchManager.Features.Communication.Commands;
 
-public record UpdateCommunicationStatusCommand(int CommunicationId, string Status,  string Note) : IRequest<ApiResponse>;
+public record UpdateCommunicationStatusCommand(int CommunicationId, string Status,  string? Note) : IRequest<ApiResponse>;
 
 public class UpdateCommunicationStatusHandler(ICommunicationDbRepository dbRepository, IAppCurrentUser currentUser)  : IRequestHandler<UpdateCommunicationStatusCommand, ApiResponse>
 {

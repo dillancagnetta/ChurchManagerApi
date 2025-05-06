@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Features.Groups.Queries.GroupAttendanceRecordSubmissions
 {
-    public record GroupAttendanceRecordSubmissionsQuery(int ChurchId, PeriodType PeriodType) : IRequest<ApiResponse>;
+    public record GroupAttendanceRecordSubmissionsQuery(int ChurchId, PeriodType PeriodType = PeriodType.ThisMonth) : IRequest<ApiResponse>;
 
     public class GroupAttendanceRecordSubmissionsHandler : IRequestHandler<GroupAttendanceRecordSubmissionsQuery, ApiResponse>
     {
@@ -51,7 +51,7 @@ namespace ChurchManager.Features.Groups.Queries.GroupAttendanceRecordSubmissions
             var groupLeadersSqlQuery = from b in dbContext.GroupMember
                 .Where(m =>
                     allActiveGroups.Select(x => x.Id).Contains(m.GroupId) &&
-                    m.GroupRole.IsLeader && m.GroupRole.CanEdit && m.GroupRole.CanManageMembers &&
+                    m.GroupRole!.IsLeader && m.GroupRole.CanEdit && m.GroupRole.CanManageMembers &&
                     m.RecordStatus == RecordStatus.Active)
                 select new GroupSubmission(b.GroupId, b.Id, b.Person.FullName.ToString());
 
@@ -97,11 +97,9 @@ namespace ChurchManager.Features.Groups.Queries.GroupAttendanceRecordSubmissions
 
     public class GroupSubmissionComparer : IEqualityComparer<GroupSubmission>
     {
-        public bool Equals(GroupSubmission x, GroupSubmission y)
+        public bool Equals(GroupSubmission? x, GroupSubmission? y)
         {
-            if (x?.GroupId == y?.GroupId) return true;
-
-            return false;
+            return x?.GroupId == y?.GroupId;
         }
 
         public int GetHashCode([DisallowNull] GroupSubmission obj) => obj.GroupId;

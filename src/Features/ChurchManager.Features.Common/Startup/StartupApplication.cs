@@ -1,8 +1,6 @@
-﻿using ChurchManager.Features.Common.Behaviours;
-using ChurchManager.Infrastructure;
+﻿using ChurchManager.Infrastructure;
 using ChurchManager.SharedKernel.Common;
 using CodeBoss.AspNetCore;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -14,9 +12,15 @@ namespace ChurchManager.Features.Common.Startup
     {
         public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
+            /*
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(OpenTelemetryBehavior<,>));
+            */
 
+            /*services.AddWolverine(opts => {
+                opts.Discovery.IncludeType<ValidationMiddleware<CreateOrder>>();
+            });*/
+            
             services.AddAspNetCurrentUser<IAppCurrentUser, AppCurrentUser>();
         }
 

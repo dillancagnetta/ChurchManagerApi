@@ -1,9 +1,9 @@
 ﻿using ChurchManager.Domain.Features.People;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.People.Queries;
 

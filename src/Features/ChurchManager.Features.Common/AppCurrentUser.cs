@@ -19,8 +19,8 @@ namespace ChurchManager.Features.Common
         }
 
         public virtual bool IsAuthenticated => !string.IsNullOrEmpty(Id);
-        public string Id => _principalAccessor.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
-        public string Username => _principalAccessor.Principal.FindFirstValue(ClaimTypeUsername);
+        public string? Id => _principalAccessor.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
+        public string? Username => _principalAccessor.Principal.FindFirstValue(ClaimTypeUsername);
         public int PersonId => CurrentPerson.Value.GetAwaiter().GetResult().PersonId;
 
         /// <summary>

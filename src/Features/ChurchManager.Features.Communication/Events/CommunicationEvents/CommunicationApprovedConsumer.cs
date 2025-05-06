@@ -2,21 +2,21 @@
 using ChurchManager.Domain.Features.Communications.Events;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Repositories;
-using ChurchManager.Domain.Shared;
+using ChurchManager.Infrastructure.Abstractions;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Wolverine;
 
 namespace ChurchManager.Features.Communication.Events.CommunicationEvents;
 
-public class CommunicationApprovedConsumer: IConsumer<CommunicationApprovedEvent>
+public class CommunicationApprovedConsumer: IDomainEventHandler
 {
     private readonly IGenericDbRepository<Domain.Features.Communications.Communication> _dbRepository;
     private readonly IPersonDbRepository _peopleDb;
     public ILogger<CommunicationApprovedConsumer> Logger { get; }
     
-    private readonly Predicate<Email> _isEmailActive = e => e?.IsActive != null && e.IsActive.Value;
+    private readonly Predicate<Email?> _isEmailActive = e => e?.IsActive != null && e.IsActive.Value;
 
     public CommunicationApprovedConsumer(
         IGenericDbRepository<Domain.Features.Communications.Communication> dbRepository,
@@ -28,7 +28,7 @@ public class CommunicationApprovedConsumer: IConsumer<CommunicationApprovedEvent
         Logger = logger;
     }
     
-    public async Task Consume(ConsumeContext<CommunicationApprovedEvent> context)
+    public async Task Handle(CommunicationApprovedEvent message, IMessageContext context, CancellationToken ct)
     {
         Logger.LogInformation("✔️------ CommunicationApprovedEvent event received ------");
         
@@ -37,19 +37,17 @@ public class CommunicationApprovedConsumer: IConsumer<CommunicationApprovedEvent
                 .Include(x => x.Recipients)
                 .Include(x => x.Attachments)
                 .Include(x => x.CommunicationTemplate)
-            .FirstOrDefaultAsync(c => c.Id == context.Message.CommunicationId, context.CancellationToken);
+            .FirstOrDefaultAsync(c => c.Id == message.CommunicationId, ct);
         
         if (communication is not null && communication.Status == CommunicationStatus.Approved.Value)
         {
             if (communication.FutureSendDateTime.HasValue)
             {
-                Uri _queue = new Uri("queue:schedule-communication");
-
-                await context.ScheduleSend<CommunicationScheduledEvent>(_queue,
-                    communication.FutureSendDateTime.Value, new 
-                    {
-                        CommunicationId = context.Message.CommunicationId
-                    }, context.CancellationToken);
+                var dt = communication.FutureSendDateTime.Value;
+                await context.ScheduleAsync<CommunicationScheduledEvent>(
+                    new CommunicationScheduledEvent(message.CommunicationId),
+                    new DateTimeOffset(dt) 
+                    );
             }
             else
             {
@@ -62,21 +60,22 @@ public class CommunicationApprovedConsumer: IConsumer<CommunicationApprovedEvent
                     }
                     else
                     {
-                        var recipients = communication.Recipients.Where(x => x.Status == CommunicationRecipientStatus.Pending.Value);
+                        var recipients = communication.Recipients.Where(x => x.Status == CommunicationRecipientStatus.Pending.Value)
+                            .ToList();
                         var recipientPersonIds = recipients.Select(x => x.PersonId).ToList();
                         var people = await _peopleDb.Queryable()
                             .AsNoTracking()
                             .Where(x => recipientPersonIds.Contains(x.Id))
                             .Select(x => new { x.Id, x.Email })
-                            .ToListAsync(context.CancellationToken);
+                            .ToListAsync(ct);
                         
-                        var peopleWithActiveEmail = people.Where(x => _isEmailActive(x.Email));
+                        var peopleWithActiveEmail = people.Where(x => _isEmailActive(x.Email)).ToList();
 
                         // Set failure status for recipients without active email addresses
                         var peopleWithoutActiveEmails = recipientPersonIds.Except(peopleWithActiveEmail.Select(x => x.Id));
                         foreach (var personWithoutActiveEmail in peopleWithoutActiveEmails)
                         {
-                            var recipient = recipients.FirstOrDefault(x => x.PersonId == personWithoutActiveEmail);
+                            var recipient = recipients.FirstOrDefault(x => x.PersonId == personWithoutActiveEmail)!;
                             recipient.Status = CommunicationRecipientStatus.Failed.Value;
                             recipient.StatusNote = "Email address not found or is not active.";
                         }
@@ -84,54 +83,55 @@ public class CommunicationApprovedConsumer: IConsumer<CommunicationApprovedEvent
                         // Send to recipients with active email addresses
                         foreach (var personWithActiveEmail in peopleWithActiveEmail)
                         {
-                            var recipient = recipients.FirstOrDefault(x => x.PersonId == personWithActiveEmail.Id);
+                            var recipient = recipients.First(x => x.PersonId == personWithActiveEmail.Id);
                             
-                            await context.Publish(new SendEmailToRecipientEvent(
+                            await context.PublishAsync(new SendEmailToRecipientEvent(
                                 communication.Id,
                                 recipient.Id
-                            ), context.CancellationToken);
+                            ));
                         }
                         
                         // Save changes
                         communication.SendDateTime = DateTime.UtcNow;
-                        _dbRepository.SaveChangesAsync();
+                        await _dbRepository.SaveChangesAsync(ct);
                     }  
                 }
                 
                 // SMS
                 if (communication.CommunicationType == CommunicationType.SMS.Value)
                 {
-                    var recipients = communication.Recipients.Where(x => x.Status == CommunicationRecipientStatus.Pending.Value);
+                    var recipients = communication.Recipients.Where(x => x.Status == CommunicationRecipientStatus.Pending.Value)
+                        .ToList();
                     var recipientPersonIds = recipients.Select(x => x.PersonId).ToList();
                     var people = await _peopleDb.Queryable()
                         .Include(x => x.PhoneNumbers)
                         .AsNoTracking()
                         .Where(x => recipientPersonIds.Contains(x.Id))
                         .Select(x => new { x.Id, PhoneNumber = x.PhoneNumbers.FirstOrDefault(x => x.IsMessagingEnabled) })
-                        .ToListAsync(context.CancellationToken);
+                        .ToListAsync(ct);
                     
-                    var peopleWithActiveSms = people.Where(x => x.PhoneNumber != null);
+                    var peopleWithActiveSms = people.Where(x => x.PhoneNumber != null).ToList();
 
                     // Set failure status for recipients without active email addresses
                     var peopleWithoutActiveSms = recipientPersonIds.Except(peopleWithActiveSms.Select(x => x.Id));
                     foreach (var personWithoutActiveEmail in peopleWithoutActiveSms)
                     {
-                        var recipient = recipients.FirstOrDefault(x => x.PersonId == personWithoutActiveEmail);
+                        var recipient = recipients.FirstOrDefault(x => x.PersonId == personWithoutActiveEmail)!;
                         recipient.Status = CommunicationRecipientStatus.Failed.Value;
                         recipient.StatusNote = "Phone number not found that is messaging enabled.";
                     }
                                             
                     // Save changes
                     communication.SendDateTime = DateTime.UtcNow;
-                    _dbRepository.SaveChangesAsync();
+                    await _dbRepository.SaveChangesAsync(ct);
                     
                     // Send to recipients with active sms phone numbers
                     var activeRecipients = recipients.Where(
                         x => peopleWithActiveSms.Select(x => x.Id).Contains(x.PersonId));
-                    await context.Publish(new SendSmsToRecipientsEvent(
+                    await context.PublishAsync(new SendSmsToRecipientsEvent(
                         communication.Id,
                         RecipientIds:activeRecipients.Select(x => x.Id).ToArray()
-                    ), context.CancellationToken);
+                    ));
                 }
             }
         }

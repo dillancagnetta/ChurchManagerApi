@@ -3,9 +3,9 @@
 public record ChurchAttendanceViewModel
 {
     public int Id { get; set; }
-    public string ChurchName { get; set; }
-    public string ChurchGroupName { get; set; }
-    public string AttendanceTypeName { get; set; }
+    public required string ChurchName { get; set; }
+    public required string ChurchGroupName { get; set; }
+    public required string AttendanceTypeName { get; set; }
     public DateTime AttendanceDate { get; set; }
     public bool? DidNotOccur { get; set; }
     public int? AttendanceCount { get; set; }
@@ -13,8 +13,8 @@ public record ChurchAttendanceViewModel
     public int? NewConvertCount { get; set; }
     public int? ReceivedHolySpiritCount { get; set; }
     public double AttendanceRate { get; set; }
-    public string Notes { get; set; }
-    public IEnumerable<string> PhotoUrls { get; set; }
+    public string? Notes { get; set; }
+    public IEnumerable<string>? PhotoUrls { get; set; }
 
     public int? MalesCount { get; set; }
 

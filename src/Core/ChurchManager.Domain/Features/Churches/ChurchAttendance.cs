@@ -28,17 +28,17 @@ namespace ChurchManager.Domain.Features.Churches
         public int? FirstTimerCount { get; set; }
         public int? NewConvertCount { get; set; }
         public int? ReceivedHolySpiritCount { get; set; }
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
         
         /// <summary>
         /// Gets or sets the Id of the photos attached for this attendance
         /// </summary>
-        public List<string> PhotoUrls { get; set; } = new();
+        public List<string> PhotoUrls { get; set; } = [];
 
         #region Navigation
 
-        public virtual ChurchAttendanceType ChurchAttendanceType { get; set; }
-        public virtual Church Church { get; set; }
+        public virtual ChurchAttendanceType? ChurchAttendanceType { get; set; }
+        public virtual Church? Church { get; set; }
 
         #endregion
     }

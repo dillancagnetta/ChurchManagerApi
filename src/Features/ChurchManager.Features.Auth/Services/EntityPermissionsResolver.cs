@@ -1,9 +1,9 @@
 ﻿using ChurchManager.Domain.Features.Security.Services;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Auth.Services;
 

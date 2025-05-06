@@ -29,8 +29,7 @@ public interface ISettingsService: ICrudServiceAsync<Setting, SettingViewModel, 
         int? churchGroupId = null, int? churchId = null , int? personId = null,
         CancellationToken ct = default);
     
-    Task<T> LoadSettingAsync<T>(
-        int? churchGroupId = null, int? churchId = null , int? personId = null,
+    Task<T> LoadSettingAsync<T>(int? churchGroupId = null, int? churchId = null, int? personId = null,
         CancellationToken ct = default) where T : ISettings, new();
     
     /// <summary>

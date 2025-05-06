@@ -1,17 +1,17 @@
 ﻿using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Domain.Parameters;
-using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Churches.Queries.BrowseAttendance;
 
 public record BrowseChurchAttendanceQuery : QueryParameter, IRequest<PagedResponse<ChurchAttendanceViewModel>>
 {
-    public int[] AttendanceTypeIds { get; set; }
+    public int[] AttendanceTypeIds { get; set; } = [];
     public int ChurchId { get; set; }
     public int? ChurchGroupId { get; set; }
-    public bool WithFeedBack { get; set; }
+    public bool WithFeedBack { get; set; } = false;
     public DateTime? From { get; set; }
     public DateTime? To { get; set; }
 }

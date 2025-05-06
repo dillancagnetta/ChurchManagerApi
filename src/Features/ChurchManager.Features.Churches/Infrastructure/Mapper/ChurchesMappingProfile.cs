@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using ChurchManager.Domain.Features.Churches;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Mapper;
 using ChurchViewModel = ChurchManager.Domain.Shared.ChurchViewModel;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Churches.Infrastructure.Mapper;
 
@@ -51,6 +51,8 @@ public class ChurchesMappingProfile : Profile, IAutoMapperProfile
         // EDIT
         CreateMap<EditChurchModel, Church>().ReverseMap();
         CreateMap<EditChurchGroupModel, ChurchGroup>().ReverseMap();
+        
+        CreateMap<ChurchServiceTimeViewModel, ChurchServiceTime>().ReverseMap();
     }
 
     public int Order => 1;

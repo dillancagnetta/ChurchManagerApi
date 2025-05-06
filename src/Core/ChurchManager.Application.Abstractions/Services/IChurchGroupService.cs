@@ -1,6 +1,6 @@
 ﻿using ChurchManager.Domain.Features.Churches;
-using ChurchManager.Domain.Shared;
 using Codeboss.Results;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Application.Abstractions.Services;
 

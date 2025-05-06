@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+﻿/*using FluentValidation;
 using MediatR;
 using ValidationException = ChurchManager.SharedKernel.Exceptions.ValidationException;
 
@@ -30,4 +30,5 @@ namespace ChurchManager.Features.Common.Behaviours
             return await next();
         }
     }
-}
+}*/
+

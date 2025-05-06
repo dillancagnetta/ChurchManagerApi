@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Init_db : Migration
+    public partial class init_db : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,7 +20,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
+                    Description = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -36,12 +38,12 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     IsSystem = table.Column<bool>(type: "boolean", nullable: false),
-                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     LogoFileUrl = table.Column<string>(type: "text", nullable: true),
                     Category = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     Content = table.Column<string>(type: "text", nullable: true),
-                    SupportedTypes = table.Column<string>(type: "text", nullable: true),
+                    SupportedTypes = table.Column<string>(type: "text", nullable: false),
                     IsBaseTemplate = table.Column<bool>(type: "boolean", nullable: false),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -101,7 +103,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     IsSystem = table.Column<bool>(type: "boolean", nullable: false),
                     EntityType = table.Column<string>(type: "text", nullable: true),
-                    EntityIds = table.Column<int[]>(type: "integer[]", nullable: true),
+                    EntityIds = table.Column<int[]>(type: "integer[]", nullable: false),
                     IsDynamicScope = table.Column<bool>(type: "boolean", nullable: false),
                     ScopeType = table.Column<string>(type: "text", nullable: true),
                     ScopeId = table.Column<int>(type: "integer", nullable: true),
@@ -149,7 +151,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
@@ -165,13 +167,13 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    GroupTerm = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    GroupMemberTerm = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    GroupTerm = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    GroupMemberTerm = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     TakesAttendance = table.Column<bool>(type: "boolean", nullable: false),
                     IsSystem = table.Column<bool>(type: "boolean", nullable: false),
-                    IconCssClass = table.Column<string>(type: "text", nullable: true)
+                    IconCssClass = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -220,7 +222,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: true),
                     CssClass = table.Column<string>(type: "text", nullable: true),
-                    IsSystem = table.Column<bool>(type: "boolean", nullable: false),
+                    IsSystem = table.Column<bool>(type: "boolean", nullable: true),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
@@ -237,15 +239,15 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     Description = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    StartDate = table.Column<DateTime>(type: "Date", nullable: true),
-                    EndDate = table.Column<DateTime>(type: "Date", nullable: true),
+                    StartDate = table.Column<DateOnly>(type: "Date", nullable: true),
+                    EndDate = table.Column<DateOnly>(type: "Date", nullable: true),
                     iCalendarContent = table.Column<string>(type: "text", nullable: true),
                     WeeklyDayOfWeek = table.Column<int>(type: "integer", nullable: true),
-                    WeeklyTimeOfDay = table.Column<TimeSpan>(type: "interval", nullable: true),
-                    StartTime = table.Column<TimeSpan>(type: "interval", nullable: true),
-                    EndTime = table.Column<TimeSpan>(type: "interval", nullable: true),
+                    WeeklyTimeOfDay = table.Column<TimeOnly>(type: "time without time zone", nullable: true),
+                    StartTime = table.Column<TimeOnly>(type: "time without time zone", nullable: true),
+                    EndTime = table.Column<TimeOnly>(type: "time without time zone", nullable: true),
                     Frequency = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    Timezone = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Timezone = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
@@ -328,7 +330,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     Order = table.Column<int>(type: "integer", nullable: false),
-                    IconCssClass = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    IconCssClass = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     AllowMultiple = table.Column<bool>(type: "boolean", nullable: false),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -361,7 +363,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     AllowNonFamilyRegistration = table.Column<bool>(type: "boolean", nullable: false),
                     TakesAttendance = table.Column<bool>(type: "boolean", nullable: false),
                     RequiresChildInfo = table.Column<bool>(type: "boolean", nullable: false),
-                    OnlineSupport = table.Column<string>(type: "text", nullable: true),
+                    OnlineSupport = table.Column<string>(type: "text", nullable: false),
                     IsSystem = table.Column<bool>(type: "boolean", nullable: false),
                     IconCssClass = table.Column<string>(type: "text", nullable: true),
                     ChildCare_HasChildCare = table.Column<bool>(type: "boolean", nullable: true),
@@ -507,7 +509,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     NewConvertCount = table.Column<int>(type: "integer", nullable: true),
                     ReceivedHolySpiritCount = table.Column<int>(type: "integer", nullable: true),
                     Notes = table.Column<string>(type: "text", nullable: true),
-                    PhotoUrls = table.Column<List<string>>(type: "text[]", nullable: true),
+                    PhotoUrls = table.Column<List<string>>(type: "text[]", nullable: false),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
@@ -522,6 +524,36 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ChurchAttendance_Church_ChurchId",
+                        column: x => x.ChurchId,
+                        principalTable: "Church",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChurchServiceTime",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ChurchId = table.Column<int>(type: "integer", nullable: false),
+                    ChurchAttendanceTypeId = table.Column<int>(type: "integer", nullable: false),
+                    DayOfWeek = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Time = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ChurchServiceTime", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ChurchServiceTime_ChurchAttendanceType_ChurchAttendanceType~",
+                        column: x => x.ChurchAttendanceTypeId,
+                        principalTable: "ChurchAttendanceType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ChurchServiceTime_Church_ChurchId",
                         column: x => x.ChurchId,
                         principalTable: "Church",
                         principalColumn: "Id",
@@ -590,11 +622,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     FullName_MiddleName = table.Column<string>(type: "text", nullable: true),
                     FullName_LastName = table.Column<string>(type: "text", nullable: true),
                     FullName_Suffix = table.Column<string>(type: "text", nullable: true),
-                    ConnectionStatus = table.Column<string>(type: "text", nullable: true),
+                    ConnectionStatus = table.Column<string>(type: "text", nullable: false),
                     DeceasedStatus_IsDeceased = table.Column<bool>(type: "boolean", nullable: true),
                     DeceasedStatus_DeceasedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    AgeClassification = table.Column<string>(type: "text", nullable: true),
-                    Gender = table.Column<string>(type: "text", nullable: true),
+                    AgeClassification = table.Column<string>(type: "text", nullable: false),
+                    Gender = table.Column<string>(type: "text", nullable: false),
                     BirthDate_BirthDay = table.Column<int>(type: "integer", nullable: true),
                     BirthDate_BirthMonth = table.Column<int>(type: "integer", nullable: true),
                     BirthDate_BirthYear = table.Column<int>(type: "integer", nullable: true),
@@ -651,7 +683,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     Notes = table.Column<string>(type: "text", nullable: true),
                     Offering_Currency = table.Column<string>(type: "character varying(5)", maxLength: 5, nullable: true),
                     Offering_Amount = table.Column<decimal>(type: "numeric", nullable: true),
-                    PhotoUrls = table.Column<List<string>>(type: "text[]", nullable: true),
+                    PhotoUrls = table.Column<List<string>>(type: "text[]", nullable: false),
                     AttendanceReview_IsReviewed = table.Column<bool>(type: "boolean", nullable: true),
                     AttendanceReview_Feedback = table.Column<string>(type: "text", nullable: true),
                     AttendanceReview_ReviewedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -723,7 +755,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Subject = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    CommunicationType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    Category = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    CommunicationType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     ListGroupId = table.Column<int>(type: "integer", nullable: true),
                     CommunicationTemplateId = table.Column<int>(type: "integer", nullable: true),
                     CommunicationContent = table.Column<string>(type: "text", nullable: true),
@@ -731,7 +764,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     IsBulkCommunication = table.Column<bool>(type: "boolean", nullable: false),
                     SendDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     FutureSendDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    Status = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Status = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Review_ReviewerNote = table.Column<string>(type: "text", nullable: true),
                     Review_ReviewedDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Review_ReviewerPersonId = table.Column<int>(type: "integer", nullable: true),
@@ -780,7 +813,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     CompletionDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     StartDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     EndDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    Status = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Status = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Note = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -817,9 +850,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     Type = table.Column<string>(type: "text", nullable: true),
                     AssignedPersonId = table.Column<int>(type: "integer", nullable: false),
                     PersonId = table.Column<int>(type: "integer", nullable: false),
-                    Severity = table.Column<string>(type: "text", nullable: true),
+                    Severity = table.Column<string>(type: "text", nullable: false),
                     Note = table.Column<string>(type: "text", nullable: true),
                     RequiresAdditionalFollowUp = table.Column<bool>(type: "boolean", nullable: true),
+                    AssignedPersonId1 = table.Column<int>(type: "integer", nullable: true),
+                    PersonId1 = table.Column<int>(type: "integer", nullable: true),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -837,11 +872,21 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_FollowUp_Person_AssignedPersonId1",
+                        column: x => x.AssignedPersonId1,
+                        principalTable: "Person",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_FollowUp_Person_PersonId",
                         column: x => x.PersonId,
                         principalTable: "Person",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FollowUp_Person_PersonId1",
+                        column: x => x.PersonId1,
+                        principalTable: "Person",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -856,7 +901,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     FirstVisitDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     ArchiveStatus_IsArchived = table.Column<bool>(type: "boolean", nullable: true),
                     ArchiveStatus_ArchivedDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    CommunicationPreference = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    CommunicationPreference = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
@@ -894,7 +939,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     Type = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     Category = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     Stream = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    IconCssClass = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    IconCssClass = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     StartDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     EndDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     PersonId = table.Column<int>(type: "integer", nullable: true),
@@ -907,7 +952,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     Offering_Currency = table.Column<string>(type: "character varying(5)", maxLength: 5, nullable: true),
                     Offering_Amount = table.Column<decimal>(type: "numeric", nullable: true),
                     Notes = table.Column<string>(type: "text", nullable: true),
-                    PhotoUrls = table.Column<List<string>>(type: "text[]", nullable: true),
+                    PhotoUrls = table.Column<List<string>>(type: "text[]", nullable: false),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -947,7 +992,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     NoteTypeId = table.Column<int>(type: "integer", nullable: false),
                     Text = table.Column<string>(type: "text", nullable: true),
                     Caption = table.Column<string>(type: "text", nullable: true),
-                    IsSystem = table.Column<bool>(type: "boolean", nullable: false),
+                    IsSystem = table.Column<bool>(type: "boolean", nullable: true),
                     PersonId = table.Column<int>(type: "integer", nullable: true),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -980,7 +1025,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     PersonId = table.Column<int>(type: "integer", nullable: false),
                     ConnectionId = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    Status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    Status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     LastOnlineDateTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
@@ -1068,11 +1113,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    Endpoint = table.Column<string>(type: "text", nullable: true),
-                    P256DH = table.Column<string>(type: "text", nullable: true),
-                    Auth = table.Column<string>(type: "text", nullable: true),
-                    UniqueIdentification = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Endpoint = table.Column<string>(type: "text", nullable: false),
+                    P256DH = table.Column<string>(type: "text", nullable: false),
+                    Auth = table.Column<string>(type: "text", nullable: false),
+                    UniqueIdentification = table.Column<string>(type: "text", nullable: false),
                     PersonId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -1092,7 +1137,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Username = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Password = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                    Password = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
                     RefreshToken = table.Column<string>(type: "text", nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     PersonId = table.Column<int>(type: "integer", nullable: false),
@@ -1124,14 +1169,16 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     ChurchId = table.Column<int>(type: "integer", nullable: true),
                     ChurchGroupId = table.Column<int>(type: "integer", nullable: true),
                     ChildCareGroupId = table.Column<int>(type: "integer", nullable: true),
-                    EventRegistrationGroupId = table.Column<int>(type: "integer", nullable: false),
+                    EventRegistrationGroupId = table.Column<int>(type: "integer", nullable: true),
                     ContactPersonId = table.Column<int>(type: "integer", nullable: false),
                     ContactEmail = table.Column<string>(type: "character varying(75)", maxLength: 75, nullable: true),
                     ContactPhone = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     Review_ReviewerNote = table.Column<string>(type: "text", nullable: true),
                     Review_ReviewedDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     Review_ReviewerPersonId = table.Column<int>(type: "integer", nullable: true),
-                    ApprovalStatus = table.Column<string>(type: "text", nullable: true),
+                    RegistrationDates_StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    RegistrationDates_EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    ApprovalStatus = table.Column<string>(type: "text", nullable: false),
                     Capacity = table.Column<int>(type: "integer", nullable: true),
                     Location = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
@@ -1223,7 +1270,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CommunicationId = table.Column<int>(type: "integer", nullable: false),
                     PersonId = table.Column<int>(type: "integer", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<string>(type: "text", nullable: false),
                     StatusNote = table.Column<string>(type: "text", nullable: true),
                     SendDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     OpenedDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
@@ -1306,7 +1353,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     IsRead = table.Column<bool>(type: "boolean", nullable: false),
                     SendWebPush = table.Column<bool>(type: "boolean", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<string>(type: "text", nullable: false),
                     LastError = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true)
                 },
                 constraints: table =>
@@ -1366,7 +1413,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     RegisteredByPersonId = table.Column<int>(type: "integer", nullable: true),
                     GroupId = table.Column<int>(type: "integer", nullable: true),
                     EventId = table.Column<int>(type: "integer", nullable: false),
-                    Status = table.Column<string>(type: "text", nullable: true),
+                    Status = table.Column<string>(type: "text", nullable: false),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: true),
                     InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -1408,7 +1455,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Capacity = table.Column<int>(type: "integer", nullable: true),
                     AttendanceRequired = table.Column<bool>(type: "boolean", nullable: false),
@@ -1417,7 +1464,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     ScheduleId = table.Column<int>(type: "integer", nullable: false),
                     Location = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     Notes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    OnlineSupport = table.Column<string>(type: "text", nullable: true),
+                    OnlineSupport = table.Column<string>(type: "text", nullable: false),
                     OnlineMeetingUrl = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     IsCancelled = table.Column<bool>(type: "boolean", nullable: false),
                     CancellationReason = table.Column<string>(type: "text", nullable: true),
@@ -1510,6 +1557,16 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 name: "IX_ChurchGroup_LeaderPersonId",
                 table: "ChurchGroup",
                 column: "LeaderPersonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ChurchServiceTime_ChurchAttendanceTypeId",
+                table: "ChurchServiceTime",
+                column: "ChurchAttendanceTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ChurchServiceTime_ChurchId",
+                table: "ChurchServiceTime",
+                column: "ChurchId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Communication_CommunicationTemplateId",
@@ -1730,9 +1787,19 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 column: "AssignedPersonId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FollowUp_AssignedPersonId1",
+                table: "FollowUp",
+                column: "AssignedPersonId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FollowUp_PersonId",
                 table: "FollowUp",
                 column: "PersonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FollowUp_PersonId1",
+                table: "FollowUp",
+                column: "PersonId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Group_ChurchId",
@@ -2091,6 +2158,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "ChurchAttendance");
+
+            migrationBuilder.DropTable(
+                name: "ChurchServiceTime");
 
             migrationBuilder.DropTable(
                 name: "CommunicationAttachment");

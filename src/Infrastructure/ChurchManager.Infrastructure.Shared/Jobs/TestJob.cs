@@ -13,12 +13,12 @@ public class TestJob(IServiceJobRepository repository, ILogger<CodeBossJob> logg
     {
         var jobParams = ServiceJob?.JobParameters;
         
-        Console.Out.WriteLineAsync($"Hello from Job: [{nameof(TestJob)}]! at [{DateTime.Now}]" +
+        await Console.Out.WriteLineAsync($"Hello from Job: [{nameof(TestJob)}]! at [{DateTime.Now}]" +
                                    $", has {jobParams.Count} parameters. [GroupId: {jobParams["groupId"]}]");
         
        
 
-        UpdateLastStatusMessage($"Run at [{DateTime.Now}]");
+        await UpdateLastStatusMessage($"Run at [{DateTime.Now}]");
 
         //await repository.SaveChangesAsync(ct);
     }

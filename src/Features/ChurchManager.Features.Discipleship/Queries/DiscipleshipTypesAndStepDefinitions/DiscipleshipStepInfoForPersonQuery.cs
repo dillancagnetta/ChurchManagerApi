@@ -27,7 +27,7 @@ namespace ChurchManager.Features.Discipleship.Queries.DiscipleshipTypesAndStepDe
         public async Task<ApiResponse> Handle(DiscipleshipStepInfoForPersonQuery query, CancellationToken ct)
         {
             var vm =
-                await _dbRepository.DiscipleshipStepInfoForPersonAsync(query.PersonId.Value,
+                await _dbRepository.DiscipleshipStepInfoForPersonAsync(query.PersonId!.Value,
                     query.DiscipleshipStepDefinitionId, ct);
 
             return new ApiResponse(vm);

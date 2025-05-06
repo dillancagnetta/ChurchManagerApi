@@ -4,7 +4,6 @@ using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using CodeBoss.MultiTenant;
 using DotLiquid.Util;
-using MassTransit.Initializers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,8 +12,8 @@ namespace ChurchManager.Features.UserLogins.Commands.AddUserLogin;
 public record AddOrUpdateUserLoginCommand : IRequest<ApiResponse>
 {
     public int PersonId { get; set; }
-    public string Password { get; set; }
-    public List<int> UserLoginRoleIds { get; set; } = new(0); // RoleIds
+    public string? Password { get; set; }
+    public List<int> UserLoginRoleIds { get; set; } = []; // RoleIds
 }
 
 public class AddUserLoginHandler : IRequestHandler<AddOrUpdateUserLoginCommand, ApiResponse>
@@ -86,9 +85,9 @@ public class AddUserLoginHandler : IRequestHandler<AddOrUpdateUserLoginCommand, 
             {
                 PersonId = command.PersonId,
                 Tenant = _tenantCurrentUser.Tenant,
-                Username = person.Email.IsTruthy() && person.Email.IsActive.IsTruthy() 
+                Username = person.Email.IsTruthy() && person.Email!.IsActive.IsTruthy() 
                     ? person.Email.Address 
-                    : $"{person.FullName.FirstName}.{person.FullName.LastName}",
+                    : $"{person!.FullName.FirstName}.{person.FullName.LastName}",
                 Password = BCrypt.Net.BCrypt.HashPassword(command.Password),
                 UserRoles = command.UserLoginRoleIds.Select(roleId => new UserRoleAssignment
                 {
@@ -111,8 +110,10 @@ public class AddUserLoginHandler : IRequestHandler<AddOrUpdateUserLoginCommand, 
             var role = await _roleRepository
                 .Queryable()
                 .AsNoTracking()
-                .FirstOrDefaultAsync(r => r.Id == roleId, ct)
-                .Select(x => x.Id);
+                .Where(r => r.Id == roleId)
+                .Select(x => x.Id)
+                .FirstOrDefaultAsync(ct)
+               ;
 
             if (role != 0) roles.Add(role);
   

@@ -1,10 +1,10 @@
 ﻿using ChurchManager.Domain.Features.Missions;
 using ChurchManager.Domain.Features.Missions.Specifications;
 using ChurchManager.Domain.Parameters;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Missions.Queries.BrowseMissions
 {
@@ -13,9 +13,9 @@ namespace ChurchManager.Features.Missions.Queries.BrowseMissions
         public int? PersonId { get; set; }
         public int? GroupId { get; set; }
         public int? ChurchId { get; set; }
-        public string[] Types { get; set; }
-        public string[] Categories { get; set; }
-        public string[] Streams { get; set; }
+        public string[] Types { get; set; } = [];
+        public string[] Categories { get; set; } = [];
+        public string[] Streams { get; set; } = [];
         public DateTime? From { get; set; }
         public DateTime? To { get; set; }
     

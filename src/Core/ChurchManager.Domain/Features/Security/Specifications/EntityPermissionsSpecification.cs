@@ -1,15 +1,15 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Common.Extensions;
-using ChurchManager.Domain.Shared;
 using CodeBoss.Extensions;
 using Microsoft.EntityFrameworkCore;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Domain.Features.Security.Specifications;
 
 public class EntityPermissionsSpecification : Specification<EntityPermission, PermissionViewModel>
 {
-    public EntityPermissionsSpecification(IEnumerable<int> excludeIds = null, int? UserLoginRoleId = null)
+    public EntityPermissionsSpecification(IEnumerable<int>? excludeIds = null, int? UserLoginRoleId = null)
     {
         Query
             .AsNoTracking()

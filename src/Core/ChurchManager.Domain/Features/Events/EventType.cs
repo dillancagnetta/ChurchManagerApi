@@ -12,28 +12,25 @@ namespace ChurchManager.Domain.Features.Events;
 
 public class EventType: AuditableEntity<int>, IAggregateRoot<int>
 {
-    [Key]
-    public int Id { get; set; }
-    
     [MaxLength(50)]
-    public string Name { get; set; }
+    public string? Name { get; set; }
     
     [MaxLength(100)]
-    public string Description { get; set; }
+    public string? Description { get; set; }
     
     public bool RequiresRegistration { get; set; }
     public bool AllowFamilyRegistration { get; set; }
     public bool AllowNonFamilyRegistration { get; set; }
     public bool TakesAttendance { get; set; }
     public bool RequiresChildInfo { get; set; }
-    
-    public OnlineSupport OnlineSupport { get; set; } 
+
+    public OnlineSupport OnlineSupport { get; set; } = OnlineSupport.Unknown;
     
     public bool IsSystem { get; set; } = false;
 
-    public string IconCssClass { get; set; } = "heroicons_solid:academic-cap";
+    public string? IconCssClass { get; set; } = "heroicons_solid:academic-cap";
 
-    public ChildCare ChildCare { get; set; }
+    public ChildCare? ChildCare { get; set; }
 
     public AgeClassification? AgeClassification { get; set; }
     
@@ -41,7 +38,7 @@ public class EventType: AuditableEntity<int>, IAggregateRoot<int>
 
     #region Navigation
 
-    public virtual GroupType DefaultGroupType { get; set; }
+    public virtual GroupType? DefaultGroupType { get; set; }
     public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 
     #endregion

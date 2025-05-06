@@ -1,15 +1,15 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Domain.Specifications;
 using CodeBoss.Extensions;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Domain.Features.Security.Specifications;
 
 public class UserLoginsSpecification : PermissionSpecification<UserLogin, UserLoginViewModel>
 {
-    public UserLoginsSpecification(string searchTerm, IEnumerable<int> allowedIds = null)
+    public UserLoginsSpecification(string searchTerm, IEnumerable<int>? allowedIds = null)
         : base(allowedIds)
     {
         Query.AsNoTracking();
@@ -31,17 +31,17 @@ public class UserLoginsSpecification : PermissionSpecification<UserLogin, UserLo
             Id = x.Id,
             Username = x.Username,
             RecordStatus = x.RecordStatus.ToString(),
-            Person = Person.ToBasicPerson(x.Person),
+            Person = Person.ToBasicPerson(x.Person!),
             Roles = x.UserRoles.Select(ur => new UserLoginRoleViewModel
             {
-                Id = ur.Role.Id,
-                Name = ur.Role.Name,
+                Id = ur.Role!.Id,
+                Name = ur.Role!.Name!,
                 Description = ur.Role.Description,
                 IsSystem = ur.Role.IsSystem,
                 RecordStatus = ur.Role.RecordStatus.ToString(),
                 Permissions = ur.Role.PermissionAssignments.Select(pa => new PermissionViewModel
                 {
-                    Id = pa.Permission.Id,
+                    Id = pa.Permission!.Id,
                     IsDynamicScope = pa.Permission.IsDynamicScope,
                     EntityType = pa.Permission.EntityType,
                     ScopeType = pa.Permission.ScopeType,

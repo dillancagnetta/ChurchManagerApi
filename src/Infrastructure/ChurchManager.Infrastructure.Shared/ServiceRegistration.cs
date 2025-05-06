@@ -20,7 +20,7 @@ namespace ChurchManager.Infrastructure.Shared
 
             services.AddSingleton<ITokenService, TokenService>();
 
-            services.AddScoped<IDomainEventPublisher, MassTransitDomainEventPublisher>();
+            services.AddScoped<IDomainEventPublisher, WolverineRabbitMqDomainEventPublisher>();
             
             services.AddDistributedMemoryCache();
 

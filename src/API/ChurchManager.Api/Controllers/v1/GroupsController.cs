@@ -99,13 +99,20 @@ namespace ChurchManager.Api.Controllers.v1
         }
 
         [HttpGet("{groupId}/tree")]
-        public async Task<IActionResult> GetGroupWithChildrenTree(int groupId, CancellationToken token)
+        public async Task<IActionResult> GetGroupWithChildrenTree(int groupId, [FromQuery] int maxDepth = 2, CancellationToken token = default)
         {
-            return Ok(await Mediator.Send(new GroupWithChildrenQuery(groupId), token));
+            return Ok(await Mediator.Send(new GroupWithChildrenQuery(groupId, maxDepth), token));
         }
 
         [HttpPost("{groupId}/add-member")]
         public async Task<IActionResult> AddGroupMember([FromBody] AddGroupMemberCommand command,
+            CancellationToken token)
+        {
+            return Ok(await Mediator.Send(command, token));
+        }
+        
+        [HttpPost("{groupId}/add-members")]
+        public async Task<IActionResult> AddGroupMembers([FromBody] AddGroupMembersCommand command,
             CancellationToken token)
         {
             return Ok(await Mediator.Send(command, token));

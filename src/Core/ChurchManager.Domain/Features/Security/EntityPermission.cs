@@ -41,14 +41,14 @@ public class EntityPermission : AuditableEntity<int>, IAggregateRoot<int>
     public bool IsSystem { get; set; }
     
     // What entity this permission is for
-    public string EntityType { get; set; }
+    public new string? EntityType { get; set; }
     
     // Explicit IDs (can be null if using dynamic scope)
-    public ICollection<int> EntityIds { get; set; }
+    public ICollection<int> EntityIds { get; set; } = [];
     
     // Dynamic scope properties
     public bool IsDynamicScope { get; set; }
-    public string ScopeType { get; set; }  // e.g., "ChurchGroup", "Church"
+    public string? ScopeType { get; set; }  // e.g., "ChurchGroup", "Church"
     public int? ScopeId { get; set; }       // e.g., ChurchGroupId or ChurchId
     
     // Permissions

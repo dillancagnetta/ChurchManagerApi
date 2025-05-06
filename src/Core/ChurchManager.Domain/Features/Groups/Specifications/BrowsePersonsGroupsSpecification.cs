@@ -51,14 +51,14 @@ namespace ChurchManager.Domain.Features.Groups.Specifications
                 Name = x.Name,
                 Description = x.Description,
                 ParentGroupId = x.ParentGroupId,
-                GroupType = x.GroupType.Name,
-                GroupRole = x.Members.First(m => m.PersonId == personId).GroupRole.Name,
+                GroupType = x.GroupType!.Name,
+                GroupRole = x.Members.First(m => m.PersonId == personId).GroupRole!.Name!,
                 RecordStatus = x.RecordStatus.ToString(),
                 TakesAttendance = x.GroupType.TakesAttendance,
-                IsLeader = x.Members.First(m => m.PersonId == personId).GroupRole.IsLeader,
-                CanEdit = x.Members.First(m => m.PersonId == personId).GroupRole.CanEdit,
-                CanView = x.Members.First(m => m.PersonId == personId).GroupRole.CanView,
-                CanManageMembers = x.Members.First(m => m.PersonId == personId).GroupRole.CanManageMembers,
+                IsLeader = x.Members.First(m => m.PersonId == personId).GroupRole!.IsLeader,
+                CanEdit = x.Members.First(m => m.PersonId == personId).GroupRole!.CanEdit,
+                CanView = x.Members.First(m => m.PersonId == personId).GroupRole!.CanView,
+                CanManageMembers = x.Members.First(m => m.PersonId == personId).GroupRole!.CanManageMembers,
                 MembersCount = x.Members.Count(m => m.RecordStatus == RecordStatus.Active)
             });
         }

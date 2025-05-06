@@ -9,7 +9,7 @@ namespace ChurchManager.Features.People.Commands.AddPersonToFamily
 {
     public record AddPersonToFamilyCommand : IRequest<Unit>
     {
-        public FamilyMember FamilyMember { get; set; }
+        public FamilyMember FamilyMember { get; set; } = new();
     }
 
     public class AddPersonToFamilyHandler : IRequestHandler<AddPersonToFamilyCommand, Unit>
@@ -49,8 +49,8 @@ namespace ChurchManager.Features.People.Commands.AddPersonToFamily
                     ? new Email { Address = member.Person.EmailAddress, IsActive = true }
                     : null,
                 PhoneNumbers = !member.Person.PhoneNumber.IsNullOrEmpty()
-                    ? new List<PhoneNumber> { new() { CountryCode = "+27", Number = member.Person.PhoneNumber } }
-                    : null,
+                    ? new List<PhoneNumber> { new() { CountryCode = "+27", Number = member!.Person.PhoneNumber } }
+                    : [],
                 Source = member.Source,
                 FamilyId = member.FamilyId,  // Assign to the family
             };

@@ -18,9 +18,9 @@ public class EventSessionRegistration : AuditableEntity<int>
     public bool? AttendingInPerson { get; set; }
     
     // Navigation Properties
-    public virtual EventRegistration EventRegistration { get; set; }
-    public virtual EventSession EventSession { get; set; }
+    public virtual EventRegistration? EventRegistration { get; set; }
+    public virtual EventSession? EventSession { get; set; }
     
-    public virtual Person Person { get; set; }  // Added navigation property
+    public virtual Person? Person { get; set; }  // Added navigation property
 
 }

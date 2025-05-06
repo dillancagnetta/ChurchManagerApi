@@ -3,12 +3,12 @@ using ChurchManager.Application.ViewModels;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.Groups;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Mapper;
 using Convey.CQRS.Queries;
 using GroupMemberViewModel = ChurchManager.Domain.Shared.GroupMemberViewModel;
 using GroupTypeViewModel = ChurchManager.Domain.Shared.GroupTypeViewModel;
 using GroupViewModel = ChurchManager.Domain.Shared.GroupViewModel;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Groups.Infrastructure.Mapper
 {
@@ -18,8 +18,8 @@ namespace ChurchManager.Features.Groups.Infrastructure.Mapper
         {
             CreateMap<Group, GroupSummaryViewModel>()
                 .ForMember(d => d.GroupId, opt => opt.MapFrom(src => src.Id))
-                .ForMember(d => d.GroupType, opt => opt.MapFrom(src => src.GroupType.Name))
-                .ForMember(d => d.TakesAttendance, opt => opt.MapFrom(src => src.GroupType.TakesAttendance))
+                .ForMember(d => d.GroupType, opt => opt.MapFrom(src => src.GroupType!.Name))
+                .ForMember(d => d.TakesAttendance, opt => opt.MapFrom(src => src.GroupType!.TakesAttendance))
                 .ForMember(d => d.MembersCount, opt => opt.MapFrom(src => src.Members.Count))
                 ;
 
@@ -37,16 +37,16 @@ namespace ChurchManager.Features.Groups.Infrastructure.Mapper
             CreateMap<GroupMemberAttendance, GroupMemberAttendanceViewModel>().ReverseMap();
             CreateMap<GroupMember, GroupMemberViewModel>()
                 .ForMember(dest => dest.GroupMemberId, opt => opt.MapFrom(src => src.Id))
-                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Person.FullName.FirstName))
-                .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => src.Person.FullName.MiddleName))
-                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Person.FullName.LastName))
-                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Person.Gender))
-                .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.Person.PhotoUrl))
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.Person!.FullName!.FirstName))
+                .ForMember(dest => dest.MiddleName, opt => opt.MapFrom(src => src.Person!.FullName!.MiddleName))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.Person!.FullName!.LastName))
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Person!.Gender))
+                .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.Person!.PhotoUrl))
                 ;
 
             CreateMap<GroupAttendance, GroupAttendanceDetailViewModel>()
                 .ForMember(d => d.GroupName,
-                    opt => opt.MapFrom(src => src.Group.Name))
+                    opt => opt.MapFrom(src => src.Group!.Name))
                 .ForMember(dest => dest.Attendees, opt => opt.MapFrom(src => src.Attendees));
 
             CreateMap<Schedule, ScheduleViewModel>()

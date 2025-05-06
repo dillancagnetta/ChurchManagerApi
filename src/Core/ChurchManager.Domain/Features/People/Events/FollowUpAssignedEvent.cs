@@ -1,11 +1,11 @@
-﻿using ChurchManager.Domain.Shared;
+﻿using ChurchManager.Infrastructure.Abstractions;
 
 namespace ChurchManager.Domain.Features.People.Events
 {
     public record FollowUpAssignedEvent(int PersonId, int AssignedFollowUpPersonId) : IDomainEvent
     {
-        public string Type { get; set; }
-        public string UserLoginId { get; set; }
+        public string? Type { get; set; }
+        public string? UserLoginId { get; set; }
         public bool SendEmail { get; set; } = true;
     }
 }

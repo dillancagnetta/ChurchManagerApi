@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ChurchManager.Domain;
+using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Discipleship;
 using ChurchManager.Domain.Features.Discipleship.Specifications;
 using ChurchManager.Domain.Parameters;
@@ -12,7 +13,7 @@ namespace ChurchManager.Features.Discipleship.Queries.DiscipleshipTypesAndStepDe
     public record BrowseDiscipleshipStepParticipantsQuery : SearchTermQueryParameter, IRequest<PagedResponse<DiscipleshipStepViewModel>>
     {
         public int DiscipleshipStepDefinitionId { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } = RecordStatus.Active.Value;
         public DateTime? To { get; set; }
         public DateTime? From { get; set; }
     };

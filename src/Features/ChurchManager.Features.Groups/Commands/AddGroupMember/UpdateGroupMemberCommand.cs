@@ -10,9 +10,9 @@ namespace ChurchManager.Features.Groups.Commands.AddGroupMember
         public int GroupMemberId { get; set; }
         public int PersonId { get; set; }
         public int GroupRoleId { get; set; }
-        public string CommunicationPreference { get; set; }
+        public string CommunicationPreference { get; set; } = Domain.Features.Communications.CommunicationType.None.Value;
         public DateTime? FirstVisitDate { get; set; }
-        public string RecordStatus { get; set; }
+        public string RecordStatus { get; set; } = Domain.Common.RecordStatus.Active.Value;
     }
 
     public class GroupMemberUpdatedHandler : IRequestHandler<UpdateGroupMemberCommand, ApiResponse>

@@ -42,8 +42,8 @@ namespace ChurchManager.Domain.Features.Discipleship.Specifications
                     Person = new PersonViewModelBasic
                     {
                         PersonId = step.PersonId,
-                        FirstName = step.Person.FullName.FirstName,
-                        LastName = step.Person.FullName.LastName,
+                        FirstName = step.Person!.FullName!.FirstName!,
+                        LastName = step.Person.FullName.LastName!,
                         Gender = step.Person.Gender,
                         AgeClassification = step.Person.AgeClassification,
                         PhotoUrl = step.Person.PhotoUrl,

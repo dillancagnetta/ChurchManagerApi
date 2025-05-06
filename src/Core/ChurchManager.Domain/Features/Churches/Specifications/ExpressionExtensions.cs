@@ -9,9 +9,9 @@ public static class ExpressionExtensions
         new ChurchAttendanceViewModel
         {
             Id = x.Id,
-            ChurchName = x.Church.Name,
-            ChurchGroupName = x.Church.ChurchGroup.Name,
-            AttendanceTypeName = x.ChurchAttendanceType.Name,
+            ChurchName = x.Church!.Name,
+            ChurchGroupName = x.Church.ChurchGroup!.Name,
+            AttendanceTypeName = x.ChurchAttendanceType!.Name,
             AttendanceDate = x.AttendanceDate,
             DidNotOccur = x.DidNotOccur,
             AttendanceCount = x.AttendanceCount,

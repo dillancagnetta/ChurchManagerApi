@@ -8,7 +8,7 @@ public record BulkSmsRequest
     public string Body { get; set; }
 
     [JsonPropertyName("to")]
-    public List<string> To { get; set; } = new List<string>();
+    public List<string> To { get; set; } = [];
 }
 
 

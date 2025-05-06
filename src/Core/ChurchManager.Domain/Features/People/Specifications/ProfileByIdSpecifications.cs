@@ -2,7 +2,7 @@
 
 namespace ChurchManager.Domain.Features.People.Specifications
 {
-    public class ProfileByUserLoginSpecification : Specification<Person>, ISingleResultSpecification
+    public class ProfileByUserLoginSpecification : Specification<Person>, ISingleResultSpecification<Person>
     {
         public ProfileByUserLoginSpecification(string userLoginId)
         {
@@ -15,7 +15,7 @@ namespace ChurchManager.Domain.Features.People.Specifications
         }
     }
 
-    public class ProfileByPersonSpecification : Specification<Person>, ISingleResultSpecification
+    public class ProfileByPersonSpecification : Specification<Person>, ISingleResultSpecification<Person>
     {
         public ProfileByPersonSpecification(int personId, bool condensed = false)
         {

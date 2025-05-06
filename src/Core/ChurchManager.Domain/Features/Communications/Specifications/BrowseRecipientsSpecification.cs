@@ -9,7 +9,7 @@ namespace ChurchManager.Domain.Features.Churches.Specifications;
 
 public class BrowseRecipientsSpecification : Specification<Communication, CommunicationRecipientViewModel>
 {
-   public BrowseRecipientsSpecification(IPagedQuery paging, int communicationId, string status = null, int? personId = null)
+   public BrowseRecipientsSpecification(IPagedQuery paging, int communicationId, string? status = null, int? personId = null)
    {
       Query.AsNoTracking();
       Query.Include(x => x.Recipients);
@@ -40,8 +40,8 @@ public class BrowseRecipientsSpecification : Specification<Communication, Commun
          RecipientPerson = new PersonViewModelBasic
          {
             PersonId = x.PersonId,
-            FirstName = x.RecipientPerson.FullName.FirstName,
-            LastName = x.RecipientPerson.FullName.LastName,
+            FirstName = x.RecipientPerson!.FullName!.FirstName!,
+            LastName = x.RecipientPerson!.FullName!.LastName!,
             Gender = x.RecipientPerson.Gender,
             AgeClassification = x.RecipientPerson.AgeClassification,
             PhotoUrl = x.RecipientPerson.PhotoUrl,

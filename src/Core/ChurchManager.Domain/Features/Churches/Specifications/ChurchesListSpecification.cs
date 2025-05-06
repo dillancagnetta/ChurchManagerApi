@@ -1,7 +1,7 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Features.People;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Domain.Specifications;
+using ChurchManager.Domain.Shared;
 using CodeBoss.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +9,7 @@ namespace ChurchManager.Domain.Features.Churches.Specifications;
 
 public class ChurchesListSpecification: PermissionSpecification<Church, ChurchViewModel>
 {
-    public ChurchesListSpecification(IEnumerable<int> allowedChurchIds = null, string searchTerm = null, int? churchGroupId = null): base(allowedChurchIds)
+    public ChurchesListSpecification(IEnumerable<int>? allowedChurchIds = null, string? searchTerm = null, int? churchGroupId = null): base(allowedChurchIds)
     {
         // Only apply permission filter if allowedIds is not null
         // If null, user is system admin and has unrestricted access
@@ -46,7 +46,7 @@ public class ChurchesListSpecification: PermissionSpecification<Church, ChurchVi
             Name = x.Name,  
             Description = x.Description,
             ShortCode = x.ShortCode,
-            LeaderPerson = x.LeaderPersonId.HasValue ? Person.ToBasicPerson(x.LeaderPerson) : null
+            LeaderPerson = x.LeaderPersonId.HasValue ? Person.ToBasicPerson(x.LeaderPerson!) : null
         });
     }
 }

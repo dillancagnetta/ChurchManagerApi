@@ -4,7 +4,7 @@ using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 
-namespace ChurchManager.Features.Churches.Commands.AddChurchGroup;
+namespace ChurchManager.Features.Churches.Commands.ChurchGroups;
 
 public record AddChurchGroupCommand(string Name, string Description, int? LeaderPersonId) : IRequest<ApiResponse>;
 

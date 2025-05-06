@@ -12,16 +12,18 @@ namespace ChurchManager.Domain.Features.Churches
     {
         public int ChurchGroupId { get; set; }
         [Required, MaxLength(50)]
-        public string Name { get; set; }
+        public required string Name { get; set; }
         [MaxLength(100)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
         [MaxLength(50)]
-        public string ShortCode { get; set; }
+        public string? ShortCode { get; set; }
         [MaxLength(50)]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
         [MaxLength(200)]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
+        public ICollection<ChurchServiceTime> ServiceTimes { get; set; } = [];
+        
         /// <summary>
         /// Gets or sets the Id of the <see cref="Person"/> that is the leader of the Church.
         /// </summary>
@@ -33,9 +35,9 @@ namespace ChurchManager.Domain.Features.Churches
         /// Gets or sets  the <see cref="ChurchGroup">ChurchGroup</see> that this Church may belong to
         /// Note that this does not include Archived GroupMembers
         /// </summary>
-        public virtual ChurchGroup ChurchGroup { get; set; }
+        public virtual ChurchGroup? ChurchGroup { get; set; }
         
-        public virtual Person LeaderPerson { get; set; }
+        public virtual Person? LeaderPerson { get; set; }
 
         #endregion
     }

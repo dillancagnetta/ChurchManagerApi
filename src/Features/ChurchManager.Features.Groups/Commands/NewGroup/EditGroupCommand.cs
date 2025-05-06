@@ -9,6 +9,7 @@ using Ical.Net.DataTypes;
 using Ical.Net.Serialization;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Groups.Commands.NewGroup
 {
@@ -33,65 +34,69 @@ namespace ChurchManager.Features.Groups.Commands.NewGroup
             var group = await _dbRepository.Queryable("GroupType", "Schedule")
                 .SingleOrDefaultAsync(x => x.Id == command.GroupId, ct);
 
-            var weeklyTimeOfDay = TimeSpan.Parse(command.MeetingTime);
-
-            //Repeat daily for 5 days
-            var rrule = new RecurrencePattern(command.Recurrence);
-            var days = rrule.ByDay;
-
-            var e = new CalendarEvent
-            {
-                Start = command.Start.HasValue
-                    ? new CalDateTime(command.Start.Value.Year, command.Start.Value.Month, command.Start.Value.Day,
-                        weeklyTimeOfDay.Hours, weeklyTimeOfDay.Minutes, weeklyTimeOfDay.Seconds)
-                    : CalDateTime.Today,
-                End = command.End.HasValue ? new CalDateTime(command.End.Value) : CalDateTime.Today.AddYears(5),
-                RecurrenceRules = new List<RecurrencePattern> { rrule }
-            };
-
-            var calendar = new Calendar();
-            calendar.Events.Add(e);
-
-            var serializer = new CalendarSerializer();
-            var serializedCalendar = serializer.SerializeToString(calendar);
-
             group.Name = command.Name;
             group.Description = command.Description;
             group.GroupTypeId = command.GroupTypeId;
-            group.ChurchId = command.ParentChurchGroup.ChurchId;
-            /*group.ParentGroupId = command.ParentChurchGroup.GroupId is DomainConstants.Groups.NoParentGroupId
+            group.ChurchId = command.ChurchId;
+            group.ParentGroupId = command.ParentGroup.GroupId is DomainConstants.Groups.NoParentGroupId
                 ? null
-                : command.ParentChurchGroup.GroupId;*/
+                : command.ParentGroup.GroupId;
             group.Address = command.Address;
             group.IsOnline = command.IsOnline;
-            // Update schedule
-            var schedule = group.Schedule;
-            if (schedule == null)
+
+            if (command.MeetingTime is not null && !command.Recurrence.IsNullOrWhiteSpace())
             {
-                schedule = new Schedule
+                var weeklyTimeOfDay = command.MeetingTime.Value;
+
+                //Repeat daily for 5 days
+                var rrule = new RecurrencePattern(command.Recurrence);
+                var days = rrule.ByDay;
+
+                var e = new CalendarEvent
                 {
-                    StartDate = command.Start,
-                    EndDate = command.End,
-                    Name = $"{command.Name} Schedule",
-                    iCalendarContent = serializedCalendar,
-                    WeeklyTimeOfDay = weeklyTimeOfDay,
-                    WeeklyDayOfWeek = days.FirstOrDefault()?.DayOfWeek,
-                    Frequency = rrule.Frequency.ConvertToString()
+                    Start = command.Start.HasValue
+                        ? new CalDateTime(command.Start.Value.Year, command.Start.Value.Month, command.Start.Value.Day,
+                            weeklyTimeOfDay.Hour, weeklyTimeOfDay.Minute, weeklyTimeOfDay.Second)
+                        : CalDateTime.Today,
+                    End = command.End.HasValue ? new CalDateTime(command.End.Value.ToDateTime(TimeOnly.MinValue)) : CalDateTime.Today.AddYears(5),
+                    RecurrenceRules = new List<RecurrencePattern> { rrule }
                 };
-            }
-            else
-            {
-                schedule.StartDate = command.Start;
-                schedule.EndDate = command.End;
-                schedule.Name = $"{command.Name} Schedule";
-                schedule.iCalendarContent = serializedCalendar;
-                schedule.WeeklyTimeOfDay = weeklyTimeOfDay;
-                schedule.WeeklyDayOfWeek = days.FirstOrDefault()?.DayOfWeek;
-                schedule.Frequency = rrule.Frequency.ConvertToString();
-            }
 
-            group.Schedule = schedule;
+                var calendar = new Calendar();
+                calendar.Events.Add(e);
 
+                var serializer = new CalendarSerializer();
+                var serializedCalendar = serializer.SerializeToString(calendar);
+                
+                // Update schedule
+                var schedule = group.Schedule;
+                if (schedule == null)
+                {
+                    schedule = new Schedule
+                    {
+                        StartDate = command.Start,
+                        EndDate = command.End,
+                        Name = $"{command.Name} Schedule",
+                        iCalendarContent = serializedCalendar,
+                        WeeklyTimeOfDay = weeklyTimeOfDay,
+                        WeeklyDayOfWeek = days.FirstOrDefault()?.DayOfWeek,
+                        Frequency = rrule.Frequency.ConvertToString()
+                    };
+                }
+                else
+                {
+                    schedule.StartDate = command.Start;
+                    schedule.EndDate = command.End;
+                    schedule.Name = $"{command.Name} Schedule";
+                    schedule.iCalendarContent = serializedCalendar;
+                    schedule.WeeklyTimeOfDay = weeklyTimeOfDay;
+                    schedule.WeeklyDayOfWeek = days.FirstOrDefault()?.DayOfWeek;
+                    schedule.Frequency = rrule.Frequency.ConvertToString();
+                }
+
+                group.Schedule = schedule;
+            }
+            
             await _dbRepository.UpdateAsync(group, ct);
 
             // Return the model the front is expecting in the tree

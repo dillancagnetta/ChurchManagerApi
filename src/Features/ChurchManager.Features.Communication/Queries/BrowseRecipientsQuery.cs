@@ -1,18 +1,18 @@
 ﻿using ChurchManager.Domain.Features.Churches.Specifications;
 using ChurchManager.Domain.Features.Security.Services;
 using ChurchManager.Domain.Parameters;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Common;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 using Feature = ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Communication.Queries;
 
 public record BrowseRecipientsQuery : QueryParameter, IRequest<ApiResponse>
 {
-    public string Status { get; set; }
+    public string Status { get; set; } = Feature.CommunicationRecipientStatus.Pending.Value;
     public int? PersonId { get; set; }
     public int CommunicationId { get; set; }
     public bool? IsSent { get; set; }

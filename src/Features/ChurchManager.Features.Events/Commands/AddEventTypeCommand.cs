@@ -2,30 +2,30 @@
 using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Domain.Features.Events;
 using ChurchManager.Domain.Features.Groups;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Events.Commands;
 
 public record AddEventTypeCommand : IRequest<ApiResponse>
 {
-    public string Name { get; set; }
-    public string Description { get; set; } 
+    public required string Name { get; set; }
+    public string? Description { get; set; } 
     public int? DefaultGroupTypeId { get; set; }
-    public string OnlineSupport { get; set; } 
+    public string OnlineSupport { get; set; } = Domain.Features.Events.OnlineSupport.Unknown.Value;
     public bool RequiresRegistration { get; set; }
     public bool AllowFamilyRegistration { get; set; }
     public bool AllowNonFamilyRegistration { get; set; }
     public bool RequiresChildInfo { get; set; }
-    public bool TakesAttendance { get; set; }
+    public bool TakesAttendance { get; set; } = false;
     public bool? HasChildCare { get; set; }
     public int? MinChildAge { get; set; }
     public int? MaxChildAge { get; set; }
-    public string IconCssClass { get; set; }
-    public string AgeClassification { get; set; }
+    public string? IconCssClass { get; set; }
+    public string AgeClassification { get; set; } = Domain.Features.People.AgeClassification.Unknown.Value;
 };
 
 public class AddEventTypeCommandHandler(

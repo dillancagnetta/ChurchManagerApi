@@ -22,8 +22,8 @@ namespace ChurchManager.Domain.Features.People.Specifications
             Query.Select(x => new FamilyViewModel
             {
                 Id = x.Id,
-                Name = x.Name,
-                City = x.Address.City,
+                Name = x.Name!,
+                City = x.Address!.City,
                 Country = x.Address.Country,
                 PostalCode = x.Address.PostalCode,
                 Street = x.Address.Street,
@@ -33,10 +33,10 @@ namespace ChurchManager.Domain.Features.People.Specifications
                 {
                     PersonId   = x.Id,
                     Gender = x.Gender,
-                    FirstName = x.FullName.FirstName,
-                    LastName = x.FullName.LastName,
+                    FirstName = x.FullName!.FirstName!,
+                    LastName = x.FullName.LastName!,
                     AgeClassification = x.AgeClassification,
-                    Age = x.BirthDate.Age,
+                    Age = x.BirthDate != null ? x.BirthDate.Age : null,
                     PhotoUrl = x.PhotoUrl
                 })
             });

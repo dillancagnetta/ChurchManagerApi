@@ -37,7 +37,7 @@ namespace ChurchManager.Features.Profile.Queries.RetrieveProfile
         {
             var spec = new UserDetailsSpecification(query.UserLoginId);
 
-            var user = await _personDbRepository.GetBySpecAsync<UserDetails>(spec, ct);
+            var user = await _personDbRepository.FirstOrDefaultAsync<UserDetails>(spec, ct);
 
             if (user is null) return new ApiResponse("No matching user found");
 

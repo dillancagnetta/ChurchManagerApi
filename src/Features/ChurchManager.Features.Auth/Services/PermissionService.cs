@@ -3,6 +3,7 @@ using ChurchManager.Domain.Features.Security;
 using ChurchManager.Domain.Features.Security.Repositories;
 using ChurchManager.Domain.Features.Security.Services;
 using ChurchManager.Infrastructure.Persistence.Contexts;
+using CodeBoss.Extensions;
 using Codeboss.Types;
 using Microsoft.EntityFrameworkCore;
 
@@ -102,7 +103,7 @@ public class PermissionService(
             if (!HasPermissionFlag(ep, permission)) continue;
 
             // Add explicit IDs
-            if (!ep.IsDynamicScope && ep.EntityIds != null)
+            if (!ep.IsDynamicScope && !ep.EntityIds.IsNullOrEmpty())
             {
                 foreach (var id in ep.EntityIds)
                     accessibleIds.Add(id);
@@ -147,7 +148,7 @@ public class PermissionService(
             };
             
             UpdatePermissionFlags(entityPermission, permissions);
-            permissionsDb.AddAsync(entityPermission, ct);
+            await permissionsDb.AddAsync(entityPermission, ct);
         }
 
         await permissionsDb.SaveChangesAsync(ct);
@@ -164,12 +165,12 @@ public class PermissionService(
 
         if (permission != null)
         {
-            permissionsDb.DeleteAsync(permission, ct);
+            await permissionsDb.DeleteAsync(permission, ct);
             await permissionsDb.SaveChangesAsync(ct);
         }    
     }
 
-    public async Task<IReadOnlyList<int>> GetAllowedEntityIdsAsync<T>(Guid userLoginId, PermissionAction permission, CancellationToken ct = default) where T : class, IEntity<int>
+    public async Task<IReadOnlyList<int>?> GetAllowedEntityIdsAsync<T>(Guid userLoginId, PermissionAction permission, CancellationToken ct = default) where T : class, IEntity<int>
     {
         if (await IsSystemAdminAsync(userLoginId, ct)) return null;
         
@@ -194,7 +195,7 @@ public class PermissionService(
             if (!HasPermissionFlag(ep, permission)) continue;
 
             // Add explicit IDs
-            if (!ep.IsDynamicScope && ep.EntityIds != null)
+            if (!ep.IsDynamicScope && !ep.EntityIds.IsNullOrEmpty())
             {
                 accessibleIds.UnionWith(ep.EntityIds);
             }
