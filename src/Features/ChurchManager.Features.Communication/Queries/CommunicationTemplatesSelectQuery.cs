@@ -1,14 +1,10 @@
-﻿using System.Linq.Dynamic.Core;
-using ChurchManager.Domain.Shared;
+﻿using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using CodeBoss.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Feature = ChurchManager.Domain.Features.Communications;
-
-using NpgsqlTypes;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace ChurchManager.Features.Communication.Queries;
 

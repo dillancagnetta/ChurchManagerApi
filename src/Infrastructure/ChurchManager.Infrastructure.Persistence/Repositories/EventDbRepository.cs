@@ -1,9 +1,9 @@
 ﻿using ChurchManager.Domain.Features.Events;
 using ChurchManager.Domain.Features.Events.Repositories;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.Extensions;
 using Microsoft.EntityFrameworkCore;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Infrastructure.Persistence.Repositories;
 

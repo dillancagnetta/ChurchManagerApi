@@ -1,5 +1,4 @@
-﻿using ChurchManager.Domain.Shared;
-using ChurchManager.Infrastructure.Abstractions;
+﻿using ChurchManager.Infrastructure.Abstractions;
 using Wolverine;
 
 namespace ChurchManager.Infrastructure.Shared.DomainEvents

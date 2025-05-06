@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Persistence.Shared;
 using CodeBoss.Extensions;
 using Ical.Net;

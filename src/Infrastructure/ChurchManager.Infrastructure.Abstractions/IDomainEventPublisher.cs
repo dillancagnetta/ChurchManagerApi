@@ -1,6 +1,4 @@
-﻿using ChurchManager.Domain.Shared;
-
-namespace ChurchManager.Infrastructure.Abstractions;
+﻿namespace ChurchManager.Infrastructure.Abstractions;
 
 public interface IDomainEventPublisher
 {

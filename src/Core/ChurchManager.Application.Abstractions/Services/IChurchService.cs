@@ -1,7 +1,8 @@
 ﻿using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Parameters;
-using ChurchManager.Domain.Shared;
 using Convey.CQRS.Queries;
+using ChurchManager.Domain.Shared;
+using Codeboss.Results;
 
 namespace ChurchManager.Application.Abstractions.Services;
 
@@ -19,5 +20,9 @@ public interface IChurchService : ICrudServiceAsync<Church, ChurchViewModel, Edi
         int? churchGroupId,
         bool withFeedback,
         DateTime? from, DateTime? to,
+        CancellationToken ct = default);
+    
+    Task<OperationResult<ChurchViewModel>> UpdateChurchAsync(
+        EditChurchModel model,
         CancellationToken ct = default);
 }

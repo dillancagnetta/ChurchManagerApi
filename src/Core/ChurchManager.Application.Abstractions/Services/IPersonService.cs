@@ -1,7 +1,7 @@
 ﻿using ChurchManager.Application.ViewModels;
 using ChurchManager.Domain.Features.People.Queries;
-using ChurchManager.Domain.Shared;
 using Convey.CQRS.Queries;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Application.Abstractions.Services;
 

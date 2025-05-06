@@ -2,10 +2,10 @@
 using ChurchManager.Domain.Features.Communications.Events;
 using ChurchManager.Domain.Features.Communications.Repositories;
 using ChurchManager.Domain.Features.Communications.Services;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions;
 using Codeboss.Results;
 using Microsoft.Extensions.Logging;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Communication.Events.SendEmail;
 

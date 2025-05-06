@@ -1,4 +1,5 @@
-﻿using ChurchManager.Features.Churches.Commands.Attendance;
+﻿using ChurchManager.Features.Churches.Commands;
+using ChurchManager.Features.Churches.Commands.Attendance;
 using ChurchManager.Features.Churches.Queries.BrowseAttendance;
 using ChurchManager.Features.Churches.Queries.RetrieveChurches;
 using ChurchManager.SharedKernel.Common;
@@ -43,7 +44,7 @@ public class ChurchesController : BaseApiController
     }
     
     [HttpPut]
-    public async Task<IActionResult> Update([FromBody] EditChurchCommand cmd, CancellationToken token)
+    public async Task<IActionResult> Update(EditChurchCommand cmd, CancellationToken token)
     {
         return Accepted(await Mediator.Send(cmd, token));
     }

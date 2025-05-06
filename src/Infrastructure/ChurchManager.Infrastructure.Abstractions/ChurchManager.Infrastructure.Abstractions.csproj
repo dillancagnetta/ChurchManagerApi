@@ -11,6 +11,8 @@
     <PackageReference Include="Convey.CQRS.Queries" />
   </ItemGroup>
   <ItemGroup>
+<!--
     <ProjectReference Include="..\ChurchManager.Persistence.Shared\ChurchManager.Persistence.Shared.csproj" />
+-->
   </ItemGroup>
 </Project>

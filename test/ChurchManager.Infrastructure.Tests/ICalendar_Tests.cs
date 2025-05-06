@@ -1,10 +1,10 @@
 using ChurchManager.Domain.Features.Groups;
-using ChurchManager.Domain.Shared;
 using Ical.Net;
 using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
 using Ical.Net.Serialization;
 using Xunit;
+using ChurchManager.Domain.Shared;
 
 /// <summary>
 /// https://blog.elmah.io/generate-calendar-in-ical-format-with-net-using-ical-net/

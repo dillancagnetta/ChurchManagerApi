@@ -22,6 +22,8 @@ namespace ChurchManager.Domain.Features.Churches
         [MaxLength(200)]
         public string? Address { get; set; }
 
+        public ICollection<ChurchServiceTime> ServiceTimes { get; set; } = [];
+        
         /// <summary>
         /// Gets or sets the Id of the <see cref="Person"/> that is the leader of the Church.
         /// </summary>

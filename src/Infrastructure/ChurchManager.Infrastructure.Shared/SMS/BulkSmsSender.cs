@@ -3,9 +3,9 @@ using System.Text;
 using System.Text.Json;
 using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Communications.Services;
-using ChurchManager.Domain.Shared;
 using Codeboss.Results;
 using Microsoft.Extensions.Logging;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Infrastructure.Shared.SMS;
 

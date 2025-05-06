@@ -1,7 +1,7 @@
 ﻿using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Communications.Services;
-using ChurchManager.Domain.Shared;
 using Codeboss.Results;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Infrastructure.Shared.SMS;
 

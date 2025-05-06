@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using ChurchManager.Domain.Shared;
+using ChurchManager.Infrastructure.Abstractions;
 using Codeboss.Types;
 
 namespace ChurchManager.Persistence.Shared

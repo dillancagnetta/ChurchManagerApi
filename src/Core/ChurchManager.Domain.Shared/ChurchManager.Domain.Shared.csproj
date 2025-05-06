@@ -6,5 +6,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Convey.CQRS.Queries" />
+
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Extensions\" />
   </ItemGroup>
 </Project>

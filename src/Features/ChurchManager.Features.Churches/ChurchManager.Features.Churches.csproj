@@ -11,7 +11,5 @@
     <ProjectReference Include="..\..\Core\ChurchManager.Application\ChurchManager.Application.csproj" />
     <ProjectReference Include="..\..\Infrastructure\ChurchManager.Infrastructure\ChurchManager.Infrastructure.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Infrastructure\Extensions\" />
-  </ItemGroup>
+  
 </Project>

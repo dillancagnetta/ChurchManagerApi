@@ -1,7 +1,7 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Features.People;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Domain.Specifications;
+using ChurchManager.Domain.Shared;
 using CodeBoss.Extensions;
 using Microsoft.EntityFrameworkCore;
 

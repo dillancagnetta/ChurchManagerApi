@@ -84,3 +84,23 @@ public class PhoneNumberConfiguration : IEntityTypeConfiguration<PhoneNumber>
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
+
+public class FollowUpConfiguration : IEntityTypeConfiguration<FollowUp>
+{
+    public void Configure(EntityTypeBuilder<FollowUp> builder)
+    {
+        // Configure the relationship with person
+        // If person is deleted - all  will be deleted
+        builder
+            .HasOne<Person>()
+            .WithMany()
+            .HasForeignKey(p => p.PersonId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        builder
+            .HasOne<Person>()
+            .WithMany()
+            .HasForeignKey(p => p.AssignedPersonId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+}

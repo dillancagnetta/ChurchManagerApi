@@ -1,9 +1,9 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Domain.Specifications;
 using CodeBoss.Extensions;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Domain.Features.Security.Specifications;
 

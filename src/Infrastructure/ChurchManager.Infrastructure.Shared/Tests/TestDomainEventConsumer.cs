@@ -1,5 +1,4 @@
-﻿using ChurchManager.Domain.Shared;
-using ChurchManager.Infrastructure.Abstractions;
+﻿using ChurchManager.Infrastructure.Abstractions;
 using Microsoft.Extensions.Logging;
 using Wolverine;
 

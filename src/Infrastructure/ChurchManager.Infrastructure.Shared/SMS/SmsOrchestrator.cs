@@ -2,13 +2,13 @@
 using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Communications.Repositories;
 using ChurchManager.Domain.Features.Communications.Services;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Communication;
 using ChurchManager.Infrastructure.Shared.Templating;
 using Codeboss.Results;
 using DotLiquid;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Infrastructure.Shared.SMS;
 

@@ -8,7 +8,6 @@ using ChurchManager.SharedKernel.Common;
 using CodeBoss.Extensions;
 using Codeboss.Types;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ChurchManager.Features.People.Commands.AddNewFamily

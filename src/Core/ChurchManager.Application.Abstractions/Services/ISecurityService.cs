@@ -1,7 +1,7 @@
-﻿using ChurchManager.Domain.Shared;
-using ChurchManager.SharedKernel.Wrappers;
+﻿using ChurchManager.SharedKernel.Wrappers;
 using Codeboss.Results;
 using Convey.CQRS.Queries;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Application.Abstractions.Services;
 

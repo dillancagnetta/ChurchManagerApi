@@ -5,13 +5,13 @@ using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Queries;
 using ChurchManager.Domain.Features.People.Repositories;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using ChurchManager.Infrastructure.Persistence.Extensions;
 using CodeBoss.Extensions;
 using Codeboss.Results;
 using Microsoft.EntityFrameworkCore;
+using ChurchManager.Domain.Shared;
 
 #endregion
 

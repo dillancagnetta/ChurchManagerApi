@@ -1,10 +1,10 @@
 ﻿using ChurchManager.Domain.Features.Groups.Specifications;
 using ChurchManager.Domain.Parameters;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Common;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.FollowUp.Queries.BrowseFollowUp
 {

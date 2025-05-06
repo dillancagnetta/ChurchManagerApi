@@ -25,6 +25,8 @@ public class ChurchesFakeDbSeedInitializer : IInitializer
     {
         using var scope = _scopeFactory.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ChurchManagerDbContext>();
+        
+        var services = dbContext.ChurchAttendanceType.ToList();
 
         var southAfricaProvinces = new Dictionary<string, List<string>>
         {
@@ -52,8 +54,15 @@ public class ChurchesFakeDbSeedInitializer : IInitializer
                         Name = city + " Church",
                         Description = city + " Church",
                         ShortCode = faker.Address.ZipCode(),
+                        Address = faker.Address.StreetAddress(),
                         PhoneNumber = faker.Phone.PhoneNumber(),
                         ChurchGroup = churchGroup,
+                        ServiceTimes = services.Select(s => new ChurchServiceTime
+                        {
+                            ChurchAttendanceTypeId = s.Id,
+                            DayOfWeek = s.Name == "Sunday" ? "Sunday" : faker.Date.Weekday(),
+                            Time =  s.Name == "Sunday" ? new TimeOnly(9, 00) : new TimeOnly(18, 00),
+                        }).ToList()
                     });
                 }
             }

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using ChurchManager.Domain.Features.Events;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Features.Events.Commands;
 using ChurchManager.Infrastructure.Mapper;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Events.Infrastructure.Mapper;
 

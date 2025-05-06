@@ -1,5 +1,5 @@
-﻿using ChurchManager.Domain.Shared;
-using Feature = ChurchManager.Domain.Features.People;
+﻿using Feature = ChurchManager.Domain.Features.People;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.People.Commands.AddNewFamily
 {

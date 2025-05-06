@@ -2,7 +2,6 @@
 using ChurchManager.Domain.Features.Communications.Events;
 using ChurchManager.Domain.Features.People.Events;
 using ChurchManager.Domain.Features.People.Repositories;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Shared.Bugsnag;
@@ -11,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Wolverine;
 using Feature = ChurchManager.Domain.Features.People;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.FollowUp.Events.FollowUpAssigned
 {

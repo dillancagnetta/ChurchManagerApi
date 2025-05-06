@@ -1,9 +1,9 @@
 ﻿using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Domain.Parameters;
-using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
 using Codeboss.Results;
 using MediatR;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.UserLogins.Queries;
 

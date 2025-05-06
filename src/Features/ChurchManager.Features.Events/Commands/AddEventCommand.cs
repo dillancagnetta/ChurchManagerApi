@@ -13,7 +13,6 @@ using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using CodeBoss.Extensions;
 
 namespace ChurchManager.Features.Events.Commands;
 

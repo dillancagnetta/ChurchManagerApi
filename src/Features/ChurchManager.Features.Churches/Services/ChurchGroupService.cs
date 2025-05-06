@@ -2,10 +2,10 @@
 using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Application.Features;
 using ChurchManager.Domain.Features.Churches;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using Codeboss.Results;
 using Microsoft.Extensions.Logging;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Churches.Services;
 

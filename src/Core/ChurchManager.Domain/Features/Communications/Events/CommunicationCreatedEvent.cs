@@ -1,4 +1,4 @@
-﻿using ChurchManager.Domain.Shared;
+﻿using ChurchManager.Infrastructure.Abstractions;
 
 namespace ChurchManager.Domain.Features.Communications.Events;
 

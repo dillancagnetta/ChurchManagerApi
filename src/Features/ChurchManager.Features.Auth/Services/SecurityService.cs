@@ -3,7 +3,6 @@ using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Security;
 using ChurchManager.Domain.Features.Security.Services;
 using ChurchManager.Domain.Features.Security.Specifications;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Common;
 using ChurchManager.SharedKernel.Wrappers;
@@ -11,6 +10,7 @@ using CodeBoss.Extensions;
 using Codeboss.Results;
 using Convey.CQRS.Queries;
 using Microsoft.EntityFrameworkCore;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Auth.Services;
 

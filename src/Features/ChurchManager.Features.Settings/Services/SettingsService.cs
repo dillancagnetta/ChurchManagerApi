@@ -3,11 +3,11 @@ using AutoMapper;
 using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Application.Features;
 using ChurchManager.Domain.Features.Settings;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using CodeBoss.Extensions;
 using CodeBoss.MultiTenant;
 using Microsoft.EntityFrameworkCore;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Settings.Services;
 

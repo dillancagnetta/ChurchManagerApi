@@ -1,6 +1,5 @@
 ﻿using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.Groups.Repositories;
-using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
 using CodeBoss.Extensions;
 using Codeboss.Types;
@@ -10,6 +9,7 @@ using Ical.Net.DataTypes;
 using Ical.Net.Serialization;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Groups.Commands.NewGroup
 {

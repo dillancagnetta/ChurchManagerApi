@@ -32,6 +32,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             if (!await dbContext.FollowUp.AnyAsync())
             {
                 var people = dbContext.Person.AsQueryable().AsNoTracking().Take(100);
+                var leaders = people.Where(x => x.ConnectionStatus == ConnectionStatus.Member.Value).Take(10).ToList();
 
                 var faker = new Faker();
                 var random = new Random();
@@ -43,7 +44,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                     var count = random.Next(1, 4);
                     for (int i = 0; i < count; i++)
                     {
-                        items.AddRange(FollowUpRecordsForPerson(person, faker, random));
+                        items.AddRange(FollowUpRecordsForPerson(person, faker, random, leaders));
                     }
                 }
 
@@ -52,13 +53,15 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             }
         }
         
-        public IEnumerable<FollowUp> FollowUpRecordsForPerson(Person person, Faker faker, Random random)
+        public IEnumerable<FollowUp> FollowUpRecordsForPerson(Person person, Faker faker, Random random, List<Person> leaders)
         {
+            var leadersMinId = leaders.Select(x => x.Id).Min();
+            var leadersMaxId = leaders.Select(x => x.Id).Max();
             yield return new FollowUp
             {
                 Type = faker.PickRandom(Types),
                 Severity = faker.PickRandom(Severity),
-                AssignedPersonId = random.Next(1, 4),
+                AssignedPersonId = random.Next(leadersMinId, leadersMaxId),
                 PersonId = person.Id,
                 AssignedDate = faker.Date.Between(new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 01), DateTime.UtcNow),
                 RequiresAdditionalFollowUp = faker.PickRandom(true, false),

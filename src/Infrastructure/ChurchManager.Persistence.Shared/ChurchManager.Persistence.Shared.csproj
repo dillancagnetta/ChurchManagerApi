@@ -11,7 +11,10 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
     <PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup><!--
     <ProjectReference Include="..\..\Core\ChurchManager.Domain.Shared\ChurchManager.Domain.Shared.csproj" />
+-->
+  
+    <ProjectReference Include="..\ChurchManager.Infrastructure.Abstractions\ChurchManager.Infrastructure.Abstractions.csproj" />
   </ItemGroup>
 </Project>

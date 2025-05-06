@@ -1,8 +1,8 @@
 ﻿using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Domain.Parameters;
-using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Churches.Queries.BrowseAttendance;
 

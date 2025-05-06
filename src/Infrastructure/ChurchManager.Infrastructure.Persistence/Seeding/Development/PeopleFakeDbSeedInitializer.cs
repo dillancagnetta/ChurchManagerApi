@@ -3,6 +3,7 @@
 using Bogus;
 using Bogus.DataSets;
 using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.Security;
 using ChurchManager.Infrastructure.Persistence.Contexts;
@@ -27,6 +28,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         private readonly IServiceScopeFactory _scopeFactory;
         private ChurchManagerDbContext _dbContext;
         private ITenant _tenant;
+        private Church _church;
         private Random _random = new Random();
 
         public PeopleFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
@@ -36,6 +38,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             using var scope = _scopeFactory.CreateScope();
             _tenant = scope.ServiceProvider.GetRequiredService<ITenantProvider>().Tenants().FirstOrDefault();
             _dbContext = scope.ServiceProvider.GetRequiredService<ChurchManagerDbContext>();
+            _church = _dbContext.Church.First(x => x.Name == "Cape Town Church");
 
             if (!await _dbContext.Person.AnyAsync())
             {
@@ -63,6 +66,18 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 
                 // Save them
                 await _dbContext.SaveChangesAsync();
+
+                // Add Church leaders
+                var churches = _dbContext.Church.ToList();
+                foreach (var church in churches)
+                {
+                    church.LeaderPersonId = familyMembersBatch.FirstOrDefault(
+                        x => x.ChurchId == church.Id &&
+                             x.ConnectionStatus == ConnectionStatus.Member.Value &&
+                             x.AgeClassification == AgeClassification.Adult.Value
+                             )?.Id;
+                }
+                await _dbContext.SaveChangesAsync();
             }
         }
 
@@ -82,7 +97,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 PhotoUrl = "https://secure.gravatar.com/avatar/6fdc48b6ec4d95f2fd682fc2982eb01b",
                 ConnectionStatus = ConnectionStatus.Member,
                 BaptismStatus = new Baptism {IsBaptised = true},
-                ChurchId = 1,
+                ChurchId = _church.Id,
                 Email = new Email {Address = "dillancagnetta@yahoo.com", IsActive = true},
                 FullName = new FullName {FirstName = "Dillan", LastName = "Cagnetta"},
                 MaritalStatus = "Married",
@@ -120,7 +135,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 PhotoUrl = null,
                 ConnectionStatus = ConnectionStatus.Member,
                 BaptismStatus = new Baptism { IsBaptised = true },
-                ChurchId = 1,
+                ChurchId = _church.Id,
                 Email = new Email { Address = "danielle@yahoo.com", IsActive = true },
                 FullName = new FullName { FirstName = "Danielle", LastName = "Cagnetta" },
                 MaritalStatus = "Married",
@@ -140,7 +155,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 PhotoUrl = null,
                 ConnectionStatus = ConnectionStatus.Member,
                 BaptismStatus = new Baptism { IsBaptised = false },
-                ChurchId = 1,
+                ChurchId = _church.Id,
                 FullName = new FullName { FirstName = "David", LastName = "Cagnetta" },
                 BirthDate = new BirthDate { BirthDay = 06, BirthMonth = 07, BirthYear = 2017 },
                 ReceivedHolySpirit = false,
@@ -155,7 +170,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 PhotoUrl = null,
                 ConnectionStatus = ConnectionStatus.Member,
                 BaptismStatus = new Baptism { IsBaptised = true },
-                ChurchId = 1,
+                ChurchId = _church.Id,
                 FullName = new FullName { FirstName = "Daniel", LastName = "Cagnetta" },
                 BirthDate = new BirthDate { BirthDay = 28, BirthMonth = 06, BirthYear = 2013 },
                 ReceivedHolySpirit = true,
@@ -367,7 +382,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         }
 
         // Churches Ids
-        private int[] Churches => new[] { 1, 2 };
+        private int[] Churches => _dbContext.Church.AsNoTracking().Take(5).Select(x => x.Id).ToArray();
 
         private string[] Languages => new[] { "English", "Afrikaans", "Xhosa", "IsiZulu" };
         private string[] Provinces => new[] { "Western Cape", "Eastern Cape", "Free State", "Gauteng", "Northern Cape"};

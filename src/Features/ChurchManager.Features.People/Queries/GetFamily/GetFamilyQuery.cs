@@ -1,6 +1,5 @@
 ﻿using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Specifications;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;

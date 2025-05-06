@@ -143,7 +143,7 @@ namespace ChurchManager.Infrastructure.TypeSearcher
                         }
                     }
                 }
-
+            
             return assemblies;
         }
 

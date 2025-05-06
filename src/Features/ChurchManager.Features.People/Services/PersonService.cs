@@ -7,9 +7,9 @@ using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Domain.Features.People.Specifications;
 using ChurchManager.Domain.Features.Security;
 using ChurchManager.Domain.Features.Security.Services;
-using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Common;
 using Convey.CQRS.Queries;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.People.Services
 {

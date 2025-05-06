@@ -3,12 +3,12 @@ using ChurchManager.Application.ViewModels;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.Groups;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Mapper;
 using Convey.CQRS.Queries;
 using GroupMemberViewModel = ChurchManager.Domain.Shared.GroupMemberViewModel;
 using GroupTypeViewModel = ChurchManager.Domain.Shared.GroupTypeViewModel;
 using GroupViewModel = ChurchManager.Domain.Shared.GroupViewModel;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Groups.Infrastructure.Mapper
 {

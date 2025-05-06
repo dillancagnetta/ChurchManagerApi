@@ -1,10 +1,10 @@
 ﻿using ChurchManager.Domain.Features.Missions;
 using ChurchManager.Domain.Features.Missions.Specifications;
 using ChurchManager.Domain.Parameters;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Missions.Queries.BrowseMissions
 {
