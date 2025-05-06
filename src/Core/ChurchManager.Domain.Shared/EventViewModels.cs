@@ -36,10 +36,10 @@ public record EventViewModel
     }
 
     // Schedule
-    public DateTime? StartDate => Sessions.FirstOrDefault()?.StartDate;
-    public DateTime? EndDate => Sessions.LastOrDefault()?.EndDate;
-    public string? StartTime => Sessions.FirstOrDefault()?.StartTime;
-    public string? EndTime => Sessions.LastOrDefault()?.EndTime;
+    public DateOnly? StartDate => Sessions.FirstOrDefault()?.StartDate;
+    public DateOnly? EndDate => Sessions.LastOrDefault()?.EndDate;
+    public TimeOnly? StartTime => Sessions.FirstOrDefault()?.StartTime;
+    public TimeOnly? EndTime => Sessions.LastOrDefault()?.EndTime;
     
     // Registration
     public DateTime? RegistrationStartDate  { get; set; }
@@ -71,10 +71,10 @@ public record EventSessionViewModel
 
     #region Schedule information
 
-     public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
-    public string? StartTime { get; set; }
-    public string? EndTime { get; set; }
+     public DateOnly? StartDate { get; set; }
+    public DateOnly? EndDate { get; set; }
+    public TimeOnly? StartTime { get; set; }
+    public TimeOnly? EndTime { get; set; }
 
     #endregion 
    

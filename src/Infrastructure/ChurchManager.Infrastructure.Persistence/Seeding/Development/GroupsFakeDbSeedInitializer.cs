@@ -1,6 +1,7 @@
 ﻿#region
 
 using Bogus;
+using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.AspNetCore.Startup;
@@ -33,6 +34,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         private GroupTypeRole _cellLeaderRole;
         private GroupTypeRole _cellAssistantRole;
         private GroupTypeRole _groupMemberRole;
+        private Church _church;
 
         private static readonly CalendarSerializer CalendarSerializer = new();
 
@@ -42,6 +44,8 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         {
             using var scope = _scopeFactory.CreateScope();
             _dbContext = scope.ServiceProvider.GetRequiredService<ChurchManagerDbContext>();
+            
+            _church = _dbContext.Church.AsNoTracking().OrderBy(x => x.Id).First();
 
             if (!_dbContext.GroupType.Any())
             {
@@ -92,7 +96,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                     Name = "Cell Groups",
                     Description = "Grouping section for cell groups",
                     CreatedDate = DateTime.UtcNow,
-                    ChurchId = 1
+                    ChurchId = _church.Id
                 };
 
                 // await SeedMyGroups();
@@ -128,7 +132,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                     Name = "Members",
                     Description = "Church members communication list",
                     CreatedDate = DateTime.UtcNow,
-                    ChurchId = 1,
+                    ChurchId = _church.Id,
                     ParentGroup = communicationsSectionParentGroup
                 };
                 var communicationsParentsList = new Group
@@ -137,7 +141,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                     Name = "Parents of Children",
                     Description = "Parents of Children communication list",
                     CreatedDate = DateTime.UtcNow,
-                    ChurchId = 1,
+                    ChurchId = _church.Id,
                     ParentGroup = communicationsSectionParentGroup
                 };
                 await _dbContext.Group.AddRangeAsync(communicationsSectionParentGroup, communicationsMembersList, communicationsParentsList);
@@ -170,7 +174,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                         Name = faker.Address.City() + " Cell Group",
                         Description = faker.Address.City() + " Cell Group",
                         GroupType = _cellGroupType,
-                        ChurchId = 1,
+                        ChurchId = _church.Id,
                         Members = cellGroupMembers,
                         StartDate = DateTimeOffset.UtcNow,
                         IsOnline = i % 2 == 0,
@@ -196,7 +200,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                     Name = parentGroup.Name == "Cell Groups" ? fakeName : $"{ parentGroup.Name} - {level + i}",
                     Description = fakeName,
                     GroupType = _cellGroupType,
-                    ChurchId = 1,
+                    ChurchId = _church.Id,
                     Members = GenerateGroupMembers(groupLeaderPersonId),
                     StartDate = DateTimeOffset.UtcNow,
                     IsOnline = i % 2 == 0,
@@ -222,13 +226,13 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         private Schedule GenerateSchedule()
         {
             var calendar = InetCalendarHelper.CalendarWithWeeklyRecurrence(
-                DateTime.UtcNow, null,
-                new TimeSpan(18, 0, 0), new [] {DayOfWeek.Thursday});
+                DateOnly.FromDateTime(DateTime.UtcNow), null,
+                new TimeOnly(18, 0, 0), new [] {DayOfWeek.Thursday});
 
             return new Schedule
             {
                 WeeklyDayOfWeek = DayOfWeek.Thursday,
-                StartDate = DateTime.UtcNow.Date,
+                StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 iCalendarContent = CalendarSerializer.SerializeToString(calendar),
             };
         }

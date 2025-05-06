@@ -16,8 +16,8 @@ public record BrowseEventsQuery: QueryParameter,  IRequest<PagedResponse<EventVi
     public int? EventTypeId { get; set; }
     public int? ChurchGroupId { get; set; }
     public int? ChurchId { get; set; }
-    public DateTime? From { get; set; }
-    public DateTime? To { get; set; }
+    public DateOnly? From { get; set; }
+    public DateOnly? To { get; set; }
     public bool? IsOnline { get; set; }
     public bool? IncludeDetails { get; set; }
 }

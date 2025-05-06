@@ -105,8 +105,8 @@ public class EventsFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) : II
                 // Add session Schedule Dates, based on the Session Order
                 for (int i = 0; i < orderedSessions.Count; i++)
                 {
-                    var sessionDate = DateTime.Today.AddDays(i);
-                    var sessionTime = new TimeSpan(14,0,0); //14:00:00
+                    var sessionDate = DateOnly.FromDateTime(DateTime.Now.AddDays(i));
+                    var sessionTime = new TimeOnly(14,0); //14:00:00
                     orderedSessions[i].Schedule = new()
                     {
                         Name = $"{orderedSessions[i].Name}-EventSession-Schedule",

@@ -107,7 +107,7 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
         return Sessions.LastOrDefault();
     }
 
-    public (DateTime? StartDate, TimeSpan? StartTime, DateTime? EndDate, TimeSpan? EndTime) FirstSessionDateTime()
+    public (DateOnly? StartDate, TimeOnly? StartTime, DateOnly? EndDate, TimeOnly? EndTime) FirstSessionDateTime()
     {
         if (!Sessions.Any()) return (null, null, null, null);
 
@@ -117,7 +117,7 @@ public class Event : AuditableEntity<int>, IAggregateRoot<int>
         return (startDate, startTime, endDate, endTime);
     }
     
-    public (DateTime? StartDate, TimeSpan? StartTime, DateTime? EndDate, TimeSpan? EndTime) LastSessionDateTime()
+    public (DateOnly? StartDate, TimeOnly? StartTime, DateOnly? EndDate, TimeOnly? EndTime) LastSessionDateTime()
     {
         if (!Sessions.Any()) return (null, null, null, null);
 

@@ -68,12 +68,12 @@ public class EventSession : AuditableEntity<int>
     # endregion
     
     #region Methods
-    public (DateTime? StartDate, TimeSpan? StartTime) SessionStartDateTime()
+    public (DateOnly? StartDate, TimeOnly? StartTime) SessionStartDateTime()
     {
         return (Schedule?.StartDate, Schedule?.StartTime);
     }
     
-    public (DateTime? EndDate, TimeSpan? EndTime) SessionEndDateTime()
+    public (DateOnly? EndDate, TimeOnly? EndTime) SessionEndDateTime()
     {
         return (Schedule?.EndDate, Schedule?.EndTime);
     }

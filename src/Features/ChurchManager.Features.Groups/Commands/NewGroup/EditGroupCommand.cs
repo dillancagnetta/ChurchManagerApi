@@ -44,9 +44,9 @@ namespace ChurchManager.Features.Groups.Commands.NewGroup
             group.Address = command.Address;
             group.IsOnline = command.IsOnline;
 
-            if (!command.MeetingTime.IsNullOrWhiteSpace() && !command.Recurrence.IsNullOrWhiteSpace())
+            if (command.MeetingTime is not null && !command.Recurrence.IsNullOrWhiteSpace())
             {
-                var weeklyTimeOfDay =  TimeSpan.Parse(command.MeetingTime!);
+                var weeklyTimeOfDay = command.MeetingTime.Value;
 
                 //Repeat daily for 5 days
                 var rrule = new RecurrencePattern(command.Recurrence);
@@ -56,9 +56,9 @@ namespace ChurchManager.Features.Groups.Commands.NewGroup
                 {
                     Start = command.Start.HasValue
                         ? new CalDateTime(command.Start.Value.Year, command.Start.Value.Month, command.Start.Value.Day,
-                            weeklyTimeOfDay.Hours, weeklyTimeOfDay.Minutes, weeklyTimeOfDay.Seconds)
+                            weeklyTimeOfDay.Hour, weeklyTimeOfDay.Minute, weeklyTimeOfDay.Second)
                         : CalDateTime.Today,
-                    End = command.End.HasValue ? new CalDateTime(command.End.Value) : CalDateTime.Today.AddYears(5),
+                    End = command.End.HasValue ? new CalDateTime(command.End.Value.ToDateTime(TimeOnly.MinValue)) : CalDateTime.Today.AddYears(5),
                     RecurrenceRules = new List<RecurrencePattern> { rrule }
                 };
 

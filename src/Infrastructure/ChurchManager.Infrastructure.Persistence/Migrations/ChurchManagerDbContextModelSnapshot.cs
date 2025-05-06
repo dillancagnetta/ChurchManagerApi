@@ -1765,11 +1765,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<DateTime?>("EndDate")
+                    b.Property<DateOnly?>("EndDate")
                         .HasColumnType("Date");
 
-                    b.Property<TimeSpan?>("EndTime")
-                        .HasColumnType("interval");
+                    b.Property<TimeOnly?>("EndTime")
+                        .HasColumnType("time without time zone");
 
                     b.Property<string>("Frequency")
                         .HasMaxLength(100)
@@ -1786,11 +1786,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasMaxLength(25)
                         .HasColumnType("character varying(25)");
 
-                    b.Property<DateTime?>("StartDate")
+                    b.Property<DateOnly?>("StartDate")
                         .HasColumnType("Date");
 
-                    b.Property<TimeSpan?>("StartTime")
-                        .HasColumnType("interval");
+                    b.Property<TimeOnly?>("StartTime")
+                        .HasColumnType("time without time zone");
 
                     b.Property<string>("Timezone")
                         .IsRequired()
@@ -1800,8 +1800,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<int?>("WeeklyDayOfWeek")
                         .HasColumnType("integer");
 
-                    b.Property<TimeSpan?>("WeeklyTimeOfDay")
-                        .HasColumnType("interval");
+                    b.Property<TimeOnly?>("WeeklyTimeOfDay")
+                        .HasColumnType("time without time zone");
 
                     b.Property<string>("iCalendarContent")
                         .HasColumnType("text");
@@ -2154,6 +2154,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<int>("AssignedPersonId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("AssignedPersonId1")
+                        .HasColumnType("integer");
+
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
@@ -2177,6 +2180,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<int>("PersonId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("PersonId1")
+                        .HasColumnType("integer");
+
                     b.Property<string>("RecordStatus")
                         .HasMaxLength(25)
                         .HasColumnType("character varying(25)");
@@ -2195,7 +2201,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("AssignedPersonId");
 
+                    b.HasIndex("AssignedPersonId1");
+
                     b.HasIndex("PersonId");
+
+                    b.HasIndex("PersonId1");
 
                     b.ToTable("FollowUp");
                 });
@@ -3393,17 +3403,25 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("ChurchManager.Domain.Features.People.FollowUp", b =>
                 {
-                    b.HasOne("ChurchManager.Domain.Features.People.Person", "AssignedPerson")
+                    b.HasOne("ChurchManager.Domain.Features.People.Person", null)
                         .WithMany()
                         .HasForeignKey("AssignedPersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ChurchManager.Domain.Features.People.Person", "Person")
+                    b.HasOne("ChurchManager.Domain.Features.People.Person", "AssignedPerson")
+                        .WithMany()
+                        .HasForeignKey("AssignedPersonId1");
+
+                    b.HasOne("ChurchManager.Domain.Features.People.Person", null)
                         .WithMany()
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ChurchManager.Domain.Features.People.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId1");
 
                     b.Navigation("AssignedPerson");
 

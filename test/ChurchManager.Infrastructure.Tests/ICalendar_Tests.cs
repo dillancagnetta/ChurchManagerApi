@@ -100,7 +100,7 @@ namespace ChurchManager.Infrastructure.Tests
         {
             // Create a weekly recurring calendar that has no end date.
             var startDateTime = Now.AddHours(-2);
-            var calendar = InetCalendarHelper.CalendarWithWeeklyRecurrence(startDateTime);
+            var calendar = InetCalendarHelper.CalendarWithWeeklyRecurrence(DateOnly.FromDateTime(startDateTime));
 
             var nextWeekTomorrow = DateTime.UtcNow.AddDays(+8);
             var occurrences = calendar.GetOccurrences(Now, nextWeekTomorrow);
@@ -123,8 +123,8 @@ namespace ChurchManager.Infrastructure.Tests
             // Create a weekly recurring calendar that has no end date.
             var startDateTime = Now.AddHours(-2);
             var days = new[] { DayOfWeek.Friday, DayOfWeek.Saturday };
-            var time = new TimeSpan(14, 0, 0);
-            var calendar = InetCalendarHelper.CalendarWithWeeklyRecurrence(startDateTime, meetingTime: time, days: days);
+            var time = new TimeOnly(14, 0, 0);
+            var calendar = InetCalendarHelper.CalendarWithWeeklyRecurrence(DateOnly.FromDateTime(startDateTime), meetingTime: time, days: days);
             // Create the schedule based on the calendar
             var schedule = new Schedule
             {

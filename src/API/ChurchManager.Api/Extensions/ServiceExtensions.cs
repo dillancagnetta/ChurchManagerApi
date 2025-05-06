@@ -64,6 +64,7 @@ namespace ChurchManager.Api.Extensions
                     options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                     options.JsonSerializerOptions.Converters.Add(new TimeOnlyJsonConverter());
+                    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
                 });
         }
 

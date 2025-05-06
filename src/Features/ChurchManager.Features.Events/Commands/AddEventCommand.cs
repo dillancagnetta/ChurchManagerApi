@@ -84,9 +84,9 @@ public class AddEventCommandHandler(
                 {
                     Name = $"{x.Name}-EventSession",
                     StartDate = x.StartDate,
-                    StartTime = x.StartTime != null ? TimeSpan.Parse(x.StartTime) :null,
+                    StartTime = x.StartTime,
                     EndDate = x.EndDate,
-                    EndTime = x.EndTime !=null ? TimeSpan.Parse(x.EndTime) : null,
+                    EndTime = x.EndTime,
                     Timezone = "South Africa Standard Time"
                 }
             }).ToList()
@@ -196,8 +196,8 @@ public class EditEventCommandCommandHandler(
                     Name = $"{eventEntity.Name}-EventSession",
                     StartDate = sessionDto.StartDate,
                     EndDate = sessionDto.EndDate,
-                    StartTime = sessionDto.StartTime != null ? TimeSpan.Parse(sessionDto.StartTime) : null,
-                    EndTime = sessionDto.EndTime != null ? TimeSpan.Parse(sessionDto.EndTime) :  null,
+                    StartTime = sessionDto.StartTime,
+                    EndTime = sessionDto.EndTime,
                     Timezone = "South Africa Standard Time"
                 };
                 return newSession;

@@ -425,7 +425,7 @@ namespace ChurchManager.DataImporter
                     IsOnline = isOnline,
                     ParentGroupName = parentGroup,
                     Church = church,
-                    StartDate = startDate,
+                    StartDate = DateOnly.FromDateTime(startDate.Value),
                     MeetingDay = meetingDay,
                     MeetingTime = meetingTime
                 };

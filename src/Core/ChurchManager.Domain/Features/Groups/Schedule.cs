@@ -23,13 +23,13 @@ namespace ChurchManager.Domain.Features.Groups
         /// Gets or sets the Date that the Schedule becomes effective/active. This property is inclusive, and the schedule will be inactive before this date. 
         /// </summary>
         [Column(TypeName = "Date")]
-        public DateTime? StartDate { get; set; }
+        public DateOnly? StartDate { get; set; }
 
         /// <summary>
         /// Gets or sets that date that this Schedule expires and becomes inactive. This value is inclusive and the schedule will be inactive after this date.
         /// </summary>
         [Column(TypeName = "Date")]
-        public DateTime? EndDate { get; set; }
+        public DateOnly? EndDate { get; set; }
 
         /// <summary>
         /// Gets or sets the content lines of the iCalendar
@@ -46,17 +46,17 @@ namespace ChurchManager.Domain.Features.Groups
 
         public DayOfWeek? WeeklyDayOfWeek { get; set; }
 
-        public TimeSpan? WeeklyTimeOfDay { get; set; }
+        public TimeOnly? WeeklyTimeOfDay { get; set; }
         
         /// <summary>
         /// Gets or sets start time of the schedule. This property is inclusive.
         /// </summary>
-        public TimeSpan? StartTime { get; set; }
+        public TimeOnly? StartTime { get; set; }
         
         /// <summary>
         /// Gets or sets end time of the schedule. This property is inclusive.
         /// </summary>
-        public TimeSpan? EndTime { get; set; }
+        public TimeOnly? EndTime { get; set; }
         
         /// <summary>
         /// Gets or sets the meeting frequence e.g. WEEKLY

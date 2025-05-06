@@ -140,6 +140,8 @@ namespace ChurchManager.Infrastructure
             //services.AddMediatR(assemblies);
         }
 
+        #region Wolverine
+        
         /// <summary>
         /// Add Mass Transit RabbitMq message broker
         /// </summary>
@@ -147,9 +149,7 @@ namespace ChurchManager.Infrastructure
         private static void AddWolverineRabbitMq(
             IServiceCollection services, IConfiguration configuration, AppTypeSearcher typeSearcher, AppConfig config)
         {
-
-            #region Wolverine
-
+            
             services.AddWolverine(x =>
             {
                 // Load handlers from multiple assemblies
@@ -163,10 +163,7 @@ namespace ChurchManager.Infrastructure
                     //x.Discovery.IncludeAssembly(assembly);
                 }
                 x.Discovery.IncludeAssembly(typeof(TestDomainEventConsumer).Assembly); // Testing
-
-                // ** Add Hubs Here **
-                //x.AddSignalRHub<NotificationHub>();
-
+                
                 if (config.RabbitMqEnabled)
                 {
                     var connectionString = configuration.GetConnectionString(RabbitMqSectionName) 
@@ -187,33 +184,11 @@ namespace ChurchManager.Infrastructure
                             .Replace("ChurchManager.Domain.Features.", "")
                         );
                     });
-                    
-                    /*x.PublishAllMessages().ToRabbitQueue("outgoing")
-                        .UseDurableOutbox();
-                    
-                    // Set up a listener for a queue
-                    x.ListenToRabbitQueue("outgoing")
-                        .PreFetchCount(100)
-                        .ListenerCount(5) // use 5 parallel listeners
-                        .UseDurableInbox();*/
-                    
-                    /*x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
-                    {
-                        cfg.Host(new Uri(connectionString), h => { });
-
-                        cfg.ConfigureEndpoints(provider, new SnakeCaseEndpointNameFormatter(false));
-                        
-                        cfg.PrefetchCount = config.RabbitMqPrefetchCount; // Number of messages to prefetch
-                        cfg.ConcurrentMessageLimit = config.RabbitMqConcurrentMessageLimit; // Number of concurrent consumers
-                    })); */
                 }
                 // Setup in-memory transport/queue
             });
-
-            // services.AddMassTransitHostedService();
-
-            #endregion
         }
+        #endregion
 
         /// <summary>
         /// Register application 

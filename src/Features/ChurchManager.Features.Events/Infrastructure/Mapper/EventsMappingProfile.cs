@@ -54,9 +54,9 @@ public class EventsMappingProfile: Profile, IAutoMapperProfile
         CreateMap<EventType, EventConfigurationViewModel>().ReverseMap();
         CreateMap<EventSession, EventSessionViewModel>()
             .ForMember(d => d.StartDate, opt =>
-                opt.MapFrom(src => src.Schedule != null ? src.Schedule.StartDate.GetValueOrDefault() : (DateTime?) null))
+                opt.MapFrom(src => src.Schedule != null ? src.Schedule.StartDate.GetValueOrDefault() : (DateOnly?) null))
             .ForMember(d => d.EndDate, opt =>
-                opt.MapFrom(src => src.Schedule != null ? src.Schedule.EndDate.GetValueOrDefault() : (DateTime?) null))
+                opt.MapFrom(src => src.Schedule != null ? src.Schedule.EndDate.GetValueOrDefault() : (DateOnly?) null))
             .ForMember(d => d.StartTime, opt =>
                 opt.MapFrom(src => src.Schedule != null ? src.SessionStartDateTime().StartTime : null))
             .ForMember(d => d.EndTime, opt =>
