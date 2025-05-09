@@ -24,7 +24,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
     /// </summary>
     public class PeopleFakeDbSeedInitializer : IInitializer
     {
-        public int OrderNumber { get; } = 1;
+        public int OrderNumber { get; } = 2;
         private readonly IServiceScopeFactory _scopeFactory;
         private ChurchManagerDbContext _dbContext;
         private ITenant _tenant;

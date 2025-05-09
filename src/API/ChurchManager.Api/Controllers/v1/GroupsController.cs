@@ -87,9 +87,9 @@ namespace ChurchManager.Api.Controllers.v1
         }
 
         [HttpGet("tree")]
-        public async Task<IActionResult> GetGroupsWithChildrenTree(CancellationToken token)
+        public async Task<IActionResult> GetGroupsWithChildrenTree([FromQuery] int? groupTypeId = null, CancellationToken token = default)
         {
-            return Ok(await Mediator.Send(new GroupsWithChildrenQuery(), token));
+            return Ok(await Mediator.Send(new GroupsWithChildrenQuery(groupTypeId), token));
         }
 
         [HttpGet("parent/{parentGroupId}/tree")]

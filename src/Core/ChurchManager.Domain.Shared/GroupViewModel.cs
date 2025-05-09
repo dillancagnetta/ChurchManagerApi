@@ -18,7 +18,7 @@ public record GroupViewModel
 
     public DateTime CreatedDate { get; set; }
 
-    public IEnumerable<GroupViewModel> Groups { get; set; } = [];
+    public IList<GroupViewModel> Groups { get; set; } = [];
     public int Level { get; set; } // Tree Depth level
     public ScheduleViewModel? Schedule { get; set; }
 }

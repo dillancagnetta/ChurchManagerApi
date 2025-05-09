@@ -23,7 +23,8 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<GroupMemberViewModel>> GroupMembersAsync(int groupId, RecordStatus status, CancellationToken ct = default)
+        public async Task<IEnumerable<GroupMemberViewModel>> GroupMembersAsync(int groupId, RecordStatus status,
+            CancellationToken ct = default)
         {
             var spec = new GroupMembersSpecification(groupId, status);
             var queryable = ApplySpecification(spec);
@@ -54,19 +55,23 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
         /// <summary>
         /// Gets groups and children that have a specific parent
         /// </summary>
-        public async Task<IEnumerable<GroupViewModel>> GroupsWithChildrenAsync(int? parentGroupId = null, int maxDepth = 10, CancellationToken ct = default)
+        /*public async Task<IEnumerable<GroupViewModel>> GroupsWithChildrenAsync(int? groupTypeId = null,
+            int? parentGroupId = null, int maxDepth = 10, CancellationToken ct = default)
         {
             var query = Queryable()
                 .AsNoTracking()
                 .Include(x => x.GroupType)
                 .Include(x => x.Schedule)
                 .Include(x => x.Church)
-                .Where(x => x.ParentGroupId == parentGroupId) // null will start at the root of the tree
-                .Select(GroupProjection(maxDepth))
-                ;
+                .Where(x => x.ParentGroupId == parentGroupId); // null will start at the root of the tree
 
-            return await query.ToListAsync(ct);
-        }
+            if (groupTypeId.HasValue)
+            {
+                query = query.Where(x => x.GroupTypeId == groupTypeId);
+            }
+
+            return await query.Select(GroupProjection(maxDepth)).ToListAsync(ct);
+        }*/
 
         /// <summary>
         /// Gets group and children of that group
@@ -78,14 +83,14 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
                     .Include(x => x.GroupType)
                     .Include(x => x.Schedule)
                     .Include(x => x.Church)
-                    .Where(x => x.Id == groupId) 
-                    .Select(GroupProjection(maxDepth))
+                    .Where(x => x.Id == groupId)
                 ;
 
-            return await query.ToListAsync(ct);
+            return await query.Select(GroupProjection(maxDepth)).ToListAsync(ct);
         }
 
-        public async Task<int> GroupMembersCountAsync(int groupId, bool includeLeaders = false, CancellationToken ct = default)
+        public async Task<int> GroupMembersCountAsync(int groupId, bool includeLeaders = false,
+            CancellationToken ct = default)
         {
             var membersCount = await Queryable()
                 .AsNoTracking()
@@ -93,20 +98,24 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
                 .SelectMany(x => x.Members)
                 .Where(m => includeLeaders || !m.GroupRole.IsLeader)
                 .CountAsync(ct);
-        
+
             return membersCount;
         }
 
         /// <summary>
         /// Group statistics by group type
         /// </summary>
-        public async Task<(int totalGroupsCount, int activeGroupsCount, int inActiveGroupsCount, int onlineGroupsCount, int openedGroupsCount, int closedGroupsCount)> GroupStatisticsAsync(int groupTypeId, DateTime? startDate = null, CancellationToken ct = default)
+        public async
+            Task<(int totalGroupsCount, int activeGroupsCount, int inActiveGroupsCount, int onlineGroupsCount, int
+                openedGroupsCount, int closedGroupsCount)> GroupStatisticsAsync(int groupTypeId,
+                DateTime? startDate = null,
+                CancellationToken ct = default)
         {
             if (startDate == null)
             {
                 startDate = DateTime.UtcNow.AddMonths(-6);
             }
-        
+
             var stats = await Queryable()
                 .AsNoTracking()
                 .Where(x => x.GroupTypeId == groupTypeId)
@@ -117,17 +126,17 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
                     ActiveCount = g.Count(x => x.RecordStatus == RecordStatus.Active),
                     OnlineCount = g.Count(x => x.IsOnline == true),
                     OpenedCount = g.Count(x => x.StartDate >= startDate),
-                    ClosedCount = g.Count(x => x.InactiveDateTime != null && 
-                                               x.InactiveDateTime >= startDate && 
+                    ClosedCount = g.Count(x => x.InactiveDateTime != null &&
+                                               x.InactiveDateTime >= startDate &&
                                                x.RecordStatus != RecordStatus.Active)
                 })
                 .FirstOrDefaultAsync(ct);
-        
+
             if (stats == null)
             {
                 return (0, 0, 0, 0, 0, 0);
             }
-        
+
             return (
                 stats.TotalCount,
                 stats.ActiveCount,
@@ -172,6 +181,138 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
             };
 
             return result;
+        }
+
+
+        
+        
+        /// <summary>
+        /// Gets groups and children that have a specific parent
+        /// First identifies all groups that are related to the target GroupTypeId (have that type or are connected through the hierarchy)
+        /// Loads all of those groups from the database
+        ///  Builds the tree structure in memory, respecting the original parentGroupId parameter
+        /// avoids the complexity of trying to do recursive filtering in the Expression Tree,
+        /// </summary>
+        public async Task<IEnumerable<GroupViewModel>> GroupsWithChildrenAsync(int? groupTypeId = null,
+            int? parentGroupId = null, int maxDepth = 10, CancellationToken ct = default)
+        {
+            // Base query for groups with the specified parent
+            var baseQuery = Queryable()
+                .AsNoTracking()
+                .Include(x => x.GroupType)
+                .Include(x => x.Schedule)
+                .Include(x => x.Church)
+                .Where(x => x.ParentGroupId == parentGroupId);
+
+            // If no groupTypeId filter, just return the tree as before
+            if (!groupTypeId.HasValue)
+            {
+                return await baseQuery.Select(GroupProjection(maxDepth)).ToListAsync(ct);
+            }
+
+            // If we have a groupTypeId filter, we need to find all related groups
+            // Get all group IDs that have the specified GroupTypeId
+            var groupsWithTargetType = await Queryable()
+                .Where(g => g.GroupTypeId == groupTypeId)
+                .Select(g => g.Id)
+                .ToListAsync(ct);
+
+            // Build a full list of all related group IDs (ancestors and descendants)
+            var allRelatedGroupIds = new HashSet<int>(groupsWithTargetType);
+
+            // Find all groups that are related to our target groups
+            bool added;
+            do
+            {
+                added = false;
+
+                // Find parents of our current set
+                var parentIds = await Queryable()
+                    .Where(g => g.ParentGroupId.HasValue && allRelatedGroupIds.Contains(g.Id))
+                    .Select(g => g.ParentGroupId!.Value)
+                    .ToListAsync(ct);
+
+                foreach (var id in parentIds)
+                {
+                    if (allRelatedGroupIds.Add(id)) added = true;
+                }
+
+                // Find children of our current set
+                var childIds = await Queryable()
+                    .Where(g => g.ParentGroupId.HasValue && allRelatedGroupIds.Contains(g.ParentGroupId.Value))
+                    .Select(g => g.Id)
+                    .ToListAsync(ct);
+
+                foreach (var id in childIds)
+                {
+                    if (allRelatedGroupIds.Add(id)) added = true;
+                        
+                }
+            } while (added); // Keep going until we don't add any new groups
+
+            // Now, filter our base query to only include groups in the related set
+            var filteredQuery = baseQuery.Where(g => allRelatedGroupIds.Contains(g.Id));
+
+            // Get those groups and build the tree
+            var topLevelGroups = await filteredQuery.ToListAsync(ct);
+
+            // Since we can't easily filter inside the projection, we'll load all groups
+            // and build the tree in memory
+            var allGroups = await Queryable()
+                .AsNoTracking()
+                .Include(x => x.GroupType)
+                .Include(x => x.Schedule)
+                .Include(x => x.Church)
+                .Where(g => allRelatedGroupIds.Contains(g.Id))
+                .ToListAsync(ct);
+
+            // Convert to a dictionary for easier lookup
+            var groupDict = allGroups.ToDictionary(g => g.Id);
+
+            // Build the tree manually
+            return topLevelGroups.Select(g => BuildGroupViewModel(g, groupDict, maxDepth));
+        }
+
+        private GroupViewModel BuildGroupViewModel(Group group, Dictionary<int, Group> allGroups, int maxDepth,
+            int currentDepth = 0)
+        {
+            currentDepth++;
+
+            var viewModel = new GroupViewModel
+            {
+                Id = group.Id,
+                Name = group.Name,
+                Description = group.Description,
+                Address = group.Address,
+                StartDate = group.StartDate,
+                ChurchId = group.ChurchId,
+                ChurchName = group.Church?.Name,
+                ParentGroupId = group.ParentGroupId,
+                ParentGroupChurchId = group.ParentGroup?.ChurchId,
+                ParentGroupTypeId = group.ParentGroup?.GroupTypeId,
+                ParentGroupName = group.ParentGroup?.Name,
+                IsOnline = group.IsOnline,
+                GroupType = _mapper.Map<GroupTypeViewModel>(group.GroupType),
+                CreatedDate = group.CreatedDate,
+                Schedule = group.Schedule != null ? _mapper.Map<ScheduleViewModel>(group.Schedule) : null,
+                Level = currentDepth,
+                Groups = new List<GroupViewModel>()
+            };
+
+            // Add children if we haven't reached max depth
+            if (currentDepth < maxDepth)
+            {
+                var childGroups = allGroups.Values
+                    .Where(g => g.ParentGroupId == group.Id)
+                    .ToList();
+
+                foreach (var childGroup in childGroups)
+                {
+                    viewModel.Groups.Add(BuildGroupViewModel(childGroup, allGroups, maxDepth, currentDepth));
+                }
+            }
+
+            return viewModel;
         }
     }
 }

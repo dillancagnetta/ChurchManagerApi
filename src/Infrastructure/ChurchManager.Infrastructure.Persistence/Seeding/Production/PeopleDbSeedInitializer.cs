@@ -19,7 +19,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Production
     /// </summary>
     public class PeopleDbSeedInitializer : IInitializer
     {
-        public int OrderNumber { get; } = 1;
+        public int OrderNumber { get; } = 2;
         private readonly IServiceScopeFactory _scopeFactory;
         private ChurchManagerDbContext _dbContext;
         private ITenant _tenant;
