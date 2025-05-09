@@ -10,6 +10,7 @@ namespace ChurchManager.Features.Groups.Queries.GroupsWithChildren
     public record GroupsWithChildrenQuery(int? GroupTypeId = null) : IRequest<ApiResponse>
     {
         public int? ParentGroupId { get; set; } = null;
+        public int? ChurchId { get; set; } = null;
     }
 
     public class GroupsWithChildrenHandler : IRequestHandler<GroupsWithChildrenQuery, ApiResponse>
@@ -29,6 +30,7 @@ namespace ChurchManager.Features.Groups.Queries.GroupsWithChildren
             var groups = await _dbRepository.GroupsWithChildrenAsync(
                 maxDepth:2, 
                 groupTypeId:request.GroupTypeId, 
+                churchId:request.ChurchId, 
                 ct: ct);
 
             /*
