@@ -81,11 +81,11 @@ public class GroupDbRepository : GenericRepositoryBase<Group>, IGroupDbRepositor
     public async Task<IEnumerable<GroupViewModel>> GroupWithChildrenAsync(int groupId, int maxDepth = 10,
         CancellationToken ct = default)
     {
-        var query = Queryable()
-                .AsNoTracking()
+        var query = IncludeGroupRelations(Queryable())
+                /*.AsNoTracking()
                 .Include(x => x.GroupType)
                 .Include(x => x.Schedule)
-                .Include(x => x.Church)
+                .Include(x => x.Church)*/
                 .Where(x => x.Id == groupId)
             ;
 
@@ -199,11 +199,12 @@ public class GroupDbRepository : GenericRepositoryBase<Group>, IGroupDbRepositor
         CancellationToken ct = default)
     {
         // Base query for groups with the specified parent
-        var baseQuery = Queryable()
-            .AsNoTracking()
+        var baseQuery = IncludeGroupRelations(Queryable())
+            /*.AsNoTracking()
             .Include(x => x.GroupType)
             .Include(x => x.Schedule)
             .Include(x => x.Church)
+            .Include(x => x.ParentGroup)*/
             .Where(x => x.ParentGroupId == parentGroupId);
 
         // Apply churchId filter if specified
@@ -272,11 +273,12 @@ public class GroupDbRepository : GenericRepositoryBase<Group>, IGroupDbRepositor
         } while (added);
 
         // Now, get all the relevant groups, but directly select the GroupViewModel
-        var allGroupsQuery = Queryable()
-            .AsNoTracking()
+        var allGroupsQuery = IncludeGroupRelations(Queryable())
+            /*.AsNoTracking()
             .Include(x => x.GroupType)
             .Include(x => x.Schedule)
             .Include(x => x.Church)
+            .Include(x => x.ParentGroup)*/
             .Where(g => allRelatedGroupIds.Contains(g.Id));
 
         if (churchId.HasValue)
@@ -404,5 +406,15 @@ public class GroupDbRepository : GenericRepositoryBase<Group>, IGroupDbRepositor
         }
 
         return viewModel;
+    }
+    
+    private IQueryable<Group> IncludeGroupRelations(IQueryable<Group> query)
+    {
+        return query
+            .AsNoTracking()
+            .Include(x => x.GroupType)
+            .Include(x => x.Schedule)
+            .Include(x => x.Church)
+            .Include(x => x.ParentGroup);
     }
 }
