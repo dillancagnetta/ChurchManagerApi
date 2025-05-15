@@ -49,7 +49,6 @@ namespace ChurchManager.Infrastructure.Shared.SignalR
 using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Infrastructure.Shared.SignalR.Hubs;
 using Codeboss.Types;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Protocol;
 using System.Collections.Generic;
 using System.Threading;
@@ -102,44 +101,5 @@ namespace ChurchManager.Infrastructure.Shared.SignalR
         }
     }
 
-    // Message types for Wolverine
-    public class SignalRBroadcastMessage
-    {
-        public Type HubType { get; set; }
-        public string MethodName { get; set; }
-        public object Payload { get; set; }
-    }
-    
 
-    // Handlers for SignalR messages
-    public class SignalRMessageHandlers
-    {
-        private readonly IHubContext<NotificationHub> _hubContext;
-
-        public SignalRMessageHandlers(IHubContext<NotificationHub> hubContext)
-        {
-            _hubContext = hubContext;
-        }
-
-        public Task Handle(SignalRBroadcastMessage message, CancellationToken ct)
-        {
-            if (message.HubType != typeof(NotificationHub))
-                return Task.CompletedTask;
-
-            // Send to all clients
-            return _hubContext.Clients.All.SendAsync(
-                message.MethodName, 
-                new[] { message.Payload }, 
-                ct);
-        }
-
-        public Task Handle(SignalRUserMessage message, CancellationToken ct)
-        {
-            // Send to specific user
-            return _hubContext.Clients.User(message.UserId).SendAsync(
-                message.MethodName, 
-                new[] { message.Payload }, 
-                ct);
-        }
-    }
 }

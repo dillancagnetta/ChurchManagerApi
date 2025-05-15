@@ -103,12 +103,12 @@ namespace ChurchManager.Infrastructure.Shared.SignalR.Hubs
                await Clients.All.SendAsync("OnlineUsers", onlineUsers);
            }*/
 
-            // Remove user connection to a group for that user
-            await Groups.RemoveFromGroupAsync(connectionId, userId);
-            await _tracker.RemoveConnectionAsync(userId, connectionId);
+                // Remove user connection to a group for that user
+                await Groups.RemoveFromGroupAsync(connectionId, userId);
+                await _tracker.RemoveConnectionAsync(userId, connectionId);
 
-            await base.OnDisconnectedAsync(ex);
-        }
+                await base.OnDisconnectedAsync(ex);
+            }
 
     }
 }

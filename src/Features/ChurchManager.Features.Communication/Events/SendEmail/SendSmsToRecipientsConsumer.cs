@@ -36,8 +36,7 @@ public class SendSmsToRecipientsConsumer : IDomainEventHandler
         var recipientIds = message.RecipientIds;
         var (content, hasTemplate, recipients, template, isBulk) = await _communicationDb.SmsCommunicationToSendAsync(
             communicationId,
-            recipientIds
-            );
+            recipientIds, ct);
         
         // ---------------------NON TEMPLATED / BULK SMS---------------------------------
         if (isBulk || !hasTemplate)
@@ -76,9 +75,10 @@ public class SendSmsToRecipientsConsumer : IDomainEventHandler
                     recipient.UniqueMessageId = null;
                     recipient.SendDateTime = null;
                 }
+                
+                await _communicationDb.SaveChangesAsync(ct);
             }
             
-            await _communicationDb.SaveChangesAsync(ct);
             return;
         }
         

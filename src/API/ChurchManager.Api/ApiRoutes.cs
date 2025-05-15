@@ -12,6 +12,7 @@
         public static class Hubs
         {
             public const string NotificationHub = "/signalr-hub/notifyhub";
+            public const string CommunicationsStatusHub = "/signalr-hub/communicationshub";
         }
     }
 }

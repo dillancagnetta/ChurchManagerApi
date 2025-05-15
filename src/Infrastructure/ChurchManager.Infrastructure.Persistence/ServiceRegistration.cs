@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 
 #endregion
@@ -50,6 +51,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     triggerOptions.AddTrigger<GroupMemberTrigger>();
                     triggerOptions.AddTrigger<GroupMemberAttendanceTrigger>();
                     triggerOptions.AddTrigger<MessageTrigger>();
+                    triggerOptions.AddTrigger<CommunicationRecipientTrigger>();
                     //triggerOptions.AddTrigger<SendEmailTrigger>();
             }));
             
@@ -59,7 +61,10 @@ namespace ChurchManager.Infrastructure.Persistence
             // Database Health Check 
             services
                 .AddHealthChecks()
-                .AddDbContextCheck<ChurchManagerDbContext>();
+                .AddDbContextCheck<ChurchManagerDbContext>(
+                    name: "database",
+                    failureStatus: HealthStatus.Unhealthy,
+                    tags: new[] { "data", "postgres" });
 
             services.AddScoped<IChurchManagerDbContext>(s => s.GetService<ChurchManagerDbContext>());
             services.AddScoped<DbContext>(s => s.GetService<ChurchManagerDbContext>());

@@ -45,7 +45,7 @@ public class CommunicationRecipient : Entity<int>
     /// <summary>
     /// Number of attempts made to send 
     /// </summary>
-    public int AttemptCount  { get; set; }
+    public int AttemptCount { get; set; } = 0;
 
     # region Navigation
     

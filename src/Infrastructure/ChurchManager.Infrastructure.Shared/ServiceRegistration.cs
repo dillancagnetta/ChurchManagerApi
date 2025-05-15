@@ -7,6 +7,7 @@ using CodeBoss.AspNetCore.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace ChurchManager.Infrastructure.Shared
 {
@@ -27,6 +28,12 @@ namespace ChurchManager.Infrastructure.Shared
             services.AddScoped<IMessageSender, MessageSender>();
 
             services.AddHttpClient();
+
+            // Infrastructure Health Checks
+            services.AddHealthChecks().AddCheck<RabbitMqHealthCheck>( 
+                "rabbitmq-custom",
+                failureStatus: HealthStatus.Degraded,
+                tags: new[] { "infrastructure", "rabbitmq" });
         }
     }
 }

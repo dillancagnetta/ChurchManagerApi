@@ -48,4 +48,17 @@ public static class GroupModelExtensions
             IconCssClass = model.IconCssClass,
         };
     }
+
+    public static GroupReference? ToReference(this Group? model)
+    {
+        if (model == null) return null;
+
+        return new GroupReference
+        {
+            GroupTypeId = model.GroupType?.Id,
+            GroupTypeName = model.GroupType?.Name,
+            GroupId = model.Id,
+            GroupName = model.Name,
+        };
+    }
 }
