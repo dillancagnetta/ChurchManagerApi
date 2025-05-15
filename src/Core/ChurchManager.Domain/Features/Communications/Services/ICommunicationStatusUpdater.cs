@@ -1,9 +1,11 @@
-﻿namespace ChurchManager.Domain.Features.Communications.Services;
+﻿using ChurchManager.Domain.Shared;
+
+namespace ChurchManager.Domain.Features.Communications.Services;
 
 public interface ICommunicationStatusUpdater
 {
     ValueTask  UpdateRecipientStatusAsync(
-        CommunicationRecipient recipient, 
+        CommunicationRecipientViewModel recipient, 
         CancellationToken ct = default);
     
     ValueTask  UpdateBatchRecipientStatusAsync(

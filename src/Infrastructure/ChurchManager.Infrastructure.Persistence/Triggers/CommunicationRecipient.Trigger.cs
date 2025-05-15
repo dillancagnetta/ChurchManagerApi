@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Communications.Extensions;
 using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Domain.Features.People.Repositories;
 using EntityFrameworkCore.Triggered;
@@ -16,11 +17,14 @@ public class CommunicationRecipientTrigger(
             var entity = context.Entity;
 
             // Status changed
-            if (context.UnmodifiedEntity?.Status.Value != entity.Status.Value && entity.AttemptCount > 0)
+            if (context.UnmodifiedEntity?.Status.Value != entity.Status.Value)
             {
-                var person = await personDb.GetByIdAsync(entity.PersonId, ct);
-                entity.RecipientPerson = person;
-                await updater.UpdateRecipientStatusAsync(entity, ct);
+                // Add recipient to the model
+                var person = await personDb.BasicPersonViewModelAsync(entity.PersonId, ct);
+                var vm = entity.ToViewModel();
+                vm.RecipientPerson = person;
+                // push to front-end
+                await updater.UpdateRecipientStatusAsync(vm, ct);
             }
         }
     }

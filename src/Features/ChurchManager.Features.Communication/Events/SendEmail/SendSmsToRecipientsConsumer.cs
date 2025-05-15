@@ -6,6 +6,7 @@ using ChurchManager.Infrastructure.Abstractions;
 using Codeboss.Results;
 using Microsoft.Extensions.Logging;
 using ChurchManager.Domain.Shared;
+using CodeBoss.Extensions;
 
 namespace ChurchManager.Features.Communication.Events.SendEmail;
 
@@ -38,15 +39,16 @@ public class SendSmsToRecipientsConsumer : IDomainEventHandler
             communicationId,
             recipientIds, ct);
         
+        var pendingRecipients =
+            recipients.Where(recipient => recipient.Status == CommunicationRecipientStatus.Pending.Value).ToList();
+        
         // ---------------------NON TEMPLATED / BULK SMS---------------------------------
         if (isBulk || !hasTemplate)
         {
             var bulkSmsMessage = new BulkSmsMessage
             {
                 Body = content,
-                To = recipients
-                    .Where(recipient => recipient.Status == CommunicationRecipientStatus.Pending.Value)
-                    .Select(recipient => new SmsRecipient
+                To = pendingRecipients.Select(recipient => new SmsRecipient
                 {
                     PersonId = recipient.PersonId,
                     PhoneNumber = recipient.RecipientPerson!.MessagingPhoneNumber.FullNumber
@@ -54,8 +56,14 @@ public class SendSmsToRecipientsConsumer : IDomainEventHandler
                 DeduplicationId = message.CommunicationId
             };
             
+            // Update Sending status
+            pendingRecipients.ForEach(recipient => recipient.Status = CommunicationRecipientStatus.Sending.Value);
+            await _communicationDb.SaveChangesAsync(ct);
+            
+            // Send bulk SMS
             var operationResult = await _sms.SendBulkSmsAsync(bulkSmsMessage, ct);
             Logger.LogInformation($"SendSmsToRecipient isBulk success: [{operationResult.IsSuccess}] ------");
+            // Send bulk SMS
             
             var recipientResults = operationResult.Result.ToDictionary(r => r.PersonId, r => r);
             foreach (var recipient in recipients)
@@ -87,9 +95,8 @@ public class SendSmsToRecipientsConsumer : IDomainEventHandler
         if (hasTemplate)
         {
             var templateInfo = new TemplateInfo(template.Name, null);
-
-            var smsMessages = recipients
-                .Where(recipient => recipient.Status == CommunicationRecipientStatus.Pending.Value)
+            
+            var smsMessages = pendingRecipients
                 .Select(recipient => new SmsMessage
             {
                 Recipient = new SmsRecipient
@@ -98,6 +105,10 @@ public class SendSmsToRecipientsConsumer : IDomainEventHandler
                     PhoneNumber = recipient.RecipientPerson!.MessagingPhoneNumber.FullNumber
                 },
             });
+            
+            // Update Sending status
+            pendingRecipients.ForEach(recipient => recipient.Status = CommunicationRecipientStatus.Sending.Value);
+            await _communicationDb.SaveChangesAsync(ct);
             
             var recipientResults = new Dictionary<int, OperationResult<SmsOperationResult>>();
             await foreach (var result in _sms.SendSmsAsync(smsMessages, templateInfo, ct))

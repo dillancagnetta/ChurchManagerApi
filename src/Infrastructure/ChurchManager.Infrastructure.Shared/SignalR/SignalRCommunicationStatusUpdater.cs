@@ -1,6 +1,7 @@
 ﻿using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Communications.Extensions;
 using ChurchManager.Domain.Features.Communications.Services;
+using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Shared.SignalR.Hubs;
 using Wolverine;
 
@@ -9,16 +10,15 @@ namespace ChurchManager.Infrastructure.Shared.SignalR;
 public class SignalRCommunicationStatusUpdater(IMessageBus bus) : ICommunicationStatusUpdater
 {
     public async ValueTask UpdateRecipientStatusAsync(
-        CommunicationRecipient recipient, 
+        CommunicationRecipientViewModel recipient, 
         CancellationToken ct = default)
     {
-        recipient.Communication = null; // Clear communication reference to prevent circular reference
         // Create message for broadcasting to all clients
         var broadcastMessage = new SignalRBroadcastMessage
         {
             HubType = typeof(CommunicationStatusHub),
             MethodName = "ReceiveRecipientStatusUpdate",
-            Payload = recipient.ToViewModel()
+            Payload = recipient
         };    
         await bus.PublishAsync(broadcastMessage);
     }
