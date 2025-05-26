@@ -18,9 +18,13 @@ public record GroupViewModel
 
     public DateTime CreatedDate { get; set; }
 
-    public IEnumerable<GroupViewModel> Groups { get; set; } = [];
+    public IList<GroupViewModel> Groups { get; set; } = [];
     public int Level { get; set; } // Tree Depth level
     public ScheduleViewModel? Schedule { get; set; }
+    
+    // New properties for filtering
+    public bool MatchesFilter { get; set; }
+    public bool HasMatchingDescendant { get; set; }
 }
 
 public record GroupTypeViewModel

@@ -13,7 +13,7 @@ namespace ChurchManager.Features.Communication.Queries;
 
 public record BrowseCommunicationsQuery : SearchTermQueryParameter, IRequest<ApiResponse>
 {
-    public string CommunicationStatus { get; set; } = Feature.CommunicationStatus.PendingApproval.Value;
+    public string? CommunicationStatus { get; set; }
     public DateTime? From { get; set; }
     public DateTime? To { get; set; }
     public int? RecipientPersonId { get; set; }
@@ -29,7 +29,7 @@ public class BrowseCommunicationsHandler(
     public async Task<ApiResponse> Handle(BrowseCommunicationsQuery query, CancellationToken ct)
     {
         var allowedIds = await permissions.GetAllowedIdsAsync<Feature.Communication>(
-            userLoginId: Guid.Parse((string)currentUser.Id), PermissionAction.View, ct);
+            userLoginId: Guid.Parse(currentUser.Id), PermissionAction.View, ct);
 
         var spec = new BrowseCommunicationsSpecification(
             query,

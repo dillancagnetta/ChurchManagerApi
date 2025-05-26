@@ -37,6 +37,7 @@ public class BrowseRecipientsSpecification : Specification<Communication, Commun
 
       Query.SelectMany(c => c.Recipients.Select(x => new CommunicationRecipientViewModel
       {
+         Id = x.Id,
          RecipientPerson = new PersonViewModelBasic
          {
             PersonId = x.PersonId,

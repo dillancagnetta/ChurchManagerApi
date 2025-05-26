@@ -5,10 +5,7 @@ using MediatR;
 
 namespace ChurchManager.Features.Groups.Queries.GroupsWithChildren
 {
-    public record GroupWithChildrenQuery(int GroupId, int MaxDepth = 2) : IRequest<ApiResponse>
-    {
-    }
-
+    public record GroupWithChildrenQuery(int GroupId, int MaxDepth = 2) : IRequest<ApiResponse>;
     public class GroupWithChildrenHandler : IRequestHandler<GroupWithChildrenQuery, ApiResponse>
     {
         private readonly IGroupDbRepository _dbRepository;
@@ -25,7 +22,7 @@ namespace ChurchManager.Features.Groups.Queries.GroupsWithChildren
             // Ordering
             groups = groups.OrderBy(x => x.Name);
             // Order the group children
-            groups.ForEach(x => x.Groups = x.Groups.OrderBy(x => x.Name));
+            groups.ForEach(x => x.Groups = x.Groups.OrderBy(x => x.Name).ToList());
 
             return new ApiResponse(groups);
         }

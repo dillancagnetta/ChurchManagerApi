@@ -73,6 +73,7 @@ namespace ChurchManager.Api._DependencyInjection
                 var hubPathSegments = new[]
                 {
                     ApiRoutes.Hubs.NotificationHub,
+                    ApiRoutes.Hubs.CommunicationsStatusHub,
                     //ApiRoutes.Hubs.AppHub,
                     // ApiRoutes.Hubs.GroupsHub
                 };

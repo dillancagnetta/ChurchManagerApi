@@ -17,6 +17,8 @@ namespace ChurchManager.Infrastructure.Shared.SignalR
 
             services.AddTransient<IUserNotificationsHubService, WolverineUserNotificationsSignalRHubService>();
             
+            services.AddTransient<ICommunicationStatusUpdater, SignalRCommunicationStatusUpdater>();
+            
             services.AddSingleton<IConnectionTracker, SignalRConnectionTracker>();
         }
     }

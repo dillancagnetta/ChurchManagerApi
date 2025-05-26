@@ -40,12 +40,17 @@ public class SendEmailToRecipientConsumer : IDomainEventHandler
 
         if (recipient.Status == CommunicationRecipientStatus.Pending.Value)
         {
+            // Update Sending status
+            recipient.Status = CommunicationRecipientStatus.Sending.Value;
+            await _communicationDb.SaveChangesAsync(ct);
+            
             var emailRecipient = new EmailRecipient
             {
                 EmailAddress = recipient.RecipientPerson!.Email!.Address!,
                 PersonId = recipient.PersonId
             };
 
+            // Send email
             var result = new OperationResult<string>();
             if (hasTemplate)
             {
@@ -57,6 +62,7 @@ public class SendEmailToRecipientConsumer : IDomainEventHandler
                 result = await _email.SendEmailAsync(emailRecipient, subject, content, ct);
             }
             Logger.LogInformation($"SendEmailAsync success: [{result.IsSuccess}] ------");
+            // Send email
             
             recipient.AttemptCount++;
             recipient.Status = result.IsSuccess? CommunicationRecipientStatus.Sent.Value : CommunicationRecipientStatus.Failed.Value;

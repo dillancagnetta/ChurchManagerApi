@@ -1,5 +1,6 @@
 ﻿using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Communications.Events;
+using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Infrastructure.Abstractions;
@@ -56,7 +57,7 @@ public class CommunicationApprovedConsumer: IDomainEventHandler
                 {
                     if (communication.IsBulkCommunication)
                     {
-                
+                        //TODO
                     }
                     else
                     {
@@ -107,7 +108,7 @@ public class CommunicationApprovedConsumer: IDomainEventHandler
                         .Include(x => x.PhoneNumbers)
                         .AsNoTracking()
                         .Where(x => recipientPersonIds.Contains(x.Id))
-                        .Select(x => new { x.Id, PhoneNumber = x.PhoneNumbers.FirstOrDefault(x => x.IsMessagingEnabled) })
+                        .Select(x => new { x.Id, PhoneNumber = x.PhoneNumbers!.FirstOrDefault(x => x.IsMessagingEnabled) })
                         .ToListAsync(ct);
                     
                     var peopleWithActiveSms = people.Where(x => x.PhoneNumber != null).ToList();

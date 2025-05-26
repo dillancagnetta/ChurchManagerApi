@@ -24,7 +24,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
     /// </summary>
     public class PeopleFakeDbSeedInitializer : IInitializer
     {
-        public int OrderNumber { get; } = 1;
+        public int OrderNumber { get; } = 2;
         private readonly IServiceScopeFactory _scopeFactory;
         private ChurchManagerDbContext _dbContext;
         private ITenant _tenant;
@@ -86,7 +86,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             var faker = new Faker("en");
             var cagnettaFamily = new Family {Name = "Cagnetta Family", Language = "English", Address = GenerateAddress(faker), Code = "CAGNETTA10" };
             await _dbContext.SaveChangesAsync();
-
+            
             // Add me as the first Person i.e. with Id 1
             var dillan = new Person
             {
@@ -106,7 +106,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 BirthDate = new BirthDate {BirthDay = 6, BirthMonth = 11, BirthYear = 1981},
                 ReceivedHolySpirit = true,
                 Occupation = "Pastor",
-                PhoneNumbers = new List<PhoneNumber>(1) {PhoneNumbersFaker()},
+                PhoneNumbers = new List<PhoneNumber>(1) { PhoneNumbersFaker(isMessagingEnabled:true)},
                 ConnectionStatusHistory = new List<ConnectionStatusHistory>
                 {
                     new ()
@@ -360,10 +360,10 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             return children;
         }
 
-        private Faker<PhoneNumber> PhoneNumbersFaker()
+        private Faker<PhoneNumber> PhoneNumbersFaker(bool isMessagingEnabled = false)
         {
             var phoneNumbers = new Faker<PhoneNumber>()
-                .RuleFor(u => u.IsMessagingEnabled, f => f.Random.Bool())
+                .RuleFor(u => u.IsMessagingEnabled, f => !isMessagingEnabled ? f.Random.Bool() : isMessagingEnabled)
                 .RuleFor(u => u.IsUnlisted, f => f.Random.Bool())
                 .RuleFor(p => p.CountryCode, f => "+27")
                 .RuleFor(p => p.Number, f => f.Phone.PhoneNumber("#########"));

@@ -12,7 +12,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Production
 {
     public class ChurchAttendanceTypeDbInitializer : IInitializer
     {
-        public int OrderNumber => 4;
+        public int OrderNumber => SeedingConstants.FirstSeedOrder;
 
         private readonly IServiceScopeFactory _scopeFactory;
 

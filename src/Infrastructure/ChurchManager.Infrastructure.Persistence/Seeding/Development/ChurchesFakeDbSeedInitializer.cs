@@ -16,7 +16,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development;
 /// </summary>
 public class ChurchesFakeDbSeedInitializer : IInitializer
 {
-    public int OrderNumber { get; } = 0;
+    public int OrderNumber { get; } = 1;
     private readonly IServiceScopeFactory _scopeFactory;
 
     public ChurchesFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;

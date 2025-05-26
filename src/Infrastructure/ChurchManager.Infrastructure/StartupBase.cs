@@ -113,15 +113,13 @@ namespace ChurchManager.Infrastructure
         /// </summary>
         /// <param name="mvcCoreBuilder"></param>
         /// <param name="configuration"></param>
-        private static void RegisterExtensions(IMvcCoreBuilder mvcCoreBuilder, IConfiguration configuration)
+        /// <param name="config"></param>
+        private static void RegisterExtensions(IMvcCoreBuilder mvcCoreBuilder, IConfiguration configuration, AppConfig config)
         {
-            var config = new AppConfig();
-            configuration.GetSection(AppSectionName).Bind(config);
-            
             Console.WriteLine($"[AppConfig] RabbitMqEnabled: {config.RabbitMqEnabled}");
             Console.WriteLine($"[AppConfig] EmailSendingEnabled: {config.EmailSendingEnabled}");
             Console.WriteLine($"[AppConfig] SMSSendingEnabled: {config.SMSSendingEnabled}");
-
+  
             //Load plugins
             PluginManager.Load(mvcCoreBuilder, config);
 
@@ -182,6 +180,7 @@ namespace ChurchManager.Infrastructure
                         // Customize the naming convention for incoming queues
                         r.QueueNameForListener(type => type.FullName!
                             .Replace("ChurchManager.Domain.Features.", "")
+                            .Replace("ChurchManager.Infrastructure.Shared.", "")
                         );
                     });
                 }
@@ -248,9 +247,14 @@ namespace ChurchManager.Infrastructure
         {
             //register application
             var mvcBuilder = RegisterApplication(services, configuration);
-
+            
+            // ApplicationConfig
+            var config = new AppConfig();
+            configuration.GetSection(AppSectionName).Bind(config);
+            services.Configure<AppConfig>(configuration.GetSection(AppSectionName));
+            
             //register extensions 
-            RegisterExtensions(mvcBuilder, configuration);
+            RegisterExtensions(mvcBuilder, configuration, config);
 
             //find startup configurations provided by other assemblies
             var typeSearcher = new AppTypeSearcher();
@@ -278,9 +282,6 @@ namespace ChurchManager.Infrastructure
             //Register custom type converters
             RegisterTypeConverter(typeSearcher);
 
-            var config = new AppConfig();
-            configuration.GetSection(AppSectionName).Bind(config);
-
             //add mediator
             AddMediator(services, typeSearcher);
 
@@ -303,6 +304,7 @@ namespace ChurchManager.Infrastructure
             //Execute startupbase interface
             ExecuteStartupBase(typeSearcher);
         }
+        
 
         /// <summary>
         /// Configure HTTP request pipeline

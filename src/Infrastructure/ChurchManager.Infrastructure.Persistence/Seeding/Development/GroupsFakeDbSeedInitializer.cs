@@ -18,7 +18,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
     /// </summary>
     public class GroupsFakeDbSeedInitializer : IInitializer
     {
-        public int OrderNumber { get; } = 2;
+        public int OrderNumber { get; } = 3;
         private readonly IServiceScopeFactory _scopeFactory;
         private ChurchManagerDbContext _dbContext;
 
@@ -195,6 +195,8 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             for(int i = 0; i < count; i++)
             {
                 var fakeName =  $"{ faker.Address.City()} Cell";
+                var isCellGroupType = parentGroup.GroupType!.Name == SeedingConstants.CellGroupType ||
+                                      parentGroup.GroupType!.Name == "Section";
                 var group = new Group
                 {
                     Name = parentGroup.Name == "Cell Groups" ? fakeName : $"{ parentGroup.Name} - {level + i}",
@@ -205,7 +207,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                     StartDate = DateTimeOffset.UtcNow,
                     IsOnline = i % 2 == 0,
                     Address = faker.Address.FullAddress(),
-                    Schedule = parentGroup.Name == "Cell Groups" ? GenerateSchedule() : null,
+                    Schedule = isCellGroupType ? GenerateSchedule() : null,
                     ParentGroup = parentGroup
                 };
 

@@ -33,6 +33,7 @@ public record CommunicationReviewViewModel
 
 public record CommunicationRecipientViewModel
 {
+    public int Id { get; set; }
     public PersonViewModelBasic? RecipientPerson { get;   set; }
     public string? Status { get; set; }
     public string? StatusNote { get; set; }

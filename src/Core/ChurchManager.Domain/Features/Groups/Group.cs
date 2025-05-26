@@ -23,7 +23,7 @@ namespace ChurchManager.Domain.Features.Groups
         public string? Address { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public int? GroupCapacity { get; set; }
-        public bool? IsOnline { get; set; }
+        public bool? IsOnline { get; set; } = false;
 
         #region Navigation
 

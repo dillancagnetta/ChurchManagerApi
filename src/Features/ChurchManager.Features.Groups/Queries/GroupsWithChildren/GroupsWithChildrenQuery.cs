@@ -1,14 +1,16 @@
 ﻿using AutoMapper;
 using ChurchManager.Domain.Features.Groups.Repositories;
+using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
 using CodeBoss.Extensions;
 using MediatR;
 
 namespace ChurchManager.Features.Groups.Queries.GroupsWithChildren
 {
-    public record GroupsWithChildrenQuery : IRequest<ApiResponse>
+    public record GroupsWithChildrenQuery(int? GroupTypeId = null) : IRequest<ApiResponse>
     {
         public int? ParentGroupId { get; set; } = null;
+        public int? ChurchId { get; set; } = null;
     }
 
     public class GroupsWithChildrenHandler : IRequestHandler<GroupsWithChildrenQuery, ApiResponse>
@@ -25,14 +27,29 @@ namespace ChurchManager.Features.Groups.Queries.GroupsWithChildren
 
         public async Task<ApiResponse> Handle(GroupsWithChildrenQuery request, CancellationToken ct)
         {
-            var groups = await _dbRepository.GroupsWithChildrenAsync(maxDepth:2, ct: ct);
+            var groups = await _dbRepository.GroupsWithChildrenAsync(
+                maxDepth:2, 
+                groupTypeId:request.GroupTypeId, 
+                churchId:request.ChurchId, 
+                ct: ct);
 
+            /*
             // Ordering
             groups = groups.OrderBy(x => x.Name);
             // Order the group children
-            groups.ForEach(x => x.Groups = x.Groups.OrderBy(x => x.Name));
+            groups.ForEach(x => x.Groups = x.Groups.OrderBy(x => x.Name).ToList());
+            */
 
-            return new ApiResponse(groups);
+            return new ApiResponse(OrderGroupsRecursively(groups));
+        }
+        
+        private IEnumerable<GroupViewModel> OrderGroupsRecursively(IEnumerable<GroupViewModel> groups)
+        {
+            return groups.OrderBy(x => x.Name).Select(group =>
+            {
+                group.Groups = OrderGroupsRecursively(group.Groups).ToList();
+                return group;
+            });
         }
     }
 }
