@@ -17,5 +17,10 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts.Factory
             new DbContextOptionsBuilder<ChurchManagerDbContext>()
                 .UseNpgsql(connectionString)
                 .Options;
+        
+        public static MasterDbContext Create(string connectionString) =>
+            new (new DbContextOptionsBuilder<MasterDbContext>()
+                .UseNpgsql(connectionString)
+                .Options);
     }
 }

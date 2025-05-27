@@ -1,11 +1,13 @@
 ﻿#region
 
 using ChurchManager.Domain.Common;
+using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.Infrastructure.Persistence.Contexts.Factory;
 using ChurchManager.Infrastructure.Persistence.Seeding;
 using ChurchManager.Persistence.Shared;
 using CodeBoss.MultiTenant;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -37,7 +39,7 @@ public class DbTenantMigrationHostedService :  IHostedService
         Console.WriteLine("[✔️] Migrations enabled.");
             
         // Try seeding Tenants
-        TrySeedTenantsDatabase(ct, scope);
+        TryMigrateAndSeedMasterDatabase(ct, scope);
         
         // Start Migration for each tenant
         var tenantProvider = scope.ServiceProvider.GetRequiredService<ITenantsProvider<TenantConfiguration>>();
@@ -82,9 +84,33 @@ public class DbTenantMigrationHostedService :  IHostedService
             throw;
         }
     }
-        
-    private static void TrySeedTenantsDatabase(CancellationToken ct, IServiceScope scope)
+    
+    private async Task MigrateMasterDatabase(IServiceScope scope, CancellationToken ct = default)
     {
+        try
+        {
+            var connectionString = scope.ServiceProvider.GetRequiredService<IConfiguration>().GetConnectionString("MasterDatabase");
+            await using var dbContext = DbContextFactory.Create(connectionString!);
+            if ((await dbContext.Database.GetPendingMigrationsAsync(ct)).Any())
+            {
+                Console.WriteLine($"*** Beginning [MasterDb] migration.");
+                    
+                await dbContext.Database.MigrateAsync(ct);
+                
+                Console.WriteLine($"*** Completed [MasterDb] migration.");
+            }
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine($"Error occurred during migration: {e.Message} --> [MasterDb]");
+            throw;
+        }
+    }
+        
+    private void TryMigrateAndSeedMasterDatabase(CancellationToken ct, IServiceScope scope)
+    {
+        MigrateMasterDatabase(scope, ct).Wait(ct);
+        
         var tenantSeeder = scope.ServiceProvider.GetService<TenantsDbFakeSeedInitializer>();
         tenantSeeder?.InitializeAsync().Wait(ct);
         Console.WriteLine("Attempting to Seed Tenants... " + (tenantSeeder == null ? "[No Seeder Registered]" : "[Succeeded]"));
