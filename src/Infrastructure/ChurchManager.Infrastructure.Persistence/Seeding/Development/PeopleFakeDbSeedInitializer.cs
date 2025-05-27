@@ -36,7 +36,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         public async Task InitializeAsync()
         {
             using var scope = _scopeFactory.CreateScope();
-            _tenant = scope.ServiceProvider.GetRequiredService<ITenantProvider>().Tenants().FirstOrDefault();
+            _tenant = scope.ServiceProvider.GetRequiredService<ITenantsProvider<TenantConfiguration>>().Tenants().First(); // FileTenantsProvider
             _dbContext = scope.ServiceProvider.GetRequiredService<ChurchManagerDbContext>();
             _church = _dbContext.Church.First(x => x.Name == "Cape Town Church");
 

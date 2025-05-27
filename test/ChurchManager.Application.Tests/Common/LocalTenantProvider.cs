@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Linq;
+using ChurchManager.Domain.Common;
 using CodeBoss.MultiTenant;
 
 namespace ChurchManager.Application.Tests.Common
 {
-    public class LocalTenantProvider : ITenantProvider
+    public class LocalTenantProvider : ITenantsProvider<TenantConfiguration>
     {
         public bool Enabled => true;
-        public ITenant[] Tenants()
+        public TenantConfiguration[] Tenants()
         {
             return new[]
             {
-                new Tenant
+                new TenantConfiguration
                 {
                     Name = "Tenant1",
                     ConnectionString =
@@ -20,7 +21,7 @@ namespace ChurchManager.Application.Tests.Common
             };
         }
 
-        public ITenant Get(string name) => Tenants().First();
+        public TenantConfiguration Get(string name) => Tenants().First();
 
         public ITenant CurrentTenant
         {

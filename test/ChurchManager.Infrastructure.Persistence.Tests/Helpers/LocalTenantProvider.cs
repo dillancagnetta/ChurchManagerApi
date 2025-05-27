@@ -1,15 +1,16 @@
-﻿using CodeBoss.MultiTenant;
+﻿using ChurchManager.Domain.Common;
+using CodeBoss.MultiTenant;
 
 namespace ChurchManager.Infrastructure.Persistence.Tests.Helpers;
 
-public class LocalTenantProvider : ITenantProvider
+public class LocalTenantProvider : ITenantsProvider<TenantConfiguration>
 {
     public bool Enabled => true;
-    public ITenant[] Tenants()
+    public TenantConfiguration[] Tenants()
     {
         return new[]
         {
-            new Tenant
+            new TenantConfiguration
             {
                 Name = "Tenant1",
                 ConnectionString =
@@ -18,7 +19,7 @@ public class LocalTenantProvider : ITenantProvider
         };
     }
 
-    public ITenant Get(string name) => Tenants().First();
+    public TenantConfiguration Get(string name) => Tenants().First();
 
     public ITenant CurrentTenant
     {
@@ -27,14 +28,14 @@ public class LocalTenantProvider : ITenantProvider
     }
 }
 
-public class NoneTenantProvider : ITenantProvider
+public class NoneTenantProvider: ITenantsProvider<TenantConfiguration>
 {
-    public ITenant[] Tenants()
+    public TenantConfiguration[] Tenants()
     {
         throw new NotImplementedException();
     }
 
-    public ITenant Get(string name)
+    public TenantConfiguration Get(string name)
     {
         throw new NotImplementedException();
     }

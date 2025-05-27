@@ -1,5 +1,6 @@
 ﻿#region
 
+using ChurchManager.Domain.Common;
 using CodeBoss.MultiTenant;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +10,7 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts.Factory
 {
     public static class DbContextFactory
     {
-        public static ChurchManagerDbContext Create(string connectionString, ITenantProvider provider) =>
+        public static ChurchManagerDbContext Create(string connectionString, ITenantsProvider<TenantConfiguration> provider) =>
             new (CreateDefaultDbContextOptions(connectionString), provider);
 
         public static DbContextOptions<ChurchManagerDbContext> CreateDefaultDbContextOptions(string connectionString) =>

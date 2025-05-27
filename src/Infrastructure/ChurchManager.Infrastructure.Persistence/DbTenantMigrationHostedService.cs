@@ -1,6 +1,8 @@
 ﻿#region
 
+using ChurchManager.Domain.Common;
 using ChurchManager.Infrastructure.Persistence.Contexts.Factory;
+using ChurchManager.Infrastructure.Persistence.Seeding;
 using ChurchManager.Persistence.Shared;
 using CodeBoss.MultiTenant;
 using Microsoft.EntityFrameworkCore;
@@ -11,72 +13,80 @@ using Npgsql;
 
 #endregion
 
-namespace ChurchManager.Infrastructure.Persistence
+namespace ChurchManager.Infrastructure.Persistence;
+
+public class DbTenantMigrationHostedService :  IHostedService
 {
-    public class DbTenantMigrationHostedService :  IHostedService
+    private readonly IServiceProvider _serviceProvider;
+
+    public DbTenantMigrationHostedService(IServiceProvider serviceProvider)
     {
-        private readonly IServiceProvider _serviceProvider;
+        _serviceProvider = serviceProvider;
+    }
 
-        public DbTenantMigrationHostedService(IServiceProvider serviceProvider)
-        {
-            _serviceProvider = serviceProvider;
-        }
-
-        public async Task StartAsync(CancellationToken ct)
-        {
-            using var scope = _serviceProvider.CreateScope();
+    public async Task StartAsync(CancellationToken ct)
+    {
+        using var scope = _serviceProvider.CreateScope();
             
-            var dbOptions = _serviceProvider.GetRequiredService<IOptions<DbOptions>>().Value;
-            if (!dbOptions.Migrate)
-            {
-                Console.WriteLine("[X] Migrations disabled.");
-                return;
-            }
-
-            Console.WriteLine("[✔️] Migrations enabled.");
-
-            var tenantProvider = scope.ServiceProvider.GetRequiredService<ITenantProvider>();
-                
-            var tenants = tenantProvider.Tenants();
-
-            IEnumerable<Task> tasks = tenants.Select(tenant => MigrateTenantDatabase(tenant, tenantProvider, ct));
-
-            Console.WriteLine("> Starting parallel execution of pending migrations...");
-            await Task.WhenAll(tasks);
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
+        var dbOptions = _serviceProvider.GetRequiredService<IOptions<DbOptions>>().Value;
+        if (!dbOptions.Migrate)
         {
-            return Task.CompletedTask;
+            Console.WriteLine("[X] Migrations disabled.");
+            return;
         }
+        Console.WriteLine("[✔️] Migrations enabled.");
+            
+        // Try seeding Tenants
+        TrySeedTenantsDatabase(ct, scope);
+        
+        // Start Migration for each tenant
+        var tenantProvider = scope.ServiceProvider.GetRequiredService<ITenantsProvider<TenantConfiguration>>();
+        var tenants = tenantProvider.Tenants();
+        IEnumerable<Task> tasks = tenants.Select(tenant => MigrateTenantDatabase(tenant, tenantProvider, ct));
 
-        private async Task MigrateTenantDatabase(ITenant tenant, ITenantProvider provider, CancellationToken ct = default)
+        Console.WriteLine("> Starting parallel execution of pending migrations...");
+        await Task.WhenAll(tasks);
+    }
+        
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
+
+    private async Task MigrateTenantDatabase(ITenant tenant, ITenantsProvider<TenantConfiguration> provider, CancellationToken ct = default)
+    {
+        try
         {
-            try
+            await using var dbContext = DbContextFactory.Create(tenant.ConnectionString, provider);
+            if ((await dbContext.Database.GetPendingMigrationsAsync(ct)).Any())
             {
-                await using var dbContext = DbContextFactory.Create(tenant.ConnectionString, provider);
-                if ((await dbContext.Database.GetPendingMigrationsAsync(ct)).Any())
-                {
-                    Console.WriteLine($"*** Beginning migration for: [{tenant.Name}]");
+                Console.WriteLine($"*** Beginning migration for: [{tenant.Name}]");
                     
-                    await dbContext.Database.MigrateAsync(ct);
+                await dbContext.Database.MigrateAsync(ct);
                 
-                    // ------------------------------------------------------------------------------
-                    // Fixes issues with PostgreSQL not reloading types after migration e.g. hstore extension
-                    // https://github.com/npgsql/efcore.pg/issues/292#issuecomment-388608426
-                    await dbContext.Database.OpenConnectionAsync(ct);
-                    await ((NpgsqlConnection)dbContext.Database.GetDbConnection()).ReloadTypesAsync();
-                    await dbContext.Database.CloseConnectionAsync();
-                    // ------------------------------------------------------------------------------
+                // ------------------------------------------------------------------------------
+                // Fixes issues with PostgreSQL not reloading types after migration e.g. hstore extension
+                // https://github.com/npgsql/efcore.pg/issues/292#issuecomment-388608426
+                await dbContext.Database.OpenConnectionAsync(ct);
+                await ((NpgsqlConnection)dbContext.Database.GetDbConnection()).ReloadTypesAsync(ct);
+                await dbContext.Database.CloseConnectionAsync();
+                // ------------------------------------------------------------------------------
                 
-                    Console.WriteLine($"*** Completed migration for: [{tenant.Name}]");
-                }
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine($"Error occurred during migration: {e.Message} --> [{tenant.Name}]");
-                throw;
+                Console.WriteLine($"*** Completed migration for: [{tenant.Name}]");
             }
         }
+        catch(Exception e)
+        {
+            Console.WriteLine($"Error occurred during migration: {e.Message} --> [{tenant.Name}]");
+            throw;
+        }
+    }
+        
+    private static void TrySeedTenantsDatabase(CancellationToken ct, IServiceScope scope)
+    {
+        var tenantSeeder = scope.ServiceProvider.GetService<TenantsDbFakeSeedInitializer>();
+        tenantSeeder?.InitializeAsync().Wait(ct);
+        Console.WriteLine("Attempting to Seed Tenants... " + (tenantSeeder == null ? "[No Seeder Registered]" : "[Succeeded]"));
     }
 }

@@ -1,6 +1,7 @@
 ﻿#region
 
 using System.Diagnostics.CodeAnalysis;
+using ChurchManager.Domain.Common;
 using ChurchManager.Infrastructure.Abstractions;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Persistence.Shared;
@@ -15,12 +16,12 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts
     {
         private ITenant _tenant;
         private readonly IDomainEventPublisher _events;
-        private readonly ITenantProvider _tenantProvider;
+        private readonly ITenantsProvider<TenantConfiguration> _tenantProvider;
         private readonly ITenantCurrentUser _currentUser;
 
         public ChurchManagerDbContext(
             DbContextOptions<ChurchManagerDbContext> options,
-            [NotNull] ITenantProvider tenantProvider,
+            [NotNull] ITenantsProvider<TenantConfiguration> tenantProvider,
             IDomainEventPublisher events = null,
             ITenantCurrentUser currentUser = null) : base(options)
         {
