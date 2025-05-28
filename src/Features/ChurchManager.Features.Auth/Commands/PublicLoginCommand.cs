@@ -24,8 +24,9 @@ public class PublicLoginHandler(
         {
             var claims = new List<Claim>
             {
-                new(ClaimTypes.Name, family!.Name!),
+                new(ClaimTypes.Name, family.Name),
                 new("FamilyId", family.Id.ToString()),
+                new(ClaimTypes.Role, "Public Access"),
             };
 
             var accessToken = tokens.GenerateAccessToken(claims);

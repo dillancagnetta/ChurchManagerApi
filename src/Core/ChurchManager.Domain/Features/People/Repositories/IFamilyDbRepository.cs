@@ -7,5 +7,5 @@ namespace ChurchManager.Domain.Features.People.Repositories;
 public interface IFamilyDbRepository: IGenericDbRepository<Family>
 {
     Task<FamilyCodeValidationViewModel> ValidateFamilyCodeAsync(string familyCode, CancellationToken ct = default);
-    Task<OperationResult<Family>> FamilyByCodeAsync(string familyCode, CancellationToken ct = default);
+    Task<OperationResult<FamilyViewModel>> FamilyByCodeAsync(string familyCode, CancellationToken ct = default);
 }

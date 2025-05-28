@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Domain.Features.People;
+using ChurchManager.Domain.Features.People.Extensions;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -38,21 +39,28 @@ public class FamilyDbRepository : GenericRepositoryBase<Family>, IFamilyDbReposi
         };
     }
 
-    public async Task<OperationResult<Family>> FamilyByCodeAsync(string familyCode, CancellationToken ct)
+    public async Task<OperationResult<FamilyViewModel>> FamilyByCodeAsync(string familyCode, CancellationToken ct)
     {
         try
         {
             familyCode = familyCode.Trim().ToUpperInvariant();
             var family = await Queryable()
                 .AsNoTracking()
-                .Include(x => x.FamilyMembers)
-                .SingleOrDefaultAsync(x => x.Code == familyCode, ct);
+                // .Include(x => x.FamilyMembers)
+                .Where(x => x.Code == familyCode)
+                .Select(x => new FamilyViewModel
+                {
+                    Id = x.Id,
+                    Name = x.Name!,
+                    // FamilyMembers = x.FamilyMembers.Select(y => y.ToBasicPersonViewModel()!)
+                })
+                .SingleOrDefaultAsync(ct);
 
-            return new OperationResult<Family>(family != null, family);
+            return new OperationResult<FamilyViewModel>(family != null, family);
         }
         catch (Exception e)
         {
-            return OperationResult<Family>.Fail(e.Message);
+            return OperationResult<FamilyViewModel>.Fail(e.Message);
         }
     }
 }
