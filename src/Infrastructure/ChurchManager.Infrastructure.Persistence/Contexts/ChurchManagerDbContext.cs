@@ -3,6 +3,7 @@
 using System.Diagnostics.CodeAnalysis;
 using ChurchManager.Domain.Common;
 using ChurchManager.Infrastructure.Abstractions;
+using ChurchManager.Infrastructure.Abstractions.AppContext;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Persistence.Shared;
 using CodeBoss.MultiTenant;
@@ -15,23 +16,26 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts
     public partial class ChurchManagerDbContext : DbContext, IChurchManagerDbContext
     {
         private ITenant _tenant;
-        private readonly IDomainEventPublisher _events;
-        private readonly ITenantsProvider<TenantConfiguration> _tenantProvider;
-        private readonly ITenantCurrentUser _currentUser;
+        private readonly IDomainEventPublisher? _events;
+        private readonly IAppContextAccessor? _context;
+        private readonly ITenantsProvider<TenantConfiguration> _tenantsProvider;
+        private readonly ITenantCurrentUser? _currentUser;
 
         public ChurchManagerDbContext(
             DbContextOptions<ChurchManagerDbContext> options,
-            [NotNull] ITenantsProvider<TenantConfiguration> tenantProvider,
-            IDomainEventPublisher events = null,
-            ITenantCurrentUser currentUser = null) : base(options)
+            [NotNull] ITenantsProvider<TenantConfiguration> tenantsProvider,
+            IAppContextAccessor? appContext = null,
+            IDomainEventPublisher? events = null,
+            ITenantCurrentUser? currentUser = null) : base(options)
         {
             _events = events;
-            _tenantProvider = tenantProvider;
+            _context = appContext;
+            _tenantsProvider = tenantsProvider;
             _currentUser = currentUser;
 
-            if (_tenantProvider is null) throw new ArgumentNullException(nameof(_tenantProvider), "Valid tenantProvider not found or configured");
+            if (_tenantsProvider is null) throw new ArgumentNullException(nameof(_tenantsProvider), "Valid tenantsProvider not found or configured");
 
-            if (_tenantProvider.Enabled)
+            if (_tenantsProvider.Enabled)
             {
                 ConfigureMultiTenants();
             }
@@ -41,7 +45,7 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             // Only configure if its not already, which means we are in multi tenant mode
-            if (optionsBuilder.IsConfigured == false && _tenantProvider.Enabled && _tenant is not null)
+            if (optionsBuilder.IsConfigured == false && _tenantsProvider is not null && _tenant is not null)
             {
                 optionsBuilder.UseNpgsql(_tenant.ConnectionString,
                     x => x.MigrationsAssembly("ChurchManager.Infrastructure.Persistence"));
@@ -77,15 +81,15 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts
             // Current user will have the tenant claim
             if(_currentUser is not null)
             {
-                _tenant = _tenantProvider.Get(_currentUser.Tenant);
+                _tenant = _tenantsProvider.Get(_currentUser.Tenant);
             }
 
             // CurrentTenant is set in `TenantIdentifierMiddleware`
             // Fallback: first tenant in the list
             _tenant 
-                ??= _tenantProvider.CurrentTenant
-                ?? _tenantProvider.Tenants().FirstOrDefault()
-                ?? throw new ArgumentNullException(nameof(_tenant), "Valid tenant not found or configured");
+                ??= _context?.AppContext?.CurrentTenant
+                    ?? _tenantsProvider.Tenants().FirstOrDefault()
+                    ?? throw new ArgumentNullException(nameof(_tenant), "Valid tenant not found or configured");
         }
 
         private void _PreSaveChanges(CancellationToken ct = default)

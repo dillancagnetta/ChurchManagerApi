@@ -2,6 +2,7 @@
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.MultiTenant;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
@@ -9,6 +10,7 @@ namespace ChurchManager.TenantManager.Data;
 
 public class MasterDbTenantProvider(
     MasterDbContext dbContext,
+    IHttpContextAccessor httpAccessor,
     IQueryCache cache) : ITenantsProvider<TenantConfiguration>
 {
     private DistributedCacheEntryOptions _cacheOptions = new()
@@ -16,12 +18,21 @@ public class MasterDbTenantProvider(
         AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
     };
     
+    /// <summary>
+    /// When this is called on startup CurrentSubdomain is not set from the request context,
+    /// So this will migrate all tenants irrespective of the current subdomain
+    /// When in a request context however, it will use the current subdomain if available
+    /// </summary>
     public TenantConfiguration[]? Tenants()
     {
+        var subdomain = CurrentSubdomain;
+        var query = dbContext.Tenants.AsQueryable().AsNoTracking();
+        if (subdomain is not null)  query = query.Where(x => x.Subdomain == subdomain);
+        
         // Check cache first
-        var cacheKey = $"TenantConfig_tenants_all";
+        var cacheKey = $"TenantConfig_tenants_all_{subdomain}";
         var tenants = cache.GetOrSetAsync(cacheKey,
-            () =>  dbContext.Tenants.ToListAsync(),
+            () =>  query.ToListAsync(),
             _cacheOptions
         ).Result;
         
@@ -33,13 +44,14 @@ public class MasterDbTenantProvider(
         // Check cache first
         var cacheKey = $"TenantConfig_{tenantName}";
         TenantConfiguration? tenant = cache.GetOrSetAsync(cacheKey,
-            () =>  dbContext.Tenants.FirstOrDefaultAsync(tc => tc.Name == tenantName),
+            () =>  dbContext.Tenants.AsQueryable().AsNoTracking().FirstOrDefaultAsync(tc => tc.Name == tenantName),
             _cacheOptions
         ).Result;
         
         return tenant!;
     }
-
+    
+    public string? CurrentSubdomain => httpAccessor.HttpContext?.Items["Subdomain"]?.ToString();
+ 
     public bool Enabled => true;
-    public ITenant CurrentTenant { get; set; } 
 }

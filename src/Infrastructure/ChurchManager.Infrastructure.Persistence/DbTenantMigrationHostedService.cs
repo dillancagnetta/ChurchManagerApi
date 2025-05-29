@@ -41,10 +41,10 @@ public class DbTenantMigrationHostedService :  IHostedService
         // Try seeding Tenants
         TryMigrateAndSeedMasterDatabase(ct, scope);
         
-        // Start Migration for each tenant
-        var tenantProvider = scope.ServiceProvider.GetRequiredService<ITenantsProvider<TenantConfiguration>>();
-        var tenants = tenantProvider.Tenants();
-        IEnumerable<Task> tasks = tenants.Select(tenant => MigrateTenantDatabase(tenant, tenantProvider, ct));
+        // Start Migration for each tenant in the current sub-domain
+        var tenantsProvider = scope.ServiceProvider.GetRequiredService<ITenantsProvider<TenantConfiguration>>();
+        var tenants = tenantsProvider.Tenants();
+        IEnumerable<Task> tasks = tenants.Select(tenant => MigrateTenantDatabase(tenant, tenantsProvider, ct));
 
         Console.WriteLine("> Starting parallel execution of pending migrations...");
         await Task.WhenAll(tasks);
@@ -56,11 +56,14 @@ public class DbTenantMigrationHostedService :  IHostedService
         return Task.CompletedTask;
     }
 
-    private async Task MigrateTenantDatabase(ITenant tenant, ITenantsProvider<TenantConfiguration> provider, CancellationToken ct = default)
+    private async Task MigrateTenantDatabase(
+        ITenant tenant,
+        ITenantsProvider<TenantConfiguration> tenants,
+        CancellationToken ct = default)
     {
         try
         {
-            await using var dbContext = DbContextFactory.Create(tenant.ConnectionString, provider);
+            await using var dbContext = DbContextFactory.Create(tenant.ConnectionString, tenants);
             if ((await dbContext.Database.GetPendingMigrationsAsync(ct)).Any())
             {
                 Console.WriteLine($"*** Beginning migration for: [{tenant.Name}]");

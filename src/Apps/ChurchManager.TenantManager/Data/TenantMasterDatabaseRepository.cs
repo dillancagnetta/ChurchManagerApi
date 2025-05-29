@@ -1,9 +1,6 @@
 ﻿using ChurchManager.Domain.Common;
-using ChurchManager.Infrastructure.Persistence.Contexts;
 using ChurchManager.Infrastructure.Persistence.Contexts.Factory;
 using CodeBoss.MultiTenant;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Npgsql;

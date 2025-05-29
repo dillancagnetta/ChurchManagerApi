@@ -14,22 +14,9 @@ namespace ChurchManager.Infrastructure.Shared._DependencyInjection
         {
             services.AddCodeBossMultiTenancy<TenantConfiguration>(configuration, opt =>
             {
-                opt.TenantProvider = typeof(MasterDbTenantProvider);
+                opt.TenantsProvider = typeof(MasterDbTenantProvider);
             });
             
-            //services.AddScoped<ITenantsProvider<TenantConfiguration>, MasterDbTenantProvider>();
-            
-            if (environment.EnvironmentName == "Development")
-            {
-               
-            }
-            else
-            {
-               
-            }
-            
-           
-
             // Injected into db context to provide UserLoginId info
             services.AddScoped<ITenantCurrentUser, SimpleCurrentUser>();
         }
