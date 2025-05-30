@@ -1,17 +1,19 @@
 ﻿using ChurchManager.Domain.Common;
+using ChurchManager.Infrastructure.Abstractions.AppContext;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.MultiTenant;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 
 namespace ChurchManager.TenantManager.Data;
 
 public class MasterDbTenantProvider(
     MasterDbContext dbContext,
-    IHttpContextAccessor httpAccessor,
-    IQueryCache cache) : ITenantsProvider<TenantConfiguration>
+    IAppContextAccessor contextAccessor,
+    IQueryCache cache,
+    ILogger<MasterDbTenantProvider> logger) : ITenantsProvider<TenantConfiguration>
 {
     private DistributedCacheEntryOptions _cacheOptions = new()
     {
@@ -36,22 +38,33 @@ public class MasterDbTenantProvider(
             _cacheOptions
         ).Result;
         
+        logger.LogInformation("Retrieved {TenantCount} tenants for subdomain {Subdomain} with cache key {CacheKey}", 
+            tenants?.Count ?? 0, 
+            subdomain ?? "", 
+            cacheKey);
+        
         return tenants?.ToArray();
     }
 
-    public TenantConfiguration Get(string tenantName)
+    public TenantConfiguration? Get(string? tenantName)
     {
+        tenantName = tenantName?.Trim()?.ToLowerInvariant();
         // Check cache first
         var cacheKey = $"TenantConfig_{tenantName}";
         TenantConfiguration? tenant = cache.GetOrSetAsync(cacheKey,
-            () =>  dbContext.Tenants.AsQueryable().AsNoTracking().FirstOrDefaultAsync(tc => tc.Name == tenantName),
+            () =>  dbContext.Tenants.AsQueryable().AsNoTracking()
+                .FirstOrDefaultAsync(tc => tc.Name == tenantName),
             _cacheOptions
         ).Result;
         
-        return tenant!;
+        logger.LogInformation("Retrieved tenant: {tenantName} with cache key {CacheKey}", 
+            tenantName, 
+            cacheKey);
+        
+        return tenant;
     }
-    
-    public string? CurrentSubdomain => httpAccessor.HttpContext?.Items["Subdomain"]?.ToString();
+
+    private string? CurrentSubdomain => contextAccessor.AppContext?.CurrentSubdomain;
  
     public bool Enabled => true;
 }

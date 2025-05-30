@@ -1,7 +1,6 @@
 ﻿#region
 
 using ChurchManager.Domain.Common;
-using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.Infrastructure.Persistence.Contexts.Factory;
 using ChurchManager.Infrastructure.Persistence.Seeding;
 using ChurchManager.Persistence.Shared;

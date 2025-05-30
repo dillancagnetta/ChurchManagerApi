@@ -7,7 +7,10 @@ using MediatR;
 
 namespace ChurchManager.Features.Auth.Commands;
 
-public record PublicLoginCommand([Required] string AccessCode) : IRequest<TokenViewModel>;
+public record PublicLoginCommand(
+    [Required] string AccessCode,
+    [Required] string TenantName
+    ) : IRequest<TokenViewModel>;
 
 public class PublicLoginHandler(
     IFamilyDbRepository familyDb,
@@ -27,6 +30,7 @@ public class PublicLoginHandler(
                 new(ClaimTypes.Name, family.Name),
                 new("FamilyId", family.Id.ToString()),
                 new(ClaimTypes.Role, "Public Access"),
+                new("Tenant", command.TenantName),
             };
 
             var accessToken = tokens.GenerateAccessToken(claims);

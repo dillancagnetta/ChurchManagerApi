@@ -1,10 +1,12 @@
-﻿using ChurchManager.Infrastructure.Abstractions;
-using ChurchManager.Infrastructure.Abstractions.AppContext;
+﻿using ChurchManager.Infrastructure.Abstractions.AppContext;
+using CodeBoss.Extensions;
 
 namespace ChurchManager.Api.Middlewares;
 
 public class ContextMiddleware
 {
+    private readonly List<string> _skipRoutePattern = ["/openapi/{documentName}.json"];
+
     private readonly RequestDelegate _next;
     private readonly IAppContextAccessor _contextAccessor;
     private readonly ILogger<ContextMiddleware> _logger;
@@ -23,6 +25,17 @@ public class ContextMiddleware
     public async Task InvokeAsync(HttpContext context)
     {
         if (context?.Request == null) return;
+        
+        var endpoint = context.GetEndpoint();
+        if (endpoint != null)
+        {
+            var routePattern = (endpoint as RouteEndpoint)?.RoutePattern.RawText;
+            if (routePattern != null && _skipRoutePattern.Any(pattern => routePattern.StartsWith(pattern, StringComparison.OrdinalIgnoreCase)))
+            {
+                await _next(context);
+                return;
+            }
+        }
         
         var subdomain = GetSubdomain(context);
         var tenantName = GetTenant(context);
@@ -59,7 +72,7 @@ public class ContextMiddleware
             }
         }
         
-        if(tenantName is not null)
+        if(!tenantName.IsNullOrEmpty())
         {
             _logger.LogInformation($"Tenant found in query string: {tenantName}");
         }
