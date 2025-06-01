@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
-using ChurchManager.Application.ViewModels;
+//using ChurchManager.Application.ViewModels;
 using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Infrastructure.Mapper;
 using Convey.CQRS.Queries;
 using GroupMemberViewModel = ChurchManager.Domain.Shared.GroupMemberViewModel;
 using ChurchManager.Domain.Shared;
+//using PersonViewModel = ChurchManager.Application.ViewModels.PersonViewModel;
 
 namespace ChurchManager.Features.People.Infrastructure.Mapper
 {

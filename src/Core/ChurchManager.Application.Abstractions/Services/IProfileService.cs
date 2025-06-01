@@ -1,4 +1,6 @@
-﻿using ChurchManager.Application.ViewModels;
+﻿//using ChurchManager.Application.ViewModels;
+
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Application.Abstractions.Services
 {

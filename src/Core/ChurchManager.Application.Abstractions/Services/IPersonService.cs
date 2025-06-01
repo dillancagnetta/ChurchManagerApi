@@ -1,4 +1,4 @@
-﻿using ChurchManager.Application.ViewModels;
+﻿//using ChurchManager.Application.ViewModels;
 using ChurchManager.Domain.Features.People.Queries;
 using Convey.CQRS.Queries;
 using ChurchManager.Domain.Shared;

@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using ChurchManager.Application.Abstractions.Services;
-using ChurchManager.Application.ViewModels;
+using ChurchManager.Domain.Shared;
+//using ChurchManager.Application.ViewModels;
 using ChurchManager.SharedKernel.Common;
 using Codeboss.Types;
 

@@ -325,7 +325,7 @@ namespace ChurchManager.DataImporter
                                     PersonId = person.Id,
                                     Username = "dillan",
                                     Password = BCrypt.Net.BCrypt.HashPassword("81118599"),
-                                    Tenant = "Tenant1",
+                                    Tenant = "tenant1",
                                 };
                                 _userLogin.AddUserLoginRole(systemAdminRole);
                                 dbContext.UserLogin.Add(_userLogin);
@@ -338,7 +338,7 @@ namespace ChurchManager.DataImporter
                                     PersonId = person.Id,
                                     Username = import.Email.ToLower(),
                                     Password = BCrypt.Net.BCrypt.HashPassword("pancake"),
-                                    Tenant = "Tenant1",
+                                    Tenant = "tenant1",
                                     };
                                 dbContext.UserLogin.Add(_userLogin);
                             }
