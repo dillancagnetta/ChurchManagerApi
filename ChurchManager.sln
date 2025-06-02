@@ -102,8 +102,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchManager.Features.Sett
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchManager.TenantManager", "src\Apps\ChurchManager.TenantManager\ChurchManager.TenantManager.csproj", "{A01AB5F6-2D9E-4A3B-97E8-9F6F7ED5E41F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeBoss.MultiTenant", "..\Codeboss-Libs\src\CodeBoss.MultiTenant\src\CodeBoss.MultiTenant\CodeBoss.MultiTenant.csproj", "{B9779041-53DE-46C6-8303-53D472C435FB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -242,10 +240,6 @@ Global
 		{A01AB5F6-2D9E-4A3B-97E8-9F6F7ED5E41F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A01AB5F6-2D9E-4A3B-97E8-9F6F7ED5E41F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A01AB5F6-2D9E-4A3B-97E8-9F6F7ED5E41F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B9779041-53DE-46C6-8303-53D472C435FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B9779041-53DE-46C6-8303-53D472C435FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B9779041-53DE-46C6-8303-53D472C435FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B9779041-53DE-46C6-8303-53D472C435FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

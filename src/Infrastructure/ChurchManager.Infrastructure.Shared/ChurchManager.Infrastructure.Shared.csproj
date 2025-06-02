@@ -26,7 +26,7 @@
   <ItemGroup>
     <PackageReference Include="CodeBoss" />
     <PackageReference Include="CodeBoss.AspNetCore" />
-    <!--<PackageReference Include="CodeBoss.MultiTenant" />-->
+    <PackageReference Include="CodeBoss.MultiTenant" />
     <PackageReference Include="CodeBoss.Jobs" />
   </ItemGroup>
   <ItemGroup>
