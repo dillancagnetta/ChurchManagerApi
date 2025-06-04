@@ -40,4 +40,33 @@ public static class CommunicationsModelExtensions
             AttemptCount = model.AttemptCount,
         };
     }
+    
+    public static CommunicationPreferenceTypeViewModel ToViewModel(this CommunicationPreferenceType model)
+    {
+        return new CommunicationPreferenceTypeViewModel
+        {
+            Id = model.Id,
+            Name = model.Name,
+            Description = model.Description,
+            IsSystem = model.IsSystem,
+            DefaultNotSetValue = model.DefaultNotSetValue,
+            CanOverride = model.CanOverride,
+            Preferences = model.Preferences.Select(p => p.ToViewModel()).ToList()
+        };
+    }
+    
+    public static CommunicationPreferenceViewModel? ToViewModel(this CommunicationPreference? model)
+    {
+        if (model == null) return null;
+    
+        return new CommunicationPreferenceViewModel
+        {
+            Id = model.Id,
+            CommunicationType = model.CommunicationType.Value,
+            IsEnabled = model.IsEnabled,
+            Category = model.Category,
+            PersonId = model.PersonId,
+            PreferenceTypeId = model.PreferenceTypeId,
+        };
+    }
 }

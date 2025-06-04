@@ -1,11 +1,10 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Common.Extensions;
-using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Shared;
 using CodeBoss.Extensions;
 using Convey.CQRS.Queries;
 
-namespace ChurchManager.Domain.Features.Churches.Specifications;
+namespace ChurchManager.Domain.Features.Communications.Specifications;
 
 public class BrowseRecipientsSpecification : Specification<Communication, CommunicationRecipientViewModel>
 {

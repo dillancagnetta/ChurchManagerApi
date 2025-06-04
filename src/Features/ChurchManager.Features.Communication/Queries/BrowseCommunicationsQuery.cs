@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Domain.Features.Churches.Specifications;
+using ChurchManager.Domain.Features.Communications.Specifications;
 using ChurchManager.Domain.Features.Security;
 using ChurchManager.Domain.Features.Security.Services;
 using ChurchManager.Domain.Parameters;

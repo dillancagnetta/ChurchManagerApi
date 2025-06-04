@@ -89,18 +89,19 @@ public class FollowUpConfiguration : IEntityTypeConfiguration<FollowUp>
 {
     public void Configure(EntityTypeBuilder<FollowUp> builder)
     {
-        // Configure the relationship with person
-        // If person is deleted - all  will be deleted
+        // Configure the relationship with person being followed up
+        // If person is deleted - all follow-ups will be deleted
         builder
-            .HasOne<Person>()
-            .WithMany()
-            .HasForeignKey(p => p.PersonId)
+            .HasOne<Person>(f => f.Person)
+            .WithMany()  // No navigation property on Person side
+            .HasForeignKey(f => f.PersonId)
             .OnDelete(DeleteBehavior.Cascade);
         
+        // Configure the relationship with person assigned to do the follow-up
         builder
-            .HasOne<Person>()
-            .WithMany()
-            .HasForeignKey(p => p.AssignedPersonId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .HasOne<Person>(f => f.AssignedPerson)
+            .WithMany()  // No navigation property on Person side
+            .HasForeignKey(f => f.AssignedPersonId)
+            .OnDelete(DeleteBehavior.Restrict); // Changed to Restrict to avoid cascade delete conflicts
     }
 }

@@ -42,9 +42,9 @@ public class ConnectionStatusHistory: AuditableEntity<int>, IAggregateRoot<int>
 
     #region Navigation
 
-    public virtual Person? Person { get; set; }
+    public virtual Person Person { get; set; }
     
-    public virtual ConnectionStatusType? ConnectionStatusType { get; set; }
+    public virtual ConnectionStatusType ConnectionStatusType { get; set; }
 
     #endregion
 }

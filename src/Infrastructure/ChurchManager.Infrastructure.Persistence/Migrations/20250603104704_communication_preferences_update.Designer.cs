@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ChurchManagerDbContext))]
-    partial class ChurchManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250603104704_communication_preferences_update")]
+    partial class communication_preferences_update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -655,11 +658,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.Property<bool>("CanOverride")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("DefaultCommunicationType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
 
                     b.Property<bool>("DefaultNotSetValue")
                         .HasColumnType("boolean");
