@@ -1,5 +1,6 @@
 ﻿using ChurchManager.Features.Auth.Commands;
 using ChurchManager.Features.Communication.Queries.Preferences;
+using ChurchManager.Features.People.Commands.ChangeRequests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,5 +25,21 @@ public class PublicManageController : BaseApiController
         var result = await Mediator.Send(new GetCommunicationPreferencesQuery{PersonId = personId}, token);
         
         return Ok(result);
+    }
+
+    [HttpPut("baptism-update")]
+    public async Task<IActionResult> UpdateBaptismStatus(RequestBaptismChangeCommand command, CancellationToken ct)
+    {
+        await Mediator.Send(command, ct);
+        
+        return Accepted();
+    }
+    
+    [HttpPut("holy-spirit-update")]
+    public async Task<IActionResult> UpdateReceivedHolySpirit(ReceivedHolySpiritChangeCommand command, CancellationToken ct)
+    {
+        await Mediator.Send(command, ct);
+        
+        return Accepted();
     }
 }

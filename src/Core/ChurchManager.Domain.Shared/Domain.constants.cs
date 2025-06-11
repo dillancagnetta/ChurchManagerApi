@@ -9,6 +9,15 @@ namespace ChurchManager.Domain.Shared
         {
             public const int NoParentGroupId = 0;
         }
+        
+        public static class ChangeRequest
+        {
+            public static class Baptism
+            {
+                public const string IsBaptised = "BaptismStatus.IsBaptised";
+                public const string BaptismDate = "BaptismStatus.BaptismDate";
+            }
+        }
 
         public static class Discipleship
         {

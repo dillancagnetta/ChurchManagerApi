@@ -46,6 +46,7 @@ namespace ChurchManager.Domain.Common
 
     public class ApprovalStatus : Enumeration<ApprovalStatus, string>
     {
+        public ApprovalStatus() { Value = "Pending"; }
         public ApprovalStatus(string value) => Value = value;
 
         /// <summary>
