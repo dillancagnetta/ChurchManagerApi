@@ -14,12 +14,14 @@ public static class PersonModelExtensions
         {
             PersonId = person.Id,
             Gender = person.Gender,
+            Title = person.FullName!.Title,
             FirstName = person.FullName!.FirstName!,
             LastName = person.FullName!.LastName!,
             AgeClassification = person.AgeClassification,
             Age = person.BirthDate?.Age,
             PhotoUrl = person.PhotoUrl,
             BirthDate = person.BirthDate?.ToViewModel(),
+            Email = person.Email?.Address
         };
     }
     

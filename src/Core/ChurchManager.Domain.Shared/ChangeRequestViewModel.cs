@@ -14,6 +14,7 @@ public record ChangeRequestViewModel
     
     // Entity
     public string? EntityType { get; set; } // "Person", "Family", "Church", etc.
+    public int? EntityId { get; set; }
     public PersonViewModelBasic? PersonEntity { get; set; }
     
     public IEnumerable<PropertyChangeRequestViewModel> Properties { get; set; } = new List<PropertyChangeRequestViewModel>();

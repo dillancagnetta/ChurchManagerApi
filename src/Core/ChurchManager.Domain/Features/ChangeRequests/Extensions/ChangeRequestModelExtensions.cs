@@ -13,6 +13,7 @@ public static class ChangeRequestModelExtensions
             Id = model.Id,
             //PersonEntity = includeDetails ? model.Properties.FirstOrDefault()?..ToBasicPersonViewModel(),
             EntityType = includeDetails ? model.Properties.FirstOrDefault()?.EntityType : "",
+            EntityId = includeDetails ? model.Properties.FirstOrDefault()?.EntityId : null,
             Properties = includeDetails ? model.Properties.Select(c => c.ToViewModel()).ToList() : [],
             RequestedDate = model.RequestedDate,
             ReviewNotes = model.ReviewNotes,

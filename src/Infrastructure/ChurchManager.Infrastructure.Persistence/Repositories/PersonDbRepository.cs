@@ -3,6 +3,7 @@
 using System.Linq.Dynamic.Core;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
+using ChurchManager.Domain.Features.People.Extensions;
 using ChurchManager.Domain.Features.People.Queries;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
@@ -126,24 +127,34 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
             return new OperationResult<Guid?>(userLoginId.AsGuidOrNull());
         }
 
-        public Task<PersonViewModelBasic> BasicPersonViewModelAsync(int personId, CancellationToken cancellationToken = default)
+        public Task<PersonViewModelBasic?> BasicPersonViewModelAsync(int personId, CancellationToken cancellationToken = default)
         {
             return Queryable()
                 .AsNoTracking()
                 .Where(x => x.Id == personId)
-                .Select(x => new PersonViewModelBasic
-                {
-                    PersonId = x.Id,
-                    Title = x.FullName.Title,
-                    FirstName = x.FullName.FirstName,
-                    LastName = x.FullName.LastName,
-                    Gender = x.Gender.ToString(),
-                    AgeClassification = x.AgeClassification,
-                    PhotoUrl = x.PhotoUrl,
-                    Age = x.BirthDate != null ? x.BirthDate.Age : null,
-                    Email =x.Email != null ? x.Email.Address : null
-                })
+                .Select(x => x.ToBasicPersonViewModel())
                 .FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public async Task<IList<PersonViewModelBasic?>> BasicPersonsViewModelAsync(IList<int> personIds, CancellationToken cancellationToken = default)
+        {
+            return await Queryable()
+                .AsNoTracking()
+                .Where(x => personIds.Contains(x.Id))
+                .Select(x => x.ToBasicPersonViewModel())
+                .ToListAsync(cancellationToken);
+            
+            /*{
+                   PersonId = x.Id,
+                   Title = x.FullName.Title,
+                   FirstName = x.FullName.FirstName,
+                   LastName = x.FullName.LastName,
+                   Gender = x.Gender.ToString(),
+                   AgeClassification = x.AgeClassification,
+                   PhotoUrl = x.PhotoUrl,
+                   Age = x.BirthDate != null ? x.BirthDate.Age : null,
+                   Email =x.Email != null ? x.Email.Address : null
+               }*/
         }
 
         public Task<string> FamilyCode(int personId, CancellationToken cancellationToken = default)
