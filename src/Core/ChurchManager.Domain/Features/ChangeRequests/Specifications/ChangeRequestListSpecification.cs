@@ -28,7 +28,8 @@ public class ChangeRequestListSpecification : Specification<ChangeRequest, Chang
             Query.Where(x => x.Properties.All(s => 
                 s.EntityType == "Person" && personIds!.Contains(s.EntityId)));
         }
-        
+
+        Query.OrderByDescending(x => x.RequestedDate);
         Query.Select(x => x.ToViewModel(true));
     }
 }
