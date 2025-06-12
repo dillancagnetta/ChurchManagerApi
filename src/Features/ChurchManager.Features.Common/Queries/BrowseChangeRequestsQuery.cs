@@ -27,7 +27,8 @@ public class BrowseChangeRequestsHandler(
 {
     public async Task<PagedResponse<ChangeRequestViewModel>> Handle(BrowseChangeRequestsQuery query, CancellationToken ct)
     {
-       var spec = new BrowseChangeRequestSpecification(query, query.ChurchId, query.PersonIds, query.Status, query.From, query.To);
+       var spec = new BrowseChangeRequestSpecification(query, query.ChurchId, query.PersonIds, 
+           query.Status, query.EntityType, query.From, query.To);
        
        var pagedResult = await dbRepository.BrowseAsync(query, spec, ct);
 
