@@ -13,7 +13,7 @@ namespace ChurchManager.Features.Common.Queries;
 public record BrowseChangeRequestsQuery: QueryParameter, IRequest<PagedResponse<ChangeRequestViewModel>>
 {
     public int? ChurchId { get; set; }
-    public IList<int>? PersonIds { get; set; }
+    public int? PersonId { get; set; }
     public string? Status { get; set; }
     public string? EntityType { get; set; } // Person, Church, etc.
     public DateTime? From { get; set; }
@@ -27,7 +27,7 @@ public class BrowseChangeRequestsHandler(
 {
     public async Task<PagedResponse<ChangeRequestViewModel>> Handle(BrowseChangeRequestsQuery query, CancellationToken ct)
     {
-       var spec = new BrowseChangeRequestSpecification(query, query.ChurchId, query.PersonIds, 
+       var spec = new BrowseChangeRequestSpecification(query, query.ChurchId, query.PersonId, 
            query.Status, query.EntityType, query.From, query.To);
        
        var pagedResult = await dbRepository.BrowseAsync(query, spec, ct);

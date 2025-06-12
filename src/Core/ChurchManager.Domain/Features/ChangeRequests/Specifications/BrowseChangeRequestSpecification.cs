@@ -10,12 +10,12 @@ namespace ChurchManager.Domain.Features.ChangeRequests.Specifications;
 public class BrowseChangeRequestSpecification : Specification<ChangeRequest, ChangeRequestViewModel>
 {
     public BrowseChangeRequestSpecification(
-        IPagedQuery paging, int? churchId,  IList<int>? personIds = null, string? status = null,string? entityType = null, DateTime? from = null, DateTime? to = null)
+        IPagedQuery paging, int? churchId, int? personId = null, string? status = null,string? entityType = null, DateTime? from = null, DateTime? to = null)
     {
         Query.AsNoTracking();
         
         Query.EnableCache(nameof(BrowseChangeRequestSpecification),
-            CacheKeyExtensions.GenerateCacheKey(paging, personIds, churchId, status, entityType, from, to));
+            CacheKeyExtensions.GenerateCacheKey(paging, personId, churchId, status, entityType, from, to));
         
         Query.Include(x => x.Properties);
 
@@ -34,10 +34,10 @@ public class BrowseChangeRequestSpecification : Specification<ChangeRequest, Cha
             Query.Where(x => x.Properties.All(s => s.EntityType == entityType));
         }
         
-        if (!personIds.IsNullOrEmpty())
+        if (personId.HasValue)
         {
             Query.Where(x => x.Properties.All(s => 
-                s.EntityType == "Person" && personIds!.Contains(s.EntityId)));
+                s.EntityType == "Person" && personId! == s.EntityId));
         }
 
         Query.OrderByDescending(x => x.RequestedDate);
