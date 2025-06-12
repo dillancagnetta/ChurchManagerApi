@@ -41,7 +41,7 @@ public class ChangeRequest : Entity<int>, IAggregateRoot<int>
     {
         ReviewedByPersonId = reviewedByPersonId;
         ReviewNotes = notes;
-        RequestedDate = DateTime.UtcNow;
+        ReviewedDate = DateTime.UtcNow;
         Status = ApprovalStatus.Approved;
         // Raise event
         AddDomainEvent(new ChangeRequestApprovedEvent(Id));

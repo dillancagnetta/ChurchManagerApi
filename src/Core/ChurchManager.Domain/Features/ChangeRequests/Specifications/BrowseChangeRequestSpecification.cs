@@ -14,8 +14,10 @@ public class BrowseChangeRequestSpecification : Specification<ChangeRequest, Cha
     {
         Query.AsNoTracking();
         
+        /*
         Query.EnableCache(nameof(BrowseChangeRequestSpecification),
             CacheKeyExtensions.GenerateCacheKey(paging, personId, churchId, status, entityType, from, to));
+            */
         
         Query.Include(x => x.Properties);
 
