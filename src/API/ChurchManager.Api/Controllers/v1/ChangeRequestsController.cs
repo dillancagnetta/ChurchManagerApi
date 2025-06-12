@@ -15,6 +15,12 @@ public class ChangeRequestsController : BaseApiController
         return Ok(await Mediator.Send(command, token));
     }
     
+    [HttpPost("browse")]
+    public async Task<IActionResult> Browse([FromBody] BrowseChangeRequestsQuery query, CancellationToken token)
+    {
+        return Ok(await Mediator.Send(query, token));
+    }
+    
     [HttpPost]
     public async Task<IActionResult> AllChangeRequests(GetChangeRequestsQuery query, CancellationToken token)
     {

@@ -4,6 +4,7 @@
     {
         public string? Username { get; set; }
         public int PersonId { get; init; }
+        public int? ChurchId { get; init; }
         public required string UserLoginId { get; init; }
         public required string FirstName { get; init; }
         public required string LastName { get; init; }
