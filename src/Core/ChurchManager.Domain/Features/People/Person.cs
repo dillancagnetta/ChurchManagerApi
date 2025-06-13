@@ -139,6 +139,15 @@ namespace ChurchManager.Domain.Features.People
         [NotMapped]
         public virtual int? Age => GetAge(CalculateBirthDate());
 
+        public void Update(int? day, int? month, int? year)
+        {
+            BirthDay = day;
+            BirthMonth = month;
+            BirthYear = year;
+        }
+        
+        public static BirthDate Create(int? day, int? month, int? year) => new BirthDate { BirthDay = day, BirthMonth = month, BirthYear = year };
+
         /// <summary>
         /// Calculates the birthdate from the BirthYear, BirthMonth, and BirthDay.
         /// Will return null if BirthMonth or BirthDay is null.
@@ -199,5 +208,7 @@ namespace ChurchManager.Domain.Features.People
     {
         public string? Address { get; set; }
         public bool? IsActive { get; set; }
+
+        public static Email Create(string address) => new () { Address = address, IsActive = true };
     }
 }

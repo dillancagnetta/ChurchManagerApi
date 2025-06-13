@@ -1,6 +1,7 @@
 ﻿using ChurchManager.Features.Auth.Commands;
 using ChurchManager.Features.Communication.Queries.Preferences;
 using ChurchManager.Features.People.Commands.ChangeRequests;
+using ChurchManager.Features.People.Commands.UpdatePerson;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,7 +45,7 @@ public class PublicManageController : BaseApiController
     }
     
     [HttpPut("personal-info-update")]
-    public async Task<IActionResult> UpdatePersonalInfo(RequestBaptismChangeCommand command, CancellationToken ct)
+    public async Task<IActionResult> UpdatePersonalInfo(UpdatePersonalInfoCommand command, CancellationToken ct)
     {
         await Mediator.Send(command, ct);
         
