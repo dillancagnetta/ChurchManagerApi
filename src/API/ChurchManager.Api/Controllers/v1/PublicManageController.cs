@@ -42,4 +42,12 @@ public class PublicManageController : BaseApiController
         
         return Accepted();
     }
+    
+    [HttpPut("personal-info-update")]
+    public async Task<IActionResult> UpdatePersonalInfo(RequestBaptismChangeCommand command, CancellationToken ct)
+    {
+        await Mediator.Send(command, ct);
+        
+        return Accepted();
+    }
 }

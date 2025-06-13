@@ -46,7 +46,7 @@ namespace ChurchManager.Features.People.Commands.AddPersonToFamily
                 },
                 ChurchId = member.ChurchId,
                 Email = !member.Person.EmailAddress.IsNullOrEmpty()
-                    ? new Email { Address = member.Person.EmailAddress, IsActive = true }
+                    ? new Email { Address = member.Person.EmailAddress!.Trim().ToLowerInvariant(), IsActive = true }
                     : null,
                 PhoneNumbers = !member.Person.PhoneNumber.IsNullOrEmpty()
                     ? new List<PhoneNumber> { new() { CountryCode = "+27", Number = member!.Person.PhoneNumber } }

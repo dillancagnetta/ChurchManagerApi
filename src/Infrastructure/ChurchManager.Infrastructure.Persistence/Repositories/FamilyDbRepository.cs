@@ -39,15 +39,17 @@ public class FamilyDbRepository : GenericRepositoryBase<Family>, IFamilyDbReposi
         };
     }
 
-    public async Task<OperationResult<FamilyViewModel>> FamilyByCodeAsync(string familyCode, CancellationToken ct)
+    public async Task<OperationResult<FamilyViewModel>> FamilyByCodeAsync(string familyCode, string emailAddress, CancellationToken ct)
     {
         try
         {
             familyCode = familyCode.Trim().ToUpperInvariant();
+            emailAddress = emailAddress.Trim().ToLowerInvariant();
             var family = await Queryable()
+                .Include(x => x.FamilyMembers)
                 .AsNoTracking()
                 // .Include(x => x.FamilyMembers)
-                .Where(x => x.Code == familyCode)
+                .Where(x => x.Code == familyCode && x.FamilyMembers.Any(f => f.Email != null && f.Email.Address == emailAddress))
                 .Select(x => new FamilyViewModel
                 {
                     Id = x.Id,

@@ -8,6 +8,7 @@ using MediatR;
 namespace ChurchManager.Features.Auth.Commands;
 
 public record PublicLoginCommand(
+    [Required] string EmailAddress,
     [Required] string AccessCode,
     [Required] string TenantName
     ) : IRequest<TokenViewModel>;
@@ -19,7 +20,7 @@ public class PublicLoginHandler(
     public async Task<TokenViewModel> Handle(PublicLoginCommand command, CancellationToken ct)
     {
         // get account from database
-        var operationResult = await familyDb.FamilyByCodeAsync(command.AccessCode, ct);
+        var operationResult = await familyDb.FamilyByCodeAsync(command.AccessCode, command.EmailAddress, ct);
         var family = operationResult.Result;
 
         // check account found and verify password
