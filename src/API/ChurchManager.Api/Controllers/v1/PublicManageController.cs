@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Features.Auth.Commands;
+using ChurchManager.Features.Communication.Commands;
 using ChurchManager.Features.Communication.Queries.Preferences;
 using ChurchManager.Features.People.Commands.ChangeRequests;
 using ChurchManager.Features.People.Commands.UpdatePerson;
@@ -27,6 +28,14 @@ public class PublicManageController : BaseApiController
         
         return Ok(result);
     }
+    
+    [HttpPut("communication-preferences")]
+    public async Task<IActionResult> UpdateCommunicationPreferences(UpdateCommunicationPreferencesCommand command, CancellationToken ct)
+    {
+        await Mediator.Send(command, ct);
+        
+        return Accepted();
+    }
 
     [HttpPut("baptism-update")]
     public async Task<IActionResult> UpdateBaptismStatus(RequestBaptismChangeCommand command, CancellationToken ct)
@@ -51,4 +60,6 @@ public class PublicManageController : BaseApiController
         
         return Accepted();
     }
+    
+    
 }

@@ -28,10 +28,10 @@ public class CommunicationPreferencesQueryHandler(
         var userPreferences = await preferencesDb.ListAsync(spec, ct);
 
         var preferenceTypesSpec = new CommunicationPreferencesTypesSpecification();
-        var preferenceTypesVm = await dbRepository.ListAsync(preferenceTypesSpec, ct);
+        var systemPreferences = await dbRepository.ListAsync(preferenceTypesSpec, ct);
         
         var unifiedVm = unifier.BuildUnifiedPreferences(
-            preferenceTypesVm,
+            systemPreferences,
             userPreferences
         );
         
