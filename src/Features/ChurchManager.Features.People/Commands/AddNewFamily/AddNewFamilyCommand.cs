@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Features.People;
+﻿using ChurchManager.Domain.Common.Extensions;
+using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Events;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Domain.Features.People.Specifications;
@@ -94,8 +95,13 @@ namespace ChurchManager.Features.People.Commands.AddNewFamily
                     Email = !x.Person.EmailAddress.IsNullOrEmpty()
                         ? new Email { Address = x.Person.EmailAddress!.Trim().ToLowerInvariant(), IsActive = true }
                         : null,
-                    PhoneNumbers = !x.Person.PhoneNumber.IsNullOrEmpty()
-                        ? new List<PhoneNumber> { new() { CountryCode = "+27", Number = x.Person.PhoneNumber } }
+                    PhoneNumbers = x.Person.PhoneNumber != null
+                        ? new List<PhoneNumber> { new()
+                        {
+                            CountryCode = x.Person.PhoneNumber.CountryCode, 
+                            Number = x.Person.PhoneNumber.Number?.TrimLeadingZero(), 
+                            IsMessagingEnabled = x.Person.PhoneNumber.IsMessagingEnabled
+                        } }
                         : null,
                     Source = x.Source,
                     Family = family

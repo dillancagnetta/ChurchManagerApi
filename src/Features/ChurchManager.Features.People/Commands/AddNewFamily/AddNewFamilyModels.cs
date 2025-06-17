@@ -18,7 +18,7 @@ namespace ChurchManager.Features.People.Commands.AddNewFamily
         public string Gender { get; set; } = Feature.Gender.Unknown.Value;
         public string AgeClassification { get; set; } = Feature.AgeClassification.Unknown.Value;
         public string? EmailAddress { get; set; }
-        public string? PhoneNumber { get; set; }
+        public PhoneNumberViewModel? PhoneNumber { get; set; }
         public string? Occupation { get; set; }
         public BirthDate? BirthDate { get; set; } = new BirthDate();
         public bool? ReceivedHolySpirit { get; set; }
