@@ -3,7 +3,7 @@ using ChurchManager.Domain.Common;
 
 namespace ChurchManager.Domain.Features.People.Specifications
 {
-    public class UserDetailsSpecification : Specification<Person, UserDetails>, ISingleResultSpecification
+    public class UserDetailsSpecification : Specification<Person, UserDetails>, ISingleResultSpecification<Person>
     {
         public UserDetailsSpecification(string userLoginId)
         {
@@ -14,10 +14,11 @@ namespace ChurchManager.Domain.Features.People.Specifications
             Query.Select(x => new UserDetails
             {
                 PersonId = x.Id,
-                UserLoginId = x.UserLoginId,
+                ChurchId = x.ChurchId,
+                UserLoginId = x.UserLoginId!,
                 FirstName = x.FullName.FirstName,
-                LastName = x.FullName.LastName,
-                Email = x.Email.Address,
+                LastName = x.FullName.LastName!,
+                Email = x.Email!.Address,
                 PhotoUrl = x.PhotoUrl
             });
         }

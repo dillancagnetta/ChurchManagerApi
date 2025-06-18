@@ -1,31 +1,35 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ChurchManager.Persistence.Shared;
 using CodeBoss.Extensions;
 using Ical.Net;
 using Ical.Net.CalendarComponents;
+using Ical.Net.DataTypes;
+using Ical.Net.Serialization;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ChurchManager.Domain.Features.Groups
 {
     public class Schedule : Entity<int>
     {
         [MaxLength(50)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         [MaxLength(100)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         /// <summary>
         /// Gets or sets the Date that the Schedule becomes effective/active. This property is inclusive, and the schedule will be inactive before this date. 
         /// </summary>
         [Column(TypeName = "Date")]
-        public DateTime? StartDate { get; set; }
+        public DateOnly? StartDate { get; set; }
 
         /// <summary>
         /// Gets or sets that date that this Schedule expires and becomes inactive. This value is inclusive and the schedule will be inactive after this date.
         /// </summary>
         [Column(TypeName = "Date")]
-        public DateTime? EndDate { get; set; }
+        public DateOnly? EndDate { get; set; }
 
         /// <summary>
         /// Gets or sets the content lines of the iCalendar
@@ -33,22 +37,36 @@ namespace ChurchManager.Domain.Features.Groups
         /// <value>
         /// A <see cref="System.String"/>representing the  content of the iCalendar.
         /// </value>
-        public string iCalendarContent
+        public string? iCalendarContent
         {
             get => _iCalendarContent ?? string.Empty;
             set => _iCalendarContent = value;
         }
-        private string _iCalendarContent;
+        private string? _iCalendarContent;
 
         public DayOfWeek? WeeklyDayOfWeek { get; set; }
 
-        public TimeSpan? WeeklyTimeOfDay { get; set; }
+        public TimeOnly? WeeklyTimeOfDay { get; set; }
+        
+        /// <summary>
+        /// Gets or sets start time of the schedule. This property is inclusive.
+        /// </summary>
+        public TimeOnly? StartTime { get; set; }
+        
+        /// <summary>
+        /// Gets or sets end time of the schedule. This property is inclusive.
+        /// </summary>
+        public TimeOnly? EndTime { get; set; }
         
         /// <summary>
         /// Gets or sets the meeting frequence e.g. WEEKLY
         /// </summary>
         [MaxLength(100)]
-        public string Frequency { get; set; }
+        public string? Frequency { get; set; }
+
+        [MaxLength(100)]
+        [DefaultValue("South Africa Standard Time")]
+        public string Timezone { get; set; } = "South Africa Standard Time";
 
         #region Methods
 
@@ -58,7 +76,7 @@ namespace ChurchManager.Domain.Features.Groups
         /// <value>
         /// A <see cref="CalendarEvent"/> representing the iCalendar event for this Schedule.
         /// </value>
-        public virtual CalendarEvent GetICalEvent() => InetCalendarHelper.CreateCalendarEvent(iCalendarContent);
+        public virtual CalendarEvent? GetICalEvent() => InetCalendarHelper.CreateCalendarEvent(iCalendarContent);
 
         /// <summary>
         /// Gets the type of the schedule.
@@ -99,7 +117,7 @@ namespace ChurchManager.Domain.Features.Groups
         public string ToFriendlyScheduleText(bool condensed)
         {
             // init the result to just the schedule name just in case we can't figure out the FriendlyText
-            string result = Name;
+            string? result = Name;
 
             var calendarEvent = GetICalEvent();
             if(calendarEvent != null && calendarEvent.DtStart != null)
@@ -276,5 +294,6 @@ namespace ChurchManager.Domain.Features.Groups
         };
 
         #endregion
+
     }
 }

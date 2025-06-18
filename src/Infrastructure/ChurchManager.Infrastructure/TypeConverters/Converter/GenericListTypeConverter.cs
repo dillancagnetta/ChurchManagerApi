@@ -42,7 +42,7 @@ namespace ChurchManager.Infrastructure.TypeConverters.Converter
         /// <param name="context">Context</param>
         /// <param name="sourceType">Source type</param>
         /// <returns>Result</returns>
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
         {
             if (sourceType == typeof(string))
             {
@@ -60,7 +60,7 @@ namespace ChurchManager.Infrastructure.TypeConverters.Converter
         /// <param name="culture">Culture</param>
         /// <param name="value">Value</param>
         /// <returns>Result</returns>
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
         {
             if (value is string)
             {
@@ -88,7 +88,7 @@ namespace ChurchManager.Infrastructure.TypeConverters.Converter
         /// <param name="value">Value</param>
         /// <param name="destinationType">Destination type</param>
         /// <returns>Result</returns>
-        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
         {
             if (destinationType == typeof(string))
             {

@@ -12,12 +12,12 @@ namespace ChurchManager.Domain.Features.People
         /// Gets or sets the country code.
         /// </summary>
         [MaxLength(50)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Gets or sets the country code.
         /// </summary>
         [MaxLength(50)]
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 }

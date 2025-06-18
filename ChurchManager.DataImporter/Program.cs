@@ -1,9 +1,11 @@
 ﻿using ChurchManager.DataImporter.Models;
 using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Churches;
+using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Discipleship;
 using ChurchManager.Domain.Features.Groups;
 using ChurchManager.Domain.Features.People;
+using ChurchManager.Domain.Features.Security;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.Extensions;
 using Ical.Net.Serialization;
@@ -290,31 +292,57 @@ namespace ChurchManager.DataImporter
                     // Add UserLogins
                     Console.WriteLine();
                     Console.WriteLine("*** UserLogins ***");
+                    
+                    var systemAdminRole = UserLoginRole.SystemAdminRole;
+                    dbContext.UserLoginRole.Add(systemAdminRole);
+                    dbContext.SaveChanges();
+                    
                     foreach (var importAndPerson in personMap)
                     {
                         importAndPerson.Deconstruct(out var import, out var person);
 
+                        // Church Group Admin gets dynamic access to all churches in their group
+                        var permission = new EntityPermission
+                        {
+                            EntityType = "Church",
+                            IsDynamicScope = true,
+                            ScopeType = "ChurchGroup",
+                            ScopeId = 1, // churchGroupId
+                            CanView = true,
+                            CanEdit = true,
+                            CanDelete = true,
+                            IsSystem = true
+                        };
+                        
                         if (!string.IsNullOrEmpty(import.UserLoginId))
                         {
                             if (import.FullName.FirstName.Equals("Dillan") &&
                                 import.FullName.LastName.Equals("Cagnetta"))
-                                dbContext.UserLogin.Add(new UserLogin
+                            {
+                                var _userLogin = new UserLogin
                                 {
                                     Id = Guid.Parse(import.UserLoginId),
                                     PersonId = person.Id,
                                     Username = "dillan",
                                     Password = BCrypt.Net.BCrypt.HashPassword("81118599"),
-                                    Roles = new List<string> {"Admin"}
-                                });
+                                    Tenant = "tenant1",
+                                };
+                                _userLogin.AddUserLoginRole(systemAdminRole);
+                                dbContext.UserLogin.Add(_userLogin);
+                            }
                             else
-                                dbContext.UserLogin.Add(new UserLogin
+                            {
+                                var _userLogin = new UserLogin
                                 {
                                     Id = Guid.Parse(import.UserLoginId),
                                     PersonId = person.Id,
                                     Username = import.Email.ToLower(),
                                     Password = BCrypt.Net.BCrypt.HashPassword("pancake"),
-                                    Roles = new List<string> {"Cell Leader"}
-                                });
+                                    Tenant = "tenant1",
+                                    };
+                                dbContext.UserLogin.Add(_userLogin);
+                            }
+                                
                         }
                     }
 
@@ -397,7 +425,7 @@ namespace ChurchManager.DataImporter
                     IsOnline = isOnline,
                     ParentGroupName = parentGroup,
                     Church = church,
-                    StartDate = startDate,
+                    StartDate = DateOnly.FromDateTime(startDate.Value),
                     MeetingDay = meetingDay,
                     MeetingTime = meetingTime
                 };

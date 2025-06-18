@@ -1,39 +1,75 @@
 ﻿using AutoMapper;
+using ChurchManager.Application.Abstractions.Services;
 using ChurchManager.Domain.Features.Churches;
+using ChurchManager.Domain.Features.Churches.Specifications;
+using ChurchManager.Domain.Features.Security.Services;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
+using CodeBoss.MultiTenant;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using ChurchViewModel = ChurchManager.Domain.Shared.ChurchViewModel;
 
-namespace ChurchManager.Features.Churches.Queries.RetrieveChurches
+namespace ChurchManager.Features.Churches.Queries.RetrieveChurches;
+
+public class ChurchesQuery : IRequest<ApiResponse>
 {
-    public class ChurchesQuery : IRequest<ApiResponse>
+    public int? ChurchGroupId { get; set; }
+    public string? SearchTerm { get; set; }
+}
+
+public class AllChurchQueryHandler : IRequestHandler<ChurchesQuery, ApiResponse>
+{
+    private readonly IGenericDbRepository<Church> _dbRepository;
+    private readonly ITenantCurrentUser _currentUser;
+    private readonly IPermissionService _permissions;
+    private readonly IChurchService _service;
+    private readonly IMapper _mapper;
+
+    public AllChurchQueryHandler(
+        IGenericDbRepository<Church> dbRepository,
+        ITenantCurrentUser currentUser,
+        IPermissionService permissions,
+        IChurchService service,
+        IMapper mapper)
     {
+        _dbRepository = dbRepository;
+        _currentUser = currentUser;
+        _permissions = permissions;
+        _service = service;
+        _mapper = mapper;
     }
 
-    public class AllChurchQueryHandler : IRequestHandler<ChurchesQuery, ApiResponse>
+    public async Task<ApiResponse> Handle(ChurchesQuery query, CancellationToken ct)
     {
-        private readonly IGenericDbRepository<Church> _dbRepository;
-        private readonly IMapper _mapper;
+        /*var vm = await _mapper
+            .ProjectTo<ChurchViewModel>(_dbRepository.Queryable().OrderBy(x => x.Name))
+            .ToListAsync(ct);*/
+            
+        // Get all allowed entity IDs
+        /*var allowedIds = await _permissions.GetAllowedEntityIdsAsync<Church>(Guid.Parse(_currentUser.Id), "View", ct);
+        var spec = new ChurchesListSpecification(allowedIds,  query.SearchTerm);
 
-        public AllChurchQueryHandler(IGenericDbRepository<Church> dbRepository, IMapper mapper)
-        {
-            _dbRepository = dbRepository;
-            _mapper = mapper;
-        }
-
-        public async Task<ApiResponse> Handle(ChurchesQuery query, CancellationToken ct)
-        {
-            var vm = await _mapper
-                .ProjectTo<ChurchViewModel>(_dbRepository.Queryable().OrderBy(x => x.Name))
-                .ToListAsync(ct);
-
-            /*var vm = await _dbRepository.Queryable().OrderBy(x => x.Name)
-                .MapTo<Church, ChurchViewModel>()
-                .ToListAsync(ct);*/
-
-            return new ApiResponse(vm);
-        }
+        var vm = await _dbRepository.ListAsync(spec, ct);*/
+            
+        /*var vm = await _dbRepository.Queryable().OrderBy(x => x.Name)
+            .MapTo<Church, ChurchViewModel>()
+            .ToListAsync(ct);*/
+            
+        var vm = await _service.ChurchListAsync(query.SearchTerm, query.ChurchGroupId, ct);
+        return new ApiResponse(vm);
     }
 }
+
+/*
+ * -----------------------------------------------------------------------------------
+ */
+
+
+/*
+ * ------------------------------------------------
+ */
+
+
+/*
+ * ------------------------------------------------
+ */
+

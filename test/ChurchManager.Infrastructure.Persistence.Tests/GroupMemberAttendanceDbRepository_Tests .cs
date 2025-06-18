@@ -1,11 +1,12 @@
 using AutoMapper;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using ChurchManager.Infrastructure.Persistence.Repositories;
+using ChurchManager.Infrastructure.Persistence.Seeding;
 using ChurchManager.Infrastructure.Persistence.Tests.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Xunit.Abstractions;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Infrastructure.Persistence.Tests
 {
@@ -35,7 +36,7 @@ namespace ChurchManager.Infrastructure.Persistence.Tests
                 var groups = await groupsDbRepository.Queryable()
                     .AsNoTracking()
                     .Include(x => x.GroupType)
-                    .Where(x => x.GroupType.Name.Contains("Cell"))
+                    .Where(x => x.GroupType.Name.Contains(SeedingConstants.CellGroupType))
                     .Select(x => x.Id)
                     .ToListAsync();
 

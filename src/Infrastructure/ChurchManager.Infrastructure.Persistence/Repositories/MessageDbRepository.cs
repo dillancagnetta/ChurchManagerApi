@@ -2,12 +2,12 @@
 
 using AutoMapper;
 using ChurchManager.Domain.Common.Extensions;
-using ChurchManager.Domain.Features.Communication;
-using ChurchManager.Domain.Features.Communication.Repositories;
-using ChurchManager.Domain.Shared;
+using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Communications.Repositories;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Convey.CQRS.Queries;
 using Microsoft.EntityFrameworkCore;
+using ChurchManager.Domain.Shared;
 
 #endregion
 

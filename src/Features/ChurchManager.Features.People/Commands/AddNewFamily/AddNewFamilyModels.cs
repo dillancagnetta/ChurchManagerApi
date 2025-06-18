@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Shared;
+﻿using Feature = ChurchManager.Domain.Features.People;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.People.Commands.AddNewFamily
 {
@@ -11,15 +12,15 @@ namespace ChurchManager.Features.People.Commands.AddNewFamily
 
     public record PersonBasicDetails
     {
-        public string FirstName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastName { get; set; }
-        public string Gender { get; set; }
-        public string AgeClassification { get; set; }
-        public string EmailAddress { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Occupation { get; set; }
-        public BirthDate BirthDate { get; set; }
+        public required string FirstName { get; set; }
+        public string? MiddleName { get; set; }
+        public required string LastName { get; set; }
+        public string Gender { get; set; } = Feature.Gender.Unknown.Value;
+        public string AgeClassification { get; set; } = Feature.AgeClassification.Unknown.Value;
+        public string? EmailAddress { get; set; }
+        public PhoneNumberViewModel? PhoneNumber { get; set; }
+        public string? Occupation { get; set; }
+        public BirthDate? BirthDate { get; set; } = new BirthDate();
         public bool? ReceivedHolySpirit { get; set; }
     }
 
@@ -27,19 +28,19 @@ namespace ChurchManager.Features.People.Commands.AddNewFamily
     {
         public int ChurchId { get; set; }
         public int? FamilyId { get; set; }
-        public string ConnectionStatus { get; set; }
-        public string Source { get; set; }
+        public string ConnectionStatus { get; set; } = Feature.ConnectionStatus.Unknown.Value;
+        public string Source { get; set; } = "Unknown";
         public DateTime? FirstVisitDate { get; set; }
-        public PersonBasicDetails Person { get; set; }
-        public AutocompleteResult AssignedFollowUpPerson { get; set; }
+        public PersonBasicDetails? Person { get; set; }
+        public AutocompleteResult? AssignedFollowUpPerson { get; set; }
     }
 
     public record Address
     {
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string Country { get; set; }
-        public string Province { get; set; }
-        public string PostalCode { get; set; }
+        public string? Street { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
+        public string? Province { get; set; }
+        public string? PostalCode { get; set; }
     }
 }

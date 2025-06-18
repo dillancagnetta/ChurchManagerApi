@@ -18,8 +18,6 @@ namespace ChurchManager.Infrastructure.TypeConverters
 
            
             //custom attributes
-
-
         }
 
         public int Order => 0;

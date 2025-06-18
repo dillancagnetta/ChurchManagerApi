@@ -1,6 +1,9 @@
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using Amazon.Runtime;
 using Convey;
 using Convey.Logging;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace ChurchManager.Api
 {
@@ -25,6 +28,8 @@ namespace ChurchManager.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                 
+                    webBuilder.ConfigureKestrel((context, options) => ConfigureKestrelHttp(context, options));
                 })
                 .ConfigureAppConfiguration((context, config) =>
                 {
@@ -76,6 +81,50 @@ namespace ChurchManager.Api
                 _ = Environment.GetEnvironmentVariable(AWS_ACCESS_KEY_ID) ?? throw new ArgumentNullException(AWS_ACCESS_KEY_ID);
                 _ = Environment.GetEnvironmentVariable(AWS_SECRET_ACCESS_KEY) ?? throw new ArgumentNullException(AWS_SECRET_ACCESS_KEY);
                 _ = Environment.GetEnvironmentVariable(AWS_REGION) ?? throw new ArgumentNullException(AWS_REGION);
+            }
+        }
+
+        private static void ConfigureKestrelHttp(WebHostBuilderContext context, KestrelServerOptions options)
+        {
+            if (context.HostingEnvironment.EnvironmentName != "Development")
+            {
+                // Read environment variables for port configuration
+                var httpPortString = Environment.GetEnvironmentVariable("ASPNETCORE_HTTP_PORTS") ?? "8080";
+                var httpsPortString = Environment.GetEnvironmentVariable("ASPNETCORE_HTTPS_PORTS") ?? "443";
+                            
+                // Configure HTTP endpoints
+                if (int.TryParse(httpPortString, out var httpPort))
+                {
+                    options.Listen(IPAddress.Any, httpPort);
+                }
+
+                // Configure HTTPS endpoints with certificate
+                if (int.TryParse(httpsPortString, out var httpsPort))
+                {
+                    options.ListenAnyIP(httpsPort, listenOptions =>
+                    {
+                        listenOptions.UseHttps(httpsOptions =>
+                        {
+                            // Load the certificate from the container path
+                            httpsOptions.ServerCertificate = new X509Certificate2(
+                                "certificate.pfx", 
+                                "YourStrongPassword",
+                                X509KeyStorageFlags.MachineKeySet | 
+                                X509KeyStorageFlags.PersistKeySet | 
+                                X509KeyStorageFlags.Exportable
+                            );
+                            // Load the certificate from the container path
+                            /*httpsOptions.ServerCertificate = X509CertificateLoader.LoadPkcs12FromFile("certificate.pfx", 
+                                "YourStrongPassword",
+                                X509KeyStorageFlags.MachineKeySet | 
+                                X509KeyStorageFlags.PersistKeySet | 
+                                X509KeyStorageFlags.Exportable);*/
+                        });
+                                    
+                        // Enable HTTP/2/3
+                        listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
+                    }); 
+                }
             }
         }
 

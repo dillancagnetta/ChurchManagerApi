@@ -1,8 +1,9 @@
 ﻿using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using ChurchManager.Api.Extensions.JsonConverter;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace ChurchManager.Api.Extensions
 {
@@ -58,13 +59,13 @@ namespace ChurchManager.Api.Extensions
                 {
                     options.UseGeneralRoutePrefix(prefix);
                 })
-                .AddNewtonsoftJson(options =>
+                .AddJsonOptions(options =>
                 {
-                    options.SerializerSettings.ContractResolver = new DefaultContractResolver
-                    {
-                        NamingStrategy = new CamelCaseNamingStrategy()
-                    };
-                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                    options.JsonSerializerOptions.Converters.Add(new TimeOnlyJsonConverter());
+                    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+                    options.JsonSerializerOptions.Converters.Add(new UtcIsoDateTimeConverter());
                 });
         }
 

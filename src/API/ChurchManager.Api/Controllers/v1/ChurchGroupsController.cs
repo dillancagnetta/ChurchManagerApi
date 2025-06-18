@@ -1,4 +1,5 @@
-﻿using ChurchManager.Features.Churches.Queries.RetrieveChurchGroups;
+﻿using ChurchManager.Features.Churches.Commands.ChurchGroups;
+using ChurchManager.Features.Churches.Queries.RetrieveChurchGroups;
 using ChurchManager.SharedKernel.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +10,9 @@ namespace ChurchManager.Api.Controllers.v1
     [Authorize]
     public class ChurchGroupsController : BaseApiController
     {
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
 
-        public ChurchGroupsController(ICognitoCurrentUser currentUser)
+        public ChurchGroupsController(IAppCurrentUser currentUser)
         {
             _currentUser = currentUser;
         }
@@ -22,34 +23,40 @@ namespace ChurchManager.Api.Controllers.v1
             return Ok(await Mediator.Send(query, token));
         }
         
-        /*[HttpGet]
-        public async Task<IActionResult> GetAll( CancellationToken token)
+        [HttpGet]
+        public async Task<IActionResult> GetAll(bool includeDetails = true, CancellationToken token = default)
         {
-            return Ok(await Mediator.Send(new GetGroupTypeQuery(groupTypeId), token));
+            return Ok(await Mediator.Send(new ChurchesGroupsQuery(IncludeDetails:includeDetails), token));
         }
+        
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] AddChurchGroupCommand cmd, CancellationToken token)
+        {
+            return Ok(await Mediator.Send(cmd, token));
+        }
+        
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id, CancellationToken token)
+        {
+            return Ok(await Mediator.Send(new DeleteChurchGroupCommand(id), token));
+        }
+        
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] EditChurchGroupCommand cmd, CancellationToken token)
+        {
+            return Accepted(await Mediator.Send(cmd, token));
+        }
+
             
-        [HttpGet("{groupTypeId}")]
+        /*[HttpGet("{groupTypeId}")]
         public async Task<IActionResult> GetGroupTypeById(int groupTypeId, CancellationToken token)
         {
             return Ok(await Mediator.Send(new GetGroupTypeQuery(groupTypeId), token));
         }
         
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] AddGroupTypeCommand cmd, CancellationToken token)
-        {
-            return Accepted(await Mediator.Send(cmd, token));
-        }
+       
+       
         
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] EditGroupTypeCommand cmd, CancellationToken token)
-        {
-            return Accepted(await Mediator.Send(cmd, token));
-        }
-        
-        [HttpDelete("{groupTypeId}")]
-        public async Task<IActionResult> Delete(int groupTypeId, CancellationToken token)
-        {
-            return Ok(await Mediator.Send(new DeleteGroupTypeCommand(groupTypeId), token));
-        }*/
+       */
     }
 }

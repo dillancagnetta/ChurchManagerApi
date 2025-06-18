@@ -8,7 +8,7 @@ namespace ChurchManager.Api.Authorization
     /// </summary>
     public class NameUserIdProvider : IUserIdProvider
     {
-        public virtual string GetUserId(HubConnectionContext connection)
+        public virtual string? GetUserId(HubConnectionContext connection)
         {
             return connection.User?.FindFirstValue(ClaimTypes.NameIdentifier);
         }

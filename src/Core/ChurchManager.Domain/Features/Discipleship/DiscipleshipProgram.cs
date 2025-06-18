@@ -12,13 +12,13 @@ namespace ChurchManager.Domain.Features.Discipleship
     {
         [MaxLength(100)]
         [Required]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         [MaxLength(200)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [MaxLength(100)]
-        public string Category { get; set; }
+        public string? Category { get; set; }
 
         /// <summary>
         /// Gets or sets the order.

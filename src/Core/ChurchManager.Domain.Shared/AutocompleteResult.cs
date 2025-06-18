@@ -1,6 +1,6 @@
 ﻿namespace ChurchManager.Domain.Shared
 {
-    public record AutocompleteResult(int? Id, string Label) { }
+    public record AutocompleteResult(int? Id, string? Label) { }
 
     public class AutocompleteResults : List<AutocompleteResult>
     {

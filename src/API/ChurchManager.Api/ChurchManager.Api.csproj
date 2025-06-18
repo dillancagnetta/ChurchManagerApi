@@ -3,12 +3,12 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
 <!--    <PackageReference Include="MassTransit.AspNetCore" />
     <PackageReference Include="MassTransit.Extensions.DependencyInjection" />-->
-    <PackageReference Include="MassTransit.RabbitMQ" />
+    <PackageReference Include="WolverineFx.RabbitMQ" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     <!-- FIX: System.IO.FileNotFoundException: Could not load file or assembly 'Newtonsoft.Json 12.0.0 -->
     <!--<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />-->
@@ -31,6 +31,7 @@
     <ProjectReference Include="..\..\Features\ChurchManager.Features.Common\ChurchManager.Features.Common.csproj" />
     <ProjectReference Include="..\..\Features\ChurchManager.Features.Communication\ChurchManager.Features.Communication.csproj" />
     <ProjectReference Include="..\..\Features\ChurchManager.Features.Discipleship\ChurchManager.Features.Discipleship.csproj" />
+    <ProjectReference Include="..\..\Features\ChurchManager.Features.Events\ChurchManager.Features.Events.csproj" />
     <ProjectReference Include="..\..\Features\ChurchManager.Features.FollowUp\ChurchManager.Features.FollowUp.csproj" />
     <ProjectReference Include="..\..\Features\ChurchManager.Features.Groups\ChurchManager.Features.Groups.csproj" />
     <ProjectReference Include="..\..\Features\ChurchManager.Features.History\ChurchManager.Features.History.csproj" />
@@ -43,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="TestReport.rdl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="certificate.pfx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

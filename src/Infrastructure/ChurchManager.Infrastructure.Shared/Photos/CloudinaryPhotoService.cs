@@ -35,6 +35,31 @@ namespace ChurchManager.Infrastructure.Shared.Photos
             return CheckResult(result);
         }
 
+        public async Task<OperationResult<string>> AddImageAsync(
+            string fileName, IFormFile file, string folder = "", int height = 500, int width = 800, string aspectRatio = "16:9", CancellationToken ct = default)
+        {
+            var result = new ImageUploadResult();
+
+            if(file.Length > 0)
+            {
+                using var stream = file.OpenReadStream();
+                var uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription($"{fileName}", stream),
+                    Folder = $"{fileName.Split("-").LastOrDefault()}/{folder}", // gets the environment as the folder
+                    Transformation = new Transformation()
+                        .Height(height)
+                        .Width(width)
+                        .Crop("fill")
+                        .AspectRatio(aspectRatio)
+                        .Gravity(Gravity.Auto)
+                };
+                result = await _cloudinary.UploadAsync(uploadParams, ct);
+            }
+
+            return CheckResult(result);
+        }
+
         public async Task<OperationResult<string>> DeletePhotoAsync(string publicId)
         {
             var deleteParams = new DeletionParams(publicId);

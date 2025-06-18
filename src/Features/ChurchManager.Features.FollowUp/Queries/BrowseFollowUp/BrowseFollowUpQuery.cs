@@ -1,20 +1,20 @@
 ﻿using ChurchManager.Domain.Features.Groups.Specifications;
 using ChurchManager.Domain.Parameters;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Common;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.FollowUp.Queries.BrowseFollowUp
 {
     public record BrowseFollowUpQuery
         : SearchTermQueryParameter, IRequest<PagedResponse<FollowUpViewModel>>
     {
-        public string[] Types { get; set; } = { };
-        public AutocompleteResult Person { get; set; }
-        public AutocompleteResult AssignedPerson { get; set; }
-        public string[] Severity { get; set; } =  {};
+        public string[] Types { get; set; } = [];
+        public AutocompleteResult? Person { get; set; }
+        public AutocompleteResult? AssignedPerson { get; set; }
+        public string[] Severity { get; set; } =  [];
         public bool? WithAction { get; set; }
         public bool? AssignedToMe { get; set; } // Assigned to current user
         public DateTime? From { get; set; }
@@ -24,11 +24,11 @@ namespace ChurchManager.Features.FollowUp.Queries.BrowseFollowUp
     public class BrowseFollowUp : IRequestHandler<BrowseFollowUpQuery, PagedResponse<FollowUpViewModel>>
     {
         private readonly IGenericDbRepository<Domain.Features.People.FollowUp> _dbRepository;
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
 
         public BrowseFollowUp(
             IGenericDbRepository<Domain.Features.People.FollowUp> dbRepository,
-            ICognitoCurrentUser currentUser)
+            IAppCurrentUser currentUser)
         {
             _dbRepository = dbRepository;
             _currentUser = currentUser;

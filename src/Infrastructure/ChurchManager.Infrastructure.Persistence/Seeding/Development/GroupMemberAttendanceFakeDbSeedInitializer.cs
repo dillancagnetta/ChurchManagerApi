@@ -29,8 +29,9 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             if (!await dbContext.GroupMemberAttendance.AnyAsync())
             {
                 var groups = dbContext.Group
+                    .Include(x => x.GroupType)
                     .Include(x => x.Members)
-                    .Where(x => x.GroupTypeId == 2) // Cells Groups
+                    .Where(x => x.GroupType.Name == SeedingConstants.CellGroupType) // Cells Groups
                     .AsQueryable()
                     //.Take(10) // Limit the number of groups for testing
                     .AsNoTracking();

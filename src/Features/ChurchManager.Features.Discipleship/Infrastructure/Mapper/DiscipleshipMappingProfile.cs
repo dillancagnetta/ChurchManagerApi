@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ChurchManager.Domain.Features.Discipleship;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Mapper;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Discipleship.Infrastructure.Mapper
 {

@@ -9,7 +9,7 @@ namespace ChurchManager.Features.Groups.Queries.GroupPerformanceMetrics
     public record GroupPerformanceMetricsQuery : IRequest<ApiResponse>
     {
         public int GroupId { get; set; }
-        public PeriodType Period { get; set; }
+        public PeriodType Period { get; set; } = PeriodType.ThisMonth;
     }
 
     public class GroupPerformanceMetricsHandler : IRequestHandler<GroupPerformanceMetricsQuery, ApiResponse>

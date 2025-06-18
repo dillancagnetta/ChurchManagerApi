@@ -33,6 +33,8 @@ public class LoginHandler : IRequestHandler<LoginCommand, TokenViewModel>
 
         // get account from database
         var user = await _dbContext.UserLogin
+            .Include(x => x.UserRoles)
+                .ThenInclude(r => r.Role)
             .FirstOrDefaultAsync(u => u.Username == request.Username, ct);
 
         // check account found and verify password
@@ -46,9 +48,9 @@ public class LoginHandler : IRequestHandler<LoginCommand, TokenViewModel>
                 new("Tenant", user.Tenant)
             };
             // Roles
-            foreach (var role in user.Roles)
+            foreach (var ur in user.UserRoles)
             {
-                claims.Add(new(ClaimTypes.Role, role));
+                claims.Add(new(ClaimTypes.Role, ur.Role.Name));
             }
 
             var accessToken = _tokens.GenerateAccessToken(claims);

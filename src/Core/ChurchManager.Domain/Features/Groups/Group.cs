@@ -17,20 +17,20 @@ namespace ChurchManager.Domain.Features.Groups
         public int? ScheduleId { get; set; }
 
         [Required, MaxLength(50)]
-        public string Name { get; set; }
+        public required string Name { get; set; }
         [MaxLength(100)]
-        public string Description { get; set; }
-        public string Address { get; set; }
+        public string? Description { get; set; }
+        public string? Address { get; set; }
         public DateTimeOffset? StartDate { get; set; }
         public int? GroupCapacity { get; set; }
-        public bool? IsOnline { get; set; }
+        public bool? IsOnline { get; set; } = false;
 
         #region Navigation
 
-        public virtual Group ParentGroup { get; set; }
-        public virtual GroupType GroupType { get; set; }
-        public virtual Church Church { get; set; }
-        public virtual Schedule Schedule { get; set; }
+        public virtual Group? ParentGroup { get; set; }
+        public virtual GroupType? GroupType { get; set; }
+        public virtual Church? Church { get; set; }
+        public virtual Schedule? Schedule { get; set; }
 
         /// <summary>
         /// Gets or sets a collection the Groups that are children of this group.

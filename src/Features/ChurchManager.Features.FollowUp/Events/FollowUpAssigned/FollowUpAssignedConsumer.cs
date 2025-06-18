@@ -1,0 +1,98 @@
+﻿using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Communications.Events;
+using ChurchManager.Domain.Features.People.Events;
+using ChurchManager.Domain.Features.People.Repositories;
+using ChurchManager.Infrastructure.Abstractions;
+using ChurchManager.Infrastructure.Abstractions.Persistence;
+using ChurchManager.Infrastructure.Shared.Bugsnag;
+using Codeboss.Types;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Wolverine;
+using Feature = ChurchManager.Domain.Features.People;
+using ChurchManager.Domain.Shared;
+
+namespace ChurchManager.Features.FollowUp.Events.FollowUpAssigned
+{
+    public class FollowUpAssignedConsumer : IDomainEventHandler 
+    {
+        private readonly IGenericDbRepository<Feature.FollowUp> _dbRepository;
+        private readonly IPersonDbRepository _personDbRepository;
+        private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly BugsnagOptions _bugsnagOptions;
+        public ILogger<FollowUpAssignedConsumer> Logger { get; }
+
+        public FollowUpAssignedConsumer(
+            IGenericDbRepository<Feature.FollowUp> dbRepository,
+            IPersonDbRepository personDbRepository,
+            IDateTimeProvider dateTimeProvider,
+            IOptions<BugsnagOptions> bugsnagOptions,
+            ILogger<FollowUpAssignedConsumer> logger)
+        {
+            Logger = logger;
+            _dbRepository = dbRepository;
+            _personDbRepository = personDbRepository;
+            _dateTimeProvider = dateTimeProvider;
+            _bugsnagOptions = bugsnagOptions.Value;
+        }
+
+        public async Task Handle(FollowUpAssignedEvent message, IMessageContext context)
+        {
+            Logger.LogInformation("------ FollowUpAssignedEvent event received {@message)------");
+
+            await _dbRepository.AddAsync(new Feature.FollowUp
+            {
+                PersonId = message.PersonId,
+                AssignedPersonId = message.AssignedFollowUpPersonId,
+                Type = message.Type,
+                // Audits
+                CreatedBy = message.UserLoginId,
+                CreatedDate = _dateTimeProvider.ConvertFromUtc(DateTime.UtcNow)
+            });
+
+            if(message.SendEmail)
+            {
+                var followUpAssignedPerson = await _personDbRepository.GetByIdAsync(message.AssignedFollowUpPersonId);
+
+                var templateData = new Dictionary<string, string>
+                {
+                    ["Title"] = followUpAssignedPerson!.FullName!.Title!,
+                    ["FirstName"] = followUpAssignedPerson!.FullName.FirstName!,
+                    ["LastName"] = followUpAssignedPerson!.FullName.LastName!,
+                    ["PersonUrl"] = GeneratedPersonUrl(message.PersonId),
+                    ["CreationDate"] = _dateTimeProvider.ConvertFromUtc(DateTime.UtcNow).ToShortDateString()
+                };
+
+                if (followUpAssignedPerson.HasValidActiveEmail)
+                {
+                    var recipient = new EmailRecipient
+                    {
+                        PersonId = followUpAssignedPerson.Id,
+                        EmailAddress = followUpAssignedPerson.Email!.Address!
+                    };
+                    await context.PublishAsync(new SendEmailEvent(
+                        "Follow Up Assignment",
+                        DomainConstants.Communication.Email.Templates.FollowUpTemplate,
+                        recipient
+                    )
+                    {
+                        TemplateData = templateData
+                    });
+                }
+            }
+
+        }
+
+        string GeneratedPersonUrl(int personId) => _bugsnagOptions switch
+            {
+                { ReleaseStage: "Development" } => $"http://localhost:4200/pages/profile/{personId}",
+                { ReleaseStage: "Test" } => $"https://test-churchmanager.codeboss.tech/pages/profile/{personId}",
+                { ReleaseStage: "Production" } => $"https://churchmanager.codeboss.tech//pages/profile/{personId}",
+                _ => $"http://localhost:4200/person/{personId}"
+            };
+
+    }
+}
+
+
+

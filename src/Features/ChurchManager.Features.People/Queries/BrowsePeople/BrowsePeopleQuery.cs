@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using ChurchManager.Application.Abstractions.Services;
-using ChurchManager.Application.ViewModels;
+//using ChurchManager.Application.ViewModels;
 using ChurchManager.Domain.Features.People.Queries;
+using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
 using Convey.CQRS.Queries;
 using MediatR;

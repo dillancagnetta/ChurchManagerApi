@@ -5,7 +5,7 @@ using CodeBoss.Extensions;
 
 namespace ChurchManager.Domain.Features.Groups.Specifications
 {
-    public class GroupAttendanceSpecification : Specification<GroupAttendance>, ISingleResultSpecification
+    public class GroupAttendanceSpecification : Specification<GroupAttendance>, ISingleResultSpecification<GroupAttendance>
     {
         public GroupAttendanceSpecification(int attendanceId)
         {
@@ -66,9 +66,9 @@ namespace ChurchManager.Domain.Features.Groups.Specifications
                     GroupMember = new GroupMemberViewModel
                     {
                         PersonId = entityAttendee.GroupMember.PersonId,
-                        FirstName = entityAttendee.GroupMember.Person.FullName.FirstName,
+                        FirstName = entityAttendee.GroupMember!.Person!.FullName!.FirstName!,
                         MiddleName = entityAttendee.GroupMember.Person.FullName.MiddleName,
-                        LastName = entityAttendee.GroupMember.Person.FullName.LastName,
+                        LastName = entityAttendee.GroupMember!.Person!.FullName!.LastName!,
                         PhotoUrl = entityAttendee.GroupMember.Person.PhotoUrl,
                         // TODO: MiddleName = ???
                         // TODO: LastName = ???

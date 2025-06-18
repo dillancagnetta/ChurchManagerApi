@@ -10,8 +10,8 @@ namespace ChurchManager.Features.People.Queries.BrowseFamilies
 {
     public record BrowseFamiliesQuery : QueryParameter, IRequest<PagedResponse<FamilyViewModel>>
     {
-        public string Name { get; set; }
-        public string Address { get; set; }
+        public string? Name { get; set; }
+        public string? Address { get; set; }
     }
 
     public class BrowseFamiliesHandler : IRequestHandler<BrowseFamiliesQuery, PagedResponse<FamilyViewModel>>

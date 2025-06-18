@@ -52,7 +52,7 @@ namespace ChurchManager.Features.Groups.Services
                 {
                     var groupMemberRoles = await _service.GroupRolesForGroupAsync(command.GroupId, ct);
                     var spec = new GroupWithTypeSpecification(command.GroupId);
-                    var group = await _groupDb.GetBySpecAsync(spec, ct);
+                    var group = await _groupDb.FirstOrDefaultAsync(spec, ct);
 
                     if (group is null)
                     {
@@ -89,7 +89,7 @@ namespace ChurchManager.Features.Groups.Services
                                         ConnectionStatus = ConnectionStatus.FirstTimer,
                                         RecordStatus = RecordStatus.Pending,
                                         PhoneNumbers = new List<PhoneNumber> {new() {CountryCode = "+27", Number = x.PhoneNumber}},
-                                        Source = $"{group.GroupType.Name}",
+                                        Source = $"{group.GroupType!.Name}",
                                         ChurchId = group.ChurchId
                                     }
                                 },

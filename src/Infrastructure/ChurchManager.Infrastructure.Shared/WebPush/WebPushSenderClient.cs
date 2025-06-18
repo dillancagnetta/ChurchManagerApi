@@ -1,5 +1,5 @@
-﻿using ChurchManager.Domain.Features.Communication;
-using ChurchManager.Domain.Features.Communication.Services;
+﻿using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Communications.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using WebPush;

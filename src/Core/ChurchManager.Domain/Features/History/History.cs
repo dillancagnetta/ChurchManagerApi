@@ -8,28 +8,28 @@ public class History : AuditableEntity<int>, IAggregateRoot<int>
 {
     public bool IsSystem { get; set; } = false;
 
-    [MaxLength(200)] public string Category { get; set; }
+    [MaxLength(200)] public string? Category { get; set; }
 
-    [MaxLength(50)] public string EntityType { get; set; }
+    [MaxLength(50)] public new string? EntityType { get; set; }
 
     public int EntityId { get; set; }
 
-    [MaxLength(50)] public string Verb { get; set; }
+    [MaxLength(50)] public string? Verb { get; set; }
 
-    [MaxLength(200)] public string Caption { get; set; }
+    [MaxLength(200)] public string? Caption { get; set; }
 
-    [MaxLength(50)] public string RelatedEntityType { get; set; }
+    [MaxLength(50)] public string? RelatedEntityType { get; set; }
 
     public int? RelatedEntityId { get; set; }
-    public string RelatedData { get; set; }
+    public string? RelatedData { get; set; }
 
-    [MaxLength(20)] public HistoryChangeType ChangeType { get; set; }
+    [MaxLength(20)] public HistoryChangeType? ChangeType { get; set; }
 
-    [MaxLength(250)] public string ValueName { get; set; }
-    public string NewValue { get; set; }
-    public string NewRawValue { get; set; }
-    public string OldValue { get; set; }
-    public string OldRawValue { get; set; }
+    [MaxLength(250)] public string? ValueName { get; set; }
+    public string? NewValue { get; set; }
+    public string? NewRawValue { get; set; }
+    public string? OldValue { get; set; }
+    public string? OldRawValue { get; set; }
 
     public bool? IsSensitive { get; set; }
 
@@ -74,7 +74,7 @@ public class History : AuditableEntity<int>, IAggregateRoot<int>
     /// <param name="oldRawValue">The old raw value.</param>
     /// <param name="newRawValue">The new raw value.</param>
     private static void EvaluateChange(HistoryChangeList historyChangeList, string propertyName, string oldValue,
-        string newValue, bool isSensitive = false, string oldRawValue = null, string newRawValue = null)
+        string newValue, bool isSensitive = false, string? oldRawValue = null, string? newRawValue = null)
     {
         if (!string.IsNullOrWhiteSpace(oldValue))
         {

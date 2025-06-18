@@ -12,7 +12,7 @@ namespace ChurchManager.Domain.Specifications
             // The groups this person is the leader of
             Expression<Func<Group, bool>> leadersGroupsFilter = g =>
                 g.Members
-                    .Any(m => m.PersonId == personId && m.GroupRole.IsLeader);
+                    .Any(m => m.PersonId == personId && m.GroupRole!.IsLeader);
 
             Criteria = leadersGroupsFilter;
 

@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <CodeBossVersion>9.0.21</CodeBossVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <!--<PackageReference Include="CodeBoss.MultiTenant" />-->
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Infrastructure\ChurchManager.Infrastructure.Persistence\ChurchManager.Infrastructure.Persistence.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\ChurchManager.Persistence.Shared\ChurchManager.Persistence.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\" />
+      <Folder Include="Services\" />
+    </ItemGroup>
+
+</Project>

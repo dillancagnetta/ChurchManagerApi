@@ -14,22 +14,14 @@ namespace ChurchManager.Domain.Common
         // Implicit conversion to bool
         public static implicit operator bool(RecordStatus status) =>
             status != null && !string.IsNullOrEmpty(status.Value) && status.Value == Active;
-    }
-
-    /// <summary>
-    /// Represents the communication preference of a <see cref="CommunicationType"/> in a <see cref="Person"/>.
-    /// </summary>
-    public class CommunicationType : Enumeration<CommunicationType, string>
-    {
-        public CommunicationType(string value) => Value = value;
-
-        public static CommunicationType WhatsApp = new("WhatsApp");
-        public static CommunicationType Signal = new("Signal");
-        public static CommunicationType Email = new("Email");
-        public static CommunicationType SMS = new("SMS");
-        public static CommunicationType None = new("None");
-
-        public static implicit operator CommunicationType(string value) => new(value);
+        
+        /// <summary>
+        /// Toggles between active and inactive status
+        /// Pending status remains the same
+        /// </summary>
+        public string ToggleStatus() => Value != Pending 
+            ? Value == Active? InActive : Active
+            : Pending;
     }
 
     public class HistoryVerb : Enumeration<HistoryVerb, string>
@@ -50,5 +42,29 @@ namespace ChurchManager.Domain.Common
         public static HistoryVerb StepAdded = new("StepAdded");
 
         public static implicit operator HistoryVerb(string value) => new(value);
+    }
+
+    public class ApprovalStatus : Enumeration<ApprovalStatus, string>
+    {
+        public ApprovalStatus() { Value = "Pending"; }
+        public ApprovalStatus(string value) => Value = value;
+
+        /// <summary>
+        ///  has been submitted but not yet approved or denied
+        /// </summary>
+        public static ApprovalStatus PendingApproval = new("Pending");
+    
+        /// <summary>
+        ///  has been approved 
+        /// </summary>
+        public static ApprovalStatus Approved = new("Approved");
+    
+        /// <summary>
+        ///  has been denied
+        /// </summary>
+        public static ApprovalStatus Denied = new ApprovalStatus("Denied");
+        
+        public static implicit operator ApprovalStatus(string value) => new(value);
+
     }
 }

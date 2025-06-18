@@ -1,6 +1,7 @@
 ﻿using ChurchManager.Features.People.Commands.AddPersonToFamily;
 using ChurchManager.Features.People.Queries.BrowseFamilies;
 using ChurchManager.Features.People.Queries.GetFamily;
+using ChurchManager.Features.People.Queries.Validate;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,6 +26,21 @@ namespace ChurchManager.Api.Controllers.v1
 
         [HttpPost("add-person")]
         public async Task<IActionResult> AddPersonToFamily([FromBody] AddPersonToFamilyCommand command, CancellationToken token)
+        {
+            await Mediator.Send(command, token);
+            return Accepted();
+        }
+        
+        [HttpGet("validate-code/{familyCode}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ValidateFamilyCode(string familyCode, CancellationToken token)
+        {
+            return Ok(await Mediator.Send(new ValidateFamilyCodeQuery(familyCode.Trim()), token));
+        }
+        
+        [HttpPost("request-code-email")]
+        [AllowAnonymous]
+        public async Task<IActionResult> RequestFamilyCode([FromBody] RequestFamilyCodeCommand command, CancellationToken token)
         {
             await Mediator.Send(command, token);
             return Accepted();

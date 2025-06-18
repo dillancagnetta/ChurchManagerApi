@@ -32,9 +32,9 @@ namespace ChurchManager.Domain.Features.Groups
         public string CommunicationPreference { get; set; } = "Email";
 
         #region Navigation
-        public virtual Group Group { get; set; }
-        public virtual GroupTypeRole GroupRole { get; set; }
-        public virtual Person Person { get; set; }
+        public virtual Group? Group { get; set; }
+        public virtual GroupTypeRole? GroupRole { get; set; }
+        public virtual Person? Person { get; set; }
 
         #endregion
     }

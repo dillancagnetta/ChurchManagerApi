@@ -1,0 +1,75 @@
+﻿using Ardalis.Specification;
+using ChurchManager.Domain.Shared;
+using ChurchManager.Domain.Specifications;
+
+namespace ChurchManager.Domain.Features.Events.Specifications;
+
+public class EventsListSpecification: PermissionSpecification<Event, EventViewModel>
+{
+    public EventsListSpecification(IEnumerable<int>? allowedEventIds = null, 
+        int? eventTypeId = null, 
+        int? churchGroupId = null, 
+        int? churchId = null, 
+        DateOnly? from = null, 
+        DateOnly? to = null, 
+        bool? isOnline = null,
+        bool? includeDetails = null): base(allowedEventIds)
+    {
+        Query.AsNoTracking();
+        
+        if (eventTypeId.HasValue)   
+        {
+            Query.Where(x => x.EventTypeId == eventTypeId);
+        }
+        
+        if (churchGroupId is > 0)
+        {
+            Query.Include(x => x.ChurchGroup);
+            Query.Where(x => x.ChurchGroupId == churchGroupId);
+        }
+        
+        if (churchId is > 0)
+        {
+            Query.Include(x => x.Church);
+            Query.Where(x => x.ChurchId == churchId);
+        }
+        
+        if (isOnline.HasValue)
+        {
+            Query.Include(x => x.EventType);
+            Query.Where(x => x.EventType.OnlineSupport != OnlineSupport.NotOnline.Value);
+        }
+        
+        if (from.HasValue || to.HasValue)
+        {
+            Query.Include(x => x.Sessions).ThenInclude(x => x.Schedule);
+    
+            if (from.HasValue && to.HasValue)
+            {
+                Query.Where(x => x.Sessions.All(s => 
+                    s.Schedule!.StartDate >= from.Value && s.Schedule.EndDate <= to.Value));
+            }
+            else if (from.HasValue)
+            {
+                Query.Where(x => x.Sessions.All(s => s.Schedule!.StartDate >= from.Value));
+            }
+            else if (to.HasValue)
+            {
+                Query.Where(x => x.Sessions.All(s => s.Schedule!.EndDate <= to.Value));
+            }
+        }
+
+        if (includeDetails.HasValue)
+        {
+            Query.Include(x => x.EventType);
+            Query.Include(x => x.Church);
+            Query.Include(x => x.ChurchGroup);
+            Query.Include(x => x.Sessions).ThenInclude(x => x.Schedule);
+            Query.Include(x => x.ChildCareGroup);
+            Query.Include(x => x.EventRegistrationGroup);
+            Query.Include(x => x.ContactPerson);
+        }
+        
+        Query.Select(ExpressionExtensions.SelectEventWithDetails);
+    }
+}

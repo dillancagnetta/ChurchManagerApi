@@ -1,14 +1,13 @@
-﻿using MassTransit;
+﻿using Wolverine;
 
 namespace ChurchManager.Infrastructure.Abstractions.MassTransit
 {
     public interface IUserHubService
     {
-        Task SendToUserAsync<TModel>(
+        ValueTask SendToUserAsync<TModel>(
             TModel model,
             string userId,
             string methodName,
-            IPublishEndpoint publisher,
             CancellationToken ct = default);
     }
 }

@@ -1,8 +1,10 @@
-﻿using ChurchManager.Features.People.Commands.AddNewFamily;
+﻿using ChurchManager.Api.Middlewares;
+using ChurchManager.Features.People.Commands.AddNewFamily;
 using ChurchManager.Features.People.Commands.DeletePerson;
 using ChurchManager.Features.People.Commands.DeletePhoto;
 using ChurchManager.Features.People.Commands.EditPhoto;
 using ChurchManager.Features.People.Commands.UpdatePerson;
+using ChurchManager.Features.People.Queries;
 using ChurchManager.Features.People.Queries.BrowsePeople;
 using ChurchManager.Features.People.Queries.FindDuplicates;
 using ChurchManager.Features.People.Queries.PeopleAutocomplete;
@@ -17,14 +19,20 @@ namespace ChurchManager.Api.Controllers.v1
     public class PeopleController : BaseApiController
     {
         private readonly ILogger<PeopleController> _logger;
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
 
         public PeopleController(
             ILogger<PeopleController> logger,
-            ICognitoCurrentUser currentUser)
+            IAppCurrentUser currentUser)
         {
             _logger = logger;
             _currentUser = currentUser;
+        }
+        
+        [HttpPost("filter")]
+        public async Task<IActionResult> GetPeopleByFilter([FromBody] GetPeopleByFilterQuery query, CancellationToken token)
+        {
+            return Ok(await Mediator.Send(query, token));
         }
 
         [HttpPost("family/new")]
@@ -104,8 +112,22 @@ namespace ChurchManager.Api.Controllers.v1
             return Ok(groups);
         }
 
-        [HttpGet("duplicate-check")]
+        [HttpGet("duplicate-check")] 
         public async Task<IActionResult> DuplicatePersonCheck([FromQuery] FindPeopleDuplicatesQuery query, CancellationToken token)
+        {
+            return Ok(await Mediator.Send(query, token));
+        }
+        
+        [HttpGet("connection-status-types")]
+        public async Task<IActionResult> GetConnectionStatusTypes(CancellationToken token)
+        {
+            return Ok(await Mediator.Send(new ConnectionStatusTypesQuery(), token));
+        }
+        
+        [HttpGet("verify-check")]
+        [AllowAnonymous]
+        [AllowedDomains]
+        public async Task<IActionResult> VerifyPersonCheck([FromQuery] VerifyPersonExistsQuery query, CancellationToken token)
         {
             return Ok(await Mediator.Send(query, token));
         }

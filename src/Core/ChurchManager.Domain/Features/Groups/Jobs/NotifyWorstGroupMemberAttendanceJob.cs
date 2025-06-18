@@ -1,7 +1,7 @@
 ﻿using System.Text;
-using ChurchManager.Domain.Features.Communication;
-using ChurchManager.Domain.Features.Communication.Repositories;
-using ChurchManager.Domain.Features.Communication.Services;
+using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Communications.Repositories;
+using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Domain.Shared;

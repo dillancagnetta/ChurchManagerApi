@@ -2,7 +2,7 @@
 
 namespace ChurchManager.Domain.Features.Groups.Specifications
 {
-    public class GroupTypeForGroupSpecification : Specification<Group, GroupType>, ISingleResultSpecification
+    public class GroupTypeForGroupSpecification : Specification<Group, GroupType>, ISingleResultSpecification<Group>
     {
         public GroupTypeForGroupSpecification(int groupId)
         {

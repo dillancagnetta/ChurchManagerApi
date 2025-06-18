@@ -7,9 +7,9 @@ namespace ChurchManager.Features.People.Commands.UpdatePerson
     {
         public int PersonId { get; set; }
         public int ChurchId { get; set; }
-        public string ConnectionStatus { get; set; }
+        public string? ConnectionStatus { get; set; }
         public DateTime? FirstVisitDate { get; set; }
-        public string Source { get; set; }
+        public string? Source { get; set; }
     }
 
     public class UpdateConnectionInfoHandler : IRequestHandler<UpdateConnectionInfoCommand, Unit>

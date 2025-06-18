@@ -11,8 +11,8 @@ namespace ChurchManager.Domain.Features.People.Specifications
     {
         public BrowseFamiliesSpecification(
             IPagedQuery paging,
-            string name,
-            string address)
+            string? name,
+            string? address)
         {
             Query.AsNoTracking();
             Query.Include(x => x.Address);
@@ -44,8 +44,8 @@ namespace ChurchManager.Domain.Features.People.Specifications
             Query.Select(x => new FamilyViewModel
             {
                 Id = x.Id,
-                Name = x.Name,
-                City = x.Address.City,
+                Name = x.Name!,
+                City = x.Address!.City,
                 Country = x.Address.Country,
                 PostalCode = x.Address.PostalCode,
                 Street = x.Address.Street,

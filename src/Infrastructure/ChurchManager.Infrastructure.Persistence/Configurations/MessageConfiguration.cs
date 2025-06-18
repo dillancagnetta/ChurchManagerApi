@@ -1,6 +1,6 @@
 ﻿#region
 
-using ChurchManager.Domain.Features.Communication;
+using ChurchManager.Domain.Features.Communications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -29,6 +29,20 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
                 .WithMany()
                 .HasForeignKey(cg => cg.UserId)
                 .IsRequired();
+            
+            // Indexes
+            builder.HasIndex(x => x.Classification); 
+            builder.HasIndex(x => x.Status);  
+            builder.HasIndex(x => x.IsRead);  
+            builder.HasIndex(x => x.UserId);  
+            
+            // Configure the relationship with user login
+            // If ser login is deleted - all  will be deleted
+            builder
+                .HasOne(p => p.UserLogin)
+                .WithMany()
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

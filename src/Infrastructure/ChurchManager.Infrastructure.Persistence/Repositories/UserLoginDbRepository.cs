@@ -5,7 +5,6 @@ using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Infrastructure.Persistence.Contexts;
-using MassTransit.Initializers;
 using Microsoft.EntityFrameworkCore;
 
 #endregion
@@ -30,8 +29,9 @@ public class UserLoginDbRepository : GenericRepositoryBase<UserLogin>,  IUserLog
     {
         return await Queryable()
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.PersonId == personId, cancellationToken: token)
-            .Select(x => x.Id);;
+            .Where(x => x.PersonId == personId)
+            .Select(x => x.Id)
+            .FirstOrDefaultAsync(cancellationToken: token);
     }
 
     public async Task LogoutUserAsync(Guid userLoginId, CancellationToken ct)

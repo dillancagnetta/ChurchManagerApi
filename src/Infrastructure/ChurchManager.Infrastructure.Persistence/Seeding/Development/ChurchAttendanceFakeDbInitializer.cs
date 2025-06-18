@@ -26,10 +26,13 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 
             if (!await dbContext.ChurchAttendance.AnyAsync())
             {
+                var churches = dbContext.Church.AsNoTracking().Take(10).Select(x => x.Id).ToList();
+                var churchAttendanceTypes = dbContext.ChurchAttendanceType.AsNoTracking().Select(x => x.Id).ToList();
+                
                 var attendances = new List<ChurchAttendance>(10000); 
-                for (int churchId = 1; churchId < 10; churchId++)
+                for (int churchId = churches.Min(); churchId < churches.Max(); churchId++)
                 {
-                    attendances.AddRange(GenerateChurchAttendances(1000, churchId));
+                    attendances.AddRange(GenerateChurchAttendances(1000, churchId, churchAttendanceTypes));
                     await dbContext.ChurchAttendance.AddRangeAsync(attendances);
                 }
 
@@ -37,7 +40,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             }
         }
 
-        private IList<ChurchAttendance> GenerateChurchAttendances(int count, int churchId)
+        private IList<ChurchAttendance> GenerateChurchAttendances(int count, int churchId, List<int> churchAttendanceTypes)
         {
             var faker = new Faker();
             var random = new Random();
@@ -52,16 +55,18 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                     males = random.Next(0, 500),
                     females = random.Next(0, 500),
                     children = random.Next(0, 200),
-                    firsttimers = random.Next(10, 100),
+                    teens = random.Next(0, 100),
+                    firsttimers = random.Next(10, 100)
                 };
 
                 churchAttendances.Add( new ChurchAttendance
                 {
-                    ChurchAttendanceTypeId = random.Next(1, 3),  // will generate 1 to 2 only
+                    ChurchAttendanceTypeId = random.Next(churchAttendanceTypes.Min(), churchAttendanceTypes.Max() + 1),  // will generate 1 to 2 only
                     ChurchId = churchId,
                     AttendanceDate = attendance.attendancedate,
-                    AttendanceCount = attendance.males + attendance.females + attendance.children,
+                    AttendanceCount = attendance.males + attendance.females + attendance.children + attendance.teens,
                     ChildrenCount = attendance.children,
+                    TeensCount = attendance.teens,
                     FemalesCount = attendance.females,
                     MalesCount = attendance.males,
                     FirstTimerCount = attendance.firsttimers,

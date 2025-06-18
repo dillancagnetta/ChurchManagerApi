@@ -1,8 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using ChurchManager.Domain.Common;
+using CodeBoss.Extensions;
 using ChurchManager.Domain.Features.Churches;
+using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.People.Notes;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
@@ -13,30 +14,30 @@ namespace ChurchManager.Domain.Features.People
     [Table("Person")]
     public class Person : Entity<int>, IAggregateRoot<int>
     {
-        [Required] public FullName FullName { get; set; }
-        public ConnectionStatus ConnectionStatus { get; set; }
-        [Required] public DeceasedStatus DeceasedStatus { get; set; }
-        public AgeClassification AgeClassification { get; set; }
-        public Gender Gender { get; set; }
-        [Required] public BirthDate BirthDate { get; set; }
+        [Required] public FullName? FullName { get; set; }
+        public ConnectionStatus ConnectionStatus { get; set; } = ConnectionStatus.Unknown;
+        [Required] public DeceasedStatus? DeceasedStatus { get; set; }
+        public AgeClassification AgeClassification { get; set; } = AgeClassification.Unknown;
+        public Gender Gender { get; set; } = Gender.Unknown;
+        [Required] public BirthDate? BirthDate { get; set; }
 
         /// <summary>
         /// Where this person came from e.g. Cell, Outreach, Church, Online etc
         /// </summary>
-        public string Source { get; set; }
+        public string? Source { get; set; }
         public DateTime? FirstVisitDate { get; set; }
 
-        [Required] public Baptism BaptismStatus { get; set; }
+        [Required] public Baptism? BaptismStatus { get; set; }
 
-        public string MaritalStatus { get; set; }
+        public string? MaritalStatus { get; set; }
         public DateTime? AnniversaryDate { get; set; }
 
-        [Required] public Email Email { get; set; }
-        public ICollection<PhoneNumber> PhoneNumbers { get; set; } = new Collection<PhoneNumber>();
-        public CommunicationType CommunicationPreference { get; set; }
+        [Required] public Email? Email { get; set; }
+        public ICollection<PhoneNumber>? PhoneNumbers { get; set; } = new Collection<PhoneNumber>();
+        public CommunicationType? CommunicationPreference { get; set; }
 
-        public string PhotoUrl { get; set; }
-        public string Occupation { get; set; }
+        public string? PhotoUrl { get; set; }
+        public string? Occupation { get; set; }
 
         public int? FamilyId { get; set; }
         public bool? ReceivedHolySpirit { get; set; } = false;
@@ -52,17 +53,58 @@ namespace ChurchManager.Domain.Features.People
         /// <summary>
         /// Gets or sets the user login id from AWS Cognito
         /// </summary>
-        public string UserLoginId { get; set; }
+        public string? UserLoginId { get; set; }
 
         public int? ViewedCount { get; set; }
 
 
         #region Navigation
 
-        public virtual Family Family { get; set; }
-        public virtual Church Church { get; set; }
+        public virtual Family? Family { get; set; }
+        public virtual Church? Church { get; set; }
         public virtual ICollection<Note> Notes { get; set; } = new Collection<Note>();
         
+        public virtual ICollection<ConnectionStatusHistory> ConnectionStatusHistory { get; set; } = new Collection<ConnectionStatusHistory>();
+        
+        #endregion
+
+        #region Methods
+
+        public AgeClassification AgeClassificationFromBirthDate()
+        {
+            var age = BirthDate.Age;
+        
+            if (!age.HasValue)
+                return AgeClassification.Unknown;
+
+            return age.Value switch
+            {
+                < 13 => AgeClassification.Child,
+                >= 13 and < 20 => AgeClassification.Teen,
+                >= 20 => AgeClassification.Adult,
+            };
+        }
+
+        public bool HasValidActiveEmail => Email is { IsActive: not null } && Email.IsActive.Value;
+        
+        public static Shared.PersonViewModelBasic ToBasicPerson(Person person)
+        {
+            return new Shared.PersonViewModelBasic
+            {
+                PersonId = person.Id,
+                Gender = person.Gender,
+                FirstName = person!.FullName!.FirstName!,
+                LastName = person!.FullName!.LastName!,
+                AgeClassification = person.AgeClassification,
+                Age = person.BirthDate?.Age,
+                PhotoUrl = person.PhotoUrl
+            };
+        }
+        
+        public bool HasPhoto => !PhotoUrl.IsNullOrEmpty();
+
+        public PhoneNumber MessagingPhoneNumber => PhoneNumbers.FirstOrDefault(x => x.IsMessagingEnabled);
+
         #endregion
     }
 
@@ -77,12 +119,12 @@ namespace ChurchManager.Domain.Features.People
     [Owned]
     public class FullName
     {
-        public string Title { get; set; }
-        public string FirstName { get; set; }
-        public string NickName { get; set; }
-        public string MiddleName { get; set; }
-        public string LastName { get; set; }
-        public string Suffix { get; set; }
+        public string? Title { get; set; }
+        public string? FirstName { get; set; }
+        public string? NickName { get; set; }
+        public string? MiddleName { get; set; }
+        public string? LastName { get; set; }
+        public string? Suffix { get; set; }
 
         public override string ToString() => $"{FirstName} {LastName}";
     }
@@ -96,6 +138,15 @@ namespace ChurchManager.Domain.Features.People
 
         [NotMapped]
         public virtual int? Age => GetAge(CalculateBirthDate());
+
+        public void Update(int? day, int? month, int? year)
+        {
+            BirthDay = day;
+            BirthMonth = month;
+            BirthYear = year;
+        }
+        
+        public static BirthDate Create(int? day, int? month, int? year) => new BirthDate { BirthDay = day, BirthMonth = month, BirthYear = year };
 
         /// <summary>
         /// Calculates the birthdate from the BirthYear, BirthMonth, and BirthDay.
@@ -155,7 +206,9 @@ namespace ChurchManager.Domain.Features.People
     [Owned]
     public class Email
     {
-        public string Address { get; set; }
+        public string? Address { get; set; }
         public bool? IsActive { get; set; }
+
+        public static Email Create(string address) => new () { Address = address, IsActive = true };
     }
 }

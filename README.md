@@ -101,6 +101,12 @@ docker tag church-manager-ui:latest 977844596384.dkr.ecr.us-east-1.amazonaws.com
 
 `docker push 977844596384.dkr.ecr.us-east-1.amazonaws.com/frontend-angular:local`
 
+## Updating
+
+> dotnet tool install -g upgrade-assistant
+
+> upgrade-assistant upgrade 'Path to csproj to upgrade'
+
 
 ## Reporting
 

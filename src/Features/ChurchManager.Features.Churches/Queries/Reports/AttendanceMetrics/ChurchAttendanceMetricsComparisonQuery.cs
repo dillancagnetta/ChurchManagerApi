@@ -5,7 +5,10 @@ using MediatR;
 
 namespace ChurchManager.Features.Churches.Queries.Reports.AttendanceMetrics;
 
-public record ChurchAttendanceMetricsComparisonQuery(int? ChurchId = null, ReportPeriodType PeriodType = ReportPeriodType.SixMonths): IRequest<ApiResponse>;
+public record ChurchAttendanceMetricsComparisonQuery(
+    int? ChurchGroupId = null, 
+    int? ChurchId = null, 
+    ReportPeriodType PeriodType = ReportPeriodType.SixMonths): IRequest<ApiResponse>;
 
 
 public class ChurchAttendanceMetricsComparisonHandler : IRequestHandler<ChurchAttendanceMetricsComparisonQuery, ApiResponse>
@@ -19,7 +22,7 @@ public class ChurchAttendanceMetricsComparisonHandler : IRequestHandler<ChurchAt
     
     public async Task<ApiResponse> Handle(ChurchAttendanceMetricsComparisonQuery query, CancellationToken ct)
     {
-        var result = await _dbRepository.AttendanceMetricsComparisonAsync(query.ChurchId, query.PeriodType, ct);
+        var result = await _dbRepository.AttendanceMetricsComparisonAsync(query.ChurchGroupId, query.ChurchId, query.PeriodType, ct);
 
         return new ApiResponse(result);
     }

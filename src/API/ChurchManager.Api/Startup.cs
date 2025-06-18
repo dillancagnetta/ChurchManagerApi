@@ -1,8 +1,10 @@
 using ChurchManager.Api.Extensions;
+using ChurchManager.Api.Middlewares;
 using ChurchManager.Infrastructure.Persistence;
 using ChurchManager.Infrastructure.Shared;
 using ChurchManager.Infrastructure.Shared.SignalR.Hubs;
 using CodeBoss.AspNetCore.DependencyInjection;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 using StartupBase = ChurchManager.Infrastructure.StartupBase;
 
@@ -47,6 +49,7 @@ namespace ChurchManager.Api
             else
             {
                 app.UseExceptionHandler("/Error");
+                app.UseHttpsRedirection();
             }
 
             app.UseRouting();
@@ -57,12 +60,16 @@ namespace ChurchManager.Api
             app.UseErrorHandlingMiddleware();
             app.UseMultiTenant();
 
-            app.UseHealthChecks(ApiRoutes.HealthChecks.DefaultUrl);
+            app.UseHealthChecks(ApiRoutes.HealthChecks.DefaultUrl, new HealthCheckOptions
+            {
+                ResponseWriter = HealthCheckResponseWriter.WriteResponse
+            });
 
             app.UseEndpoints(endpoints =>
              {
                  endpoints.MapControllers();
                  endpoints.MapHub<NotificationHub>(ApiRoutes.Hubs.NotificationHub);
+                 endpoints.MapHub<CommunicationStatusHub>(ApiRoutes.Hubs.CommunicationsStatusHub);
              });
         }
     }

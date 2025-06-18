@@ -14,15 +14,15 @@ namespace ChurchManager.Domain.Features.People
         /// </summary>
         public DateTime? ActionDate { get; set; }
         
-        public string Type { get; set; }
+        public string? Type { get; set; }
         
-        public int AssignedPersonId { get; set; }
+        public int? AssignedPersonId { get; set; }
         
         public int PersonId { get; set; }
         
         public string Severity { get; set; } = "Normal"; // Urgent
 
-        public string Note { get; set; }
+        public string? Note { get; set; }
 
         /// <summary>
         /// Whether or not additional follow up is required after doing a follow up
@@ -31,7 +31,7 @@ namespace ChurchManager.Domain.Features.People
 
         #region Navigation
 
-        public virtual Person AssignedPerson { get; set; }
+        public virtual Person? AssignedPerson { get; set; }
         public virtual Person Person { get; set; }
 
         #endregion

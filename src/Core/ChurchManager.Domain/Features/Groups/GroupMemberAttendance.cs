@@ -32,12 +32,12 @@ namespace ChurchManager.Domain.Features.Groups
         public bool? IsNewConvert { get; set; }
         public bool? ReceivedHolySpirit { get; set; }
         [MaxLength(200)]
-        public string Note { get; set; }
+        public string? Note { get; set; }
 
         #region Navigation
 
-        public virtual Group Group { get; set; }
-        public virtual GroupMember GroupMember { get; set; }
+        public virtual Group? Group { get; set; }
+        public virtual GroupMember? GroupMember { get; set; }
 
         #endregion
     }

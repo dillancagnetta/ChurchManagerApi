@@ -1,6 +1,5 @@
 ﻿using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.Groups.Specifications;
-using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 
@@ -23,7 +22,7 @@ namespace ChurchManager.Features.Groups.Queries.GroupMembers
         {
             var spec = new GroupMemberSpecification(query.GroupMemberId);
 
-            var member = await _dbRepository.GetBySpecAsync<GroupMemberEditViewModel>(spec, ct);
+            var member = await _dbRepository.FirstOrDefaultAsync(spec, ct);
 
             return new ApiResponse(member);
         }

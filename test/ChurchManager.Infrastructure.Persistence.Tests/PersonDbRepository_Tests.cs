@@ -1,8 +1,10 @@
 using ChurchManager.Domain.Features.People.Queries;
+using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using ChurchManager.Infrastructure.Persistence.Repositories;
 using ChurchManager.Infrastructure.Persistence.Tests.Helpers;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -28,7 +30,7 @@ namespace ChurchManager.Infrastructure.Persistence.Tests
         {
             using (var dbContext = new ChurchManagerDbContext(_options, new LocalTenantProvider(), null))
             {
-                var dbRepository = new PersonDbRepository(dbContext);
+                var dbRepository = new PersonDbRepository(dbContext, new Mock<IQueryCache>().Object);
 
                 var query = new PersonMatchQuery("Dillan", "Cagnetta", "dillancagnetta@yahoo.com", null);
 

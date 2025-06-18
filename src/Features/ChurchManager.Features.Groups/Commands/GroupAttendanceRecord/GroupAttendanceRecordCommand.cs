@@ -11,9 +11,9 @@ namespace ChurchManager.Features.Groups.Commands.GroupAttendanceRecord
         [Required] public DateTime AttendanceDate { get; set; }
 
         public bool? DidNotOccur { get; set; }
-        public IEnumerable<GroupMemberAttendance> Members { get; set; }
-        public IEnumerable<FirstTimerAttendance> FirstTimers { get; set; }
-        public string Notes { get; set; }
+        public IEnumerable<GroupMemberAttendance> Members { get; set; } = [];
+        public IEnumerable<FirstTimerAttendance> FirstTimers { get; set; } = [];
+        public string? Notes { get; set; }
         public decimal? Offering { get; set; }
     }
 

@@ -1,14 +1,14 @@
 ﻿using ChurchManager.Application.Abstractions.Services;
-using ChurchManager.Domain.Features.Communication;
+using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.Groups.Events;
 using ChurchManager.Domain.Features.Groups.Repositories;
-using MassTransit;
+using ChurchManager.Infrastructure.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ChurchManager.Features.Groups.Events.GroupAttendanceReviewed
 {
-    public class GroupAttendanceReviewedConsumer : IConsumer<GroupAttendanceReviewedEvent>
+    public class GroupAttendanceReviewedConsumer : IDomainEventHandler
     {
         private readonly IGroupMemberDbRepository _dbRepository;
         private readonly IPushNotificationService _push;
@@ -24,12 +24,10 @@ namespace ChurchManager.Features.Groups.Events.GroupAttendanceReviewed
             Logger = logger;
         }
 
-        public async Task Consume(ConsumeContext<GroupAttendanceReviewedEvent> context)
+        public async Task Handle(GroupAttendanceReviewedEvent message)
         {
-            Logger.LogInformation("------ GroupAttendanceReviewed event received ------");
-
-            var message = context.Message;
-
+            Logger.LogInformation("✔️ ------ GroupAttendanceReviewed event received ------");
+            
             var leaders = await _dbRepository.GetLeaders(message.GroupId).ToListAsync();
 
             var notification = new PushNotification("Report Feedback" , message.Feedback);

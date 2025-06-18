@@ -1,5 +1,6 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Common.Extensions;
+using ChurchManager.Domain.Shared;
 using CodeBoss.Extensions;
 using Convey.CQRS.Queries;
 
@@ -41,11 +42,12 @@ namespace ChurchManager.Domain.Features.Discipleship.Specifications
                     Person = new PersonViewModelBasic
                     {
                         PersonId = step.PersonId,
-                        FullName = step.Person.FullName,
+                        FirstName = step.Person!.FullName!.FirstName!,
+                        LastName = step.Person.FullName.LastName!,
                         Gender = step.Person.Gender,
                         AgeClassification = step.Person.AgeClassification,
                         PhotoUrl = step.Person.PhotoUrl,
-                        BirthDate = step.Person.BirthDate,
+                        Age = step.Person.BirthDate != null ? step.Person.BirthDate.Age : null,
                     },
                     CompletionDate = step.CompletionDate,
                     Status = step.Status,

@@ -10,13 +10,13 @@ namespace ChurchManager.Features.Groups.Commands.GroupTypes.Crud;
 public record EditGroupTypeCommand : IRequest<ApiResponse>
 {
     [Required] public int Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public string GroupTerm { get; set; }
-    public string GroupMemberTerm { get; set; }
-    public bool TakesAttendance { get; set; }
-    public bool IsSystem { get; set; }
-    public string IconCssClass { get; set; }
+    public string? Name { get; set; }
+    public string? Description { get; set; }
+    public string GroupTerm { get; set; } = "Group";
+    public string GroupMemberTerm { get; set; } = "Member";
+    public bool TakesAttendance { get; set; } = false;
+    public bool IsSystem { get; set; } = false;
+    public string? IconCssClass { get; set; }
 }
 
 public class GroupTypeEditedHandler : IRequestHandler<EditGroupTypeCommand, ApiResponse>

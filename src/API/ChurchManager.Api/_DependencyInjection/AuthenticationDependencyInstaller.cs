@@ -12,6 +12,8 @@ namespace ChurchManager.Api._DependencyInjection
         public void InstallServices(IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
         {
             var config = configuration.GetOptions<WebApiConfig>(nameof(WebApiConfig));
+            
+            #region Authentication
 
             services.AddAuthentication(opt =>
                 {
@@ -46,6 +48,17 @@ namespace ChurchManager.Api._DependencyInjection
                     // the query string to transmit the access token.
                     options.Events = new SignalRJwtBearerEvents();
                 });
+
+            #endregion
+            
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ExcludePublicAccess", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireAssertion(context => !context.User.IsInRole("Public Access"));
+                });
+            });
         }
     }
 
@@ -73,6 +86,7 @@ namespace ChurchManager.Api._DependencyInjection
                 var hubPathSegments = new[]
                 {
                     ApiRoutes.Hubs.NotificationHub,
+                    ApiRoutes.Hubs.CommunicationsStatusHub,
                     //ApiRoutes.Hubs.AppHub,
                     // ApiRoutes.Hubs.GroupsHub
                 };

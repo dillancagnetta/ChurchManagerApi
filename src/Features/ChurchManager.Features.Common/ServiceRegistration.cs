@@ -1,9 +1,5 @@
-﻿using System.Reflection;
-using ChurchManager.Features.Common.Behaviours;
-using ChurchManager.SharedKernel.Common;
-using CodeBoss.AspNetCore;
-using FluentValidation;
-using MediatR;
+﻿using ChurchManager.Application.Abstractions.Services;
+using ChurchManager.Features.Common.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ChurchManager.Features.Common
@@ -12,7 +8,7 @@ namespace ChurchManager.Features.Common
     {
         public static void AddApplicationLayer(this IServiceCollection services)
         {
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            /*services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddMediatR(cfg=>cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
             //services.AddMediatR(Assembly.GetExecutingAssembly());
@@ -24,6 +20,7 @@ namespace ChurchManager.Features.Common
 
             #endregion
 
-            services.AddAspNetCurrentUser<ICognitoCurrentUser, CognitoCurrentUser>(); }
+            services.AddAspNetCurrentUser<IAppCurrentUser, AppCurrentUser>(); */
+        }
     }
 }

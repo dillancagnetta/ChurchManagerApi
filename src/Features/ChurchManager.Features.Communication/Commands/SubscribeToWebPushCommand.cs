@@ -1,5 +1,5 @@
-﻿using ChurchManager.Domain.Features.Communication;
-using ChurchManager.Domain.Features.Communication.Services;
+﻿using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.SharedKernel.Common;
 using MediatR;
 
@@ -7,8 +7,8 @@ namespace ChurchManager.Features.Communication.Commands
 {
     public record SubscribeToWebPushCommand(PushSubscription Subscription) : IRequest<Unit>
     {
-        public string Device { get; set; }
-        public string UniqueIdentification { get; set; }
+        public required string Device { get; set; }
+        public required string UniqueIdentification { get; set; }
     }
 
     public record UnsubscribeToWebPushCommand(PushSubscription Subscription) : IRequest<Unit>;
@@ -18,10 +18,10 @@ namespace ChurchManager.Features.Communication.Commands
 
     public class WebPushSubscriptionHandler : IRequestHandler<SubscribeToWebPushCommand, Unit>
     {
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
         private readonly IPushSubscriptionsService _push;
 
-        public WebPushSubscriptionHandler(ICognitoCurrentUser currentUser, IPushSubscriptionsService push)
+        public WebPushSubscriptionHandler(IAppCurrentUser currentUser, IPushSubscriptionsService push)
         {
             _currentUser = currentUser;
             _push = push;

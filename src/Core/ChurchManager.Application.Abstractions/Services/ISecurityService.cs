@@ -1,0 +1,24 @@
+﻿using ChurchManager.SharedKernel.Wrappers;
+using Codeboss.Results;
+using Convey.CQRS.Queries;
+using ChurchManager.Domain.Shared;
+
+namespace ChurchManager.Application.Abstractions.Services;
+
+public interface ISecurityService
+{
+    Task<IEnumerable<UserLoginViewModel>> UserLoginsAsync(string searchTerm, CancellationToken ct = default);
+    Task<IEnumerable<UserLoginRoleViewModel>> UserLoginRolesAsync(string searchTerm = null, IEnumerable<int> excludeIds = null, Guid? UserLoginId = null, CancellationToken ct = default);
+    Task<PagedResponse<PermissionViewModel>> BrowsePermissionsAsync(IPagedQuery query, string entityType, string scopeType, int? entityId = null, bool? isDynamicScope = null,
+        CancellationToken ct = default);
+    Task<OperationResult> CreatePermissionAsync(string permissionType, string entityType, IEnumerable<int> entityIds, string scopeType, int? scopeId, bool canView, bool canEdit, bool canDelete, bool canManageUsers, CancellationToken ct = default);
+    Task<IEnumerable<PermissionViewModel>> EntityPermissionsAsync(IEnumerable<int> excludeIds, int? UserLoginRoleId = null, CancellationToken ct = default);
+    Task<OperationResult> AddRoleToUserAsync(Guid userLoginId, int userLoginRoleId, CancellationToken ct = default);
+    Task<OperationResult> AddPermissionsToRoleAsync(int userLoginRoleId, int[] permissionIds, bool? isAllSelected, CancellationToken ct = default);
+    Task<OperationResult> RemovePermissionFromRoleAsync(int userLoginRoleId, int permissionId, CancellationToken ct = default);
+    Task<OperationResult> RemoveRoleFromUserAsync(Guid userLoginId, int userLoginRoleId, CancellationToken ct =default);
+    Task<OperationResult> ToggleUserLoginStatusAsync(Guid userLoginId, CancellationToken ct = default);
+    Task<OperationResult> TogglePermissionStatusForRoleCommandAsync(int userLoginRoleId, int permissionId, CancellationToken ct = default);
+    Task<OperationResult> ToggleRoleStatusForUserCommandAsync(Guid userLoginId, int userLoginRoleId, CancellationToken ct = default);
+    Task<OperationResult> AddRoleAsync(string name, string description, CancellationToken ct = default);
+}

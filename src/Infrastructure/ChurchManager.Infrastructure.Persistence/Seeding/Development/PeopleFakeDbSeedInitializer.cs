@@ -3,7 +3,9 @@
 using Bogus;
 using Bogus.DataSets;
 using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.People;
+using ChurchManager.Domain.Features.Security;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.AspNetCore.Startup;
 using CodeBoss.Extensions;
@@ -22,10 +24,11 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
     /// </summary>
     public class PeopleFakeDbSeedInitializer : IInitializer
     {
-        public int OrderNumber { get; } = 1;
+        public int OrderNumber { get; } = 2;
         private readonly IServiceScopeFactory _scopeFactory;
         private ChurchManagerDbContext _dbContext;
         private ITenant _tenant;
+        private Church _church;
         private Random _random = new Random();
 
         public PeopleFakeDbSeedInitializer(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
@@ -33,8 +36,9 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         public async Task InitializeAsync()
         {
             using var scope = _scopeFactory.CreateScope();
-            _tenant = scope.ServiceProvider.GetRequiredService<ITenantProvider>().Tenants().FirstOrDefault();
+            _tenant = scope.ServiceProvider.GetRequiredService<ITenantsProvider<TenantConfiguration>>().Tenants().First();
             _dbContext = scope.ServiceProvider.GetRequiredService<ChurchManagerDbContext>();
+            _church = _dbContext.Church.First(x => x.Name == "Cape Town Church");
 
             if (!await _dbContext.Person.AnyAsync())
             {
@@ -62,15 +66,27 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
 
                 // Save them
                 await _dbContext.SaveChangesAsync();
+
+                // Add Church leaders
+                var churches = _dbContext.Church.ToList();
+                foreach (var church in churches)
+                {
+                    church.LeaderPersonId = familyMembersBatch.FirstOrDefault(
+                        x => x.ChurchId == church.Id &&
+                             x.ConnectionStatus == ConnectionStatus.Member.Value &&
+                             x.AgeClassification == AgeClassification.Adult.Value
+                             )?.Id;
+                }
+                await _dbContext.SaveChangesAsync();
             }
         }
 
         private async Task SeedMyDetails()
        {
             var faker = new Faker("en");
-            var cagnettaFamily = new Family {Name = "Cagnetta Family", Language = "English", Address = GenerateAddress(faker)};
+            var cagnettaFamily = new Family {Name = "Cagnetta Family", Language = "English", Address = GenerateAddress(faker), Code = "CAGNETTA10" };
             await _dbContext.SaveChangesAsync();
-
+            
             // Add me as the first Person i.e. with Id 1
             var dillan = new Person
             {
@@ -81,7 +97,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 PhotoUrl = "https://secure.gravatar.com/avatar/6fdc48b6ec4d95f2fd682fc2982eb01b",
                 ConnectionStatus = ConnectionStatus.Member,
                 BaptismStatus = new Baptism {IsBaptised = true},
-                ChurchId = 1,
+                ChurchId = _church.Id,
                 Email = new Email {Address = "dillancagnetta@yahoo.com", IsActive = true},
                 FullName = new FullName {FirstName = "Dillan", LastName = "Cagnetta"},
                 MaritalStatus = "Married",
@@ -90,7 +106,24 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 BirthDate = new BirthDate {BirthDay = 6, BirthMonth = 11, BirthYear = 1981},
                 ReceivedHolySpirit = true,
                 Occupation = "Pastor",
-                PhoneNumbers = new List<PhoneNumber>(1) {PhoneNumbersFaker()}
+                PhoneNumbers = new List<PhoneNumber>(1) { PhoneNumbersFaker(isMessagingEnabled:true)},
+                ConnectionStatusHistory = new List<ConnectionStatusHistory>
+                {
+                    new ()
+                    {
+                        ConnectionStatusTypeId = 2, // ConnectionStatus.FirstTimer
+                        StartDate = new DateTime(2004, 06, 01),
+                        EndDate = new DateTime(2004, 12, 31),
+                        Notes = "First time at church"        
+                    },
+                    new ()
+                    {
+                        ConnectionStatusTypeId = 1, // ConnectionStatus.Member
+                        StartDate = new DateTime(2005, 01, 01),
+                        EndDate = null,
+                        Notes = "Started as a member"        
+                    }
+                }
             };
 
             var danielle = new Person
@@ -102,7 +135,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 PhotoUrl = null,
                 ConnectionStatus = ConnectionStatus.Member,
                 BaptismStatus = new Baptism { IsBaptised = true },
-                ChurchId = 1,
+                ChurchId = _church.Id,
                 Email = new Email { Address = "danielle@yahoo.com", IsActive = true },
                 FullName = new FullName { FirstName = "Danielle", LastName = "Cagnetta" },
                 MaritalStatus = "Married",
@@ -122,7 +155,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 PhotoUrl = null,
                 ConnectionStatus = ConnectionStatus.Member,
                 BaptismStatus = new Baptism { IsBaptised = false },
-                ChurchId = 1,
+                ChurchId = _church.Id,
                 FullName = new FullName { FirstName = "David", LastName = "Cagnetta" },
                 BirthDate = new BirthDate { BirthDay = 06, BirthMonth = 07, BirthYear = 2017 },
                 ReceivedHolySpirit = false,
@@ -137,27 +170,42 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 PhotoUrl = null,
                 ConnectionStatus = ConnectionStatus.Member,
                 BaptismStatus = new Baptism { IsBaptised = true },
-                ChurchId = 1,
+                ChurchId = _church.Id,
                 FullName = new FullName { FirstName = "Daniel", LastName = "Cagnetta" },
                 BirthDate = new BirthDate { BirthDay = 28, BirthMonth = 06, BirthYear = 2013 },
                 ReceivedHolySpirit = true,
             };
 
+            // Church Group Admin gets dynamic access to all churches in their group
+            var permission = new EntityPermission
+            {
+                EntityType = "Church",
+                IsDynamicScope = true,
+                ScopeType = "ChurchGroup",
+                ScopeId = 1, // churchGroupId
+                CanView = true,
+                CanEdit = true,
+                CanDelete = true,
+                IsSystem = true
+            };
+            var systemAdminRole = UserLoginRole.SystemAdminRole;
+            
             var dillanUserLogin = new UserLogin
             {
                 Id = Guid.Parse(SeedingConstants.MainUserLogin),
                 Person = dillan,
                 Username = "dillan",
                 Password = BCrypt.Net.BCrypt.HashPassword("pancake"),
-                Roles = new List<string>{"Admin"},
                 Tenant = _tenant.Name
             };
-
+            dillanUserLogin.AddUserLoginRole(new UserRoleAssignment { UserLogin = dillanUserLogin, Role = systemAdminRole}); // System Admin
+            
             await _dbContext.Person.AddAsync(dillan);
             await _dbContext.Person.AddAsync(danielle);
             await _dbContext.Person.AddAsync(david);
             await _dbContext.Person.AddAsync(daniel);
 
+            await _dbContext.UserLoginRole.AddAsync(systemAdminRole);
             await _dbContext.UserLogin.AddAsync(dillanUserLogin);
 
             await _dbContext.SaveChangesAsync();
@@ -197,7 +245,9 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 var familyFaker = new Faker<Family>()
                     .RuleFor(u => u.Name, f => $"{x.FullName.LastName} Family")
                     .RuleFor(u => u.Language, f => faker.PickRandom(Languages))
-                    .RuleFor(u => u.Address, f => GenerateAddress(faker));
+                    .RuleFor(u => u.Address, f => GenerateAddress(faker))
+                    .RuleFor(u => u.Code, f => x.FullName.LastName.ToUpperInvariant())
+                    ;
 
                 x.Family = familyFaker.Generate();
             });
@@ -247,7 +297,9 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             var familyFaker = new Faker<Family>()
                 .RuleFor(u => u.Name, f => $"{lastName} Family")
                 .RuleFor(u => u.Language, f => faker.PickRandom(Languages))
-                .RuleFor(u => u.Address, f => GenerateAddress(faker));
+                .RuleFor(u => u.Address, f => GenerateAddress(faker))
+                .RuleFor(u => u.Code, f => lastName.ToUpperInvariant())
+                ;
 
             var family = familyFaker.Generate();
 
@@ -308,10 +360,10 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
             return children;
         }
 
-        private Faker<PhoneNumber> PhoneNumbersFaker()
+        private Faker<PhoneNumber> PhoneNumbersFaker(bool isMessagingEnabled = false)
         {
             var phoneNumbers = new Faker<PhoneNumber>()
-                .RuleFor(u => u.IsMessagingEnabled, f => f.Random.Bool())
+                .RuleFor(u => u.IsMessagingEnabled, f => !isMessagingEnabled ? f.Random.Bool() : isMessagingEnabled)
                 .RuleFor(u => u.IsUnlisted, f => f.Random.Bool())
                 .RuleFor(p => p.CountryCode, f => "+27")
                 .RuleFor(p => p.Number, f => f.Phone.PhoneNumber("#########"));
@@ -330,7 +382,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
         }
 
         // Churches Ids
-        private int[] Churches => new[] { 1, 2 };
+        private int[] Churches => _dbContext.Church.AsNoTracking().Take(5).Select(x => x.Id).ToArray();
 
         private string[] Languages => new[] { "English", "Afrikaans", "Xhosa", "IsiZulu" };
         private string[] Provinces => new[] { "Western Cape", "Eastern Cape", "Free State", "Gauteng", "Northern Cape"};

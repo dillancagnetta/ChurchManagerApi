@@ -11,12 +11,12 @@ namespace ChurchManager.Api.Controllers.v1
     [Authorize]
     public class DashboardController : BaseApiController
     {
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
         private readonly IChurchAttendanceDbRepository _attendanceDbRepository;
         private readonly IPersonDbRepository _personDbRepository;
 
         public DashboardController(
-            ICognitoCurrentUser currentUser,
+            IAppCurrentUser currentUser,
             IChurchAttendanceDbRepository attendanceDbRepository,
             IPersonDbRepository personDbRepository)
         {
@@ -26,39 +26,39 @@ namespace ChurchManager.Api.Controllers.v1
         }
 
         [HttpGet("church-attendance")]
-        public async Task<IActionResult> ChurchAttendance([FromQuery] DateTime from, DateTime to, int? churchId, CancellationToken token)
+        public async Task<IActionResult> ChurchAttendance([FromQuery] DateTime from, DateTime to, int? churchGroupId, int? churchId, CancellationToken token)
         {
-            var attendances =
-                await _attendanceDbRepository.DashboardChurchAttendanceAsync(from, to, churchId);
+            var attendances = await _attendanceDbRepository.DashboardChurchAttendanceAsync(from, to, churchGroupId, churchId, token);
             return Ok(attendances);
         }
 
-        [HttpGet("church-attendance-breakdown")]
+        /*[HttpGet("church-attendance-breakdown")]
         public async Task<IActionResult> ChurchAttendanceBreakdown([FromQuery] DateTime from, DateTime to, CancellationToken token)
         {
             var breakdown = await _attendanceDbRepository.DashboardChurchAttendanceBreakdownAsync(from, to);
             return Ok(breakdown);
-        }
+        }*/
         
         [HttpGet("church-people-connectionstatus-breakdown")]
-        public async Task<IActionResult> ChurchConnectionStatusBreakdown([FromQuery] int? churchId, CancellationToken token)
+        public async Task<IActionResult> ChurchConnectionStatusBreakdown([FromQuery] int? churchGroupId, int? churchId, CancellationToken token)
         {
-            var breakdown = await _personDbRepository.DashboardChurchConnectionStatusBreakdown(churchId, token);
-            return Ok(breakdown);
+            var breakdown = await _personDbRepository.DashboardChurchConnectionStatusBreakdown(churchGroupId, churchId, token);
+            return Ok(new { connectionStatus = breakdown.Data["connectionStatus"], gender= breakdown.Data["gender"], age= breakdown.Data["age"]  });
         }
         
         [HttpGet("church-attendance-metrics-comparison")]
         public async Task<IActionResult> ChurchAttendanceMetricsComparison([FromQuery] ChurchAttendanceMetricsComparisonQuery query, CancellationToken token)
         {
-            var data = await _attendanceDbRepository.AttendanceMetricsComparisonAsync(query.ChurchId, query.PeriodType, token);
+            var data = await _attendanceDbRepository.AttendanceMetricsComparisonAsync(
+                query.ChurchGroupId, query.ChurchId, query.PeriodType, token);
             return Ok(data);
         }
         
         [HttpGet("church-annual-conversion-rate-comparison")]
-        public async Task<IActionResult> ChurchYearlyConversionRateComparison(
-            [FromQuery] int? churchId, bool includeMonthlyBreakdown = false,CancellationToken token = default)
+        public async Task<IActionResult> ChurchYearlyConversionRateComparison([FromQuery] int? churchGroupId, 
+            int? churchId, bool includeMonthlyBreakdown = false,CancellationToken token = default)
         {
-            var data = await _attendanceDbRepository.YearlyConversionComparisonAsync(churchId, includeMonthlyBreakdown, token);
+            var data = await _attendanceDbRepository.YearlyConversionComparisonAsync(churchGroupId, churchId, includeMonthlyBreakdown, token);
             return Ok(data);
         }
     }

@@ -10,9 +10,9 @@ namespace ChurchManager.Api.Controllers.v1
     [Authorize]
     public class GroupTypesController : BaseApiController
     {
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
 
-        public GroupTypesController(ICognitoCurrentUser currentUser)
+        public GroupTypesController(IAppCurrentUser currentUser)
         {
             _currentUser = currentUser;
         }

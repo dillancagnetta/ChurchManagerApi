@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ChurchManager.Api.Controllers.v1
 {
     [ApiVersion("1.0")]
-    public class AuthController(ICognitoCurrentUser currentUser) : BaseApiController
+    public class AuthController(IAppCurrentUser currentUser) : BaseApiController
     {
         [HttpPost("login")]
         [AllowAnonymous]
@@ -23,7 +23,7 @@ namespace ChurchManager.Api.Controllers.v1
         }
         
         [HttpPost("logout")]
-        [Authorize]
+        [Authorize(Policy = "ExcludePublicAccess")]
         public async Task<IActionResult> Logout(CancellationToken token)
         {
             if (currentUser.IsAuthenticated)

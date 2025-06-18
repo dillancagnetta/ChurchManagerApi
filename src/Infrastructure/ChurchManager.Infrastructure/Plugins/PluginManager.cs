@@ -179,7 +179,7 @@ namespace ChurchManager.Infrastructure.Plugins
         /// </summary>
         /// <param name="typeAssembly">Type</param>
         /// <returns>Plugin descriptor if exists; otherwise null</returns>
-        public static PluginInfo FindPlugin(Type typeAssembly)
+        public static PluginInfo? FindPlugin(Type typeAssembly)
         {
             if (typeAssembly == null)
                 throw new ArgumentNullException(nameof(typeAssembly));
@@ -214,7 +214,7 @@ namespace ChurchManager.Infrastructure.Plugins
             var result = new List<PluginInfo>();
             foreach (var pluginFile in _pluginFolder.GetFiles("*.dll", SearchOption.AllDirectories))
             {
-                if (!IsPackagePluginFolder(pluginFile.Directory))
+                if (!IsPackagePluginFolder(pluginFile.Directory!))
                     continue;
 
                 if (!string.IsNullOrEmpty(_config.PluginSkipLoadingPattern)
@@ -232,7 +232,7 @@ namespace ChurchManager.Infrastructure.Plugins
             return result;
         }
 
-        private static PluginInfo PreparePluginInfo(FileInfo pluginFile)
+        private static PluginInfo? PreparePluginInfo(FileInfo pluginFile)
         {
             var _plug = _config.PluginShadowCopy ? ShadowCopyFile(pluginFile, Directory.CreateDirectory(_copyFolder.FullName)) : pluginFile;
 

@@ -1,6 +1,6 @@
 ﻿using ChurchManager.Application.Abstractions.Services;
-using ChurchManager.Domain.Features.Communication;
-using ChurchManager.Domain.Features.Communication.Services;
+using ChurchManager.Domain.Features.Communications;
+using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

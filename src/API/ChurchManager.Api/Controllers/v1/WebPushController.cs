@@ -13,13 +13,13 @@ namespace ChurchManager.Api.Controllers.v1
     public class WebPushController : BaseApiController                                       
     {
         private readonly IDetectionService _device;
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
         private readonly WebPushOptions _options;
 
         public WebPushController(
             IOptions<WebPushOptions> options,
             IDetectionService device,
-            ICognitoCurrentUser currentUser)
+            IAppCurrentUser currentUser)
         {
             _device = device;
             _currentUser = currentUser;

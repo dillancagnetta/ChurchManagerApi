@@ -4,7 +4,7 @@ using Codeboss.Types;
 
 namespace ChurchManager.Domain.Features.People.Specifications
 {
-    public class OnlineUserSpecification : Specification<OnlineUser>, ISingleResultSpecification
+    public class OnlineUserSpecification : Specification<OnlineUser>, ISingleResultSpecification<OnlineUser>
     {
         public OnlineUserSpecification(string userLoginId)
         {

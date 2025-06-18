@@ -4,6 +4,7 @@ using Ical.Net.CalendarComponents;
 using Ical.Net.DataTypes;
 using Ical.Net.Serialization;
 using Xunit;
+using ChurchManager.Domain.Shared;
 
 /// <summary>
 /// https://blog.elmah.io/generate-calendar-in-ical-format-with-net-using-ical-net/
@@ -99,7 +100,7 @@ namespace ChurchManager.Infrastructure.Tests
         {
             // Create a weekly recurring calendar that has no end date.
             var startDateTime = Now.AddHours(-2);
-            var calendar = InetCalendarHelper.CalendarWithWeeklyRecurrence(startDateTime);
+            var calendar = InetCalendarHelper.CalendarWithWeeklyRecurrence(DateOnly.FromDateTime(startDateTime));
 
             var nextWeekTomorrow = DateTime.UtcNow.AddDays(+8);
             var occurrences = calendar.GetOccurrences(Now, nextWeekTomorrow);
@@ -122,8 +123,8 @@ namespace ChurchManager.Infrastructure.Tests
             // Create a weekly recurring calendar that has no end date.
             var startDateTime = Now.AddHours(-2);
             var days = new[] { DayOfWeek.Friday, DayOfWeek.Saturday };
-            var time = new TimeSpan(14, 0, 0);
-            var calendar = InetCalendarHelper.CalendarWithWeeklyRecurrence(startDateTime, meetingTime: time, days: days);
+            var time = new TimeOnly(14, 0, 0);
+            var calendar = InetCalendarHelper.CalendarWithWeeklyRecurrence(DateOnly.FromDateTime(startDateTime), meetingTime: time, days: days);
             // Create the schedule based on the calendar
             var schedule = new Schedule
             {
@@ -134,6 +135,31 @@ namespace ChurchManager.Infrastructure.Tests
             var friendlyScheduleText = schedule.ToFriendlyScheduleText(true);
 
             Assert.Contains("Weekly: Friday,Saturday at ", friendlyScheduleText) ;
+        }
+
+        [Fact]
+        public void Schedule_Should_CreateCalendarEventFrom_ScheduleViewModel()
+        {
+            int sessionCount = 3;
+            var model = new ScheduleViewModel
+            {
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(sessionCount),
+                MeetingTime = "14:00",
+                EndMeetingTime = "16:00",
+                RecurrenceRule = "FREQ=DAILY"
+            };
+            
+            var calendar = InetCalendarHelper.CreateCalendarEventFrom(model, "Test Calendar", sessionCount);
+            
+            // Create the schedule based on the calendar
+            var schedule = new Schedule
+            {
+                iCalendarContent = CalendarSerializer.SerializeToString(calendar)
+            };
+
+            // Generate friendly text
+            var friendlyScheduleText = schedule.ToFriendlyScheduleText(true);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace ChurchManager.Features.Groups.Queries.BrowseGroupAttendance
         public async Task<GroupAttendanceDetailViewModel> Handle(AttendanceRecordQuery query, CancellationToken ct)
         {
             var spec = new GroupAttendanceSpecification(query.AttendanceRecordId);
-            var entity = await _dbRepository.GetBySpecAsync(spec, ct);
+            var entity = await _dbRepository.FirstOrDefaultAsync(spec, ct);
 
             var vm = _mapper.Map<GroupAttendanceDetailViewModel>(entity);
             return vm;

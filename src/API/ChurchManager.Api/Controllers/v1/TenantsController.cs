@@ -1,4 +1,5 @@
-﻿using CodeBoss.MultiTenant;
+﻿using ChurchManager.Domain.Common;
+using CodeBoss.MultiTenant;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +9,9 @@ namespace ChurchManager.Api.Controllers.v1
     [Authorize]
     public class TenantsController : BaseApiController
     {
-        private readonly ITenantProvider _provider;
+        private readonly ITenantsProvider<TenantConfiguration> _provider;
 
-        public TenantsController(ITenantProvider provider) => _provider = provider;
+        public TenantsController(ITenantsProvider<TenantConfiguration> provider) => _provider = provider;
 
         [HttpGet]
         [AllowAnonymous]

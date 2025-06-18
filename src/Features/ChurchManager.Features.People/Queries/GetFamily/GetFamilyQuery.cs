@@ -1,6 +1,5 @@
 ﻿using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Specifications;
-using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
@@ -69,7 +68,7 @@ namespace ChurchManager.Features.People.Queries.GetFamily
 
             var spec = new FamilyWithMembersSpecification(query.FamilyId, query.IncludePeople);
 
-            var vm = await _dbRepository.GetBySpecAsync<FamilyViewModel>(spec, ct);
+            var vm = await _dbRepository.FirstOrDefaultAsync(spec, ct);
 
             return new ApiResponse(vm);
         }

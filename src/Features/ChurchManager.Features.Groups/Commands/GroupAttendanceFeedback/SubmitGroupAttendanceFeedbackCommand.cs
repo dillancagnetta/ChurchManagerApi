@@ -11,16 +11,16 @@ namespace ChurchManager.Features.Groups.Commands.GroupAttendanceFeedback
     {
         [Required] public int AttendanceId { get; set; }
 
-        public string Feedback { get; set; }
+        public string? Feedback { get; set; }
     }
 
     public class GroupAttendanceFeedbackHandler : IRequestHandler<SubmitGroupAttendanceFeedbackCommand, Unit>
     {
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
         private readonly IGroupAttendanceDbRepository _dbRepository;
 
         public GroupAttendanceFeedbackHandler(
-            ICognitoCurrentUser currentUser,
+            IAppCurrentUser currentUser,
             IGroupAttendanceDbRepository dbRepository)
         {
             _currentUser = currentUser;
@@ -29,7 +29,7 @@ namespace ChurchManager.Features.Groups.Commands.GroupAttendanceFeedback
 
         public async Task<Unit> Handle(SubmitGroupAttendanceFeedbackCommand command, CancellationToken ct)
         {
-            var attendance = await _dbRepository.GetByIdAsync(command.AttendanceId);
+            var attendance = await _dbRepository.GetByIdAsync(command.AttendanceId, ct);
 
             if (attendance.AttendanceReview is null)
             {

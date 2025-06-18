@@ -22,9 +22,9 @@ namespace ChurchManager.Api.Controllers.v1
     [Authorize]
     public class GroupsController : BaseApiController
     {
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
 
-        public GroupsController(ICognitoCurrentUser currentUser)
+        public GroupsController(IAppCurrentUser currentUser)
         {
             _currentUser = currentUser;
         }
@@ -65,10 +65,10 @@ namespace ChurchManager.Api.Controllers.v1
             return Ok(await Mediator.Send(new GroupsForChurchSelectItemQuery(churchId), token));
         }
 
-        [HttpGet("type/{groupTypeId}/select")]
-        public async Task<IActionResult> GetGroupsByGroupTypeSelectItem(int groupTypeId, CancellationToken token)
+        [HttpGet("groupType/select")]
+        public async Task<IActionResult> GetGroupsByGroupTypeSelectItem([FromQuery] GroupsByGroupTypeSelectItemQuery query, CancellationToken token)
         {
-            var group = await Mediator.Send(new GroupsByGroupTypeSelectItemQuery(groupTypeId), token);
+            var group = await Mediator.Send(query, token);
             return Ok(group);
         }
 
@@ -87,9 +87,12 @@ namespace ChurchManager.Api.Controllers.v1
         }
 
         [HttpGet("tree")]
-        public async Task<IActionResult> GetGroupsWithChildrenTree(CancellationToken token)
+        public async Task<IActionResult> GetGroupsWithChildrenTree([FromQuery] int? groupTypeId = null, int? churchId = null, CancellationToken token = default)
         {
-            return Ok(await Mediator.Send(new GroupsWithChildrenQuery(), token));
+            return Ok(await Mediator.Send(new GroupsWithChildrenQuery(groupTypeId)
+            {
+                ChurchId = churchId
+            }, token));
         }
 
         [HttpGet("parent/{parentGroupId}/tree")]
@@ -99,13 +102,20 @@ namespace ChurchManager.Api.Controllers.v1
         }
 
         [HttpGet("{groupId}/tree")]
-        public async Task<IActionResult> GetGroupWithChildrenTree(int groupId, CancellationToken token)
+        public async Task<IActionResult> GetGroupWithChildrenTree(int groupId, [FromQuery] int maxDepth = 2, CancellationToken token = default)
         {
-            return Ok(await Mediator.Send(new GroupWithChildrenQuery(groupId), token));
+            return Ok(await Mediator.Send(new GroupWithChildrenQuery(groupId, maxDepth), token));
         }
 
         [HttpPost("{groupId}/add-member")]
         public async Task<IActionResult> AddGroupMember([FromBody] AddGroupMemberCommand command,
+            CancellationToken token)
+        {
+            return Ok(await Mediator.Send(command, token));
+        }
+        
+        [HttpPost("{groupId}/add-members")]
+        public async Task<IActionResult> AddGroupMembers([FromBody] AddGroupMembersCommand command,
             CancellationToken token)
         {
             return Ok(await Mediator.Send(command, token));
@@ -170,6 +180,12 @@ namespace ChurchManager.Api.Controllers.v1
         public async Task<IActionResult> Autocomplete([FromQuery] GroupsAutocompleteQuery query, CancellationToken token)
         {
             return Ok(await Mediator.Send(query, token));
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetAll(CancellationToken token)
+        {
+            return Ok(await Mediator.Send(new GetGroupsSelectQuery() , token));
         }
     }
 }

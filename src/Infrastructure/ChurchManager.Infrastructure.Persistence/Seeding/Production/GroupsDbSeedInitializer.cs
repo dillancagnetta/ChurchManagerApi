@@ -15,12 +15,12 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Production
     /// </summary>
     public class GroupsDbSeedInitializer : IInitializer
     {
-        public int OrderNumber { get; } = 2;
+        public int OrderNumber { get; } = 3;
         private readonly IServiceScopeFactory _scopeFactory;
         private ChurchManagerDbContext _dbContext;
 
         // Cell Group Type
-        private readonly GroupType _cellGroupType  = new() { Name = "Cell", Description = "Cell Ministry" };
+        private readonly GroupType _cellGroupType  = new() { Name = SeedingConstants.CellGroupType, Description = "Cell Ministry" };
 
         public GroupsDbSeedInitializer(IServiceScopeFactory scopeFactory) => _scopeFactory = scopeFactory;
 

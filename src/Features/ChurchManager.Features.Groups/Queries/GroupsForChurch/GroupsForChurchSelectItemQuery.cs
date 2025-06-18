@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using ChurchManager.Domain.Features.Groups.Repositories;
-using ChurchManager.Domain.Shared;
 using ChurchManager.SharedKernel.Wrappers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Features.Groups.Queries.GroupsForChurch
 {

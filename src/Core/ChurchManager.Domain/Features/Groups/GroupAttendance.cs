@@ -22,27 +22,27 @@ namespace ChurchManager.Domain.Features.Groups
         public int? FirstTimerCount { get; set; }
         public int? NewConvertCount { get; set; }
         public int? ReceivedHolySpiritCount { get; set; }
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref="Money"/> or offering for this attendance record
         /// </summary>
-        public Money Offering { get; set; }
+        public Money? Offering { get; set; }
 
         /// <summary>
         /// Gets or sets the Id of the photos attached for this attendance
         /// </summary>
-        public List<string> PhotoUrls { get; set; } = new();
+        public List<string> PhotoUrls { get; set; } = [];
 
         /// <summary>
         /// Gets or sets the <see cref="AttendanceReview"/> or feedback for this attendance records
         /// </summary>
         [Required]
-        public AttendanceReview AttendanceReview { get; set; } = new();
+        public AttendanceReview? AttendanceReview { get; set; }
 
         #region Navigation
 
-        public virtual Group Group { get; set; }
+        public virtual Group? Group { get; set; }
 
         public virtual ICollection<GroupMemberAttendance> Attendees { get; set; } = new Collection<GroupMemberAttendance>();
 
@@ -89,8 +89,8 @@ namespace ChurchManager.Domain.Features.Groups
     public record AttendanceReview
     {
         public bool? IsReviewed { get; set; }
-        public string Feedback { get; set; }
+        public string? Feedback { get; set; }
         [MaxLength(50)]
-        public string ReviewedBy { get; set; }
+        public string? ReviewedBy { get; set; }
     }
 }

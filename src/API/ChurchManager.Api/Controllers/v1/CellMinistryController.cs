@@ -10,12 +10,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace ChurchManager.Api.Controllers.v1
 {
     [ApiVersion("1.0")]
-    [Authorize]
+    [Authorize(Policy = "ExcludePublicAccess")]
     public class CellMinistryController : BaseApiController
     {
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
 
-        public CellMinistryController(ICognitoCurrentUser currentUser)
+        public CellMinistryController(IAppCurrentUser currentUser)
         {
             _currentUser = currentUser;
         }

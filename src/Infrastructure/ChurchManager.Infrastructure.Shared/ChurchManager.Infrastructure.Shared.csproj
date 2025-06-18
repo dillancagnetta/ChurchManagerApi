@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AWSSDK.SimpleEmailV2" />
@@ -13,8 +14,7 @@
     <PackageReference Include="WebPush" />
   </ItemGroup>
   <ItemGroup>
-    <!--<PackageReference Include="MassTransit.RabbitMQ" />-->
-    <PackageReference Include="MassTransit.SignalR" />
+    <PackageReference Include="WolverineFx" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OpenTelemetry" />
@@ -33,6 +33,7 @@
 <!--
     <ProjectReference Include="..\..\..\..\Codeboss-Libs\src\CodeBoss.Jobs\src\CodeBoss.Jobs\CodeBoss.Jobs.csproj" />
 -->
+    <ProjectReference Include="..\..\Apps\ChurchManager.TenantManager\ChurchManager.TenantManager.csproj" />
     <ProjectReference Include="..\ChurchManager.Infrastructure.Persistence\ChurchManager.Infrastructure.Persistence.csproj" />
 <!--
     <ProjectReference Include="..\ChurchManager.Infrastructure\ChurchManager.Infrastructure.csproj" />
@@ -41,6 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="Email\Templates\FollowUpAssignment.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Email\Templates\FamilyCodeRequest.liquid">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Email\Templates\_Layout.liquid">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

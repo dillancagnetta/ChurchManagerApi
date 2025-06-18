@@ -1,11 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Features\Groups\Specifications\GroupAttendanceSpecification.cs~RF7d7b0.TMP" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Convey.CQRS.Queries" />
     <PackageReference Include="Ical.Net" />
@@ -19,6 +17,9 @@
   <ItemGroup>
     <ProjectReference Include="..\ChurchManager.Domain.Shared\ChurchManager.Domain.Shared.csproj" />
     <ProjectReference Include="..\..\Infrastructure\ChurchManager.Infrastructure.Abstractions\ChurchManager.Infrastructure.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\ChurchManager.Persistence.Shared\ChurchManager.Persistence.Shared.csproj" />
+    <!-- local Codeboss libs -->
+    <!--<ProjectReference Include="C:\Samples\CodeBoss\Codeboss-Libs\src\CodeBoss.MultiTenant\src\CodeBoss.MultiTenant\CodeBoss.MultiTenant.csproj" />-->
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Features\History\Queries\" />

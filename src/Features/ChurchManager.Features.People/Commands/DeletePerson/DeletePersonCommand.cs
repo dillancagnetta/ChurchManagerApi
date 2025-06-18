@@ -55,7 +55,7 @@ namespace ChurchManager.Features.People.Commands.DeletePerson
 
                         if(isLastFamilyMember)
                         {
-                            var family = await _familyRepository.GetByIdAsync(person.FamilyId, ct);
+                            var family = await _familyRepository.GetByIdAsync(person.FamilyId.Value, ct);
                             if(family is not null)
                             {
                                 await _familyRepository.DeleteAsync(family, ct);

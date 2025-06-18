@@ -1,4 +1,4 @@
-﻿using ChurchManager.Domain.Features.Communication.Services;
+﻿using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Features.Groups.Queries.GroupsForPerson;
 using ChurchManager.Infrastructure.Abstractions;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
@@ -20,24 +20,21 @@ namespace ChurchManager.Api.Controllers
     {
         private readonly ILogger<UtilityController> _logger;
         private readonly IMediator _mediator;
-        private readonly ICognitoCurrentUser _currentUser;
+        private readonly IAppCurrentUser _currentUser;
         private readonly IChurchManagerDbContext _dbContext;
         private readonly IDomainEventPublisher _events;
         // Push Notifications
         private readonly IPushNotificationsService _pusher;
-        private readonly IPublishEndpoint _publisher;
-        private readonly IBusControl _busControl;
+
 
         public UtilityController(
             ILogger<UtilityController> logger,
             IMediator mediator,
-            ICognitoCurrentUser currentUser,
+            IAppCurrentUser currentUser,
             IChurchManagerDbContext dbContext,
             IDomainEventPublisher events,
             // Push Notifications
-            IPushNotificationsService pusher,
-            IPublishEndpoint publisher,
-            IBusControl busControl)
+            IPushNotificationsService pusher)
         {
             _logger = logger;
             _mediator = mediator;
@@ -45,8 +42,6 @@ namespace ChurchManager.Api.Controllers
             _dbContext = dbContext;
             _events = events;
             _pusher = pusher;
-            _publisher = publisher;
-            _busControl = busControl;
         }
 
         [HttpGet]
