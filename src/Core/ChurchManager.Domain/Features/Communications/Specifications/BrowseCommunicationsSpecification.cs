@@ -1,6 +1,5 @@
 ﻿using Ardalis.Specification;
 using ChurchManager.Domain.Common.Extensions;
-using ChurchManager.Domain.Features.Communications;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Shared;
 using ChurchManager.Domain.Specifications;
@@ -9,7 +8,7 @@ using Convey.CQRS.Queries;
 using Microsoft.EntityFrameworkCore;
 using PersonViewModel = ChurchManager.Domain.Shared.PersonViewModelBasic;
 
-namespace ChurchManager.Domain.Features.Churches.Specifications;
+namespace ChurchManager.Domain.Features.Communications.Specifications;
 
 public class BrowseCommunicationsSpecification: PermissionSpecification<Communication, CommunicationViewModel>
 {

@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Features.People;
+﻿using ChurchManager.Domain.Common.Extensions;
+using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Events;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Domain.Features.People.Specifications;
@@ -92,10 +93,15 @@ namespace ChurchManager.Features.People.Commands.AddNewFamily
                     },
                     ChurchId = x.ChurchId,
                     Email = !x.Person.EmailAddress.IsNullOrEmpty()
-                        ? new Email { Address = x.Person.EmailAddress, IsActive = true }
+                        ? new Email { Address = x.Person.EmailAddress!.Trim().ToLowerInvariant(), IsActive = true }
                         : null,
-                    PhoneNumbers = !x.Person.PhoneNumber.IsNullOrEmpty()
-                        ? new List<PhoneNumber> { new() { CountryCode = "+27", Number = x.Person.PhoneNumber } }
+                    PhoneNumbers = x.Person.PhoneNumber != null
+                        ? new List<PhoneNumber> { new()
+                        {
+                            CountryCode = x.Person.PhoneNumber.CountryCode, 
+                            Number = x.Person.PhoneNumber.Number?.CleanPhoneNumber(), 
+                            IsMessagingEnabled = x.Person.PhoneNumber.IsMessagingEnabled
+                        } }
                         : null,
                     Source = x.Source,
                     Family = family
@@ -142,7 +148,7 @@ namespace ChurchManager.Features.People.Commands.AddNewFamily
             foreach (var followUp in personFollowUps)
             {
                 await _eventPublisher.PublishAsync(
-                    new FollowUpAssignedEvent(followUp.Person.Id, followUp.AssignedFollowUpPerson.Id.Value)
+                    new FollowUpAssignedEvent(followUp.Person.Id, followUp.AssignedFollowUpPerson!.Id!.Value)
                     {
                         Type = $"{followUp.Person.ConnectionStatus}-{followUp.Person.Source}",
                         UserLoginId = _currentUser.Id

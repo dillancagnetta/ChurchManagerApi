@@ -12,5 +12,7 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts
         public DbSet<Message> Message { get; set; }
         public DbSet<Communication> Communication { get; set; }
         public DbSet<CommunicationTemplate> CommunicationTemplate { get; set; }
+        public DbSet<CommunicationPreferenceType> CommunicationPreferenceType { get; set; }
+        public DbSet<CommunicationPreference> CommunicationPreference { get; set; }
     }
 }

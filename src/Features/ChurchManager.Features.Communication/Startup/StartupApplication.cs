@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Application.Abstractions.Services;
+using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Features.Communication.Services;
 using ChurchManager.Infrastructure;
 using Microsoft.AspNetCore.Builder;
@@ -13,6 +14,7 @@ namespace ChurchManager.Features.Communication.Startup
         public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IPushNotificationService, WebPushPushNotification>();
+            services.AddScoped<ICommunicationPreferenceUnifier, CommunicationPreferenceUnifier>();
 
         }
 

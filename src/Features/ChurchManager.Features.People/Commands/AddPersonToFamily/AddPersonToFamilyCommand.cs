@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Features.People;
+﻿using ChurchManager.Domain.Common.Extensions;
+using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Features.People.Commands.AddNewFamily;
 using CodeBoss.Extensions;
@@ -46,10 +47,15 @@ namespace ChurchManager.Features.People.Commands.AddPersonToFamily
                 },
                 ChurchId = member.ChurchId,
                 Email = !member.Person.EmailAddress.IsNullOrEmpty()
-                    ? new Email { Address = member.Person.EmailAddress, IsActive = true }
+                    ? new Email { Address = member.Person.EmailAddress!.Trim().ToLowerInvariant(), IsActive = true }
                     : null,
-                PhoneNumbers = !member.Person.PhoneNumber.IsNullOrEmpty()
-                    ? new List<PhoneNumber> { new() { CountryCode = "+27", Number = member!.Person.PhoneNumber } }
+                PhoneNumbers = member.Person.PhoneNumber != null
+                    ? new List<PhoneNumber> { new()
+                        {
+                            CountryCode = member.Person.PhoneNumber.CountryCode, 
+                            Number = member.Person.PhoneNumber.Number?.CleanPhoneNumber(), 
+                            IsMessagingEnabled = member.Person.PhoneNumber.IsMessagingEnabled
+                        } }
                     : [],
                 Source = member.Source,
                 FamilyId = member.FamilyId,  // Assign to the family

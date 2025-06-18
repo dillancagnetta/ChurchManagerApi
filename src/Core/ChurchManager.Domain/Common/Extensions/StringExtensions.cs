@@ -65,4 +65,18 @@ public static class StringExtensions
 
         return publicId;
     }
+    
+    public static string? TrimLeadingZero( this string str )
+    {
+        if (str is {Length: > 0} && str.StartsWith( "0" )) return str.Substring( 1 );
+      
+        return str;
+    }
+    
+    public static string? CleanPhoneNumber( this string str )
+    {
+        var trimmed = str.Trim().TrimLeadingZero();
+      
+        return trimmed;
+    }
 }

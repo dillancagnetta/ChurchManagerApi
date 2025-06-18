@@ -29,7 +29,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Production
         public async Task InitializeAsync()
         {
             using var scope = _scopeFactory.CreateScope();
-            _tenant = scope.ServiceProvider.GetRequiredService<ITenantProvider>().Tenants().FirstOrDefault();
+            _tenant = scope.ServiceProvider.GetRequiredService<ITenantsProvider<TenantConfiguration>>().Tenants().First();
             _dbContext = scope.ServiceProvider.GetRequiredService<ChurchManagerDbContext>();
 
             if (!await _dbContext.Person.AnyAsync())

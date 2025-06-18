@@ -1,4 +1,6 @@
-﻿using ChurchManager.Infrastructure;
+﻿using ChurchManager.Application.Abstractions.Services;
+using ChurchManager.Features.Common.Services;
+using ChurchManager.Infrastructure;
 using ChurchManager.SharedKernel.Common;
 using CodeBoss.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -20,7 +22,8 @@ namespace ChurchManager.Features.Common.Startup
             /*services.AddWolverine(opts => {
                 opts.Discovery.IncludeType<ValidationMiddleware<CreateOrder>>();
             });*/
-            
+            services.AddScoped<IChangeRequestService, ChangeRequestService>();
+
             services.AddAspNetCurrentUser<IAppCurrentUser, AppCurrentUser>();
         }
 

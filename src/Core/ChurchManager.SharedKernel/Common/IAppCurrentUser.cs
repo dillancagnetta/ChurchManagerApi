@@ -1,4 +1,6 @@
-﻿using ChurchManager.Application.ViewModels;
+﻿//using ChurchManager.Application.ViewModels;
+
+using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Security;
 
 namespace ChurchManager.SharedKernel.Common

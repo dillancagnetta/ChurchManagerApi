@@ -37,6 +37,9 @@ namespace ChurchManager.Infrastructure.Persistence
             IConfiguration configuration,
             IWebHostEnvironment environment)
         {
+            services.AddDbContext<MasterDbContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("MasterDatabase")), ServiceLifetime.Scoped);
+            
             // Add to DI
             services.Configure<DbOptions>(configuration.GetSection(nameof(DbOptions)));        
             //services.AddDbContext<ChurchManagerDbContext>(options =>
@@ -82,6 +85,7 @@ namespace ChurchManager.Infrastructure.Persistence
                 services.AddInitializer<ChurchAttendanceTypeDbInitializer>();
                 services.AddInitializer<DiscipleshipDbSeedInitializer>();
                 services.AddInitializer<CommunicationTemplatesDbSeedInitializer>();
+                services.AddInitializer<CommunicationPreferenceDbSeedInitializer>();
 
                 if(environment.IsProduction())
                 {
@@ -91,6 +95,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<GroupsDbSeedInitializer>();*/
 
                     // FAKE DATA
+                    services.AddScoped<TenantsDbFakeSeedInitializer>();
                     services.AddInitializer<ChurchesFakeDbSeedInitializer>();
                     services.AddInitializer<PeopleFakeDbSeedInitializer>();
                     services.AddInitializer<GroupsFakeDbSeedInitializer>();
@@ -107,6 +112,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     /*services.AddInitializer<ChurchesDbSeedInitializer>();
                     services.AddInitializer<PeopleDbSeedInitializer>();
                     services.AddInitializer<GroupsDbSeedInitializer>();*/
+                    services.AddScoped<TenantsDbFakeSeedInitializer>();
                     services.AddInitializer<ChurchesFakeDbSeedInitializer>();
                     services.AddInitializer<PeopleFakeDbSeedInitializer>();
                     services.AddInitializer<GroupsFakeDbSeedInitializer>();

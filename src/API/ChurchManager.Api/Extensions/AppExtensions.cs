@@ -25,7 +25,9 @@ namespace ChurchManager.Api.Extensions
 
         public static void UseMultiTenant(this IApplicationBuilder app)
         {
-            app.UseMiddleware<TenantIdentifierMiddleware>();
+            // app.UseMiddleware<TenantIdentifierMiddleware>();
+            // app.UseMiddleware<SubdomainIdentifierMiddleware>();
+            app.UseMiddleware<ContextMiddleware>();
         }
     }
 }

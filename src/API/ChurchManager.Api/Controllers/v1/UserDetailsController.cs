@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ChurchManager.Api.Controllers.v1
 {
-    [ApiVersion("1.0")]
+    [ApiVersion("1.0")] 
     [Authorize]
     public class UserDetailsController : BaseApiController
     {

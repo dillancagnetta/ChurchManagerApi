@@ -16,7 +16,7 @@ namespace ChurchManager.Domain.Features.People
         
         public string? Type { get; set; }
         
-        public int AssignedPersonId { get; set; }
+        public int? AssignedPersonId { get; set; }
         
         public int PersonId { get; set; }
         
@@ -32,7 +32,7 @@ namespace ChurchManager.Domain.Features.People
         #region Navigation
 
         public virtual Person? AssignedPerson { get; set; }
-        public virtual Person? Person { get; set; }
+        public virtual Person Person { get; set; }
 
         #endregion
     }

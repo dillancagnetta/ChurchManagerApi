@@ -1,4 +1,5 @@
 ﻿using Ardalis.Specification;
+using ChurchManager.Domain.Features.People.Extensions;
 using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Domain.Features.People.Specifications
@@ -29,16 +30,7 @@ namespace ChurchManager.Domain.Features.People.Specifications
                 Street = x.Address.Street,
                 Province = x.Address.Province,
                 Language = x.Language,
-                FamilyMembers = x.FamilyMembers.Select(x => new Shared.PersonViewModelBasic
-                {
-                    PersonId   = x.Id,
-                    Gender = x.Gender,
-                    FirstName = x.FullName!.FirstName!,
-                    LastName = x.FullName.LastName!,
-                    AgeClassification = x.AgeClassification,
-                    Age = x.BirthDate != null ? x.BirthDate.Age : null,
-                    PhotoUrl = x.PhotoUrl
-                })
+                FamilyMembers = x.FamilyMembers.Select(x => x.ToBasicPersonViewModel())
             });
             
         }

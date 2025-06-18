@@ -23,7 +23,7 @@ namespace ChurchManager.Api.Controllers.v1
         }
         
         [HttpPost("logout")]
-        [Authorize]
+        [Authorize(Policy = "ExcludePublicAccess")]
         public async Task<IActionResult> Logout(CancellationToken token)
         {
             if (currentUser.IsAuthenticated)

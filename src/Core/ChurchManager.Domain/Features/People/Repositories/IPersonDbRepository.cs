@@ -12,7 +12,8 @@ namespace ChurchManager.Domain.Features.People.Repositories
         IQueryable<Person> Queryable(PersonQueryOptions personQueryOptions);
         Task<StatisticsViewModel> DashboardChurchConnectionStatusBreakdown(int? churchGroupId = null, int? churchId = null, CancellationToken cancellationToken = default);
         Task<OperationResult<Guid?>> UserLoginIdForPersonAsync(int  personId, CancellationToken cancellationToken = default);
-        Task<PersonViewModelBasic> BasicPersonViewModelAsync(int personId, CancellationToken cancellationToken = default);
+        Task<PersonViewModelBasic?> BasicPersonViewModelAsync(int personId, CancellationToken cancellationToken = default);
+        Task<IList<PersonViewModelBasic?>> BasicPersonsViewModelAsync(IList<int> personIds, CancellationToken cancellationToken = default);
         Task<string> FamilyCode(int personId, CancellationToken cancellationToken = default);
     }
 }

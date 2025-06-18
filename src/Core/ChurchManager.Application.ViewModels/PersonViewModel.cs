@@ -5,7 +5,7 @@ using ChurchManager.Domain.Shared;
 
 namespace ChurchManager.Application.ViewModels
 {
-    public record PersonViewModel
+    /*public record PersonViewModel
     {
         public int PersonId { get; set; }
         public int? FamilyId { get; set; }
@@ -29,5 +29,5 @@ namespace ChurchManager.Application.ViewModels
         public DiscipleshipStepViewModel FoundationSchool { get; set; }
         public ICollection<PersonViewModelBasic> FamilyMembers { get; set; } = new Collection<PersonViewModelBasic>();
         public string RecordStatus { get; set; }
-    }
+    }*/
 }

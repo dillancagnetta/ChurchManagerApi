@@ -9,10 +9,7 @@
     <PackageReference Include="CodeBoss" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Convey.CQRS.Queries" />
-  </ItemGroup>
-  <ItemGroup>
-<!--
-    <ProjectReference Include="..\ChurchManager.Persistence.Shared\ChurchManager.Persistence.Shared.csproj" />
--->
+    <!--CodeBoss-->
+    <PackageReference Include="CodeBoss.MultiTenant" />
   </ItemGroup>
 </Project>

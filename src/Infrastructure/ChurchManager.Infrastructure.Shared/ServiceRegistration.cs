@@ -1,6 +1,8 @@
 ﻿using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Infrastructure.Abstractions;
+using ChurchManager.Infrastructure.Abstractions.AppContext;
 using ChurchManager.Infrastructure.Abstractions.Security;
+using ChurchManager.Infrastructure.Shared.AppContext;
 using ChurchManager.Infrastructure.Shared.Communications;
 using ChurchManager.Infrastructure.Shared.DomainEvents;
 using CodeBoss.AspNetCore.DependencyInjection;
@@ -34,6 +36,10 @@ namespace ChurchManager.Infrastructure.Shared
                 "rabbitmq-custom",
                 failureStatus: HealthStatus.Degraded,
                 tags: new[] { "infrastructure", "rabbitmq" });
+            
+            // Application Context
+            services.AddSingleton<IAppContextAccessor, AppContextAccessor>();
+            services.AddScoped<IAppContextSetter, AppContextSetter>();
         }
     }
 }
