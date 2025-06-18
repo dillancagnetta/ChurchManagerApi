@@ -45,10 +45,12 @@ public static class PersonModelExtensions
                 CommunicationPreference = person.CommunicationPreference == null 
                     ? CommunicationType.None.Value 
                     : person.CommunicationPreference.Value,
-                FamilyMembers = !condensed || person.Family == null
+                FamilyMembers = condensed || person.Family == null
                     ? new List<PersonViewModelBasic?>(0)
                     : person.Family.FamilyMembers
                         .Select(fm => fm?.ToBasicPersonViewModel())
+                        .OrderBy(fm => fm?.FirstName)
+                            .ThenBy(fm => fm?.AgeClassification)
                         .ToList(),
                 Gender = person.Gender?.Value,
                 FirstVisitDate = person.FirstVisitDate,

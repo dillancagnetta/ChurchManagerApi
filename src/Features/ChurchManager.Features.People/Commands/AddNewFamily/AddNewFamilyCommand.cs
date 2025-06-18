@@ -99,7 +99,7 @@ namespace ChurchManager.Features.People.Commands.AddNewFamily
                         ? new List<PhoneNumber> { new()
                         {
                             CountryCode = x.Person.PhoneNumber.CountryCode, 
-                            Number = x.Person.PhoneNumber.Number?.TrimLeadingZero(), 
+                            Number = x.Person.PhoneNumber.Number?.CleanPhoneNumber(), 
                             IsMessagingEnabled = x.Person.PhoneNumber.IsMessagingEnabled
                         } }
                         : null,

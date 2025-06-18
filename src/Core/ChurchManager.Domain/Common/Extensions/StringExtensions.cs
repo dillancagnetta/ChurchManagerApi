@@ -72,4 +72,11 @@ public static class StringExtensions
       
         return str;
     }
+    
+    public static string? CleanPhoneNumber( this string str )
+    {
+        var trimmed = str.Trim().TrimLeadingZero();
+      
+        return trimmed;
+    }
 }

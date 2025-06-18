@@ -53,7 +53,7 @@ namespace ChurchManager.Features.People.Commands.AddPersonToFamily
                     ? new List<PhoneNumber> { new()
                         {
                             CountryCode = member.Person.PhoneNumber.CountryCode, 
-                            Number = member.Person.PhoneNumber.Number?.TrimLeadingZero(), 
+                            Number = member.Person.PhoneNumber.Number?.CleanPhoneNumber(), 
                             IsMessagingEnabled = member.Person.PhoneNumber.IsMessagingEnabled
                         } }
                     : [],
