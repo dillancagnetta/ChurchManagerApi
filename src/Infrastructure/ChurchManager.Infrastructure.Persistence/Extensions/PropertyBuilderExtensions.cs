@@ -2,7 +2,9 @@
 using ChurchManager.Domain.Common;
 using Codeboss.Types;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 public static class PropertyBuilderExtensions
 {
@@ -51,5 +53,25 @@ public static class PropertyBuilderExtensions
                       .Select(s => new TEnum { Value = s })
                       .ToList()
             );
+    }
+    
+    public static PropertyBuilder<Money> HasMoney(this PropertyBuilder<Money> propertyBuilder)
+    {
+        var converter = new ValueConverter<Money, string>(
+            v => v.ToString(),
+            v => Money.Parse(v));
+
+        var comparer = new ValueComparer<Money>(
+            (m1, m2) => m1.Currency == m2.Currency && m1.Amount == m2.Amount,
+            m => HashCode.Combine(m.Currency, m.Amount),
+            m => new Money(m.Currency!, m.Amount));
+
+         propertyBuilder
+            .HasConversion(converter)
+            .HasMaxLength(50) // for string representation like "USD|100.00"
+            .HasColumnType("varchar(50)")
+            .Metadata.SetValueComparer(comparer); // this is the valid way
+         
+         return propertyBuilder;
     }
 }

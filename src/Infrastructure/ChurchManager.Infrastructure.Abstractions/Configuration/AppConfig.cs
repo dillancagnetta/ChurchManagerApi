@@ -81,5 +81,10 @@ namespace ChurchManager.Infrastructure.Abstractions.Configuration
         public bool UseResponseCompression { get; set; }
         
         public IList<string> SupportedCultures { get; set; }
+        
+        /// <summary>
+        /// Enable the Xero Integration to manage finances
+        /// </summary>
+        public bool XeroIntegrationEnabled { get; set; }
     }
 }
