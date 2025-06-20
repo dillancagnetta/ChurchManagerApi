@@ -124,3 +124,6 @@ Connection String
 
 
 
+## Xero
+test  callback endpoint
+> https://login.xero.com/identity/connect/authorize?client_id=4229830C5DAC43CBA69B08FA05A31D9E&response_type=code&scope=accounting.transactions accounting.contacts accounting.settings offline_access&redirect_uri=http://localhost:5001/api/v1/xero/callback

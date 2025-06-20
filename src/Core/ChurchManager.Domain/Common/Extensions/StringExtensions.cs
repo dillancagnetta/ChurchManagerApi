@@ -79,4 +79,18 @@ public static class StringExtensions
       
         return trimmed;
     }
+    
+    /// <summary>
+    /// Returns the initials of a string, capitalizing the first letter of each word.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public static string ToInitials(this string input)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return string.Empty;
+
+        return string.Concat(input
+            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(word => char.ToUpperInvariant(word[0])));
+    }
 }

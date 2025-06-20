@@ -102,6 +102,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchManager.Features.Sett
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchManager.TenantManager", "src\Apps\ChurchManager.TenantManager\ChurchManager.TenantManager.csproj", "{A01AB5F6-2D9E-4A3B-97E8-9F6F7ED5E41F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchManager.Features.Finances", "src\Features\ChurchManager.Features.Finances\ChurchManager.Features.Finances.csproj", "{1E8F3877-5E83-4763-8602-8067C4016254}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -240,6 +242,10 @@ Global
 		{A01AB5F6-2D9E-4A3B-97E8-9F6F7ED5E41F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A01AB5F6-2D9E-4A3B-97E8-9F6F7ED5E41F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A01AB5F6-2D9E-4A3B-97E8-9F6F7ED5E41F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E8F3877-5E83-4763-8602-8067C4016254}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E8F3877-5E83-4763-8602-8067C4016254}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E8F3877-5E83-4763-8602-8067C4016254}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E8F3877-5E83-4763-8602-8067C4016254}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -278,6 +284,7 @@ Global
 		{0C6F1604-605E-4A1A-98F8-52D2D3939190} = {4E57F1DC-B09A-46B9-81A2-D6325F089A7C}
 		{A46A879D-D635-4FCB-A28E-1B6C5A42025F} = {4E57F1DC-B09A-46B9-81A2-D6325F089A7C}
 		{A01AB5F6-2D9E-4A3B-97E8-9F6F7ED5E41F} = {F839B0EA-9799-4939-AA57-FB1272B9912A}
+		{1E8F3877-5E83-4763-8602-8067C4016254} = {4E57F1DC-B09A-46B9-81A2-D6325F089A7C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FFB97C3E-0578-455B-ABD1-9C774B9BDEAC}

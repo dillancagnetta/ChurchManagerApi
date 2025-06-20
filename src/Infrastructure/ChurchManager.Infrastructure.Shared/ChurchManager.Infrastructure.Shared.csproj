@@ -12,6 +12,8 @@
     <PackageReference Include="Flagsmith" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     <PackageReference Include="WebPush" />
+    <PackageReference Include="Xero.NetStandard.OAuth2" />
+    <PackageReference Include="Xero.NetStandard.OAuth2Client" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="WolverineFx" />

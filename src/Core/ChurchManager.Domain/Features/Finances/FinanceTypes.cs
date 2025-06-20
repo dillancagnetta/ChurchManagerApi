@@ -10,9 +10,21 @@ public class GivingType : Enumeration<GivingType, string>
 
     public static GivingType Tithe = new("Tithe");
     public static GivingType Offering = new("Offering");
+    public static GivingType Seed = new("Seed");
+    public static GivingType FirstFruit = new("First Fruit");
     public static GivingType Unknown = new("Unknown");
     // Implicit conversion from string
     public static implicit operator GivingType(string value) => new(value);
+
+    public static GivingType FromInitials(string? initials) =>
+        (initials ?? string.Empty).ToUpperInvariant() switch
+        {
+            "FF" => FirstFruit,
+            "T"  => Tithe,
+            "O"  => Offering,
+            "S"  => Seed,
+            _    => Unknown
+        };
 }
 
 public class BenefactorType : Enumeration<BenefactorType, string>

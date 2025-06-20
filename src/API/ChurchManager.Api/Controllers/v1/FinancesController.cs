@@ -19,10 +19,6 @@ namespace ChurchManager.Api.Controllers.v1
             _currentUser = currentUser;
         }
         
-        [HttpGet("xero-callback")]
-        public async Task<IActionResult> XeroxCallback(int familyId, [FromQuery] bool includePeople, CancellationToken token)
-        {
-            return Ok();
-        }
+        
     }
 }
