@@ -13,6 +13,7 @@ public class StartupApplication: IStartupApplication
     public void ConfigureServices(IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IGivingReferenceResolver, GivingReferenceResolver>();
+        services.AddScoped<IBankStatementProcessor, BankStatementProcessor>();
     }
 
     public void Configure(IApplicationBuilder application, IWebHostEnvironment webHostEnvironment)

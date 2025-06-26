@@ -27,12 +27,11 @@ public class Ofx_Import_Tests()
     [Fact]
     public void Test_BankReference_Parsing()
     {
-        var peopleDb = new Mock<IPersonDbRepository>().Object;
+        /*var peopleDb = new Mock<IPersonDbRepository>().Object;
         var churchesDb = new Mock<IReadDbRepository<Church>>().Object;
         var cache = new Mock<IQueryCache>().Object;
-        var sut = new GivingReferenceResolver(churchesDb, peopleDb, cache);
-
-        var result = sut.Parse("CHU-0821234000-P-HS-F");
+        var sut = GivingReferenceResolver(churchesDb, peopleDb, cache);*/
+        var result = GivingReferenceResolver.Parse("CHU-0821234000-P-HS-F");
         
         Assert.Equal("CHU", result.ChurchCode);
         Assert.Equal("0821234000", result.PhoneNumber);

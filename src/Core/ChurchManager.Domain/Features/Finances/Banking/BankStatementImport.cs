@@ -47,6 +47,7 @@ public class ImportedTransaction : AuditableEntity<int>
     [MaxLength(500)] public string? ResolutionNotes { get; set; }
     
     [MaxLength(250)] public string? Memo { get; set; }
+    [MaxLength(250)] public string? Error { get; set; }
     
     #region Navigation
     public virtual BankStatementImport? Import { get; set; }

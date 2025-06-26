@@ -13,7 +13,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ChurchManagerDbContext))]
-    [Migration("20250626012048_init_db")]
+    [Migration("20250626145218_init_db")]
     partial class init_db
     {
         /// <inheritdoc />
@@ -1738,6 +1738,10 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("Error")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
                     b.Property<int?>("GivingId")
                         .HasColumnType("integer");
 
@@ -1905,6 +1909,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTime?>("InactiveDateTime")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsSystem")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("ModifiedBy")
                         .HasMaxLength(50)

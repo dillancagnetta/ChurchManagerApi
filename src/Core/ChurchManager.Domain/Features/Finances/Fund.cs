@@ -31,6 +31,8 @@ public class Fund: AuditableEntity<int>, IAggregateRoot<int>
     /// </summary>
     [MaxLength(500)] public string? Description { get; set; }
 
+    public bool IsSystem { get; set; }
+
     // Hierarchy
     public int? ParentFundId { get; set; }
     public virtual Fund? ParentFund { get; set; }

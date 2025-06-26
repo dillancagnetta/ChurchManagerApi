@@ -15,10 +15,10 @@ public class Benefactor: AuditableEntity<int>, IAggregateRoot<int>
     public string? TaxId { get; private set; }
         
     // Reference IDs to original entities
-    public int? PersonId { get; private set; }
-    public int? FamilyId { get; private set; }
-    public int? GroupId { get; private set; }
-    public int? ChurchId { get; private set; }
+    public int? PersonId { get;  set; }
+    public int? FamilyId { get;  set; }
+    public int? GroupId { get; set; }
+    public int? ChurchId { get;  set; }
 
     #region Navigation
 
@@ -67,8 +67,24 @@ public class Benefactor: AuditableEntity<int>, IAggregateRoot<int>
         {
             Type = BenefactorType.Church,
             Name = church.Name,
-            GroupId = church.Id,
+            ChurchId = church.Id,
             // Other mappings
         };
+    }
+
+    public static Benefactor FromGivingReference(GivingReference reference)
+    {
+        switch (reference.BenefactorType.Value)
+        {
+            case "Individual":
+                return new Benefactor{Name = reference.Person!.Name, PersonId = reference.Person!.Id, Type = BenefactorType.Individual};
+            case "Family":
+                return new Benefactor{Name = reference.Family!.Name, PersonId = reference.Family!.Id, Type = BenefactorType.Family};
+            case "Church":
+                return new Benefactor{Name = reference.Church!.Name, PersonId = reference.Church!.Id, Type = BenefactorType.Church};
+     
+            default:
+                throw new ArgumentOutOfRangeException(nameof(reference.BenefactorType), reference.BenefactorType, "Invalid benefactor type");
+        }
     }
 }

@@ -30,6 +30,8 @@ public class FinancesDbSeedInitialize(IServiceScopeFactory scopeFactory) : IInit
     {
         if (!dbContext.Fund.Any())
         {
+            dbContext.Fund.Add(new Fund { Name = "Default", Code = "DEFAULT", FundType = FundType.Unknown, IsSystem = true, Description = "Default fund"});
+            
             var funds = new Dictionary<string, Data>
             {
                 { FundType.Partnership.Value, new Data("Partnership Main Section", "PARTNER", "Partnership") },
@@ -66,7 +68,7 @@ public class FinancesDbSeedInitialize(IServiceScopeFactory scopeFactory) : IInit
                         ParentName: FundType.General.Value)
                 },
                 {
-                    "General Offering",
+                    "Offerings",
                     new Data("General offerings", "O", FundType.General.Value,
                         ParentName: FundType.General.Value)
                 },

@@ -4,5 +4,5 @@ namespace ChurchManager.Domain.Features.Finances.Services;
 
 public interface IBankStatementProcessor
 {
-    Task<BankStatementImport> ProcessAsync(BankStatementImport import, CancellationToken ct = default);
+    Task<(BankStatementImport Import, IList<ImportedTransaction> UnProcessedTransactoion)> ProcessAsync(BankStatementImport import, CancellationToken ct = default);
 }

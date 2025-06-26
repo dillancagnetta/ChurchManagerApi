@@ -1,4 +1,5 @@
-﻿using ChurchManager.SharedKernel.Common;
+﻿using ChurchManager.Features.Finances.Commands;
+using ChurchManager.SharedKernel.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,17 @@ namespace ChurchManager.Api.Controllers.v1
             _currentUser = currentUser;
         }
         
+        [HttpPost]  
+        [AllowAnonymous]
+        public async Task<IActionResult> UploadBankStatement(IFormFile file, CancellationToken token)
+        {
+            // Add image
+            var command = new UploadBankStatementCommand(file);
+            
+            await Mediator.Send(command, token);
+            
+            return Accepted();  
+        }
         
     }
 }

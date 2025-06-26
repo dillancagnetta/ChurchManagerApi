@@ -32,6 +32,7 @@
     <ProjectReference Include="..\..\Features\ChurchManager.Features.Communication\ChurchManager.Features.Communication.csproj" />
     <ProjectReference Include="..\..\Features\ChurchManager.Features.Discipleship\ChurchManager.Features.Discipleship.csproj" />
     <ProjectReference Include="..\..\Features\ChurchManager.Features.Events\ChurchManager.Features.Events.csproj" />
+    <ProjectReference Include="..\..\Features\ChurchManager.Features.Finances\ChurchManager.Features.Finances.csproj" />
     <ProjectReference Include="..\..\Features\ChurchManager.Features.FollowUp\ChurchManager.Features.FollowUp.csproj" />
     <ProjectReference Include="..\..\Features\ChurchManager.Features.Groups\ChurchManager.Features.Groups.csproj" />
     <ProjectReference Include="..\..\Features\ChurchManager.Features.History\ChurchManager.Features.History.csproj" />

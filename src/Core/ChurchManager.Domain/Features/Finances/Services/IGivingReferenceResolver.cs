@@ -11,11 +11,9 @@ public interface IGivingReferenceResolver
     ///  Person: CHU-082xxxxxxx-T
     ///  Family: CHU-082xxxxxxx-P-HS-F
     /// </summary>
-    Task<BankStatementImport> ResolveAsync(BankStatementImport import);
-    Task<GivingReference> ResolveChurchAsync(string reference, GivingReference resolvedReference);
-    Task<GivingReference> ResolvePersonAsync(string reference, GivingReference resolvedReference, Dictionary<string, Person?> map);
+    Task<(BankStatementImport Import, IList<ImportedTransaction> UnProcessedTransactoion)> ResolveAsync(BankStatementImport import);
+    Task<GivingReference> TryResolveChurchAsync(string reference, GivingReference resolvedReference);
+    Task<GivingReference> TryResolvePersonAsync(string reference, GivingReference resolvedReference, Dictionary<string, Person?> map);
     
     IList<string> ParsePhoneNumbers(IList<string> references);
-
-    (string ChurchCode, string PhoneNumber, GivingType Type, bool IsFamily ) Parse(string reference);
 }
