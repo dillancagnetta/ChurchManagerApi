@@ -4,7 +4,7 @@ using Codeboss.Types;
 
 namespace ChurchManager.Domain.Features.People
 {
-    [Table("FollowUp")]
+    [Table("FollowUp", Schema = "People")]
     public class FollowUp : AuditableEntity<int>, IAggregateRoot<int>
     {
         public DateTime AssignedDate { get; set; }

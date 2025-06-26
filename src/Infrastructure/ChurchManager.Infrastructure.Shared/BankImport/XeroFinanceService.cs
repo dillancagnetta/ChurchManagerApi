@@ -1,4 +1,4 @@
-﻿using ChurchManager.Infrastructure.Abstractions.Finances;
+﻿/*using ChurchManager.Infrastructure.Abstractions.Finances;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using Codeboss.Results;
 using Microsoft.Extensions.Caching.Distributed;
@@ -69,7 +69,7 @@ public class XeroFinanceService : IExternalFinanceIntegrator
             var content = new FormUrlEncodedContent(values);
             var response = await client.PostAsync("https://identity.xero.com/connect/token", content);
             var responseString = await response.Content.ReadAsStringAsync();
-            */
+            #1#
             
         
             // Store information about the connected organization
@@ -101,7 +101,7 @@ public class XeroFinanceService : IExternalFinanceIntegrator
     
         /*new AccountingApi().GetContactsAsync
         var contacts = await client.GetContactsAsync(client.TenantId);
-        return contacts._Contacts;*/
+        return contacts._Contacts;#1#
         return [];
     }
 
@@ -151,4 +151,4 @@ public class XeroFinanceService : IExternalFinanceIntegrator
     
         return connectedClient;
     }
-}
+}*/

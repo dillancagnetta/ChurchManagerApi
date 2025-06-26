@@ -13,6 +13,8 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Family> builder)
         {
+            builder.ToTable(nameof(Family), "People");
+            
             builder
                 .Property(e => e.RecordStatus)
                 .HasConversion(

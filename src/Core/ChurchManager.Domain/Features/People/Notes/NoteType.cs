@@ -3,7 +3,7 @@ using ChurchManager.Persistence.Shared;
 
 namespace ChurchManager.Domain.Features.People.Notes
 {
-    [Table("NoteType")]
+    [Table("NoteType", Schema = "People")]
     public class NoteType : Entity<int>
     {
         public string? Name { get; set; }

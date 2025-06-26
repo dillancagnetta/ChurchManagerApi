@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Domain.Features.Finances;
+using ChurchManager.Domain.Features.Finances.Banking;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,6 +9,10 @@ public class BenefactorConfiguration: IEntityTypeConfiguration<Benefactor>
 {
     public void Configure(EntityTypeBuilder<Benefactor> builder)
     {
+        builder.ToTable(nameof(Benefactor), "Finances");
+        
+        builder.HasIndex(x => x.Type);
+
         builder
             .Property(e => e.Type)
             .HasEnumerationConversion<BenefactorType>();
@@ -51,6 +56,11 @@ public class GivingConfiguration: IEntityTypeConfiguration<Giving>
 {
     public void Configure(EntityTypeBuilder<Giving> builder)
     {
+        builder.ToTable(nameof(Giving), "Finances");
+
+        builder.HasIndex(x => x.GivingType);
+        builder.HasIndex(x => x.PaymentMethod);
+        
         builder
             .Property(e => e.PaymentMethod)
             .HasEnumerationConversion<PaymentMethod>();
@@ -61,36 +71,39 @@ public class GivingConfiguration: IEntityTypeConfiguration<Giving>
         
         builder.OwnsOne(x => x.Amount);
         
-        // Dont delete if Benefactor is deleted
+        //  delete if Benefactor is deleted
         builder
             .HasOne(p => p.Benefactor)
             .WithMany()
             .HasForeignKey(p => p.BenefactorId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
         
         // Delete if Fund is deleted
         builder
             .HasOne(p => p.Fund)
             .WithMany()
-            .HasForeignKey(p => p.BenefactorId)
+            .HasForeignKey(p => p.FundId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        // set null if import is deleted
+        builder
+            .HasOne(p => p.Import)
+            .WithMany()
+            .HasForeignKey(x => x.BankStatementImportId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 
     public class FundConfiguration : IEntityTypeConfiguration<Fund>
     {
         public void Configure(EntityTypeBuilder<Fund> builder)
         {
+            builder.ToTable(nameof(Fund), "Finances");
+            
+            builder.HasIndex(x => x.FundType);
+            
             builder
-                .Property(e => e.Type)
+                .Property(e => e.FundType)
                 .HasEnumerationConversion<FundType>();
-
-            // SetNull if Partnership is deleted
-            builder
-                .HasOne(p => p.Partnership)
-                .WithMany()
-                .HasForeignKey(p => p.PartnershipId)
-                .OnDelete(DeleteBehavior.SetNull);
-
         }
     }
 }

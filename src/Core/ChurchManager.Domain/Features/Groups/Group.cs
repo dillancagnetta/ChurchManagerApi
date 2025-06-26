@@ -7,7 +7,7 @@ using Codeboss.Types;
 
 namespace ChurchManager.Domain.Features.Groups
 {
-    [Table("Group")]
+    [Table("Group", Schema = "Groups")]
 
     public class Group : AuditableEntity<int>, IAggregateRoot<int>
     {

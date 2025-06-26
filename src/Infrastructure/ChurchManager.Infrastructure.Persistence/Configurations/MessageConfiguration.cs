@@ -12,6 +12,8 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Message> builder)
         {
+            builder.ToTable(nameof(Message), "Communications");
+
             builder
                 .Property(e => e.Classification)
                 .HasConversion(

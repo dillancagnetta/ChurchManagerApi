@@ -1,4 +1,4 @@
-﻿using ChurchManager.Infrastructure.Abstractions.Finances;
+﻿/*using ChurchManager.Infrastructure.Abstractions.Finances;
 using CodeBoss.AspNetCore.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,4 +16,4 @@ public class XeroDependencyInstaller: IDependencyInstaller
         
         services.AddScoped<IExternalFinanceIntegrator, XeroFinanceService>();
     }
-}
+}*/

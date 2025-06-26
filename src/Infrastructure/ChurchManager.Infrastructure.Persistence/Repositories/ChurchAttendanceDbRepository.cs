@@ -276,6 +276,7 @@ public class ChurchAttendanceDbRepository : GenericRepositoryBase<ChurchAttendan
             }
         }, ct:ct );
     }
+    
 
     private YearlyConversionMetrics CalculateYearlyMetrics(dynamic yearData, int year)
     {

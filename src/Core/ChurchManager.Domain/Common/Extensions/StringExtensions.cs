@@ -93,4 +93,11 @@ public static class StringExtensions
             .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
             .Select(word => char.ToUpperInvariant(word[0])));
     }
+    
+    public static string ToShortCode(this string input, int chars = 3)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return string.Empty;
+
+        return input.Substring(0, chars).ToUpperInvariant();
+    }
 }

@@ -50,14 +50,27 @@ namespace ChurchManager.Api._DependencyInjection
                 });
 
             #endregion
-            
+
+            /*
+                | Scenario                            | What Happens                                                                                 |
+                | ----------------------------------- | -------------------------------------------------------------------------------------------- |
+                | No attribute                        | ✅ `FallbackPolicy` applies → excludes Public Access                                         |
+                | `[Authorize]` (no policy specified) | ❌ `FallbackPolicy` is **ignored** → allows all authenticated users including "Public Access" |
+                | `[Authorize(Policy = "...")]`       | ✅ Uses the explicitly named policy                                                          |
+                | `[AllowAnonymous]`                  | ❌ Authorization skipped entirely                                                             |
+                | [Authorize(Roles = "Public Access")]| ✅ Allows only authenticated users with role "Public Access"                                                          |
+             */
+            var policyName = "ExcludePublicAccess";
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("ExcludePublicAccess", policy =>
+                options.AddPolicy(policyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireAssertion(context => !context.User.IsInRole("Public Access"));
                 });
+                
+                // Set it as the fallback when no attribute is provided 
+                options.FallbackPolicy = options.GetPolicy(policyName)!;
             });
         }
     }

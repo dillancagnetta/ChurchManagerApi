@@ -106,7 +106,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 BirthDate = new BirthDate {BirthDay = 6, BirthMonth = 11, BirthYear = 1981},
                 ReceivedHolySpirit = true,
                 Occupation = "Pastor",
-                PhoneNumbers = new List<PhoneNumber>(1) { PhoneNumbersFaker(isMessagingEnabled:true)},
+                PhoneNumbers = new List<PhoneNumber>(1) { new () {CountryCode = "+27", Number = "737378631"}},
                 ConnectionStatusHistory = new List<ConnectionStatusHistory>
                 {
                     new ()

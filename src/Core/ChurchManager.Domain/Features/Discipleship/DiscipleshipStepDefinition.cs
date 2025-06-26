@@ -6,7 +6,7 @@ using Codeboss.Types;
 
 namespace ChurchManager.Domain.Features.Discipleship
 {
-    [Table("DiscipleshipStepDefinition")]
+    [Table("DiscipleshipStepDefinition", Schema = "Discipleship")]
 
     public class DiscipleshipStepDefinition : AuditableEntity<int>, IAggregateRoot<int>
     {

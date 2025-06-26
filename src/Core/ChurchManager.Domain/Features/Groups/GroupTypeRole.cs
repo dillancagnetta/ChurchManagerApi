@@ -10,7 +10,7 @@ namespace ChurchManager.Domain.Features.Groups
     /// or more <see cref="GroupTypeRole">GroupRoles</see> assigned to them (for instance the leader of a group can have both a leader and member role). Examples
     /// of roles include leader, member, team leader, coach, host, etc.
     /// </summary>
-    [Table("GroupRole")]
+    [Table("GroupRole", Schema = "Groups")]
 
     public class GroupTypeRole : Entity<int>, IAggregateRoot<int>
     {

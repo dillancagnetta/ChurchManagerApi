@@ -86,6 +86,7 @@ namespace ChurchManager.Infrastructure.Persistence
                 services.AddInitializer<DiscipleshipDbSeedInitializer>();
                 services.AddInitializer<CommunicationTemplatesDbSeedInitializer>();
                 services.AddInitializer<CommunicationPreferenceDbSeedInitializer>();
+                services.AddInitializer<FinancesDbSeedInitialize>();
 
                 if(environment.IsProduction())
                 {
@@ -123,6 +124,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<MissionsFakeDbSeedInitializer>();
                     services.AddInitializer<MessagesFakeDbSeedInitializer>();
                     services.AddInitializer<EventsFakeDbSeedInitializer>();
+                    services.AddInitializer<GivingsFakeDbSeedInitializer>();
                 }
                 
                 // Jobs

@@ -1,8 +1,10 @@
-﻿using ChurchManager.Domain.Features.People;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using ChurchManager.Domain.Features.People;
 using Codeboss.Types;
 
 namespace ChurchManager.Domain.Features.Communications
 {
+    [Table("PushDevice", Schema = "Communications")]
     public record PushDevice : IAggregateRoot<int>
     {
         public int Id { get; set; }

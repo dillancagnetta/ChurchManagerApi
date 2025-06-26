@@ -5,7 +5,7 @@ using Codeboss.Types;
 
 namespace ChurchManager.Domain.Features.People
 {
-    [Table("OnlineUser")]
+    [Table("OnlineUser", Schema = "People")]
 
     public class OnlineUser : Entity<int>, IAggregateRoot<int>
     {

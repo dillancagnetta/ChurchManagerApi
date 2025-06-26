@@ -11,13 +11,13 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding;
 
 public class FinancesDbSeedInitialize(IServiceScopeFactory scopeFactory) : IInitializer
 {
-    public int OrderNumber { get; } = 99;
-    private record PartnershipData(string Description, string Code, string? ParentName = null);
-    private record FundData(string Description, string Code, FundType Type, string? PartnershipName = null);
+    public int OrderNumber { get; } = 105;
+
+    private record Data(string Description, string Code, string Category, string? ParentName = null);
     
     private const string HealingSchoolName = "Healing School";
     private const string ReachOutName = "ReachOut";
-    
+
     public async Task InitializeAsync()
     {
         using var scope = scopeFactory.CreateScope();
@@ -28,59 +28,113 @@ public class FinancesDbSeedInitialize(IServiceScopeFactory scopeFactory) : IInit
 
     private static async Task SeedPartnershipsAsync(ChurchManagerDbContext dbContext)
     {
-        if (!dbContext.Partnership.Any())
+        if (!dbContext.Fund.Any())
         {
-            var partnerships = new Dictionary<string, PartnershipData>
+            var funds = new Dictionary<string, Data>
             {
-                { HealingSchoolName, new PartnershipData("Healing School Partnership", "HS") },
-                { "Healing School Magazine", new PartnershipData("Healing School Magazine", "HTTNM", ParentName:HealingSchoolName) },
-                { "Rhapsody of Realities", new PartnershipData("Rhapsody of Realities", "ROR") },
-                { ReachOutName, new PartnershipData("Reach out campaigns with Rhapsody of Realities", ReachOutName, ParentName:"Rhapsody of Realities") },
-                { "Inner City", new PartnershipData("Inner City Missions", "ICM") },
+                { FundType.Partnership.Value, new Data("Partnership Main Section", "PARTNER", "Partnership") },
+                {
+                    HealingSchoolName,
+                    new Data("Healing School Partnership", "HS", "Partnership",
+                        ParentName: FundType.Partnership.Value)
+                },
+                {
+                    "Healing School Magazine",
+                    new Data("Healing School Magazine", "HTTM", "Partnership",
+                        ParentName: HealingSchoolName)
+                },
+                {
+                    "Rhapsody of Realities",
+                    new Data("Rhapsody of Realities", "ROR", "Partnership",
+                        ParentName: FundType.Partnership.Value)
+                },
+                {
+                    ReachOutName,
+                    new Data("Reach out campaigns with Rhapsody of Realities", ReachOutName, "Partnership",
+                        ParentName: "Rhapsody of Realities")
+                },
+                {
+                    "Inner City",
+                    new Data("Inner City Missions", "ICM", "Partnership",
+                        ParentName: FundType.Partnership.Value)
+                },
+
+                { FundType.General.Value, new Data("General Main Section", "GENERAL", "General") },
+                {
+                    "Tithes",
+                    new Data("Regular tithes giving", "T", FundType.General.Value,
+                        ParentName: FundType.General.Value)
+                },
+                {
+                    "General Offering",
+                    new Data("General offerings", "O", FundType.General.Value,
+                        ParentName: FundType.General.Value)
+                },
+                {
+                    "First Fruits",
+                    new Data("First fruits offerings", "FF", FundType.General.Value,
+                        ParentName: FundType.General.Value)
+                }
             };
 
-            var inserted = new Dictionary<string, Partnership>();
+            // Track inserted for ids
+            var inserted = new Dictionary<string, Fund>();
+            
             // Step 1:Insert Roots
-            foreach (var kvp in partnerships.Where(x => x.Value.ParentName == null))
+            var rootKvps = funds.Where(x => x.Value.ParentName == null).ToList();
+            foreach (var kvp in rootKvps)
             {
-                var entity = new Partnership
+                var entity = new Fund
                 {
                     Name = kvp.Key,
                     Description = kvp.Value.Description,
                     Code = kvp.Value.Code,
+                    FundType = kvp.Value.Category
                 };
 
-                dbContext.Partnership.Add(entity);
-                
+                dbContext.Fund.Add(entity);
                 inserted[kvp.Key] = entity;
             }
-            
+
             // Save to generate IDs for parent records
             await dbContext.SaveChangesAsync();
             
-            // Step 2: Insert child partnerships with proper ParentId
-            foreach (var kvp in partnerships.Where(x => x.Value.ParentName != null))
+            /*------------------------------------------*/
+
+            /* recursively add child funds */
+            while (rootKvps.Any())
             {
-                var parent = inserted[kvp.Value.ParentName!];
-
-                var entity = new Partnership
+                var parentNames = rootKvps.Select(x => x.Key).ToList();
+                // Step 2: Insert child partnerships with proper ParentId
+                var childKvps = funds.Where(x =>
+                    x.Value.ParentName != null && parentNames.Contains(x.Value.ParentName)).ToList();
+                foreach (var kvp in childKvps)
                 {
-                    Name = kvp.Key,
-                    Description = kvp.Value.Description,
-                    Code = kvp.Value.Code,
-                    ParentPartnershipId = parent.Id
-                };
+                    var parent = inserted[kvp.Value.ParentName!];
 
-                dbContext.Partnership.Add(entity);
+                    var entity = new Fund
+                    {
+                        Name = kvp.Key,
+                        Description = kvp.Value.Description,
+                        Code = kvp.Value.Code,
+                        FundType = kvp.Value.Category,
+                        ParentFundId = parent.Id
+                    };
+
+                    dbContext.Fund.Add(entity);
+                    inserted[kvp.Key] = entity;
+                }
+
+                await dbContext.SaveChangesAsync();
+                // reset 
+                rootKvps = childKvps;
             }
-
-            await dbContext.SaveChangesAsync();
         }
     }
-    
-    private static async Task SeedFundsAsync(ChurchManagerDbContext dbContext)
+
+    private static Task SeedFundsAsync(ChurchManagerDbContext dbContext)
     {
-        if (!dbContext.Fund.Any())
+        /*if (!dbContext.Fund.Any())
         {
             var funds = new Dictionary<string, FundData>
             {
@@ -106,8 +160,9 @@ public class FinancesDbSeedInitialize(IServiceScopeFactory scopeFactory) : IInit
 
                 dbContext.Fund.Add(entity);
             }
-            
-            await dbContext.SaveChangesAsync();
-        }
+
+            await dbContext.SaveChangesAsync();*/
+
+        return Task.CompletedTask;
     }
 }

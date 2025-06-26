@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Domain.Features.Groups
 {
-    [Table("GroupMember")]
+    [Table("GroupMember", Schema = "Groups")]
 
     public class GroupMember : Entity<int>, IAggregateRoot<int>
     {

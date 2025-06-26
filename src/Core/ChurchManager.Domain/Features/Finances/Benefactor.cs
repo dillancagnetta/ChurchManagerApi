@@ -61,4 +61,14 @@ public class Benefactor: AuditableEntity<int>, IAggregateRoot<int>
             // Other mappings
         };
     }
+    public static Benefactor FromChurch(Church church)
+    {
+        return new Benefactor
+        {
+            Type = BenefactorType.Church,
+            Name = church.Name,
+            GroupId = church.Id,
+            // Other mappings
+        };
+    }
 }

@@ -15,5 +15,7 @@ namespace ChurchManager.Domain.Features.People.Repositories
         Task<PersonViewModelBasic?> BasicPersonViewModelAsync(int personId, CancellationToken cancellationToken = default);
         Task<IList<PersonViewModelBasic?>> BasicPersonsViewModelAsync(IList<int> personIds, CancellationToken cancellationToken = default);
         Task<string> FamilyCode(int personId, CancellationToken cancellationToken = default);
+        Task<Person?> FindByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken = default);
+        Task<Dictionary<string, Person?>> FindPhoneNumberForPeople(IList<string> phoneNumbers, CancellationToken cancellationToken = default);
     }
 }

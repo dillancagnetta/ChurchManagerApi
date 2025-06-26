@@ -14,6 +14,8 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
 {
     public void Configure(EntityTypeBuilder<Person> builder)
     {
+        builder.ToTable(nameof(Person), "People");
+        
         builder
             .Property(e => e.RecordStatus)
             .HasConversion(
@@ -75,6 +77,10 @@ public class PhoneNumberConfiguration : IEntityTypeConfiguration<PhoneNumber>
 {
     public void Configure(EntityTypeBuilder<PhoneNumber> builder)
     {
+        builder.ToTable(nameof(PhoneNumber), "People");
+        
+        builder.HasIndex(x => x.Number);
+        
         // Configure the relationship with person
         // If person is deleted - all  will be deleted
         builder

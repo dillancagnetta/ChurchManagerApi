@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
 
 namespace ChurchManager.Domain.Features.History;
 
+
+[Table("History", Schema = "Common")]
 public class History : AuditableEntity<int>, IAggregateRoot<int>
 {
     public bool IsSystem { get; set; } = false;

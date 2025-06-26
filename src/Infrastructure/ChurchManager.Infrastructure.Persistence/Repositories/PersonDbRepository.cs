@@ -167,6 +167,53 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
+        public async Task<Person?> FindByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken = default)
+        {
+            var query = Queryable()
+                .AsNoTracking()
+                .Include(x => x.PhoneNumbers)
+                .Include(x => x.Family)
+                .FirstOrDefaultAsync(x => x.PhoneNumbers!.Any(p => p.Number == phoneNumber), cancellationToken);
+            
+            return await query;
+        }
+
+        public async Task<Dictionary<string, Person?>> FindPhoneNumberForPeople(IList<string> phoneNumbers, CancellationToken ct = default)
+        {
+            var uniquePhoneNumbers = phoneNumbers.Distinct().ToList();
+            
+            var people = await Queryable()
+                .AsNoTracking()
+                .Include(x => x.PhoneNumbers)
+                .Include(x => x.Family)
+                .Where(x => x.PhoneNumbers!.Any(p => uniquePhoneNumbers.Contains(p.Number!)))
+                .ToListAsync(ct);
+                
+            // Create a dictionary mapping each phone number to its corresponding person
+            var phoneNumberPersonMap = new Dictionary<string, Person?>(uniquePhoneNumbers.Count);
+            
+            // Initialize all requested phone numbers with null (in case some aren't found)
+            foreach (var phoneNumber in uniquePhoneNumbers)
+            {
+                phoneNumberPersonMap[phoneNumber] = null;
+            }
+            
+            // For each person found, map their matching phone numbers to them
+            foreach (var person in people)
+            {
+                var matchingPhoneNumbers = person.PhoneNumbers!
+                    .Where(p => phoneNumbers.Any() && phoneNumbers.Contains(p.Number!))
+                    .Select(p => p.Number!);
+                    
+                foreach (var number in matchingPhoneNumbers)
+                {
+                    phoneNumberPersonMap[number] = person;
+                }
+            }
+            
+            return phoneNumberPersonMap;
+        }
+
         private IQueryable<Person> Queryable(string[] includes, PersonQueryOptions personQueryOptions)
         {
             var qry = base.Queryable(includes);

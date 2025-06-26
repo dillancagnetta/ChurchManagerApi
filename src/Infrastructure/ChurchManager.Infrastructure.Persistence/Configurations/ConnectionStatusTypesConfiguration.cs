@@ -8,6 +8,8 @@ public class ConnectionStatusHistoryConfiguration: IEntityTypeConfiguration<Conn
 {
     public void Configure(EntityTypeBuilder<ConnectionStatusHistory> builder)
     {
+        builder.ToTable(nameof(ConnectionStatusHistory), "People");
+        
         builder
             .Property(e => e.RecordStatus)
             .HasRecordStatus();

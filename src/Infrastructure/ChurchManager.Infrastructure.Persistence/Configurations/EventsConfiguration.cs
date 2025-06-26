@@ -10,6 +10,8 @@ public class EventsConfiguration : IEntityTypeConfiguration<Event>
 {
     public void Configure(EntityTypeBuilder<Event> builder)
     {
+        builder.ToTable(nameof(Event), "Events");
+
         builder
             .Property(e => e.ApprovalStatus)
             .HasConversion(
@@ -80,6 +82,8 @@ public class EventTypeConfiguration : IEntityTypeConfiguration<EventType>
 {
     public void Configure(EntityTypeBuilder<EventType> builder)
     {
+        builder.ToTable(nameof(EventType), "Events");
+
         /*builder
             .Property(e => e.AgeClassification)
             .HasConversion(
@@ -88,7 +92,7 @@ public class EventTypeConfiguration : IEntityTypeConfiguration<EventType>
 
         builder
             .Property(e => e.AgeClassification)
-            .HasEnumerationConversion<AgeClassification>();
+            .HasEnumerationConversion<AgeClassification?>();
         
         builder
             .Property(e => e.OnlineSupport)
@@ -120,6 +124,8 @@ public class EventRegistrationConfiguration : IEntityTypeConfiguration<EventRegi
 {
     public void Configure(EntityTypeBuilder<EventRegistration> builder)
     {
+        builder.ToTable(nameof(EventRegistration), "Events");
+
         builder
             .Property(e => e.Status)
             .HasEnumerationConversion<RegistrationStatus>();
@@ -173,6 +179,8 @@ public class EventSessionConfiguration : IEntityTypeConfiguration<EventSession>
 {
     public void Configure(EntityTypeBuilder<EventSession> builder)
     {
+        builder.ToTable(nameof(EventSession), "Events");
+
         builder.Property(x => x.SessionOrder)
             .IsRequired();
         

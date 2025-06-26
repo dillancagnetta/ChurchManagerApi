@@ -13,6 +13,8 @@ public class ServiceJobHistoryConfiguration: IEntityTypeConfiguration<ServiceJob
 {
     public void Configure(EntityTypeBuilder<ServiceJobHistory> builder)
     {
+        builder.ToTable(nameof(ServiceJobHistory), "Jobs");
+
         builder
             .HasOne( t => t.ServiceJob )
             .WithMany( t => t.ServiceJobHistory )
@@ -24,6 +26,8 @@ public class ServiceJobConfiguration: IEntityTypeConfiguration<ServiceJob>
 {
     public void Configure(EntityTypeBuilder<ServiceJob> builder)
     {
+        builder.ToTable(nameof(ServiceJob), "Jobs");
+
         builder.Property(c => c.JobParameters)
             .HasColumnType("jsonb") // for Postgres
             .HasJsonConversion(options: new JsonSerializerOptions { PropertyNameCaseInsensitive = true })

@@ -1,6 +1,7 @@
 ﻿#region
 
 using Bogus;
+using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.AspNetCore.Startup;
@@ -53,7 +54,7 @@ public class ChurchesFakeDbSeedInitializer : IInitializer
                     {
                         Name = city + " Church",
                         Description = city + " Church",
-                        ShortCode = faker.Address.ZipCode(),
+                        ShortCode = city.ToShortCode(),
                         Address = faker.Address.StreetAddress(),
                         PhoneNumber = faker.Phone.PhoneNumber(),
                         ChurchGroup = churchGroup,

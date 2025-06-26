@@ -8,6 +8,8 @@ public class CommunicationPreferenceTypeConfiguration: IEntityTypeConfiguration<
 {
     public void Configure(EntityTypeBuilder<CommunicationPreferenceType> builder)
     {
+        builder.ToTable(nameof(CommunicationPreferenceType), "Communications");
+
         builder.HasIndex(e => e.Name).IsUnique();
         
         builder
@@ -20,6 +22,8 @@ public class CommunicationPreferenceConfiguration: IEntityTypeConfiguration<Comm
 {
     public void Configure(EntityTypeBuilder<CommunicationPreference> builder)
     {
+        builder.ToTable(nameof(CommunicationPreference), "Communications");
+
         builder.HasIndex(e => new { e.PersonId, e.PreferenceTypeId, e.CommunicationType })
             .IsUnique();
         

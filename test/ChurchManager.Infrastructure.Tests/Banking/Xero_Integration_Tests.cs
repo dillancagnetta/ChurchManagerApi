@@ -1,4 +1,4 @@
-﻿using ChurchManager.Infrastructure.Abstractions.Persistence;
+﻿/*using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Shared.Xero;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -47,4 +47,4 @@ public class Xero_Integration_Tests
             
         Assert.NotEmpty(result.Result);
     }
-}
+}*/
