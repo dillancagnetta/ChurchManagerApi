@@ -1,38 +1,49 @@
 ﻿using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Finances.Banking;
 using ChurchManager.Domain.Features.Finances.Services;
+using Codeboss.Results;
 using OfxSharp;
 
 namespace ChurchManager.Infrastructure.Shared.BankImport;
 
 public class OfxBankStatementImporter : IBankStatementImporter
 {
-    public Task<BankStatementImport> ImportAsync(Stream fileStream, string fileName, CancellationToken ct = default)
+    public Task<OperationResult<BankStatementImport>> ImportAsync(Stream fileStream, string fileName, CancellationToken ct = default)
     {
-        var ofxDocument  = OfxDocumentReader.ReadFile(fileStream)!;
-        
-        var statement = ofxDocument.Statements.FirstOrDefault() ?? throw new InvalidOperationException("No statements found in OFX file");
-
-        List<OfxTransactionType> incomingPayments =
-            [OfxTransactionType.DEP, OfxTransactionType.CREDIT, OfxTransactionType.PAYMENT, OfxTransactionType.DIRECTDEP];
-        
-        var transactions = statement.Transactions.Where(t => incomingPayments.Contains(t.TransType)).ToList();
-
-        var currency = new Currency(statement.DefaultCurrency);
-        
-        var import = new BankStatementImport
+        try
         {
-            FileName = fileName,
-            BankAccount = statement.AccountFrom.AccountId,
-            ImportDate = DateTime.UtcNow,
-            Currency = statement.DefaultCurrency ?? Currency.ZAR.Value,
-            TransactionCount = transactions.Count,
-            StatementStartDate = statement.TransactionsStart.DateTime,
-            StatementEndDate = statement.TransactionsEnd.DateTime,
-            Transactions = transactions.Select(t => Map(t, currency)).ToList()
-        };
+            // Reset to beginning of the stream to be sure
+            fileStream.Position = 0;
+            var ofxDocument  = OfxDocumentReader.ReadFile(fileStream)!;
         
-        return Task.FromResult(import);
+            var statement = ofxDocument.Statements.FirstOrDefault();
+            if (statement == null) return Task.FromResult(OperationResult<BankStatementImport>.Fail("No bank statement found"));
+
+            List<OfxTransactionType> incomingPayments =
+                [OfxTransactionType.DEP, OfxTransactionType.CREDIT, OfxTransactionType.PAYMENT, OfxTransactionType.DIRECTDEP, OfxTransactionType.ATM];
+        
+            var transactions = statement.Transactions.Where(t => incomingPayments.Contains(t.TransType)).ToList();
+
+            var currency = new Currency(statement.DefaultCurrency);
+        
+            var import = new BankStatementImport
+            {
+                FileName = fileName,
+                BankAccount = statement.AccountFrom.AccountId,
+                ImportDate = DateTime.UtcNow,
+                Currency = statement.DefaultCurrency ?? Currency.ZAR.Value,
+                TransactionCount = transactions.Count,
+                StatementStartDate = statement.TransactionsStart.DateTime,
+                StatementEndDate = statement.TransactionsEnd.DateTime,
+                Transactions = transactions.Select(t => Map(t, currency)).ToList()
+            };
+        
+            return Task.FromResult(OperationResult<BankStatementImport>.Success(import));
+        }
+        catch (Exception e)
+        {
+            return Task.FromResult(OperationResult<BankStatementImport>.Fail(e.Message));
+        }
     }
 
     private ImportedTransaction Map(Transaction ofxTransaction, Currency currency)

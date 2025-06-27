@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.Finances;
 using ChurchManager.Domain.Features.Finances.Banking;
@@ -30,7 +31,7 @@ public class GivingReferenceResolver(
     ///  Person: CHU-082xxxxxxx-T
     ///  Family: CHU-082xxxxxxx-P-HS-F
     /// </summary>
-    public async Task<(BankStatementImport Import, IList<ImportedTransaction> UnProcessedTransactoion)> ResolveAsync(BankStatementImport import)
+    public async Task<BankStatementProcessResult> ResolveAsync(BankStatementImport import)
     {
         var unprocessableTransactions = new List<ImportedTransaction>();
         var peoplePhoneMap =
@@ -69,8 +70,7 @@ public class GivingReferenceResolver(
                     var fund = await ResolveFundAsync(resolvedReference.GivingType);
                     var benefactor = await ResolveBenefactorAsync(resolvedReference);
 
-                    transaction.Giving =
-                        Giving.Create(transaction, resolvedReference, fund, benefactor, transaction.Memo);
+                    transaction.Giving = Giving.Create(transaction, resolvedReference, fund, benefactor, transaction.Memo);
                 }
                 else 
                 {
@@ -86,7 +86,7 @@ public class GivingReferenceResolver(
             }
         }
 
-        return (import, unprocessableTransactions);
+        return new BankStatementProcessResult {Import = import, UnProcessedTransactions = unprocessableTransactions};
     }
 
     private async Task<Benefactor> ResolveBenefactorAsync(GivingReference reference)
@@ -173,16 +173,15 @@ public class GivingReferenceResolver(
             .Select(x => x.PhoneNumber)
             .Where(x => !x.IsNullOrEmpty())
             .ToList();
-        ;
     }
 
-    public static (string ChurchCode, string PhoneNumber, GivingType Type, bool IsFamily) Parse(string reference)
+    public static (string ChurchCode, string? PhoneNumber, GivingType Type, bool IsFamily) Parse(string reference)
     {
         reference = reference.Trim().ToUpperInvariant();
 
         var parts = reference.Split('-');
         var churchShortCode = parts[0];
-        var phoneNumber = parts[1];
+        var phoneNumber = parts[1].CleanPhoneNumber();
         var givingType = GivingType.FromInitials(parts[2]);
         var isFamily = reference.EndsWith("F");
 

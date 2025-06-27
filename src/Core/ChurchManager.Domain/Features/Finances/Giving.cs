@@ -109,6 +109,8 @@ public class Giving: AuditableEntity<int>, IAggregateRoot<int>
             GivingType = reference.GivingType,
             FundId = fund.Id,
             BenefactorId = benefactor.Id,
+            BankTransactionId = transaction.BankTransactionId,
+            ParsedReference = transaction.ParsedReference,
             Notes = notes,
         };
     }

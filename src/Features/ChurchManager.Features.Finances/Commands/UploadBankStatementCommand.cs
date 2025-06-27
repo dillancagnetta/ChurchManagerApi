@@ -15,10 +15,14 @@ public class UploadBankStatementHandler(
     {
         using var memoryStream = new MemoryStream();
         await command.File.CopyToAsync(memoryStream, ct);
-        var import = await importer.ImportAsync(memoryStream, command.File.FileName, ct);
-        
-        var (processedImport, unprocessedTransactions) = await processor.ProcessAsync(import, ct);
+        var importOperation = await importer.ImportAsync(memoryStream, command.File.FileName, ct);
 
-        return ApiResponse.Success();
+        if (!importOperation.IsSuccess) return ApiResponse.FromOperation(importOperation);
+        
+        var processedOperation = await processor.ProcessAsync(importOperation.Result, ct);
+        
+        //if (!processedOperation.IsSuccess) return ApiResponse.FromOperation(importOperation);
+
+        return ApiResponse.FromOperation(processedOperation);
     }
 }

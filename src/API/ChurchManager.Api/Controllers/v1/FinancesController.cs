@@ -27,9 +27,9 @@ namespace ChurchManager.Api.Controllers.v1
             // Add image
             var command = new UploadBankStatementCommand(file);
             
-            await Mediator.Send(command, token);
+            var response = await Mediator.Send(command, token);
             
-            return Accepted();  
+            return Ok(response);  
         }
         
     }
