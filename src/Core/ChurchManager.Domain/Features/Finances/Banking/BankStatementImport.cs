@@ -58,7 +58,6 @@ public class Transaction : AuditableEntity<int>
     public bool IsMatched { get; set; }
     public bool? IsProcessed { get; set; }
     public int? GivingId { get; set; }  // null if unmatched
-    [MaxLength(50)] public string? ParsedReference { get; set; }
     
     public bool? IsResolved { get; set; }
     [MaxLength(500)] public string? ResolutionNotes { get; set; }

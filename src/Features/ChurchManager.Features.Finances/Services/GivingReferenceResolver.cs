@@ -71,7 +71,7 @@ public class GivingReferenceResolver(
                     var benefactor = await ResolveBenefactorAsync(resolvedReference);
 
                     // Create associated giving record
-                    transaction.Giving = Giving.Create(transaction, resolvedReference, fund, benefactor, transaction.Memo);
+                    transaction.Giving = Giving.Create(import, transaction, resolvedReference, fund, benefactor, transaction.Memo);
                     transaction.SetAsProcessed();
                 }
                 else 

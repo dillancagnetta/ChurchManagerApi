@@ -99,10 +99,11 @@ public class Giving: AuditableEntity<int>, IAggregateRoot<int>
 
     #endregion
 
-    public static Giving Create(Transaction transaction, GivingReference reference, Fund fund, Benefactor benefactor, string? notes)
+    public static Giving Create(BankStatementImport import, Transaction transaction, GivingReference reference, Fund fund, Benefactor benefactor, string? notes)
     {
         return new Giving
         {
+            Import = import,
             Amount = transaction.Amount,
             Date = transaction.TransactionDate,
             PaymentMethod = PaymentMethod.FromTransactionType(transaction.TransactionType),
@@ -110,7 +111,7 @@ public class Giving: AuditableEntity<int>, IAggregateRoot<int>
             FundId = fund.Id,
             BenefactorId = benefactor.Id,
             BankTransactionId = transaction.BankTransactionId,
-            ParsedReference = transaction.ParsedReference,
+            ParsedReference = transaction.OriginalReference,
             Notes = notes,
         };
     }
