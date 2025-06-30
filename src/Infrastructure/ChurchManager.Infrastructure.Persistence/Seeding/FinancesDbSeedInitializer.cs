@@ -37,27 +37,27 @@ public class FinancesDbSeedInitialize(IServiceScopeFactory scopeFactory) : IInit
                 { FundType.Partnership.Value, new Data("Partnership Main Section", "PARTNER", "Partnership") },
                 {
                     HealingSchoolName,
-                    new Data("Healing School Partnership", "HS", "Partnership",
+                    new Data("Healing School Partnership", "H", "Partnership",
                         ParentName: FundType.Partnership.Value)
                 },
                 {
                     "Healing School Magazine",
-                    new Data("Healing School Magazine", "HTTM", "Partnership",
+                    new Data("Healing School Magazine", "M", "Partnership",
                         ParentName: HealingSchoolName)
                 },
                 {
                     "Rhapsody of Realities",
-                    new Data("Rhapsody of Realities", "ROR", "Partnership",
+                    new Data("Rhapsody of Realities", "R", "Partnership",
                         ParentName: FundType.Partnership.Value)
                 },
                 {
                     ReachOutName,
-                    new Data("Reach out campaigns with Rhapsody of Realities", ReachOutName, "Partnership",
+                    new Data("Reach out campaigns with Rhapsody of Realities", "RO", "Partnership",
                         ParentName: "Rhapsody of Realities")
                 },
                 {
                     "Inner City",
-                    new Data("Inner City Missions", "ICM", "Partnership",
+                    new Data("Inner City Missions", "I", "Partnership",
                         ParentName: FundType.Partnership.Value)
                 },
 
@@ -74,7 +74,7 @@ public class FinancesDbSeedInitialize(IServiceScopeFactory scopeFactory) : IInit
                 },
                 {
                     "First Fruits",
-                    new Data("First fruits offerings", "FF", FundType.General.Value,
+                    new Data("First fruits offerings", "F", FundType.General.Value,
                         ParentName: FundType.General.Value)
                 }
             };

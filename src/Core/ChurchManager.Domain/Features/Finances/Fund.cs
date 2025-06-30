@@ -20,7 +20,7 @@ public class Fund: AuditableEntity<int>, IAggregateRoot<int>
     [Required, MaxLength(255)] public required string Name { get; set; }
     
     /// <summary>
-    /// Gets or sets the unique code identifier for the fund (e.g., "HS", "ROR", "ICM", "FF", "T").
+    /// Gets or sets the unique code identifier for the fund (e.g., "H", "R", "F", "T", "O").
     /// </summary>
     [Required, MaxLength(50)] public required string Code { get; set; }
     
