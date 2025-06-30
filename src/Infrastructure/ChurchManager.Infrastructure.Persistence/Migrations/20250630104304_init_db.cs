@@ -61,8 +61,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     ImportDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Currency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: false),
                     TransactionCount = table.Column<int>(type: "integer", nullable: false),
-                    ProcessedCount = table.Column<int>(type: "integer", nullable: false),
-                    UnmatchedCount = table.Column<int>(type: "integer", nullable: false),
                     ErrorCount = table.Column<int>(type: "integer", nullable: false),
                     Errors = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     IsCompleted = table.Column<bool>(type: "boolean", nullable: false),
@@ -705,7 +703,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ImportedTransaction",
+                name: "Transaction",
                 schema: "Finances",
                 columns: table => new
                 {
@@ -719,8 +717,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     BankTransactionId = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     TransactionType = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     IsMatched = table.Column<bool>(type: "boolean", nullable: false),
+                    IsProcessed = table.Column<bool>(type: "boolean", nullable: true),
                     GivingId = table.Column<int>(type: "integer", nullable: true),
-                    ParsedReference = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     IsResolved = table.Column<bool>(type: "boolean", nullable: true),
                     ResolutionNotes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     Memo = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
@@ -735,22 +733,22 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ImportedTransaction", x => x.Id);
+                    table.PrimaryKey("PK_Transaction", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ImportedTransaction_BankStatementImport_BankStatementImport~",
+                        name: "FK_Transaction_BankStatementImport_BankStatementImportId",
                         column: x => x.BankStatementImportId,
                         principalSchema: "Finances",
                         principalTable: "BankStatementImport",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ImportedTransaction_BankStatementImport_ImportId",
+                        name: "FK_Transaction_BankStatementImport_ImportId",
                         column: x => x.ImportId,
                         principalSchema: "Finances",
                         principalTable: "BankStatementImport",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ImportedTransaction_Giving_GivingId",
+                        name: "FK_Transaction_Giving_GivingId",
                         column: x => x.GivingId,
                         principalSchema: "Finances",
                         principalTable: "Giving",
@@ -2536,36 +2534,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 column: "RelatedEntityType");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ImportedTransaction_BankStatementImportId",
-                schema: "Finances",
-                table: "ImportedTransaction",
-                column: "BankStatementImportId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ImportedTransaction_GivingId",
-                schema: "Finances",
-                table: "ImportedTransaction",
-                column: "GivingId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ImportedTransaction_ImportId",
-                schema: "Finances",
-                table: "ImportedTransaction",
-                column: "ImportId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ImportedTransaction_OriginalReference",
-                schema: "Finances",
-                table: "ImportedTransaction",
-                column: "OriginalReference");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ImportedTransaction_TransactionType",
-                schema: "Finances",
-                table: "ImportedTransaction",
-                column: "TransactionType");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Message_Classification",
                 schema: "Communications",
                 table: "Message",
@@ -2777,6 +2745,36 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 column: "ServiceJobId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Transaction_BankStatementImportId",
+                schema: "Finances",
+                table: "Transaction",
+                column: "BankStatementImportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transaction_GivingId",
+                schema: "Finances",
+                table: "Transaction",
+                column: "GivingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transaction_ImportId",
+                schema: "Finances",
+                table: "Transaction",
+                column: "ImportId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transaction_OriginalReference",
+                schema: "Finances",
+                table: "Transaction",
+                column: "OriginalReference");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transaction_TransactionType",
+                schema: "Finances",
+                table: "Transaction",
+                column: "TransactionType");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserLogin_PersonId",
                 schema: "Auth",
                 table: "UserLogin",
@@ -2977,10 +2975,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 schema: "Common");
 
             migrationBuilder.DropTable(
-                name: "ImportedTransaction",
-                schema: "Finances");
-
-            migrationBuilder.DropTable(
                 name: "Message",
                 schema: "Communications");
 
@@ -3015,6 +3009,10 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
             migrationBuilder.DropTable(
                 name: "ServiceJobHistory",
                 schema: "Jobs");
+
+            migrationBuilder.DropTable(
+                name: "Transaction",
+                schema: "Finances");
 
             migrationBuilder.DropTable(
                 name: "UserRoleAssignment",
@@ -3061,10 +3059,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 schema: "Groups");
 
             migrationBuilder.DropTable(
-                name: "Giving",
-                schema: "Finances");
-
-            migrationBuilder.DropTable(
                 name: "NoteType",
                 schema: "People");
 
@@ -3079,6 +3073,10 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
             migrationBuilder.DropTable(
                 name: "ServiceJob",
                 schema: "Jobs");
+
+            migrationBuilder.DropTable(
+                name: "Giving",
+                schema: "Finances");
 
             migrationBuilder.DropTable(
                 name: "UserLoginRole",

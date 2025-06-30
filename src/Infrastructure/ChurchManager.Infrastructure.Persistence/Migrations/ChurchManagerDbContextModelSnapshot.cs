@@ -1685,9 +1685,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("ProcessedCount")
-                        .HasColumnType("integer");
-
                     b.Property<string>("RecordStatus")
                         .IsRequired()
                         .HasMaxLength(25)
@@ -1702,9 +1699,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<int>("TransactionCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UnmatchedCount")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BankAccount");
@@ -1712,7 +1706,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.ToTable("BankStatementImport", "Finances");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Finances.Banking.ImportedTransaction", b =>
+            modelBuilder.Entity("ChurchManager.Domain.Features.Finances.Banking.Transaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -1751,6 +1745,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<bool>("IsMatched")
                         .HasColumnType("boolean");
 
+                    b.Property<bool?>("IsProcessed")
+                        .HasColumnType("boolean");
+
                     b.Property<bool?>("IsResolved")
                         .HasColumnType("boolean");
 
@@ -1767,10 +1764,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.Property<string>("OriginalReference")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<string>("ParsedReference")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
@@ -1803,7 +1796,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("TransactionType");
 
-                    b.ToTable("ImportedTransaction", "Finances");
+                    b.ToTable("Transaction", "Finances");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Finances.Benefactor", b =>
@@ -3780,7 +3773,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Navigation("DefaultGroupType");
                 });
 
-            modelBuilder.Entity("ChurchManager.Domain.Features.Finances.Banking.ImportedTransaction", b =>
+            modelBuilder.Entity("ChurchManager.Domain.Features.Finances.Banking.Transaction", b =>
                 {
                     b.HasOne("ChurchManager.Domain.Features.Finances.Banking.BankStatementImport", null)
                         .WithMany("Transactions")
@@ -3798,7 +3791,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.OwnsOne("ChurchManager.Domain.Common.Money", "Amount", b1 =>
                         {
-                            b1.Property<int>("ImportedTransactionId")
+                            b1.Property<int>("TransactionId")
                                 .HasColumnType("integer");
 
                             b1.Property<decimal>("Amount")
@@ -3808,12 +3801,12 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                                 .HasMaxLength(5)
                                 .HasColumnType("character varying(5)");
 
-                            b1.HasKey("ImportedTransactionId");
+                            b1.HasKey("TransactionId");
 
-                            b1.ToTable("ImportedTransaction", "Finances");
+                            b1.ToTable("Transaction", "Finances");
 
                             b1.WithOwner()
-                                .HasForeignKey("ImportedTransactionId");
+                                .HasForeignKey("TransactionId");
                         });
 
                     b.Navigation("Amount")
