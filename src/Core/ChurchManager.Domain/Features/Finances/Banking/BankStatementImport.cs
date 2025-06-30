@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ChurchManager.Domain.Common;
 using ChurchManager.Persistence.Shared;
+using CodeBoss.Extensions;
 using Codeboss.Types;
 
 namespace ChurchManager.Domain.Features.Finances.Banking;
@@ -12,9 +13,8 @@ public class BankStatementImport: AuditableEntity<int>, IAggregateRoot<int>
     [Required] public DateTime ImportDate { get; set; }
     [Required, MaxLength(3)] public required Currency Currency { get; set; } // "ZAR"
     public int TransactionCount { get; set; }
-    public int ProcessedCount { get; set; }
-    public int UnmatchedCount { get; set; }
     public int ErrorCount { get; set; }
+    
     [MaxLength(500)] public string? Errors { get; set; }
     public bool IsCompleted { get; set; }
     
@@ -28,16 +28,21 @@ public class BankStatementImport: AuditableEntity<int>, IAggregateRoot<int>
     {
         return Transactions.Select(t => t.OriginalReference).ToList();
     }
-
-    /*public void AddProcessedTransaction(Transaction transaction)
-    {
-        Transactions.Add(transaction);
-    }
     
-    public void AddUnProcessedTransaction(Transaction transaction)
+    public int ProcessedCount() => Transactions.Count(t => t.IsProcessed is true);
+    public int UnProcessedCount() => Transactions.Count(t =>t.IsProcessed is null or false);
+
+    public void AddError(string? error)
     {
-        UnProcessedTransactions.Add(transaction);
-    }*/
+        ErrorCount++;
+        if (Errors.IsNullOrEmpty())
+        {
+            Errors = error;
+            return;
+        }
+ 
+        Errors += $", {error}";
+    }
 }
 
 public class Transaction : AuditableEntity<int>
@@ -66,9 +71,10 @@ public class Transaction : AuditableEntity<int>
     public virtual Giving? Giving { get; set; }
     #endregion
 
-    public void SetAsUnProcessed()
+    public void SetAsUnProcessed(string? error)
     {
         IsProcessed = false;
+        Error = error;
     }
 
     public void SetAsProcessed()

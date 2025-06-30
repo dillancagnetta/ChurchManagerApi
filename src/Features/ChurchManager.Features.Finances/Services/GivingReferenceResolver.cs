@@ -46,8 +46,7 @@ public class GivingReferenceResolver(
 
                 if (!IsValidReference(reference))
                 {
-                    transaction.Error = "Invalid reference format";
-                    transaction.SetAsUnProcessed();
+                    transaction.SetAsUnProcessed("Invalid reference format");
                     continue;
                 }
 
@@ -71,20 +70,19 @@ public class GivingReferenceResolver(
                     var fund = await ResolveFundAsync(resolvedReference.GivingType, parsed.PartnershipFund!);
                     var benefactor = await ResolveBenefactorAsync(resolvedReference);
 
+                    // Create associated giving record
                     transaction.Giving = Giving.Create(transaction, resolvedReference, fund, benefactor, transaction.Memo);
                     transaction.SetAsProcessed();
                 }
                 else 
                 {
-                    transaction.Error = "Unable to resolve church and phone number";
-                    transaction.SetAsUnProcessed();
+                    transaction.SetAsUnProcessed("Unable to resolve church and phone number");
                     continue;
                 }
             }
             catch (Exception e)
             {
-                transaction.Error = e.Message;
-                transaction.SetAsUnProcessed();
+                import.AddError(e.Message);
             }
         }
 

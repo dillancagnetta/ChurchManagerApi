@@ -68,9 +68,9 @@ public class BankStatementProcessor_Tests
             var result = await sut.ProcessAsync(importOperation.Result);
             
             Assert.True(result.IsSuccess);
+            Assert.Equal(7, result.Result.TransactionCount); // There are 7 credit transactions in the OFX file
+            Assert.Equal(4, result.Result.ProcessedCount()); // valid references
+            Assert.Equal(3, result.Result.UnProcessedCount()); // invalid references
         }
-
-        
-
     }
 }
