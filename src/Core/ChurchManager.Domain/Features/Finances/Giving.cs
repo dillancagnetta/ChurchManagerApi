@@ -99,7 +99,7 @@ public class Giving: AuditableEntity<int>, IAggregateRoot<int>
 
     #endregion
 
-    public static Giving Create(ImportedTransaction transaction, GivingReference reference, Fund fund, Benefactor benefactor, string? notes)
+    public static Giving Create(Transaction transaction, GivingReference reference, Fund fund, Benefactor benefactor, string? notes)
     {
         return new Giving
         {

@@ -21,15 +21,26 @@ public class BankStatementImport: AuditableEntity<int>, IAggregateRoot<int>
     public DateTime StatementStartDate { get; set; }  // From OFX
     public DateTime StatementEndDate { get; set; }    // From OFX
 
-    public virtual ICollection<ImportedTransaction> Transactions { get; set; } = new List<ImportedTransaction>();
+    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    //public virtual ICollection<Transaction> UnProcessedTransactions { get; set; } = new List<Transaction>();
     
     public IList<string> OriginalTransactionReferences()
     {
         return Transactions.Select(t => t.OriginalReference).ToList();
     }
+
+    /*public void AddProcessedTransaction(Transaction transaction)
+    {
+        Transactions.Add(transaction);
+    }
+    
+    public void AddUnProcessedTransaction(Transaction transaction)
+    {
+        UnProcessedTransactions.Add(transaction);
+    }*/
 }
 
-public class ImportedTransaction : AuditableEntity<int>
+public class Transaction : AuditableEntity<int>
 {
     public int ImportId { get; set; }
     [Required, MaxLength(50)] public required string OriginalReference { get; set; }
@@ -40,6 +51,7 @@ public class ImportedTransaction : AuditableEntity<int>
     
     // Resolution status
     public bool IsMatched { get; set; }
+    public bool? IsProcessed { get; set; }
     public int? GivingId { get; set; }  // null if unmatched
     [MaxLength(50)] public string? ParsedReference { get; set; }
     
@@ -53,4 +65,14 @@ public class ImportedTransaction : AuditableEntity<int>
     public virtual BankStatementImport? Import { get; set; }
     public virtual Giving? Giving { get; set; }
     #endregion
+
+    public void SetAsUnProcessed()
+    {
+        IsProcessed = false;
+    }
+
+    public void SetAsProcessed()
+    {
+        IsProcessed = true;
+    }
 }

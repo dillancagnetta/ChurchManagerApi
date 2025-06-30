@@ -22,9 +22,11 @@ public class GivingReferenceResolver(
 {
     /// <summary>
     /// Format: 3 letters - 10-digit number starting with 0 - at least one letter
+    /// If the first letter after the number is P, there must be another letter segment (e.g., -P-HS)
+    /// Final optional -F
     /// Example: CHU-0821234567-T
     /// </summary>
-    const string ReferencePattern = @"^[A-Za-z]{3}-0\d{9}-[A-Za-z]+$";
+    const string ReferencePattern = @"^[A-Za-z]{3}-0\d{9}-(?!P$)(?:[A-Za-z]+(?:-[A-Za-z]+)*)(?:-F)?$";
 
     /// <summary>
     ///Example formats:
@@ -33,7 +35,6 @@ public class GivingReferenceResolver(
     /// </summary>
     public async Task<BankStatementProcessResult> ResolveAsync(BankStatementImport import)
     {
-        var unprocessableTransactions = new List<ImportedTransaction>();
         var peoplePhoneMap =
             await peopleDb.FindPhoneNumberForPeople(ParsePhoneNumbers(import.OriginalTransactionReferences()));
 
@@ -46,7 +47,7 @@ public class GivingReferenceResolver(
                 if (!IsValidReference(reference))
                 {
                     transaction.Error = "Invalid reference format";
-                    unprocessableTransactions.Add(transaction);
+                    transaction.SetAsUnProcessed();
                     continue;
                 }
 
@@ -67,26 +68,27 @@ public class GivingReferenceResolver(
 
                 if (transaction.IsMatched)
                 {
-                    var fund = await ResolveFundAsync(resolvedReference.GivingType);
+                    var fund = await ResolveFundAsync(resolvedReference.GivingType, parsed.PartnershipFund!);
                     var benefactor = await ResolveBenefactorAsync(resolvedReference);
 
                     transaction.Giving = Giving.Create(transaction, resolvedReference, fund, benefactor, transaction.Memo);
+                    transaction.SetAsProcessed();
                 }
                 else 
                 {
                     transaction.Error = "Unable to resolve church and phone number";
-                    unprocessableTransactions.Add(transaction);
+                    transaction.SetAsUnProcessed();
                     continue;
                 }
             }
             catch (Exception e)
             {
                 transaction.Error = e.Message;
-                unprocessableTransactions.Add(transaction);
+                transaction.SetAsUnProcessed();
             }
         }
 
-        return new BankStatementProcessResult {Import = import, UnProcessedTransactions = unprocessableTransactions};
+        return new BankStatementProcessResult(import);
     }
 
     private async Task<Benefactor> ResolveBenefactorAsync(GivingReference reference)
@@ -136,9 +138,14 @@ public class GivingReferenceResolver(
     /// </summary>
     public async Task<GivingReference> TryResolveChurchAsync(string reference, GivingReference resolvedReference)
     {
-        var (churchCode, _, _, _) = Parse(reference);
+        var (churchCode, _, _, _, _) = Parse(reference);
 
-        var churches = await cache.GetOrSetAsync("churches", () => churchesDb.Queryable().AsNoTracking().ToListAsync());
+        var churches = await cache.GetOrSetAsync("churches", () => churchesDb.Queryable().AsNoTracking().Select(x => new
+        {
+            x.ShortCode,
+            x.Id,
+            x.Name
+        }).ToListAsync());
         var church = churches.FirstOrDefault(x => x.ShortCode == churchCode);
 
         var foundChurch = church is not null;
@@ -154,7 +161,7 @@ public class GivingReferenceResolver(
     public Task<GivingReference> TryResolvePersonAsync(string reference, GivingReference resolvedReference,
         Dictionary<string, Person?> map)
     {
-        var (_, phoneNumber, _, isFamily) = Parse(reference);
+        var (_, phoneNumber, _, _, isFamily) = Parse(reference);
         var person = map.GetValueOrDefault(phoneNumber);
 
         var foundPerson = person is not null;
@@ -169,13 +176,15 @@ public class GivingReferenceResolver(
 
     public IList<string> ParsePhoneNumbers(IList<string> references)
     {
-        return references.Select(Parse)
+        return references
+            .Where(x => IsValidReference(x))
+            .Select(Parse)
             .Select(x => x.PhoneNumber)
             .Where(x => !x.IsNullOrEmpty())
             .ToList();
     }
 
-    public static (string ChurchCode, string? PhoneNumber, GivingType Type, bool IsFamily) Parse(string reference)
+    public static (string ChurchCode, string? PhoneNumber, GivingType Type, string? PartnershipFund, bool IsFamily) Parse(string reference)
     {
         reference = reference.Trim().ToUpperInvariant();
 
@@ -185,21 +194,36 @@ public class GivingReferenceResolver(
         var givingType = GivingType.FromInitials(parts[2]);
         var isFamily = reference.EndsWith("F");
 
-        return (churchShortCode, phoneNumber, givingType, isFamily);
+        string? partnershipFund = null;
+        if (givingType == GivingType.Partnership)
+        {
+            partnershipFund = parts[3];
+        }
+
+        return (churchShortCode, phoneNumber, givingType, partnershipFund, isFamily);
     }
 
-    private bool IsValidReference(string reference) => Regex.IsMatch(reference, ReferencePattern);
+    public static bool IsValidReference(string? reference) => !reference.IsNullOrEmpty() && Regex.IsMatch(reference!, ReferencePattern);
 
-    public async Task<Fund> ResolveFundAsync(GivingType fundCode)
+    public async Task<Fund> ResolveFundAsync(GivingType fundCode, string partnershipFund)
     {
+        Fund fund;
         var funds = await cache.GetOrSetAsync("funds", () => fundsDb.Queryable().AsNoTracking().ToListAsync());
 
         var defaultFund = funds.First(x => x.IsSystem);
 
         if (fundCode == GivingType.Unknown) return defaultFund;
 
+        // Get the sub fund if Parnership e.g. ROR
+        if (fundCode == GivingType.Partnership)
+        {
+            // if we cant find the fund we use the Parent Partnership fund as a fallback
+            fund = funds.FirstOrDefault(x => x.Code == partnershipFund) ?? funds.First(x => x.Code == "PARTNER");
+            return fund;
+        }
+
         // Tithes contains 'Tithe'
-        var fund = funds.FirstOrDefault(x => x.Name.Contains(fundCode.Value)) ?? defaultFund;
+        fund = funds.FirstOrDefault(x => x.Name.Contains(fundCode.Value)) ?? defaultFund;
 
         return fund;
     }

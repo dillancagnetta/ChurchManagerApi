@@ -3,6 +3,7 @@ using ChurchManager.Domain.Features.Finances.Banking;
 using ChurchManager.Domain.Features.Finances.Services;
 using Codeboss.Results;
 using OfxSharp;
+using Transaction = ChurchManager.Domain.Features.Finances.Banking.Transaction;
 
 namespace ChurchManager.Infrastructure.Shared.BankImport;
 
@@ -46,9 +47,9 @@ public class OfxBankStatementImporter : IBankStatementImporter
         }
     }
 
-    private ImportedTransaction Map(Transaction ofxTransaction, Currency currency)
+    private Transaction Map(OfxSharp.Transaction ofxTransaction, Currency currency)
     {
-        return new ImportedTransaction
+        return new Transaction
         {
             Amount = new Money(currency, ofxTransaction.Amount),
             TransactionDate = ofxTransaction.Date!.Value.DateTime,

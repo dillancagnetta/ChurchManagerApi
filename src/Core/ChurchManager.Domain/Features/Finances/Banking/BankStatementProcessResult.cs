@@ -2,8 +2,12 @@
 
 namespace ChurchManager.Domain.Features.Finances.Banking;
 
-public class BankStatementProcessResult : OperationResult<BankStatementProcessResult>
+public class BankStatementProcessResult(BankStatementImport import) : OperationResult<BankStatementImport>(import)
+{
+}
+
+public record BankStatementProcessState
 {
     public required BankStatementImport Import { get; set; }
-    public IList<ImportedTransaction> UnProcessedTransactions { get; set; } = new List<ImportedTransaction>(0);
+    public IList<Transaction> UnProcessedTransactions { get; set; } = new List<Transaction>(0);
 }

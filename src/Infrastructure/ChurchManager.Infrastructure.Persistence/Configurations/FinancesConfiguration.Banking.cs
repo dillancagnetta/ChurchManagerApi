@@ -20,11 +20,11 @@ public class BankStatementImportConfiguration : IEntityTypeConfiguration<BankSta
     }
 }
 
-public class ImportedTransactionConfiguration : IEntityTypeConfiguration<ImportedTransaction>
+public class ImportedTransactionConfiguration : IEntityTypeConfiguration<Transaction>
 {
-    public void Configure(EntityTypeBuilder<ImportedTransaction> builder)
+    public void Configure(EntityTypeBuilder<Transaction> builder)
     {
-        builder.ToTable(nameof(ImportedTransaction), "Finances");
+        builder.ToTable(nameof(Transaction), "Finances");
             
         builder.HasIndex(x => x.OriginalReference);
         builder.HasIndex(x => x.TransactionType);
