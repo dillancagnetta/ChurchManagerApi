@@ -51,7 +51,7 @@ public class OfxBankStatementImporter : IBankStatementImporter
     {
         return new Transaction
         {
-            Amount = new Money(currency, ofxTransaction.Amount),
+            TransactionAmount = new Money(currency, ofxTransaction.Amount),
             TransactionDate = ofxTransaction.Date!.Value.DateTime,
             OriginalReference = ofxTransaction.Name,
             BankTransactionId = ofxTransaction.TransactionId, //  <FITID> Unique transaction ID for this statement only (not universal)

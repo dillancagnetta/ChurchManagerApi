@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Codeboss.Types;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Domain.Common;
 
@@ -18,19 +19,24 @@ public class Currency : Enumeration<Currency, string>
 
 public record Money
 {
-    [MaxLength(5)]
-    public string? Currency { get; set; }
-    public decimal Amount { get; set; }
+    [MaxLength(3)] public string? Currency { get; set; }
+    [Precision(18, 2)] public decimal Amount { get; set; }
 
     // ORM required
     private Money(){}
 
     public Money(Currency currency, decimal amount)
     {
-        if (amount <= 0) amount = 0;
-
         Currency = currency.Value;
-        Amount = amount;
+        Amount = amount <= 0 ? 0 : amount;
+    }
+    
+    public Money(Money money)
+    {
+        if (money is null) throw new ArgumentNullException(nameof(money));
+
+        Currency = money.Currency;
+        Amount = money.Amount <= 0 ? 0 : money.Amount;
     }
         
     public override string ToString() => $"{Currency}|{Amount}";

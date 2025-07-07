@@ -29,7 +29,7 @@ public class Giving: AuditableEntity<int>, IAggregateRoot<int>
     /// <summary>
     /// Gets or sets the monetary amount of the contribution.
     /// </summary>
-    public required Money Amount  { get; set; }
+    public required Money GivingAmount  { get; set; }
     
     /// <summary>
     /// Gets or sets the method used to make the payment (e.g., cash, check, credit card).
@@ -54,12 +54,12 @@ public class Giving: AuditableEntity<int>, IAggregateRoot<int>
     /// <summary>
     /// Gets an external reference identifier for the contribution, such as a transaction ID from a payment processor.
     /// </summary>
-    [MaxLength(255)] public string? ExternalReferenceId { get; private set; }
+    [MaxLength(255)] public string? ExternalReferenceId { get; set; }
     
     /// <summary>
     /// Gets a value indicating whether a receipt has been sent to the benefactor for this contribution.
     /// </summary>
-    public bool ReceiptSent { get; private set; }
+    public bool ReceiptSent { get; set; }
 
     #region Import Properties
 
@@ -71,12 +71,12 @@ public class Giving: AuditableEntity<int>, IAggregateRoot<int>
     /// <summary>
     /// Gets the original bank transaction ID for duplicate detection
     /// </summary>
-    [MaxLength(255)] public string? BankTransactionId { get; private set; }
+    [MaxLength(255)] public string? BankTransactionId { get; set; }
     
     /// <summary>
     /// Gets the import batch this giving record came from
     /// </summary>
-    public int? BankStatementImportId { get; private set; }
+    public int? BankStatementImportId { get; set; }
     
     #endregion
     
@@ -99,12 +99,12 @@ public class Giving: AuditableEntity<int>, IAggregateRoot<int>
 
     #endregion
 
-    public static Giving Create(BankStatementImport import, Transaction transaction, GivingReference reference, Fund fund, Benefactor benefactor, string? notes)
+    public static Giving Create(Transaction transaction, GivingReference reference, Fund fund, Benefactor benefactor, string? notes)
     {
         return new Giving
         {
-            Import = import,
-            Amount = transaction.Amount,
+            //Import = import,
+            GivingAmount = new Money(transaction.TransactionAmount),
             Date = transaction.TransactionDate,
             PaymentMethod = PaymentMethod.FromTransactionType(transaction.TransactionType),
             GivingType = reference.GivingType,

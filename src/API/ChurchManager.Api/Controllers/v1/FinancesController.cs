@@ -20,12 +20,13 @@ namespace ChurchManager.Api.Controllers.v1
             _currentUser = currentUser;
         }
         
+        // POST: http://localhost:5001/api/v1/finances?isDryRun=false
         [HttpPost]  
         [AllowAnonymous]
-        public async Task<IActionResult> UploadBankStatement(IFormFile file, CancellationToken token)
+        public async Task<IActionResult> UploadBankStatement(IFormFile file, bool isDryRun = true, CancellationToken token = default)
         {
             // Add image
-            var command = new UploadBankStatementCommand(file);
+            var command = new UploadBankStatementCommand(file, isDryRun);
             
             var response = await Mediator.Send(command, token);
             

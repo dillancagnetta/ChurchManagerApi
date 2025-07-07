@@ -65,11 +65,12 @@ public class GivingConfiguration: IEntityTypeConfiguration<Giving>
             .Property(e => e.PaymentMethod)
             .HasEnumerationConversion<PaymentMethod>();
         
+        // ensure that each use of the Money type in different entities has a unique configuration or naming to avoid conflicts.
         builder
             .Property(e => e.GivingType)
             .HasEnumerationConversion<GivingType>();
         
-        builder.OwnsOne(x => x.Amount);
+        builder.OwnsOne(t => t.GivingAmount);
         
         //  delete if Benefactor is deleted
         builder
@@ -88,8 +89,8 @@ public class GivingConfiguration: IEntityTypeConfiguration<Giving>
         // set null if import is deleted
         builder
             .HasOne(p => p.Import)
-            .WithMany()
-            .HasForeignKey(x => x.BankStatementImportId)
+            .WithMany(i => i.Givings) // ✅ explicitly map the inverse
+            .HasForeignKey(p => p.BankStatementImportId)
             .OnDelete(DeleteBehavior.SetNull);
     }
 

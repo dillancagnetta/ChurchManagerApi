@@ -33,11 +33,11 @@ public class PaymentMethod : Enumeration<PaymentMethod, string>
     public static PaymentMethod FromTransactionType(string? type) =>
         (type ?? string.Empty) switch
         {
-            "Basic Credit" => EFT,
-            "Deposit"  => Cash,
-            "Payment"  => EFT,
-            "Direct Deposit"  => Cash,
-            "ATM transfer"  => Cash,
+            "CREDIT" => EFT,
+            "DEPOSIT"  => Cash,
+            "PAYMENT"  => EFT,
+            "DIRECT DEPOSIT"  => Cash,
+            "ATM TRANSFER"  => Cash,
             _    => Unknown
         };
 }

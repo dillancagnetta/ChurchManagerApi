@@ -64,7 +64,7 @@ public class GivingsFakeDbSeedInitializer : IInitializer
                     givings.Add(new Giving
                     {
                         Date = faker.Date.Between(DateTime.Today.AddMonths(-6), DateTime.Today),
-                        Amount = new Money(Currency.ZAR,  faker.Finance.Amount(100M, 50000M)),
+                        GivingAmount = new Money(Currency.ZAR,  faker.Finance.Amount(100M, 50000M)),
                         GivingType = faker.PickRandom(OftenGivingType),
                         Benefactor = faker.PickRandom(peopleBenefactors),
                         PaymentMethod = PaymentMethod.EFT,
@@ -74,7 +74,7 @@ public class GivingsFakeDbSeedInitializer : IInitializer
                     givings.Add(new Giving
                     {
                         Date = faker.Date.Between(DateTime.Today.AddMonths(-6), DateTime.Today),
-                        Amount = new Money(Currency.ZAR,  faker.Finance.Amount(100M, 50000M)),
+                        GivingAmount = new Money(Currency.ZAR,  faker.Finance.Amount(100M, 50000M)),
                         GivingType = GivingType.Partnership,
                         Benefactor = faker.PickRandom(peopleBenefactors),
                         PaymentMethod = PaymentMethod.EFT,
@@ -85,7 +85,7 @@ public class GivingsFakeDbSeedInitializer : IInitializer
                     givings.Add(new Giving
                     {
                         Date = faker.Date.Between(DateTime.Today.AddMonths(-6), DateTime.Today),
-                        Amount = new Money(Currency.ZAR,  faker.Finance.Amount(100M, 50000M)),
+                        GivingAmount = new Money(Currency.ZAR,  faker.Finance.Amount(100M, 50000M)),
                         GivingType = GivingType.Partnership,
                         Benefactor = faker.PickRandom(familiesBenefactors),
                         PaymentMethod = PaymentMethod.EFT,
@@ -99,7 +99,7 @@ public class GivingsFakeDbSeedInitializer : IInitializer
                     givings.Add(new Giving
                     {
                         Date = faker.Date.Between(DateTime.Today.AddMonths(-6), DateTime.Today),
-                        Amount = new Money(Currency.ZAR,  faker.Finance.Amount(1000M, 500000M)),
+                        GivingAmount = new Money(Currency.ZAR,  faker.Finance.Amount(1000M, 500000M)),
                         GivingType = faker.PickRandom(RareGivingType),
                         Benefactor = faker.PickRandom(churchesBenefactors),
                         PaymentMethod = PaymentMethod.EFT,

@@ -22,6 +22,7 @@ public class BankStatementImport: AuditableEntity<int>, IAggregateRoot<int>
     public DateTime StatementEndDate { get; set; }    // From OFX
 
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public virtual ICollection<Giving> Givings { get; set; } = new List<Giving>();
     //public virtual ICollection<Transaction> UnProcessedTransactions { get; set; } = new List<Transaction>();
     
     public IList<string> OriginalTransactionReferences()
@@ -43,13 +44,18 @@ public class BankStatementImport: AuditableEntity<int>, IAggregateRoot<int>
  
         Errors += $", {error}";
     }
+
+    public void AddGiving(Giving giving)
+    {
+        Givings.Add(giving);
+    }
 }
 
 public class Transaction : AuditableEntity<int>
 {
     public int ImportId { get; set; }
     [Required, MaxLength(50)] public required string OriginalReference { get; set; }
-    [Required] public required Money Amount { get; set; }
+    [Required] public required Money TransactionAmount { get; set; }
     [Required] public DateTime TransactionDate { get; set; }
     [Required, MaxLength(150)] public required string BankTransactionId { get; set; }
     [Required, MaxLength(150)] public required string TransactionType { get; set; }
@@ -57,7 +63,6 @@ public class Transaction : AuditableEntity<int>
     // Resolution status
     public bool IsMatched { get; set; }
     public bool? IsProcessed { get; set; }
-    public int? GivingId { get; set; }  // null if unmatched
     
     public bool? IsResolved { get; set; }
     [MaxLength(500)] public string? ResolutionNotes { get; set; }
@@ -67,7 +72,6 @@ public class Transaction : AuditableEntity<int>
     
     #region Navigation
     public virtual BankStatementImport? Import { get; set; }
-    public virtual Giving? Giving { get; set; }
     #endregion
 
     public void SetAsUnProcessed(string? error)

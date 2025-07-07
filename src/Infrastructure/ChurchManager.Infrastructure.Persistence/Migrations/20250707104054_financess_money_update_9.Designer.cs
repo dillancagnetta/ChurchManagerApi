@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ChurchManagerDbContext))]
-    partial class ChurchManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250707104054_financess_money_update_9")]
+    partial class financess_money_update_9
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1938,6 +1941,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<int?>("BankStatementImportId")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("BankStatementImportId1")
+                        .HasColumnType("integer");
+
                     b.Property<string>("BankTransactionId")
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
@@ -1999,6 +2005,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BankStatementImportId");
+
+                    b.HasIndex("BankStatementImportId1");
 
                     b.HasIndex("BenefactorId");
 
@@ -3850,9 +3858,13 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("ChurchManager.Domain.Features.Finances.Giving", b =>
                 {
                     b.HasOne("ChurchManager.Domain.Features.Finances.Banking.BankStatementImport", "Import")
-                        .WithMany("Givings")
+                        .WithMany()
                         .HasForeignKey("BankStatementImportId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("ChurchManager.Domain.Features.Finances.Banking.BankStatementImport", null)
+                        .WithMany("Givings")
+                        .HasForeignKey("BankStatementImportId1");
 
                     b.HasOne("ChurchManager.Domain.Features.Finances.Benefactor", "Benefactor")
                         .WithMany()

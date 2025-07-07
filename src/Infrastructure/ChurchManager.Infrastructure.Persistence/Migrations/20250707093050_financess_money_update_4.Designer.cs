@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ChurchManagerDbContext))]
-    partial class ChurchManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250707093050_financess_money_update_4")]
+    partial class financess_money_update_4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1733,6 +1736,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
+                    b.Property<int?>("GivingId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("ImportId")
                         .HasColumnType("integer");
 
@@ -1784,6 +1790,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BankStatementImportId");
+
+                    b.HasIndex("GivingId");
 
                     b.HasIndex("ImportId");
 
@@ -3774,24 +3782,30 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .WithMany("Transactions")
                         .HasForeignKey("BankStatementImportId");
 
+                    b.HasOne("ChurchManager.Domain.Features.Finances.Giving", "Giving")
+                        .WithMany()
+                        .HasForeignKey("GivingId");
+
                     b.HasOne("ChurchManager.Domain.Features.Finances.Banking.BankStatementImport", "Import")
                         .WithMany()
                         .HasForeignKey("ImportId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("ChurchManager.Domain.Common.Money", "TransactionAmount", b1 =>
+                    b.OwnsOne("TransactionAmount", "TransactionAmount", b1 =>
                         {
                             b1.Property<int>("TransactionId")
                                 .HasColumnType("integer");
 
                             b1.Property<decimal>("Amount")
                                 .HasPrecision(18, 2)
-                                .HasColumnType("numeric(18,2)");
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("Amount");
 
                             b1.Property<string>("Currency")
                                 .HasMaxLength(3)
-                                .HasColumnType("character varying(3)");
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("Currency");
 
                             b1.HasKey("TransactionId");
 
@@ -3800,6 +3814,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("TransactionId");
                         });
+
+                    b.Navigation("Giving");
 
                     b.Navigation("Import");
 
@@ -3850,7 +3866,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("ChurchManager.Domain.Features.Finances.Giving", b =>
                 {
                     b.HasOne("ChurchManager.Domain.Features.Finances.Banking.BankStatementImport", "Import")
-                        .WithMany("Givings")
+                        .WithMany()
                         .HasForeignKey("BankStatementImportId")
                         .OnDelete(DeleteBehavior.SetNull);
 
@@ -3866,18 +3882,20 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("ChurchManager.Domain.Common.Money", "GivingAmount", b1 =>
+                    b.OwnsOne("GivingAmount", "GivingAmount", b1 =>
                         {
                             b1.Property<int>("GivingId")
                                 .HasColumnType("integer");
 
                             b1.Property<decimal>("Amount")
                                 .HasPrecision(18, 2)
-                                .HasColumnType("numeric(18,2)");
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("Amount");
 
                             b1.Property<string>("Currency")
                                 .HasMaxLength(3)
-                                .HasColumnType("character varying(3)");
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("Currency");
 
                             b1.HasKey("GivingId");
 
@@ -3958,18 +3976,20 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("GroupAttendanceId");
                         });
 
-                    b.OwnsOne("ChurchManager.Domain.Common.Money", "Offering", b1 =>
+                    b.OwnsOne("Offering", "Offering", b1 =>
                         {
                             b1.Property<int>("GroupAttendanceId")
                                 .HasColumnType("integer");
 
                             b1.Property<decimal>("Amount")
                                 .HasPrecision(18, 2)
-                                .HasColumnType("numeric(18,2)");
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("Amount");
 
                             b1.Property<string>("Currency")
                                 .HasMaxLength(3)
-                                .HasColumnType("character varying(3)");
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("Currency");
 
                             b1.HasKey("GroupAttendanceId");
 
@@ -4111,18 +4131,20 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("MissionId");
                         });
 
-                    b.OwnsOne("ChurchManager.Domain.Common.Money", "Offering", b1 =>
+                    b.OwnsOne("MissionOffering", "Offering", b1 =>
                         {
                             b1.Property<int>("MissionId")
                                 .HasColumnType("integer");
 
                             b1.Property<decimal>("Amount")
                                 .HasPrecision(18, 2)
-                                .HasColumnType("numeric(18,2)");
+                                .HasColumnType("numeric(18,2)")
+                                .HasColumnName("Amount");
 
                             b1.Property<string>("Currency")
                                 .HasMaxLength(3)
-                                .HasColumnType("character varying(3)");
+                                .HasColumnType("character varying(3)")
+                                .HasColumnName("Currency");
 
                             b1.HasKey("MissionId");
 
@@ -4496,8 +4518,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Finances.Banking.BankStatementImport", b =>
                 {
-                    b.Navigation("Givings");
-
                     b.Navigation("Transactions");
                 });
 

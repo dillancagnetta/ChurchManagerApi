@@ -29,7 +29,7 @@ public class ImportedTransactionConfiguration : IEntityTypeConfiguration<Transac
         builder.HasIndex(x => x.OriginalReference);
         builder.HasIndex(x => x.TransactionType);
         
-        builder.OwnsOne(x => x.Amount);
+        builder.OwnsOne(t => t.TransactionAmount);
         
         // Delete if import deleted
         builder

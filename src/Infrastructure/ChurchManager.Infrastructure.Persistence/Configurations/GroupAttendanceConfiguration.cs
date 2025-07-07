@@ -15,6 +15,7 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
             builder.ToTable(nameof(GroupAttendance), "Groups");
             
             builder.OwnsOne(x => x.Offering);
+            
             builder.HasMany(b => b.Attendees).WithOne().OnDelete(DeleteBehavior.Cascade);
            
             // Indexes

@@ -38,55 +38,65 @@ public class GivingReferenceResolver(
         var peoplePhoneMap =
             await peopleDb.FindPhoneNumberForPeople(ParsePhoneNumbers(import.OriginalTransactionReferences()));
 
-        foreach (var transaction in import.Transactions)
+        try
         {
-            try
+            foreach (var transaction in import.Transactions)
             {
-                var reference = transaction.OriginalReference;
-
-                if (!IsValidReference(reference))
+                try
                 {
-                    transaction.SetAsUnProcessed("Invalid reference format");
-                    continue;
+                    transaction.Import = import;
+                    
+                    var reference = transaction.OriginalReference;
+
+                    if (!IsValidReference(reference))
+                    {
+                        transaction.SetAsUnProcessed("Invalid reference format");
+                        continue;
+                    }
+
+                    // Its safe to continue processing the reference
+                    var parsed = Parse(reference);
+
+                    var resolvedReference = new GivingReference
+                    {
+                        GivingType = parsed.Type,
+                        BenefactorType = parsed.IsFamily ? BenefactorType.Family : BenefactorType.Individual,
+                    };
+
+                    // Try to resolve the church and the person
+                    resolvedReference = await TryResolveChurchAsync(reference, resolvedReference);
+                    resolvedReference = await TryResolvePersonAsync(reference, resolvedReference, peoplePhoneMap);
+
+                    transaction.IsMatched = resolvedReference.IsPersonMatched && resolvedReference.IsChurchMatched;
+
+                    if (transaction.IsMatched)
+                    {
+                        var fund = await ResolveFundAsync(resolvedReference.GivingType, parsed.PartnershipFund!);
+                        var benefactor = await ResolveBenefactorAsync(resolvedReference);
+
+                        // Create associated giving record
+                        import.AddGiving(Giving.Create(transaction, resolvedReference, fund, benefactor, transaction.Memo));
+                        transaction.SetAsProcessed();
+                    }
+                    else 
+                    {
+                        transaction.SetAsUnProcessed("Unable to resolve church and phone number");
+                        continue;
+                    }
                 }
-
-                // Its safe to continue processing the reference
-                var parsed = Parse(reference);
-
-                var resolvedReference = new GivingReference
+                catch (Exception e)
                 {
-                    GivingType = parsed.Type,
-                    BenefactorType = parsed.IsFamily ? BenefactorType.Family : BenefactorType.Individual,
-                };
-
-                // Try to resolve the church and the person
-                resolvedReference = await TryResolveChurchAsync(reference, resolvedReference);
-                resolvedReference = await TryResolvePersonAsync(reference, resolvedReference, peoplePhoneMap);
-
-                transaction.IsMatched = resolvedReference.IsPersonMatched && resolvedReference.IsChurchMatched;
-
-                if (transaction.IsMatched)
-                {
-                    var fund = await ResolveFundAsync(resolvedReference.GivingType, parsed.PartnershipFund!);
-                    var benefactor = await ResolveBenefactorAsync(resolvedReference);
-
-                    // Create associated giving record
-                    transaction.Giving = Giving.Create(import, transaction, resolvedReference, fund, benefactor, transaction.Memo);
-                    transaction.SetAsProcessed();
-                }
-                else 
-                {
-                    transaction.SetAsUnProcessed("Unable to resolve church and phone number");
-                    continue;
+                    transaction.SetAsUnProcessed(e.Message);
                 }
             }
-            catch (Exception e)
-            {
-                import.AddError(e.Message);
-            }
+            
+            return new BankStatementProcessResult(import);
         }
-
-        return new BankStatementProcessResult(import);
+        catch (Exception e)
+        {
+            import.AddError(e.Message);
+            return new BankStatementProcessResult(import) { IsSuccess = false };
+        }
     }
 
     private async Task<Benefactor> ResolveBenefactorAsync(GivingReference reference)

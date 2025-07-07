@@ -20,7 +20,7 @@ public class GivingType : Enumeration<GivingType, string>
     public static GivingType FromInitials(string? initials) =>
         (initials ?? string.Empty).ToUpperInvariant() switch
         {
-            "FF" => FirstFruit,
+            "F" => FirstFruit,
             "T"  => Tithe,
             "O"  => Offering,
             "S"  => Seed,
