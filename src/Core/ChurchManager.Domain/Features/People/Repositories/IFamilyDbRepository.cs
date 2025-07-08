@@ -8,4 +8,5 @@ public interface IFamilyDbRepository: IGenericDbRepository<Family>
 {
     Task<FamilyCodeValidationViewModel> ValidateFamilyCodeAsync(string familyCode, CancellationToken ct = default);
     Task<OperationResult<FamilyViewModel>> FamilyByCodeAsync(string familyCode, string emailAddress, CancellationToken ct = default);
+    Task<IList<int>> PersonIdsOfFamilyMembersAsync(int familyId, CancellationToken ct = default);
 }

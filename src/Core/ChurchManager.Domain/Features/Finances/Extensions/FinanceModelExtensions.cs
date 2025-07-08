@@ -57,9 +57,9 @@ public static class FinanceModelExtensions
         return new GivingViewModel
         {
             Id = model.Id,
-            BenefactorId = model.BenefactorId,
             Date = model.Date,
             Amount = model.GivingAmount.ToModel()!,
+            Benefactor = model.Benefactor?.ToModel(),
             PaymentMethod = model.PaymentMethod.Value,
             GivingType = model.GivingType.Value,
             Notes = model.Notes,
@@ -83,6 +83,23 @@ public static class FinanceModelExtensions
             Description = model.Description,
             Code = model.Code,
             FundType = model.FundType.Value,
+        };
+    }
+    
+    public static BenefactorViewModel? ToModel(this Benefactor? model)
+    {
+        if (model == null) return null;
+
+        return new BenefactorViewModel
+        {
+            Id = model.Id,
+            Name = model.Name,
+            Type = model.Type.Value,
+            // Reference IDs to original entities
+            PersonId = model.PersonId,
+            FamilyId = model.FamilyId,
+            GroupId = model.GroupId,
+            ChurchId = model.ChurchId,
         };
     }
 }

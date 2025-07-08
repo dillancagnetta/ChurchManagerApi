@@ -23,7 +23,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Features\Finances\Repositories\" />
-    <Folder Include="Features\Finances\Specifications\" />
     <Folder Include="Features\History\Queries\" />
     <Folder Include="Features\Missions\Repositories\" />
     <Folder Include="Features\Missions\Queries\" />

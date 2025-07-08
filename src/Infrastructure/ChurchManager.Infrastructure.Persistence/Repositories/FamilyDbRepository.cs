@@ -65,4 +65,16 @@ public class FamilyDbRepository : GenericRepositoryBase<Family>, IFamilyDbReposi
             return OperationResult<FamilyViewModel>.Fail(e.Message);
         }
     }
+
+    public async Task<IList<int>> PersonIdsOfFamilyMembersAsync(int familyId, CancellationToken ct = default)
+    {
+        var familyMembersPersonIds = await Queryable()
+            .Include(x => x.FamilyMembers)
+            .AsNoTracking()
+            .Where(f => f.Id == familyId)
+            .SelectMany(f => f.FamilyMembers.Select(x => x.Id))
+            .ToListAsync(ct);
+        
+        return familyMembersPersonIds;
+    }
 }

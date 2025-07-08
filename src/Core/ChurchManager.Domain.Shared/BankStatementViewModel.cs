@@ -42,7 +42,8 @@ public record TransactionViewModel
 public record GivingViewModel
 {
     public int? Id { get; set; }
-    public int BenefactorId { get; set; }
+    
+    public BenefactorViewModel? Benefactor { get; set; }
     public DateTime Date { get; set; }
     public required MoneyViewModel Amount  { get; set; }
     public required string PaymentMethod { get; set; }
@@ -63,4 +64,17 @@ public record FundViewModel
     public string? Description { get; set; }
     public required string Code { get; set; }
     public required string FundType { get; set; }
+}
+
+public record BenefactorViewModel
+{
+    public int? Id { get; set; }
+    public required string Name { get; set; }
+    public required string Type { get; set; }
+    
+    // Reference IDs to original entities
+    public int? PersonId { get;  set; }
+    public int? FamilyId { get;  set; }
+    public int? GroupId { get; set; }
+    public int? ChurchId { get;  set; }
 }
