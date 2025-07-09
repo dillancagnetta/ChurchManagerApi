@@ -9,7 +9,7 @@
         /// <summary>
         /// Gets a configuration URL
         /// </summary>
-        string ConfigurationUrl();
+        string? ConfigurationUrl();
 
         /// <summary>
         /// Gets or sets the plugin info

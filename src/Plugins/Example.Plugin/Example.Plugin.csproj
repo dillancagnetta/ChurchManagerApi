@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\..\Build\ChurchManager.Common.props" />
+
+    <!--Sets the build output directory to a custom folder-->
+    <PropertyGroup>
+        <OutputPath>..\..\API\ChurchManager.Api\Plugins\Example.Plugin\</OutputPath>
+        <OutDir>$(OutputPath)</OutDir>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Model\" />
+      <Folder Include="Settings\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Infrastructure\ChurchManager.Infrastructure\ChurchManager.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>

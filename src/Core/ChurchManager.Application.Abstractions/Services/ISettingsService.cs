@@ -23,7 +23,11 @@ public interface ISettingsService: ICrudServiceAsync<Setting, SettingViewModel, 
     /// </summary>
     Task SaveSettingAsync<T>(string key, T value, 
         int? churchGroupId = null, int? churchId = null , int? personId = null,
-        CancellationToken ct = default);
+        CancellationToken ct = default) where T : ISettings, new();
+    
+    Task SaveSettingAsync<T>(T value, 
+        int? churchGroupId = null, int? churchId = null , int? personId = null,
+        CancellationToken ct = default) where T : ISettings, new();
     
     ISettings LoadSetting(Type type, 
         int? churchGroupId = null, int? churchId = null , int? personId = null,
@@ -45,4 +49,10 @@ public interface ISettingsService: ICrudServiceAsync<Setting, SettingViewModel, 
     Task<T> GetSettingByKeyAsync<T>(string key, T defaultValue = default, 
         int? churchGroupId = null, int? churchId = null , int? personId = null,
         CancellationToken ct = default);
+    
+    /// <summary>
+    ///     Delete all settings
+    /// </summary>
+    /// <typeparam name="T">Type</typeparam>
+    Task DeleteSetting<T>() where T : ISettings, new();
 }

@@ -331,3 +331,4 @@ ASALocalRun/
 logs/
 src/API/ChurchManager.Api/Properties/launchSettings.json
 src/API/ChurchManager.Api/Properties/launchSettings.json
+src/API/ChurchManager.Api/Plugins

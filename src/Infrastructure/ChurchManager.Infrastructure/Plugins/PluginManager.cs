@@ -4,9 +4,13 @@ using System.Runtime.Loader;
 using System.Text.RegularExpressions;
 using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.SharedKernel.Extensions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Serilog;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace ChurchManager.Infrastructure.Plugins
 {
@@ -19,7 +23,7 @@ namespace ChurchManager.Infrastructure.Plugins
 
         public const string CopyPath = "Plugins/bin";
 
-        private static object _synLock = new object();
+        private static readonly Lock SynLock = new();
 
         #endregion
 
@@ -27,7 +31,8 @@ namespace ChurchManager.Infrastructure.Plugins
 
         private static DirectoryInfo _copyFolder;
         private static DirectoryInfo _pluginFolder;
-        private static AppConfig _config;
+        private static ExtensionsConfig _config;
+        private static ILogger _logger;
 
         #endregion
 
@@ -36,21 +41,24 @@ namespace ChurchManager.Infrastructure.Plugins
         /// <summary>
         /// Returns a collection of all referenced plugin assemblies that have been shadow copied
         /// </summary>
-        public static IEnumerable<PluginInfo> ReferencedPlugins { get; set; }
+        public static IEnumerable<PluginInfo>? ReferencedPlugins { get; set; }
 
 
         /// <summary>
         /// Load plugins
         /// </summary>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void Load(IMvcCoreBuilder mvcCoreBuilder, AppConfig config)
+        public static void Load(IMvcCoreBuilder mvcCoreBuilder, IConfiguration configuration,
+            IWebHostEnvironment hostEnvironment)
         {
-            lock (_synLock)
-            {
-                if (mvcCoreBuilder == null)
-                    throw new ArgumentNullException(nameof(mvcCoreBuilder));
+            _config = new ExtensionsConfig();
+            configuration.GetSection("Extensions").Bind(_config);
 
-                _config = config ?? throw new ArgumentNullException(nameof(config));
+            lock (SynLock)
+            {
+                ArgumentNullException.ThrowIfNull(mvcCoreBuilder);
+                _logger = mvcCoreBuilder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>()
+                    .CreateLogger("PluginManager");
 
                 _pluginFolder = new DirectoryInfo(CommonPath.PluginsPath);
                 _copyFolder = new DirectoryInfo(CommonPath.PluginsCopyPath);
@@ -58,13 +66,17 @@ namespace ChurchManager.Infrastructure.Plugins
                 var referencedPlugins = new List<PluginInfo>();
                 try
                 {
-                    var installedPluginSystemNames = PluginExtensions.ParseInstalledPluginsFile(CommonPath.InstalledPluginsFilePath);
+                    var installedPluginSystemNames =
+                        !string.IsNullOrEmpty(_config.InstalledPlugins)
+                            ? _config.InstalledPlugins.Split(",").Select(x => x.Trim())
+                            : PluginExtensions.ParseInstalledPluginsFile(PluginPaths.Instance.InstalledPluginsFile);
+
 
                     Log.Information("Creating shadow copy folder and querying for dlls");
                     Directory.CreateDirectory(_pluginFolder.FullName);
                     Directory.CreateDirectory(_copyFolder.FullName);
                     var binFiles = _copyFolder.GetFiles("*", SearchOption.AllDirectories);
-                    if (config.ClearPluginShadowDirectoryOnStartup)
+                    if (_config.PluginShadowCopy)
                     {
                         //clear out shadow plugins
                         foreach (var f in binFiles)
@@ -90,7 +102,7 @@ namespace ChurchManager.Infrastructure.Plugins
                     {
                         if (plugin.SupportedVersion != ChurchManagerVersion.SupportedPluginVersion)
                         {
-                            Log.Information($"Incompatible plugin {plugin.SystemName}");
+                            _logger.LogInformation("Incompatible plugin {PluginSystemName}", plugin.SystemName);
                             //set as not installed
                             referencedPlugins.Add(plugin);
                             continue;
@@ -98,20 +110,26 @@ namespace ChurchManager.Infrastructure.Plugins
 
                         //some validation
                         if (string.IsNullOrWhiteSpace(plugin.SystemName))
-                            throw new Exception(string.Format("The plugin '{0}' has no system name.", plugin.SystemName));
+                            throw new Exception(
+                                string.Format("The plugin '{0}' has no system name.", plugin.SystemName));
                         if (referencedPlugins.Contains(plugin))
-                            throw new Exception(string.Format("The plugin with '{0}' system name is already defined", plugin.SystemName));
+                            throw new Exception(string.Format("The plugin with '{0}' system name is already defined",
+                                plugin.SystemName));
 
                         //set 'Installed' property
                         plugin.Installed = installedPluginSystemNames
-                            .FirstOrDefault(x => x.Equals(plugin.SystemName, StringComparison.OrdinalIgnoreCase)) != null;
+                                               .FirstOrDefault(x =>
+                                                   x.Equals(plugin.SystemName, StringComparison.OrdinalIgnoreCase)) !=
+                                           null;
 
                         try
                         {
-                            if (!config.PluginShadowCopy)
+                            if (!_config.PluginShadowCopy)
                             {
                                 //remove deps.json files 
-                                var depsFiles = plugin.OriginalAssemblyFile.Directory.GetFiles("*.deps.json", SearchOption.TopDirectoryOnly);
+                                var depsFiles =
+                                    plugin.OriginalAssemblyFile.Directory.GetFiles("*.deps.json",
+                                        SearchOption.TopDirectoryOnly);
                                 foreach (var f in depsFiles)
                                 {
                                     try
@@ -126,7 +144,8 @@ namespace ChurchManager.Infrastructure.Plugins
                             }
 
                             //main plugin file
-                            AddApplicationPart(mvcCoreBuilder, plugin.ReferencedAssembly, plugin.SystemName, plugin.PluginFileName);
+                            AddApplicationPart(mvcCoreBuilder, plugin.ReferencedAssembly, plugin.SystemName,
+                                plugin.PluginFileName);
 
                             //register interface for IPlugin 
                             RegisterPluginInterface(mvcCoreBuilder, plugin.ReferencedAssembly);
@@ -145,16 +164,16 @@ namespace ChurchManager.Infrastructure.Plugins
                         }
                         catch (ReflectionTypeLoadException ex)
                         {
-                            var msg = string.Format("Plugin '{0}'. ", plugin.FriendlyName);
-                            foreach (var e in ex.LoaderExceptions)
-                                msg += e.Message + Environment.NewLine;
+                            var msg = $"Plugin '{plugin.FriendlyName}'. ";
+                            msg = ex.LoaderExceptions.Aggregate(msg,
+                                (current, e) => current + e!.Message + Environment.NewLine);
 
                             var fail = new Exception(msg, ex);
                             throw fail;
                         }
                         catch (Exception ex)
                         {
-                            var msg = string.Format("Plugin '{0}'. {1}", plugin.FriendlyName, ex.Message);
+                            var msg = $"Plugin '{plugin.FriendlyName}'. {ex.Message}";
 
                             var fail = new Exception(msg, ex);
                             throw fail;
@@ -174,6 +193,7 @@ namespace ChurchManager.Infrastructure.Plugins
                 ReferencedPlugins = referencedPlugins;
             }
         }
+
         /// <summary>
         /// Find a plugin by some type which is located into the same assembly plugin
         /// </summary>
@@ -181,14 +201,15 @@ namespace ChurchManager.Infrastructure.Plugins
         /// <returns>Plugin descriptor if exists; otherwise null</returns>
         public static PluginInfo? FindPlugin(Type typeAssembly)
         {
-            if (typeAssembly == null)
-                throw new ArgumentNullException(nameof(typeAssembly));
+            ArgumentNullException.ThrowIfNull(typeAssembly);
 
             if (ReferencedPlugins == null)
                 return null;
 
-            return ReferencedPlugins.FirstOrDefault(plugin => plugin.ReferencedAssembly != null
-                && plugin.ReferencedAssembly.FullName.Equals(typeAssembly.GetTypeInfo().Assembly.FullName, StringComparison.OrdinalIgnoreCase));
+            return ReferencedPlugins?.FirstOrDefault(plugin => plugin.ReferencedAssembly != null
+                                                               && plugin.ReferencedAssembly.FullName!.Equals(
+                                                                   typeAssembly.GetTypeInfo().Assembly.FullName,
+                                                                   StringComparison.OrdinalIgnoreCase));
         }
 
 
@@ -234,9 +255,11 @@ namespace ChurchManager.Infrastructure.Plugins
 
         private static PluginInfo? PreparePluginInfo(FileInfo pluginFile)
         {
-            var _plug = _config.PluginShadowCopy ? ShadowCopyFile(pluginFile, Directory.CreateDirectory(_copyFolder.FullName)) : pluginFile;
+            var plug = _config.PluginShadowCopy
+                ? ShadowCopyFile(pluginFile, Directory.CreateDirectory(_copyFolder.FullName))
+                : pluginFile;
 
-            Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(_plug.FullName);
+            Assembly assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(plug.FullName);
 
             var pluginInfo = assembly.GetCustomAttribute<PluginInfoAttribute>();
             if (pluginInfo == null)
@@ -252,7 +275,7 @@ namespace ChurchManager.Infrastructure.Plugins
                 Version = pluginInfo.Version,
                 SupportedVersion = pluginInfo.SupportedVersion,
                 Author = pluginInfo.Author,
-                PluginFileName = _plug.Name,
+                PluginFileName = plug.Name,
                 OriginalAssemblyFile = pluginFile,
                 ReferencedAssembly = assembly
             };
@@ -279,48 +302,46 @@ namespace ChurchManager.Infrastructure.Plugins
                 var areFilesIdentical = shadowCopiedPlug.CreationTimeUtc.Ticks >= plug.CreationTimeUtc.Ticks;
                 if (areFilesIdentical)
                 {
-                    Log.Information($"Not copying; files appear identical: {shadowCopiedPlug.Name}");
+                    _logger.LogInformation("Not copying; files appear identical: {Name}", shadowCopiedPlug.Name);
                     return shadowCopiedPlug;
                 }
-                else
-                {
-                    //delete an existing file
-                    Log.Information($"New plugin found; Deleting the old file: {shadowCopiedPlug.Name}");
-                    try
-                    {
-                        File.Delete(shadowCopiedPlug.FullName);
-                    }
-                    catch (Exception ex)
-                    {
-                        shouldCopy = false;
-                        Log.Error(ex, "PluginManager");
-                    }
-                }
-            }
-            if (shouldCopy)
-            {
+
+                //delete an existing file
+                _logger.LogInformation("New plugin found; Deleting the old file: {Name}", shadowCopiedPlug.Name);
                 try
                 {
-                    File.Copy(plug.FullName, shadowCopiedPlug.FullName, true);
+                    File.Delete(shadowCopiedPlug.FullName);
                 }
-                catch (IOException)
+                catch (Exception ex)
                 {
-                    Log.Information($"{shadowCopiedPlug.FullName} is locked, attempting to rename");
-                    //this occurs when the files are locked,
-                    //for some reason devenv locks plugin files some times and for another crazy reason you are allowed to rename them
-                    //which releases the lock, so that it what we are doing here, once it's renamed, we can re-shadow copy
-                    try
-                    {
-                        var oldFile = shadowCopiedPlug.FullName + Guid.NewGuid().ToString("N") + ".old";
-                        File.Move(shadowCopiedPlug.FullName, oldFile);
-                    }
-                    catch (IOException exc)
-                    {
-                        throw new IOException(shadowCopiedPlug.FullName + " rename failed, cannot initialize plugin", exc);
-                    }
-                    //ok, we've made it this far, now retry the shadow copy
-                    File.Copy(plug.FullName, shadowCopiedPlug.FullName, true);
+                    shouldCopy = false;
+                    _logger.LogError(ex, "PluginManager");
                 }
+            }
+
+            if (!shouldCopy) return shadowCopiedPlug;
+            try
+            {
+                File.Copy(plug.FullName, shadowCopiedPlug.FullName, true);
+            }
+            catch (IOException)
+            {
+                _logger.LogInformation("{FullName} is locked, attempting to rename", shadowCopiedPlug.FullName);
+                //this occurs when the files are locked,
+                //for some reason devenv locks plugin files some times and for another crazy reason you are allowed to rename them
+                //which releases the lock, so that it what we are doing here, once it's renamed, we can re-shadow copy
+                try
+                {
+                    var oldFile = shadowCopiedPlug.FullName + Guid.NewGuid().ToString("N") + ".old";
+                    File.Move(shadowCopiedPlug.FullName, oldFile);
+                }
+                catch (IOException exc)
+                {
+                    throw new IOException(shadowCopiedPlug.FullName + " rename failed, cannot initialize plugin", exc);
+                }
+
+                //ok, we've made it this far, now retry the shadow copy
+                File.Copy(plug.FullName, shadowCopiedPlug.FullName, true);
             }
 
             return shadowCopiedPlug;
@@ -353,7 +374,8 @@ namespace ChurchManager.Infrastructure.Plugins
             catch (Exception ex)
             {
                 Log.Error(ex, "PluginManager");
-                throw new InvalidOperationException($"The plugin directory for the {systemName} file exists in a folder outside of the allowed grandnode folder hierarchy - exception because of {filename} - exception: {ex.Message}");
+                throw new InvalidOperationException(
+                    $"The plugin directory for the {systemName} file exists in a folder outside of the allowed grandnode folder hierarchy - exception because of {filename} - exception: {ex.Message}");
             }
         }
 
@@ -384,7 +406,6 @@ namespace ChurchManager.Infrastructure.Plugins
             if (!folder.Parent.Name.Equals("Plugins", StringComparison.OrdinalIgnoreCase)) return false;
             return true;
         }
-
 
         #endregion
     }

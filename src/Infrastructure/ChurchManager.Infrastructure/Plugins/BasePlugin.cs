@@ -6,14 +6,14 @@
         /// Gets a configuration page URL
         /// </summary>
         /// <returns></returns>
-        public virtual string ConfigurationUrl()
+        public virtual string? ConfigurationUrl()
         {
             return null;
         }
         /// <summary>
         /// Gets or sets the plugin info
         /// </summary>
-        public virtual PluginInfo PluginInfo { get; set; }
+        public virtual required PluginInfo PluginInfo { get; set; }
 
         /// <summary>
         /// Install plugin

@@ -4,13 +4,11 @@ using ChurchManager.Infrastructure.Abstractions;
 using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.Infrastructure.Mapper;
 using ChurchManager.Infrastructure.Plugins;
-using ChurchManager.Infrastructure.Roslyn;
 using ChurchManager.Infrastructure.Shared.Tests;
 using ChurchManager.Infrastructure.TypeConverters;
 using ChurchManager.Infrastructure.TypeSearcher;
 using ChurchManager.SharedKernel;
 using ChurchManager.SharedKernel.Extensions;
-using JasperFx.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -114,14 +112,10 @@ namespace ChurchManager.Infrastructure
         /// <param name="mvcCoreBuilder"></param>
         /// <param name="configuration"></param>
         /// <param name="config"></param>
-        private static void RegisterExtensions(IMvcCoreBuilder mvcCoreBuilder, IConfiguration configuration, AppConfig config)
+        private static void RegisterExtensions(IMvcCoreBuilder mvcCoreBuilder, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
-            Console.WriteLine($"[AppConfig] RabbitMqEnabled: {config.RabbitMqEnabled}");
-            Console.WriteLine($"[AppConfig] EmailSendingEnabled: {config.EmailSendingEnabled}");
-            Console.WriteLine($"[AppConfig] SMSSendingEnabled: {config.SMSSendingEnabled}");
-  
             //Load plugins
-            PluginManager.Load(mvcCoreBuilder, config);
+            PluginManager.Load(mvcCoreBuilder, configuration, hostEnvironment);
 
             //Load CTX sctipts
             //RoslynCompiler.Load(mvcCoreBuilder.PartManager, config);
@@ -245,21 +239,28 @@ namespace ChurchManager.Infrastructure
         /// <param name="configuration">Configuration root of the application</param>
         public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
-            //register application
-            var mvcBuilder = RegisterApplication(services, configuration);
-            
             // ApplicationConfig
             var config = new AppConfig();
             configuration.GetSection(AppSectionName).Bind(config);
             services.Configure<AppConfig>(configuration.GetSection(AppSectionName));
             
-            //register extensions 
-            RegisterExtensions(mvcBuilder, configuration, config);
-
+            Console.WriteLine($"[AppConfig] RabbitMqEnabled: {config.RabbitMqEnabled}");
+            Console.WriteLine($"[AppConfig] EmailSendingEnabled: {config.EmailSendingEnabled}");
+            Console.WriteLine($"[AppConfig] SMSSendingEnabled: {config.SMSSendingEnabled}");
+            
             //find startup configurations provided by other assemblies
             var typeSearcher = new AppTypeSearcher();
             services.AddSingleton<ITypeSearcher>(typeSearcher);
-
+            
+            var provider = services.BuildServiceProvider();
+            var hostingEnvironment = provider.GetRequiredService<IWebHostEnvironment>();
+            
+            //register application
+            var mvcBuilder = RegisterApplication(services, configuration);
+            
+            //register extensions 
+            RegisterExtensions(mvcBuilder, configuration, hostingEnvironment);
+            
             var startupConfigurations = typeSearcher.ClassesOfType<IStartupApplication>();
 
             //Register startup

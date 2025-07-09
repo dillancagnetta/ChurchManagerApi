@@ -48,9 +48,15 @@ public class SettingsService(
     }
 
     public Task SaveSettingAsync<T>(string key, T value, int? churchGroupId = null, int? churchId = null, int? personId = null,
-        CancellationToken ct = default)
+        CancellationToken ct = default) where T : ISettings, new()
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
+    }
+    
+    public Task SaveSettingAsync<T>(T value, int? churchGroupId = null, int? churchId = null, int? personId = null,
+        CancellationToken ct = default) where T : ISettings, new()
+    {
+        return Task.CompletedTask;
     }
 
     public virtual ISettings? LoadSetting(Type type, 
@@ -86,7 +92,12 @@ public class SettingsService(
     
         return setting != null ? JsonSerializer.Deserialize<T>(setting.Metadata) : defaultValue;
     }
-    
+
+    public Task DeleteSetting<T>() where T : ISettings, new()
+    {
+        return Task.CompletedTask;
+    }
+
     private IQueryable<Setting> SettingsByNameQuery(string name)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);

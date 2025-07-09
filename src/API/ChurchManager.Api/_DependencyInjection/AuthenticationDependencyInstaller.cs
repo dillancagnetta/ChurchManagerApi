@@ -70,7 +70,7 @@ namespace ChurchManager.Api._DependencyInjection
                 });
                 
                 // Set it as the fallback when no attribute is provided 
-                options.FallbackPolicy = options.GetPolicy(policyName)!;
+                //options.FallbackPolicy = options.GetPolicy(policyName)!;
             });
         }
     }
