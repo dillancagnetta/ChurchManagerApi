@@ -17,12 +17,13 @@ public class BrowseGivingsSpecification: Specification<Giving, GivingViewModel>
         string[] paymentMethods,
         string? currency,
         int? fundId,
+        int? churchId,
         string[] benefactorTypes,
         DateTime? from, DateTime? to
         )
     {
         Query.EnableCache(nameof(BrowseGivingsSpecification),
-            CacheKeyExtensions.GenerateCacheKey(paging, personId, paymentReference, givingTypes, paymentMethods, currency, fundId, benefactorTypes, from, to));
+            CacheKeyExtensions.GenerateCacheKey(paging, personId, paymentReference, givingTypes, paymentMethods, currency, fundId, churchId, benefactorTypes, from, to));
         Query.AsNoTracking();
         Query.Include(x => x.Benefactor);
         Query.Include(x => x.Fund);
@@ -31,6 +32,12 @@ public class BrowseGivingsSpecification: Specification<Giving, GivingViewModel>
         if(personId.HasValue)
         {
             Query.Where(g => g.Benefactor!.PersonId.HasValue && g.Benefactor.PersonId == personId);
+        }
+        
+        // Church Filter
+        if(churchId.HasValue)
+        {
+            Query.Where(g => g.ChurchId == churchId);
         }
         
         // Payment Reference Filter

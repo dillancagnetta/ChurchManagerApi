@@ -457,6 +457,52 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Transaction",
+                schema: "Finances",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ImportId = table.Column<int>(type: "integer", nullable: false),
+                    OriginalReference = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    TransactionAmount_Currency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
+                    TransactionAmount_Amount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    TransactionDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    BankTransactionId = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    TransactionType = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    IsMatched = table.Column<bool>(type: "boolean", nullable: false),
+                    IsProcessed = table.Column<bool>(type: "boolean", nullable: true),
+                    IsResolved = table.Column<bool>(type: "boolean", nullable: true),
+                    ResolutionNotes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    Memo = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
+                    Error = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
+                    BankStatementImportId = table.Column<int>(type: "integer", nullable: true),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transaction", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transaction_BankStatementImport_BankStatementImportId",
+                        column: x => x.BankStatementImportId,
+                        principalSchema: "Finances",
+                        principalTable: "BankStatementImport",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Transaction_BankStatementImport_ImportId",
+                        column: x => x.ImportId,
+                        principalSchema: "Finances",
+                        principalTable: "BankStatementImport",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DiscipleshipStepDefinition",
                 schema: "Discipleship",
                 columns: table => new
@@ -650,112 +696,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Giving",
-                schema: "Finances",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    BenefactorId = table.Column<int>(type: "integer", nullable: false),
-                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    Amount_Currency = table.Column<string>(type: "character varying(5)", maxLength: 5, nullable: true),
-                    Amount_Amount = table.Column<decimal>(type: "numeric", nullable: false),
-                    PaymentMethod = table.Column<string>(type: "text", nullable: false),
-                    GivingType = table.Column<string>(type: "text", nullable: false),
-                    FundId = table.Column<int>(type: "integer", nullable: false),
-                    Notes = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    ExternalReferenceId = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    ReceiptSent = table.Column<bool>(type: "boolean", nullable: false),
-                    ParsedReference = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    BankTransactionId = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    BankStatementImportId = table.Column<int>(type: "integer", nullable: true),
-                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
-                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Giving", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Giving_BankStatementImport_BankStatementImportId",
-                        column: x => x.BankStatementImportId,
-                        principalSchema: "Finances",
-                        principalTable: "BankStatementImport",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Giving_Benefactor_BenefactorId",
-                        column: x => x.BenefactorId,
-                        principalSchema: "Finances",
-                        principalTable: "Benefactor",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Giving_Fund_FundId",
-                        column: x => x.FundId,
-                        principalSchema: "Finances",
-                        principalTable: "Fund",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Transaction",
-                schema: "Finances",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ImportId = table.Column<int>(type: "integer", nullable: false),
-                    OriginalReference = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Amount_Currency = table.Column<string>(type: "character varying(5)", maxLength: 5, nullable: true),
-                    Amount_Amount = table.Column<decimal>(type: "numeric", nullable: false),
-                    TransactionDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    BankTransactionId = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    TransactionType = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    IsMatched = table.Column<bool>(type: "boolean", nullable: false),
-                    IsProcessed = table.Column<bool>(type: "boolean", nullable: true),
-                    GivingId = table.Column<int>(type: "integer", nullable: true),
-                    IsResolved = table.Column<bool>(type: "boolean", nullable: true),
-                    ResolutionNotes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
-                    Memo = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
-                    Error = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
-                    BankStatementImportId = table.Column<int>(type: "integer", nullable: true),
-                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
-                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
-                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Transaction", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Transaction_BankStatementImport_BankStatementImportId",
-                        column: x => x.BankStatementImportId,
-                        principalSchema: "Finances",
-                        principalTable: "BankStatementImport",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Transaction_BankStatementImport_ImportId",
-                        column: x => x.ImportId,
-                        principalSchema: "Finances",
-                        principalTable: "BankStatementImport",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Transaction_Giving_GivingId",
-                        column: x => x.GivingId,
-                        principalSchema: "Finances",
-                        principalTable: "Giving",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ChangeRequest",
                 schema: "ChangeRequests",
                 columns: table => new
@@ -907,6 +847,67 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Giving",
+                schema: "Finances",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    BenefactorId = table.Column<int>(type: "integer", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    GivingAmount_Currency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
+                    GivingAmount_Amount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
+                    PaymentMethod = table.Column<string>(type: "text", nullable: false),
+                    GivingType = table.Column<string>(type: "text", nullable: false),
+                    FundId = table.Column<int>(type: "integer", nullable: false),
+                    Notes = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    ExternalReferenceId = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    ReceiptSent = table.Column<bool>(type: "boolean", nullable: false),
+                    ChurchId = table.Column<int>(type: "integer", nullable: true),
+                    ParsedReference = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    BankTransactionId = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    BankStatementImportId = table.Column<int>(type: "integer", nullable: true),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Giving", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Giving_BankStatementImport_BankStatementImportId",
+                        column: x => x.BankStatementImportId,
+                        principalSchema: "Finances",
+                        principalTable: "BankStatementImport",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Giving_Benefactor_BenefactorId",
+                        column: x => x.BenefactorId,
+                        principalSchema: "Finances",
+                        principalTable: "Benefactor",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Giving_Church_ChurchId",
+                        column: x => x.ChurchId,
+                        principalSchema: "Churches",
+                        principalTable: "Church",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Giving_Fund_FundId",
+                        column: x => x.FundId,
+                        principalSchema: "Finances",
+                        principalTable: "Fund",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Group",
                 schema: "Groups",
                 columns: table => new
@@ -1036,8 +1037,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     NewConvertCount = table.Column<int>(type: "integer", nullable: true),
                     ReceivedHolySpiritCount = table.Column<int>(type: "integer", nullable: true),
                     Notes = table.Column<string>(type: "text", nullable: true),
-                    Offering_Currency = table.Column<string>(type: "character varying(5)", maxLength: 5, nullable: true),
-                    Offering_Amount = table.Column<decimal>(type: "numeric", nullable: true),
+                    Offering_Currency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
+                    Offering_Amount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: true),
                     PhotoUrls = table.Column<List<string>>(type: "text[]", nullable: false),
                     AttendanceReview_IsReviewed = table.Column<bool>(type: "boolean", nullable: true),
                     AttendanceReview_Feedback = table.Column<string>(type: "text", nullable: true),
@@ -1386,8 +1387,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     Attendance_FirstTimerCount = table.Column<int>(type: "integer", nullable: true),
                     Attendance_NewConvertCount = table.Column<int>(type: "integer", nullable: true),
                     Attendance_ReceivedHolySpiritCount = table.Column<int>(type: "integer", nullable: true),
-                    Offering_Currency = table.Column<string>(type: "character varying(5)", maxLength: 5, nullable: true),
-                    Offering_Amount = table.Column<decimal>(type: "numeric", nullable: true),
+                    Offering_Currency = table.Column<string>(type: "character varying(3)", maxLength: 3, nullable: true),
+                    Offering_Amount = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: true),
                     Notes = table.Column<string>(type: "text", nullable: true),
                     PhotoUrls = table.Column<List<string>>(type: "text[]", nullable: false),
                     RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
@@ -1644,6 +1645,55 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         principalTable: "Person",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Setting",
+                schema: "Common",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    ChurchGroupId = table.Column<int>(type: "integer", nullable: true),
+                    ChurchId = table.Column<int>(type: "integer", nullable: true),
+                    PersonId = table.Column<int>(type: "integer", nullable: true),
+                    FamilyId = table.Column<int>(type: "integer", nullable: true),
+                    Metadata = table.Column<string>(type: "text", nullable: false),
+                    RecordStatus = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
+                    InactiveDateTime = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreatedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ModifiedBy = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    ModifiedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Setting", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Setting_ChurchGroup_ChurchGroupId",
+                        column: x => x.ChurchGroupId,
+                        principalSchema: "Churches",
+                        principalTable: "ChurchGroup",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Setting_Church_ChurchId",
+                        column: x => x.ChurchId,
+                        principalSchema: "Churches",
+                        principalTable: "Church",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Setting_Family_FamilyId",
+                        column: x => x.FamilyId,
+                        principalSchema: "People",
+                        principalTable: "Family",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Setting_Person_PersonId",
+                        column: x => x.PersonId,
+                        principalSchema: "People",
+                        principalTable: "Person",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -2396,6 +2446,12 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 column: "BenefactorId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Giving_ChurchId",
+                schema: "Finances",
+                table: "Giving",
+                column: "ChurchId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Giving_FundId",
                 schema: "Finances",
                 table: "Giving",
@@ -2745,16 +2801,34 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 column: "ServiceJobId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Setting_ChurchGroupId",
+                schema: "Common",
+                table: "Setting",
+                column: "ChurchGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Setting_ChurchId",
+                schema: "Common",
+                table: "Setting",
+                column: "ChurchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Setting_FamilyId",
+                schema: "Common",
+                table: "Setting",
+                column: "FamilyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Setting_PersonId",
+                schema: "Common",
+                table: "Setting",
+                column: "PersonId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transaction_BankStatementImportId",
                 schema: "Finances",
                 table: "Transaction",
                 column: "BankStatementImportId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transaction_GivingId",
-                schema: "Finances",
-                table: "Transaction",
-                column: "GivingId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transaction_ImportId",
@@ -2963,6 +3037,10 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 schema: "People");
 
             migrationBuilder.DropTable(
+                name: "Giving",
+                schema: "Finances");
+
+            migrationBuilder.DropTable(
                 name: "GroupMemberAttendance",
                 schema: "Groups");
 
@@ -3011,6 +3089,10 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 schema: "Jobs");
 
             migrationBuilder.DropTable(
+                name: "Setting",
+                schema: "Common");
+
+            migrationBuilder.DropTable(
                 name: "Transaction",
                 schema: "Finances");
 
@@ -3047,6 +3129,14 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 schema: "Events");
 
             migrationBuilder.DropTable(
+                name: "Benefactor",
+                schema: "Finances");
+
+            migrationBuilder.DropTable(
+                name: "Fund",
+                schema: "Finances");
+
+            migrationBuilder.DropTable(
                 name: "GroupAttendance",
                 schema: "Groups");
 
@@ -3075,7 +3165,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                 schema: "Jobs");
 
             migrationBuilder.DropTable(
-                name: "Giving",
+                name: "BankStatementImport",
                 schema: "Finances");
 
             migrationBuilder.DropTable(
@@ -3105,18 +3195,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
             migrationBuilder.DropTable(
                 name: "GroupRole",
                 schema: "Groups");
-
-            migrationBuilder.DropTable(
-                name: "BankStatementImport",
-                schema: "Finances");
-
-            migrationBuilder.DropTable(
-                name: "Benefactor",
-                schema: "Finances");
-
-            migrationBuilder.DropTable(
-                name: "Fund",
-                schema: "Finances");
 
             migrationBuilder.DropTable(
                 name: "EventType",

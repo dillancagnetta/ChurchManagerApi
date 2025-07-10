@@ -17,9 +17,7 @@ public class GivingsFakeDbSeedInitializer : IInitializer
     public int OrderNumber => 110;
 
     private readonly IServiceScopeFactory _scopeFactory;
-
-    private string[] Streams => new[] { "Person", "Group", "Church" };
-    private string[] Categories => new[] { "ROSA", "Healing Streams" };
+    
     private GivingType[] OftenGivingType => new[] { GivingType.Seed, GivingType.Offering, GivingType.Tithe };
     private GivingType[] RareGivingType => new[] { GivingType.FirstFruit , GivingType.Tithe};
 
@@ -61,24 +59,32 @@ public class GivingsFakeDbSeedInitializer : IInitializer
                 for (int i = 0; i < 100; i++)
                 {
                     // People
+                    var personBenefactor = faker.PickRandom(peopleBenefactors);
                     givings.Add(new Giving
                     {
                         Date = faker.Date.Between(DateTime.Today.AddMonths(-6), DateTime.Today),
                         GivingAmount = new Money(Currency.ZAR,  faker.Finance.Amount(100M, 50000M)),
                         GivingType = faker.PickRandom(OftenGivingType),
-                        Benefactor = faker.PickRandom(peopleBenefactors),
+                        Benefactor = personBenefactor,
                         PaymentMethod = PaymentMethod.EFT,
                         FundId = faker.PickRandom(generalFunds),
+                        ChurchId = people.First(x => x.Id == personBenefactor.PersonId).ChurchId,
+                        BankTransactionId = faker.Finance.RoutingNumber(),
+                        ParsedReference = faker.Finance.RoutingNumber(),
                     });
                         
+                    personBenefactor = faker.PickRandom(peopleBenefactors);
                     givings.Add(new Giving
                     {
                         Date = faker.Date.Between(DateTime.Today.AddMonths(-6), DateTime.Today),
                         GivingAmount = new Money(Currency.ZAR,  faker.Finance.Amount(100M, 50000M)),
                         GivingType = GivingType.Partnership,
-                        Benefactor = faker.PickRandom(peopleBenefactors),
+                        Benefactor = personBenefactor,
                         PaymentMethod = PaymentMethod.EFT,
                         FundId = faker.PickRandom(partnershipFunds),
+                        ChurchId = people.First(x => x.Id == personBenefactor.PersonId).ChurchId,
+                        BankTransactionId = faker.Finance.RoutingNumber(),
+                        ParsedReference = faker.Finance.RoutingNumber(),
                     });
                         
                     // Families
@@ -90,20 +96,27 @@ public class GivingsFakeDbSeedInitializer : IInitializer
                         Benefactor = faker.PickRandom(familiesBenefactors),
                         PaymentMethod = PaymentMethod.EFT,
                         FundId = faker.PickRandom(partnershipFunds),
+                        ChurchId = faker.PickRandom(churches).Id,
+                        BankTransactionId = faker.Finance.RoutingNumber(),
+                        ParsedReference = faker.Finance.RoutingNumber(),
                     });
                 }
 
                 // Churches
                 for (int i = 0; i < 50; i++)
                 {
+                    var churchesBenefactor = faker.PickRandom(churchesBenefactors);
                     givings.Add(new Giving
                     {
                         Date = faker.Date.Between(DateTime.Today.AddMonths(-6), DateTime.Today),
                         GivingAmount = new Money(Currency.ZAR,  faker.Finance.Amount(1000M, 500000M)),
                         GivingType = faker.PickRandom(RareGivingType),
-                        Benefactor = faker.PickRandom(churchesBenefactors),
+                        Benefactor = churchesBenefactor,
                         PaymentMethod = PaymentMethod.EFT,
                         FundId = faker.PickRandom(generalFunds),
+                        ChurchId = churches.First(x => x.Id == churchesBenefactor.ChurchId).Id,
+                        BankTransactionId = faker.Finance.RoutingNumber(),
+                        ParsedReference = faker.Finance.RoutingNumber(),
                     }); 
                 }
                 

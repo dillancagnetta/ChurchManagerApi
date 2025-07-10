@@ -54,7 +54,7 @@ public class FamilyDbRepository : GenericRepositoryBase<Family>, IFamilyDbReposi
                 {
                     Id = x.Id,
                     Name = x.Name!,
-                    // FamilyMembers = x.FamilyMembers.Select(y => y.ToBasicPersonViewModel()!)
+                    FamilyMembers = x.FamilyMembers.Where(f => f.Email != null && f.Email.Address == emailAddress).Select(y => y.ToBasicPersonViewModel()!)
                 })
                 .SingleOrDefaultAsync(ct);
 

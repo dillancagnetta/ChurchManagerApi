@@ -17,12 +17,13 @@ public class BrowseFamilyGivingsSpecification: Specification<Giving, GivingViewM
         string[]? paymentMethods,
         string? currency,
         int? fundId,
+        int? churchId,
         string[]? benefactorTypes,
         DateTime? from, DateTime? to
         )
     {
         Query.EnableCache(nameof(BrowseFamilyGivingsSpecification),
-            CacheKeyExtensions.GenerateCacheKey(paging, personIds, paymentReference, givingTypes, paymentMethods, currency, fundId, benefactorTypes, from, to));
+            CacheKeyExtensions.GenerateCacheKey(paging, personIds, paymentReference, givingTypes, paymentMethods, currency, fundId, churchId, benefactorTypes, from, to));
         Query.AsNoTracking();
         Query.Include(x => x.Benefactor);
         Query.Include(x => x.Fund);
@@ -31,6 +32,12 @@ public class BrowseFamilyGivingsSpecification: Specification<Giving, GivingViewM
         if(!personIds.IsNullOrEmpty())
         {
             Query.Where(g => g.Benefactor!.PersonId.HasValue && personIds.Contains(g.Benefactor.PersonId.Value));
+        }
+        
+        // Church Filter
+        if(churchId.HasValue)
+        {
+            Query.Where(g => g.ChurchId == churchId);
         }
         
         // Payment Reference Filter

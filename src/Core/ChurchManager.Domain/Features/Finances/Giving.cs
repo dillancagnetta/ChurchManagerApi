@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.Finances.Banking;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
@@ -60,13 +61,18 @@ public class Giving: AuditableEntity<int>, IAggregateRoot<int>
     /// Gets a value indicating whether a receipt has been sent to the benefactor for this contribution.
     /// </summary>
     public bool ReceiptSent { get; set; }
+    
+    /// <summary>
+    /// The Church the giving is originated from.
+    /// </summary>
+    public int? ChurchId { get; set; }
 
     #region Import Properties
 
     /// <summary>
     /// Gets the standardized payment reference used for matching (e.g., "GRE-0825432341-T")
     /// </summary>
-    [MaxLength(50)] public string? ParsedReference { get; private set; }
+    [MaxLength(50)] public string? ParsedReference { get; set; }
     
     /// <summary>
     /// Gets the original bank transaction ID for duplicate detection
@@ -96,6 +102,8 @@ public class Giving: AuditableEntity<int>, IAggregateRoot<int>
     /// Gets or sets the import batch entity this giving came from
     /// </summary>
     public virtual BankStatementImport? Import { get; set; }
+    
+    public virtual Church? Church { get; set; }
 
     #endregion
 
@@ -112,6 +120,7 @@ public class Giving: AuditableEntity<int>, IAggregateRoot<int>
             BenefactorId = benefactor.Id,
             BankTransactionId = transaction.BankTransactionId,
             ParsedReference = transaction.OriginalReference,
+            ChurchId = reference.Church?.Id, // Should be resolved from payment reference
             Notes = notes,
         };
     }

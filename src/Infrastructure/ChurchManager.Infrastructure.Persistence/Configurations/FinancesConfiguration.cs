@@ -92,6 +92,13 @@ public class GivingConfiguration: IEntityTypeConfiguration<Giving>
             .WithMany(i => i.Givings) // ✅ explicitly map the inverse
             .HasForeignKey(p => p.BankStatementImportId)
             .OnDelete(DeleteBehavior.SetNull);
+        
+        // set null if Church is deleted
+        builder
+            .HasOne(p => p.Church)
+            .WithMany()
+            .HasForeignKey(p => p.ChurchId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 
     public class FundConfiguration : IEntityTypeConfiguration<Fund>

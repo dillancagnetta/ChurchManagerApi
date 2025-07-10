@@ -20,6 +20,7 @@ public record BrowseGivingsQuery : SearchTermQueryParameter, IRequest<PagedRespo
     public DateTime? To { get; set; }
     public string? Currency { get; set; } = "ZAR";
     public int? FundId { get; set; }
+    public int? ChurchId { get; set; }
 }
 
 public class BrowseGivingsHandler(IReadDbRepository<Giving> givingsDb, IAppCurrentUser currentUser) : IRequestHandler<BrowseGivingsQuery, PagedResponse<GivingViewModel>>
@@ -33,6 +34,7 @@ public class BrowseGivingsHandler(IReadDbRepository<Giving> givingsDb, IAppCurre
             query.SearchTerm,
             query.GivingTypes, query.PaymentMethods, query.Currency,
             query.FundId,
+            query.ChurchId,
             query.BenefactorTypes,
             query.From, query.To);
         

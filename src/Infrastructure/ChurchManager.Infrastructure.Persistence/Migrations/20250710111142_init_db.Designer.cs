@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ChurchManager.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ChurchManagerDbContext))]
-    [Migration("20250707102832_financess_money_update_8")]
-    partial class financess_money_update_8
+    [Migration("20250710111142_init_db")]
+    partial class init_db
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1941,14 +1941,14 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<int?>("BankStatementImportId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("BankStatementImportId1")
-                        .HasColumnType("integer");
-
                     b.Property<string>("BankTransactionId")
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
                     b.Property<int>("BenefactorId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ChurchId")
                         .HasColumnType("integer");
 
                     b.Property<string>("CreatedBy")
@@ -2006,9 +2006,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("BankStatementImportId");
 
-                    b.HasIndex("BankStatementImportId1");
-
                     b.HasIndex("BenefactorId");
+
+                    b.HasIndex("ChurchId");
 
                     b.HasIndex("FundId");
 
@@ -3151,6 +3151,69 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.ToTable("EntityPermission", "Auth");
                 });
 
+            modelBuilder.Entity("ChurchManager.Domain.Features.Settings.Setting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ChurchGroupId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ChurchId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("FamilyId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("InactiveDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Metadata")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("PersonId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RecordStatus")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChurchGroupId");
+
+                    b.HasIndex("ChurchId");
+
+                    b.HasIndex("FamilyId");
+
+                    b.HasIndex("PersonId");
+
+                    b.ToTable("Setting", "Common");
+                });
+
             modelBuilder.Entity("CodeBoss.Jobs.Model.ServiceJob", b =>
                 {
                     b.Property<int>("Id")
@@ -3858,19 +3921,20 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("ChurchManager.Domain.Features.Finances.Giving", b =>
                 {
                     b.HasOne("ChurchManager.Domain.Features.Finances.Banking.BankStatementImport", "Import")
-                        .WithMany()
+                        .WithMany("Givings")
                         .HasForeignKey("BankStatementImportId")
                         .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("ChurchManager.Domain.Features.Finances.Banking.BankStatementImport", null)
-                        .WithMany("Givings")
-                        .HasForeignKey("BankStatementImportId1");
 
                     b.HasOne("ChurchManager.Domain.Features.Finances.Benefactor", "Benefactor")
                         .WithMany()
                         .HasForeignKey("BenefactorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ChurchManager.Domain.Features.Churches.Church", "Church")
+                        .WithMany()
+                        .HasForeignKey("ChurchId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("ChurchManager.Domain.Features.Finances.Fund", "Fund")
                         .WithMany()
@@ -3900,6 +3964,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         });
 
                     b.Navigation("Benefactor");
+
+                    b.Navigation("Church");
 
                     b.Navigation("Fund");
 
@@ -4407,6 +4473,33 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Settings.Setting", b =>
+                {
+                    b.HasOne("ChurchManager.Domain.Features.Churches.ChurchGroup", "ChurchGroup")
+                        .WithMany()
+                        .HasForeignKey("ChurchGroupId");
+
+                    b.HasOne("ChurchManager.Domain.Features.Churches.Church", "Church")
+                        .WithMany()
+                        .HasForeignKey("ChurchId");
+
+                    b.HasOne("ChurchManager.Domain.Features.People.Family", "Family")
+                        .WithMany()
+                        .HasForeignKey("FamilyId");
+
+                    b.HasOne("ChurchManager.Domain.Features.People.Person", "Person")
+                        .WithMany()
+                        .HasForeignKey("PersonId");
+
+                    b.Navigation("Church");
+
+                    b.Navigation("ChurchGroup");
+
+                    b.Navigation("Family");
+
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("CodeBoss.Jobs.Model.ServiceJobHistory", b =>

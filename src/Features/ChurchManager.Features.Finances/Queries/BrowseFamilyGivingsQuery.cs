@@ -25,6 +25,7 @@ public class BrowseFamilyGivingsQueryHandler(IReadDbRepository<Giving> givingsDb
             query.SearchTerm,
             query.GivingTypes, query.PaymentMethods, query.Currency,
             query.FundId,
+            query.ChurchId,
             query.BenefactorTypes,
             query.From, query.To);
         
