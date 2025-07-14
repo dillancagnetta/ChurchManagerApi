@@ -1,10 +1,12 @@
-﻿using ChurchManager.Features.Churches.Commands;
+﻿using ChurchManager.Api.Middlewares;
+using ChurchManager.Features.Churches.Commands;
 using ChurchManager.Features.Churches.Commands.Attendance;
 using ChurchManager.Features.Churches.Queries.BrowseAttendance;
 using ChurchManager.Features.Churches.Queries.RetrieveChurches;
 using ChurchManager.SharedKernel.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ChurchManager.Api.Controllers.v1;
 
@@ -22,6 +24,9 @@ public class ChurchesController : BaseApiController
     #region CRUD
 
     [HttpGet]
+    [AllowAnonymous]
+    [AllowedDomains]
+    [EnableRateLimiting("public-endpoint")]
     public async Task<IActionResult> AllChurches(int? churchGroupId, CancellationToken token)
     {
         var groups = await Mediator.Send(new ChurchesQuery

@@ -314,20 +314,21 @@ public class PermissionService(
             
             // Defines: Access to Child Groups of Parent
             case "Group" when permission.ScopeType == "ParentGroup":
+                // Gets the root group and all its descendants in a flattened list
                 var query = @"
-                        WITH RecursiveGroups AS (
-                            SELECT Id FROM Group WHERE Id = {0}
-                            UNION ALL
-                            SELECT g.Id FROM Group g
-                                INNER JOIN RecursiveGroups rg ON g.ParentId = rg.Id
-                        )
-                        SELECT Id FROM RecursiveGroups;";
+                    WITH RECURSIVE RecursiveGroups AS (
+                        SELECT ""Id"" FROM ""Groups"".""Group"" WHERE ""Id"" = {0}
+                        UNION ALL
+                        SELECT g.""Id"" FROM ""Groups"".""Group"" g
+                                   INNER JOIN RecursiveGroups rg ON g.""ParentGroupId"" = rg.""Id""
+                    )
+                    SELECT ""Id"" FROM RecursiveGroups";
                 return await dbContext.Group.FromSqlRaw(query, permission.ScopeId) // ScopeId is the Parent Group Id
                     .Select(g => g.Id)
                     .ToListAsync();
 
             default:
-                return Array.Empty<int>(); // No access
+                return []; // No access
         }
     }
 }

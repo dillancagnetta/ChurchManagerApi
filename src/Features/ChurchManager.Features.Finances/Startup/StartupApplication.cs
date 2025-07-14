@@ -1,4 +1,5 @@
-﻿using ChurchManager.Domain.Features.Finances.Services;
+﻿using ChurchManager.Application.Abstractions.Services;
+using ChurchManager.Domain.Features.Finances.Services;
 using ChurchManager.Features.Finances.Services;
 using ChurchManager.Infrastructure;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +15,7 @@ public class StartupApplication: IStartupApplication
     {
         services.AddScoped<IGivingReferenceResolver, GivingReferenceResolver>();
         services.AddScoped<IBankStatementProcessor, BankStatementProcessor>();
+        services.AddScoped<IFundsService, FundsService>();
     }
 
     public void Configure(IApplicationBuilder application, IWebHostEnvironment webHostEnvironment)

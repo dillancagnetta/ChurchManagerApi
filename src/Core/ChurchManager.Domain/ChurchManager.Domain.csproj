@@ -22,7 +22,6 @@
     <!--<ProjectReference Include="C:\Samples\CodeBoss\Codeboss-Libs\src\CodeBoss.MultiTenant\src\CodeBoss.MultiTenant\CodeBoss.MultiTenant.csproj" />-->
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Features\Finances\Repositories\" />
     <Folder Include="Features\History\Queries\" />
     <Folder Include="Features\Missions\Repositories\" />
     <Folder Include="Features\Missions\Queries\" />

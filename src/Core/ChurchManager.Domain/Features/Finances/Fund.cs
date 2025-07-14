@@ -32,6 +32,14 @@ public class Fund: AuditableEntity<int>, IAggregateRoot<int>
     [MaxLength(500)] public string? Description { get; set; }
 
     public bool IsSystem { get; set; }
+    
+    /// <summary>
+    /// Gets or sets a flag indicating if this Fund  is shown in Navigation.
+    /// If false, this Fund will be hidden navigation controls, such as TreeViews and Menus
+    /// </summary>
+    public bool ShowInNavigation { get; set; } = true;
+
+    [MaxLength(100)] public string? IconCssClass { get; set; } = "account_balance";
 
     // Hierarchy
     public int? ParentFundId { get; set; }

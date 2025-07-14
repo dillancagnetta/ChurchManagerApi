@@ -19,8 +19,10 @@ public class BrowseChurchGroupsQueryHandler(
 {
     public async Task<ApiResponse> Handle(BrowseChurchGroups query, CancellationToken ct)
     {
-        var allowedIds = await permissions.GetAllowedIdsAsync<Church>(
-            userLoginId:Guid.Parse(currentUser.Id), PermissionAction.View,   ct);
+        // This endpoint is public for now, so anyone can access it
+        var allowedIds = currentUser?.Id == null // If user is not authenticated, return empty list
+            ? null // all allowed
+            : await permissions.GetAllowedIdsAsync<Church>(userLoginId:Guid.Parse(currentUser.Id), PermissionAction.View,   ct);
         
         var spec = new ChurchGroupsQuerySpecification(query.SearchTerm, query.IncludeDetails, allowedIds);
 

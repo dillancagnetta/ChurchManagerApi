@@ -60,5 +60,4 @@ public class PublicManageController : BaseApiController
         
         return Accepted();
     }
-    
 }

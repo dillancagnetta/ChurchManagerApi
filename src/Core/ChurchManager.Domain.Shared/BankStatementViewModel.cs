@@ -64,6 +64,10 @@ public record FundViewModel
     public string? Description { get; set; }
     public required string Code { get; set; }
     public required string FundType { get; set; }
+    
+    // Hierarchy
+    public int? ParentFundId { get; set; }
+    public IList<FundViewModel> Funds { get; set; } = [];
 }
 
 public record BenefactorViewModel

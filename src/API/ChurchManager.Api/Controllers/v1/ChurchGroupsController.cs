@@ -1,8 +1,10 @@
-﻿using ChurchManager.Features.Churches.Commands.ChurchGroups;
+﻿using ChurchManager.Api.Middlewares;
+using ChurchManager.Features.Churches.Commands.ChurchGroups;
 using ChurchManager.Features.Churches.Queries.RetrieveChurchGroups;
 using ChurchManager.SharedKernel.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace ChurchManager.Api.Controllers.v1
 {
@@ -24,6 +26,9 @@ namespace ChurchManager.Api.Controllers.v1
         }
         
         [HttpGet]
+        [AllowAnonymous]
+        [AllowedDomains]
+        [EnableRateLimiting("public-endpoint")]
         public async Task<IActionResult> GetAll(bool includeDetails = true, CancellationToken token = default)
         {
             return Ok(await Mediator.Send(new ChurchesGroupsQuery(IncludeDetails:includeDetails), token));
