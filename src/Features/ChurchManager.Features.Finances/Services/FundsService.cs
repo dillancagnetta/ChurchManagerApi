@@ -9,6 +9,6 @@ public class FundsService(IFundsDbRepository dbRepository, IQueryCache cache) : 
 {
     public Task<IEnumerable<FundViewModel>> FundsWithChildren(CancellationToken ct = default)
     {
-        return cache.GetOrSetAsync("funds", () => dbRepository.FundsWithChildrenFlatAsync(ct), ct: ct);
+        return cache.GetOrSetAsync("funds", () => dbRepository.FundsWithChildrenFlatAsync(ct:ct), ct: ct);
     }
 }

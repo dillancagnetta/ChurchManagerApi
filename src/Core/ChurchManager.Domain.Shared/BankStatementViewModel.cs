@@ -65,6 +65,10 @@ public record FundViewModel
     public required string Code { get; set; }
     public required string FundType { get; set; }
     
+    public bool ShowInNavigation { get; set; }
+
+    public string? IconCssClass { get; set; }
+    
     // Hierarchy
     public int? ParentFundId { get; set; }
     public IList<FundViewModel> Funds { get; set; } = [];

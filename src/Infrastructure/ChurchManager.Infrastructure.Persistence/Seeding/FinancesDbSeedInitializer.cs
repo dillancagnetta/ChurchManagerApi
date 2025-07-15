@@ -30,7 +30,7 @@ public class FinancesDbSeedInitialize(IServiceScopeFactory scopeFactory) : IInit
     {
         if (!dbContext.Fund.Any())
         {
-            dbContext.Fund.Add(new Fund { Name = "Default", Code = "DEFAULT", FundType = FundType.Unknown, IsSystem = true, Description = "Default fund"});
+            dbContext.Fund.Add(new Fund { Name = "Default", Code = "DEFAULT", FundType = FundType.Unknown, IsSystem = true, Description = "Default fund", ShowInNavigation = false});
             
             var funds = new Dictionary<string, Data>
             {

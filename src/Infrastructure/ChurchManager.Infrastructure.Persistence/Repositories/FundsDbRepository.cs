@@ -17,12 +17,13 @@ public class FundsDbRepository: GenericRepositoryBase<Fund>, IFundsDbRepository
         _dbContext = dbContext;
     }
     
-    public async Task<IEnumerable<FundViewModel>> FundsWithChildrenFlatAsync(CancellationToken ct = default)
+    public async Task<IEnumerable<FundViewModel>> FundsWithChildrenFlatAsync(bool onlyShowInNavigation = true, CancellationToken ct = default)
     {
         // Gets the root group and all its descendants in a flattened list
-        var query = @"
+        var filter = !onlyShowInNavigation ? "" : "WHERE f.\"ShowInNavigation\" = true";
+        var query = @$"
                     WITH RECURSIVE RecursiveGroups AS (
-                        SELECT * FROM ""Finances"".""Fund"" f
+                        SELECT * FROM ""Finances"".""Fund"" f {filter}
                         UNION
                         SELECT g.*
                         FROM ""Finances"".""Fund"" g INNER JOIN RecursiveGroups rg ON g.""ParentFundId"" = rg.""Id""

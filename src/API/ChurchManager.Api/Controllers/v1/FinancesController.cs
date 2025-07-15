@@ -48,4 +48,15 @@ public class FinancesController : BaseApiController
     {
         return Ok(new ApiResponse(await _service.FundsWithChildren(token)));
     }
+    
+    [HttpPost("payment-reference")]
+    [AllowAnonymous]
+    [AllowedDomains]
+    [EnableRateLimiting("public-endpoint")]
+    public async Task<IActionResult> GetPaymentReference(GeneratePaymentReferenceCommand command, CancellationToken token)
+    {
+        var response = await Mediator.Send(command, token);
+            
+        return Ok(response);  
+    }
 }

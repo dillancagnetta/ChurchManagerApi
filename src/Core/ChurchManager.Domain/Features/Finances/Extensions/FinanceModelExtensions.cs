@@ -84,6 +84,8 @@ public static class FinanceModelExtensions
             Code = model.Code,
             FundType = model.FundType.Value,
             ParentFundId = model.ParentFundId,
+            IconCssClass = model.IconCssClass,
+            ShowInNavigation = model.ShowInNavigation
         };
     }
     
