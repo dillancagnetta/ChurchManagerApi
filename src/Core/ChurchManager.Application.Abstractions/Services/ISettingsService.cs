@@ -54,5 +54,5 @@ public interface ISettingsService: ICrudServiceAsync<Setting, SettingViewModel, 
     ///     Delete all settings
     /// </summary>
     /// <typeparam name="T">Type</typeparam>
-    Task DeleteSetting<T>() where T : ISettings, new();
+    Task DeleteSetting<T>(CancellationToken ct = default) where T : ISettings, new();
 }

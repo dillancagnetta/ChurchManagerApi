@@ -11,19 +11,19 @@ public class ExamplePlugin(
         return ExamplePluginDefaults.ConfigurationUrl;
     }*/
 
-    public override async Task Install()
+    public override async Task InstallAsync(CancellationToken ct = default)
     {
         //settings
         var settings = new ExamplePluginSettings {
             Setting1 = true,
             Setting2 = "Test Example Setting"
         };
-        await settingService.SaveSettingAsync(settings);
+        await settingService.SaveSettingAsync(settings, ct: ct);
     }
 
-    public override async Task Uninstall()
+    public override async Task UninstallAsync(CancellationToken ct = default)
     {
         //settings
-        await settingService.DeleteSetting<ExamplePluginSettings>();
+        await settingService.DeleteSetting<ExamplePluginSettings>(ct);
     }
 }

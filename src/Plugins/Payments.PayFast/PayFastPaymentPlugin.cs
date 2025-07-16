@@ -10,7 +10,7 @@ public class PayFastPaymentPlugin(ISettingsService settingService) : BasePlugin
         return ExamplePluginDefaults.ConfigurationUrl;
     }*/
 
-    public override async Task Install()
+    public override async Task InstallAsync(CancellationToken ct = default)
     {
         //settings
         var settings = new PayFastSettings {
@@ -18,16 +18,16 @@ public class PayFastPaymentPlugin(ISettingsService settingService) : BasePlugin
           MerchantKey  = "gj108nu63wd7t",
           TestMode = true
         };
-        await settingService.SaveSettingAsync(settings);
+        await settingService.SaveSettingAsync(settings, ct: ct);
         
-        await base.Install();
+        await base.InstallAsync(ct);
     }
 
-    public override async Task Uninstall()
+    public override async Task UninstallAsync(CancellationToken ct = default)
     {
         //settings
-        await settingService.DeleteSetting<PayFastSettings>();
+        await settingService.DeleteSetting<PayFastSettings>(ct);
         
-        await base.Uninstall();
+        await base.UninstallAsync(ct);
     }
 }

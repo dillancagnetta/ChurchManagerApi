@@ -19,11 +19,11 @@
         /// <summary>
         /// Install plugin
         /// </summary>
-        Task Install();
+        Task InstallAsync(CancellationToken ct = default);
 
         /// <summary>
         /// Uninstall plugin
         /// </summary>
-        Task Uninstall();
+        Task UninstallAsync(CancellationToken ct = default);
     }
 }

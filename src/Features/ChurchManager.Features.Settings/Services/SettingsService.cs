@@ -135,9 +135,16 @@ public class SettingsService(
         return setting != null ? JsonSerializer.Deserialize<T>(setting.Metadata) : defaultValue;
     }
 
-    public Task DeleteSetting<T>() where T : ISettings, new()
+    public async Task DeleteSetting<T>(CancellationToken ct = default) where T : ISettings, new()
     {
-        return Task.CompletedTask;
+        var query = SettingsByNameQuery(typeof(T).Name);
+        var setting = await query.FirstOrDefaultAsync(ct);
+
+        if (setting is not null)
+        {
+            await repository.DeleteAsync(setting, ct);
+            await repository.SaveChangesAsync(ct);
+        }
     }
 
     private IQueryable<Setting> SettingsByNameQuery(string name)
