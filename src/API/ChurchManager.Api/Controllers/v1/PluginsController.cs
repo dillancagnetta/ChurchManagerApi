@@ -1,5 +1,4 @@
 ﻿using ChurchManager.Api.Authorization.AllowTesting;
-using ChurchManager.Infrastructure.Abstractions.Plugins;
 using ChurchManager.Infrastructure.Plugins;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
