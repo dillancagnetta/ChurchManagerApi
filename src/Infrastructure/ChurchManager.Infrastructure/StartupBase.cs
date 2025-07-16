@@ -195,14 +195,8 @@ namespace ChurchManager.Infrastructure
 
             //add AppConfig configuration parameters
             var config = services.StartupConfig<AppConfig>(configuration.GetSection(AppSectionName));
-            //add hosting configuration parameters
-            //.StartupConfig<HostingConfig>(configuration.GetSection("Hosting"));
-            //add api configuration parameters
-            //services.StartupConfig<ApiConfig>(configuration.GetSection("Api"));
-            //add grand.web api token config
+
             services.Configure<WebApiConfig>(configuration.GetSection(nameof(WebApiConfig)));
-            //add litedb configuration parameters
-            //services.StartupConfig<LiteDbConfig>(configuration.GetSection("LiteDb"));
 
             //set base application path
             var provider = services.BuildServiceProvider();
@@ -212,7 +206,7 @@ namespace ChurchManager.Infrastructure
             {
                 CommonPath.Param = param;
             }
-
+            
             CommonPath.WebHostEnvironment = hostingEnvironment.WebRootPath;
             CommonPath.BaseDirectory = hostingEnvironment.ContentRootPath;
             CommonHelper.CacheTimeMinutes = config.DefaultCacheTimeMinutes;
@@ -220,6 +214,8 @@ namespace ChurchManager.Infrastructure
 
             CommonHelper.IgnoreAcl = config.IgnoreAcl;
             CommonHelper.IgnoreStoreLimitations = config.IgnoreStoreLimitations;
+            
+            PluginPaths.Initialize(CommonPath.InstalledPluginsFilePath);
 
             var mvcCoreBuilder = services.AddMvcCore();
 

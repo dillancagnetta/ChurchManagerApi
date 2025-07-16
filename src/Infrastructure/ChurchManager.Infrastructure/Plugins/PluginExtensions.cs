@@ -74,11 +74,17 @@ public static class PluginExtensions
 
         var filePath = CommonPath.InstalledPluginsFilePath;
         if (!File.Exists(filePath))
+        {
+            // Ensure the directory exists before creating the file
+            var directory = Path.GetDirectoryName(filePath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory)) Directory.CreateDirectory(directory); 
+            
             using (File.Create(filePath))
             {
                 //we use 'using' to close the file after it's created
             }
-
+        }
+        
         var installedPluginSystemNames = ParseInstalledPluginsFile(filePath);
 
         var alreadyMarkedAsInstalled = installedPluginSystemNames.FirstOrDefault(x => x.Equals(systemName, StringComparison.OrdinalIgnoreCase)) != null;

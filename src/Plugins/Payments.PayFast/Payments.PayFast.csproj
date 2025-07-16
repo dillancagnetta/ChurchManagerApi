@@ -1,9 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="..\..\Build\ChurchManager.Common.props" />
 
+    <!--Sets the build output directory to a custom folder-->
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <OutputPath>..\..\API\ChurchManager.Api\Plugins\Payments.PayFast\</OutputPath>
+        <OutDir>$(OutputPath)</OutDir>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Core\ChurchManager.Domain\ChurchManager.Domain.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\ChurchManager.Infrastructure\ChurchManager.Infrastructure.csproj" />
+    </ItemGroup>
 
 </Project>

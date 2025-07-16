@@ -7,6 +7,9 @@ using Npgsql;
 
 namespace ChurchManager.TenantManager.Data;
 
+/*
+ * NOT USED: left here for reference or future use.
+ */
 public class TenantMasterDatabaseRepository(
     IConfiguration configuration,
     IServiceProvider serviceProvider,

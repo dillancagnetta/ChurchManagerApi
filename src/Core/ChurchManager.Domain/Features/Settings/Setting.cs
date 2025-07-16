@@ -33,9 +33,15 @@ public class Setting : AuditableEntity<int>, IAggregateRoot<int>
     public int? PersonId { get; set; }
     
     /// <summary>
-    ///     Gets or sets the Family for which this setting is valid. null for global settings
+    ///    Gets or sets the Family for which this setting is valid. null for global settings
     /// </summary>
     public int? FamilyId { get; set; }
+    
+      
+    /// <summary>
+    ///    Gets or sets the Tenant (MasterTenantDb) for which this setting is valid. null for global settings
+    /// </summary>
+    public int? TenantId { get; set; }
 
     /// <summary>
     ///     Gets or sets the metadata settings

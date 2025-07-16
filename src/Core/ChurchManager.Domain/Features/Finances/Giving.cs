@@ -35,12 +35,12 @@ public class Giving: AuditableEntity<int>, IAggregateRoot<int>
     /// <summary>
     /// Gets or sets the method used to make the payment (e.g., cash, check, credit card).
     /// </summary>
-    [Required] public required PaymentMethod PaymentMethod { get; set; }
+    [Required, MaxLength(100)] public required PaymentMethod PaymentMethod { get; set; }
     
     /// <summary>
     /// Gets or sets the type of giving (e.g., tithe, offering, special collection).
     /// </summary>
-    [Required] public required GivingType GivingType { get; set; }
+    [Required, MaxLength(100)] public required GivingType GivingType { get; set; }
     
     /// <summary>
     /// Gets the identifier of the fund to which the contribution is allocated.

@@ -30,9 +30,13 @@ public class GeneratePaymentReferenceHandler(
         {
             return new ApiResponse("Invalid phone number format.");
         }
-        
-        var churches = await cache.GetOrSetAsync(CacheKeyHelper.CacheKey<GeneratePaymentReferenceCommand>("churches"),
-            () =>  churchDb.Queryable().AsNoTracking().Select(x => new { x.Id, x.ShortCode }).ToListAsync(ct), ct: ct);
+
+        var churchCacheKey =
+            $"{CacheKeyHelper.CacheKey<GeneratePaymentReferenceCommand>("churches")}-{command.ChurchReference.ChurchGroupId}";
+        var churches = await cache.GetOrSetAsync(churchCacheKey,
+            () =>  churchDb.Queryable().AsNoTracking()
+                .Where(x => x.ChurchGroupId == command.ChurchReference.ChurchId)
+                .Select(x => new { x.Id, x.ShortCode }).ToListAsync(ct), ct: ct);
         
         var funds = await cache.GetOrSetAsync(CacheKeyHelper.CacheKey<GeneratePaymentReferenceCommand>("funds"),
             () =>  fundDb.Queryable().AsNoTracking().Select(x => new { x.Id, x.Code, x.FundType }).ToListAsync(ct), ct: ct);
