@@ -18,11 +18,12 @@ public class PaymentTransaction: Entity<int>, IAggregateRoot<int>
     public required Money PaidAmount  { get; set; }
     
     public Money? RefundedAmount  { get; set; }
-    
+
     /// <summary>
     ///     Gets or sets transaction status
     /// </summary>
-    [Required, MaxLength(100)] public required PaymentStatus PaymentStatus { get; set; }
+    [Required, MaxLength(100)]
+    public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Pending;
     
     /// <summary>
     /// Gets or sets the method used to make the payment (e.g., cash, check, credit card).

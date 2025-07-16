@@ -1,10 +1,11 @@
 ﻿
 using ChurchManager.Infrastructure.Plugins;
+using Payments.PayFast;
 
 [assembly: PluginInfo(
-    FriendlyName = "Payments PayFast",
+    FriendlyName = PayFastPluginDefaults.FriendlyName,
     Group = "Payments",
-    SystemName = "Payments.PayFast",
+    SystemName = PayFastPluginDefaults.ProviderSystemName,
     Author = "ChurchManager Team",
     Version = "1.0.0"
 )]

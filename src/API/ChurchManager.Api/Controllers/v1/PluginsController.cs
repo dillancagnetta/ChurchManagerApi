@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Api.Authorization.AllowTesting;
+using ChurchManager.Infrastructure.Abstractions.Plugins;
 using ChurchManager.Infrastructure.Plugins;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ public class PluginsController(
 {
     [HttpPost("install-all")]
     [AllowTesting]
-    public async Task<IActionResult> InstallAll(CancellationToken token)
+    public async Task<IActionResult> InstallAll(CancellationToken ct)
     {
         PluginManager.ClearPlugins();
         
@@ -23,7 +24,7 @@ public class PluginsController(
             try
             {
                 var plugin = pluginInfo.Instance<IPlugin>(HttpContext.RequestServices.CreateScope().ServiceProvider);
-                await plugin!.InstallAsync();
+                await plugin!.InstallAsync(ct);
                 logger.LogInformation($"Plugin {plugin.PluginInfo.FriendlyName} has been installed");
             }
             catch (Exception ex)
@@ -37,7 +38,7 @@ public class PluginsController(
     
     [HttpDelete]
     [AllowTesting]
-    public async Task<IActionResult> Uninstall(string systemName, CancellationToken token)
+    public async Task<IActionResult> Uninstall(string systemName, CancellationToken ct)
     {
         try
         {
@@ -49,7 +50,7 @@ public class PluginsController(
 
             //uninstall plugin
             var plugin = pluginInfo.Instance<IPlugin>(serviceProvider);
-            await plugin!.UninstallAsync();
+            await plugin!.UninstallAsync(ct);
             
             logger.LogInformation("The plugin has been uninstalled: {pluginName}", systemName);
         }

@@ -16,6 +16,7 @@ public class PayFastPaymentPlugin(ISettingsService settingService) : BasePlugin
         var settings = new PayFastSettings {
           MerchantId  = "10003473",
           MerchantKey  = "gj108nu63wd7t",
+          Passphrase = "pancakesaregreat",
           TestMode = true
         };
         await settingService.SaveSettingAsync(settings, ct: ct);

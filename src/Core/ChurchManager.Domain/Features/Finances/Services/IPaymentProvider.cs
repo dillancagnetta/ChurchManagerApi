@@ -1,11 +1,12 @@
 ﻿using ChurchManager.Domain.Common;
+using ChurchManager.Infrastructure.Abstractions.Providers;
 
 namespace ChurchManager.Domain.Features.Finances.Services;
 
 /// <summary>
 ///     Provides an interface for creating payment gateways & methods
 /// </summary>
-public interface IPaymentProvider
+public interface IPaymentProvider : IProvider
 {
     /// <summary>
     ///     Init a process a payment transaction
