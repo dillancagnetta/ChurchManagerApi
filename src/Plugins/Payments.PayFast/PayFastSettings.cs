@@ -11,4 +11,13 @@ public class PayFastSettings : ISettings
     public string BaseUrl => TestMode ? "https://sandbox.payfast.co.za" : "https://www.payfast.co.za";
     public string PaymentUrl => $"{BaseUrl}/eng/process";
     public string ValidateUrl => $"{BaseUrl}/eng/query/validate";
+    
+    // The URL where the user is returned to after payment has been successfully taken.
+    public string ReturnUrl { get; set; } = string.Empty;
+    
+    // The URL where the user should be redirected should they choose to cancel their payment while on the Payfast system.
+    public string CancelUrl { get; set; } = string.Empty;
+    
+    // The URL which is used by Payfast to post the Instant Transaction Notifications (ITNs) for this transaction.
+    public string NotifyUrl { get; set; } = string.Empty;
 }

@@ -177,6 +177,19 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
             
             return await query;
         }
+        
+        public async Task<PersonViewModelBasic?> FindBasicPersonByPhoneNumberAsync(string phoneNumber, CancellationToken cancellationToken = default)
+        {
+            var query = Queryable()
+                .AsNoTracking()
+                .Include(x => x.PhoneNumbers)
+                .Include(x => x.Family)
+                .Where(x => x.PhoneNumbers!.Any(p => p.Number == phoneNumber))
+                .Select(x => x.ToBasicPersonViewModel())
+                .FirstOrDefaultAsync(cancellationToken);
+            
+            return await query;
+        }
 
         public async Task<Dictionary<string, Person?>> FindPhoneNumberForPeople(IList<string> phoneNumbers, CancellationToken ct = default)
         {

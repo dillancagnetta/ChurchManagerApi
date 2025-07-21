@@ -80,6 +80,8 @@ public record BenefactorViewModel
     public required string Name { get; set; }
     public required string Type { get; set; }
     
+    public string? PhoneNumber { get; set; }
+    
     // Reference IDs to original entities
     public int? PersonId { get;  set; }
     public int? FamilyId { get;  set; }

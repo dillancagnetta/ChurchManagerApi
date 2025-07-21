@@ -35,6 +35,29 @@ public class PluginsController(
         return Ok();
     }
     
+    [HttpPost("install")]
+    [AllowTesting]
+    public async Task<IActionResult> Install(string systemName, CancellationToken ct)
+    {
+        PluginManager.ClearPlugins();
+        try
+        {
+            var pluginInfo = PluginManager.ReferencedPlugins!.FirstOrDefault(x => x.SystemName == systemName);
+            if (pluginInfo == null) return NotFound("No Plugin found with the provided system name");
+            
+            var plugin = pluginInfo.Instance<IPlugin>(HttpContext.RequestServices.CreateScope().ServiceProvider);
+            await plugin!.InstallAsync(ct);
+            logger.LogInformation($"Plugin {plugin.PluginInfo.FriendlyName} has been installed");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error during installing plugin: {pluginName} ", systemName);
+            return BadRequest("Error during uninstalling plugin");
+        }            
+        
+        return Ok();
+    }
+    
     [HttpDelete]
     [AllowTesting]
     public async Task<IActionResult> Uninstall(string systemName, CancellationToken ct)

@@ -32,6 +32,8 @@ namespace ChurchManager.Features.Settings.Startup
             var settings = typeSearcher.ClassesOfType<ISettings>();
             var instances = settings.Select(x => (ISettings)Activator.CreateInstance(x));
             foreach (var item in instances)
+            {
+                // Since its scoped these will get created for each request
                 services.AddScoped(item!.GetType(), x =>
                 {
                     var type = item.GetType();
@@ -40,11 +42,13 @@ namespace ChurchManager.Features.Settings.Startup
                     var contextAccessor = x.GetRequiredService<IAppContextAccessor>();
                     if (contextAccessor.AppContext != null)
                     {
+                        // Which means we could have the tenant context available
                         tenantName = contextAccessor.AppContext.CurrentTenant.Name;
                     }
-
+                    // Which means tenant specific settings are loaded first
                     return settingService.LoadSettingAsync(type, tenantName).Result;
                 });
+            }
         }
     }
 }

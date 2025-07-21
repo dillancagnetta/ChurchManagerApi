@@ -16,6 +16,7 @@ public class StartupApplication: IStartupApplication
         services.AddScoped<IGivingReferenceResolver, GivingReferenceResolver>();
         services.AddScoped<IBankStatementProcessor, BankStatementProcessor>();
         services.AddScoped<IFundsService, FundsService>();
+        services.AddScoped<IPaymentService, PaymentService>();
     }
 
     public void Configure(IApplicationBuilder application, IWebHostEnvironment webHostEnvironment)

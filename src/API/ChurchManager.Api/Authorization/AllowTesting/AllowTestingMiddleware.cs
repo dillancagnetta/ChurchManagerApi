@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using ChurchManager.Infrastructure.Persistence.Seeding;
 
 namespace ChurchManager.Api.Authorization.AllowTesting;
 
@@ -23,10 +24,11 @@ public class AllowTestingMiddleware
             // Create a simple test user
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, "test-user-123"),
+                new Claim(ClaimTypes.NameIdentifier, SeedingConstants.MainUserLogin),
                 new Claim(ClaimTypes.Name, "testuser"),
-                new Claim("Tenant", "test-tenant"),
-                new Claim("FamilyId", "999")
+                new Claim("Tenant", SeedingConstants.DemoTenantName),
+                new Claim("FamilyId", "1"),
+                new Claim("PersonId", "1")
             };
 
             var identity = new ClaimsIdentity(claims, "Testing");

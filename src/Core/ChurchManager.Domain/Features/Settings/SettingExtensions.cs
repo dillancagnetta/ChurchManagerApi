@@ -6,17 +6,13 @@ public static class SettingExtensions
 {
     public static Setting CreateSetting<T>(
         T settings, 
-        int? churchGroupId = null,
-        int? churchId = null,
-        int? personId = null
+        string tenantName = ""
         ) where T : ISettings, new()
     {
         var setting = new Setting {
             Name = typeof(T).Name.ToLowerInvariant(),
             Metadata = JsonSerializer.Serialize(settings),
-            ChurchGroupId = churchGroupId,
-            ChurchId = churchId,
-            PersonId = personId
+            TenantName = tenantName.ToLower()
         };
         return setting;
     }

@@ -115,3 +115,58 @@ public class GivingConfiguration: IEntityTypeConfiguration<Giving>
         }
     }
 }
+
+public class PaymentsConfiguration: IEntityTypeConfiguration<PaymentTransaction>
+{
+    public void Configure(EntityTypeBuilder<PaymentTransaction> builder)
+    {
+        builder.ToTable("Payments", "Finances");
+
+        builder.HasIndex(x => x.PaymentMethodSystemName);
+        builder.HasIndex(x => x.PaymentMethod);
+        builder.HasIndex(x => x.PaymentId);
+        
+        builder
+            .Property(e => e.PaymentMethod)
+            .HasEnumerationConversion<PaymentMethod>();
+        
+        builder
+            .Property(e => e.Status)
+            .HasEnumerationConversion<PaymentStatus>();
+        
+        // ensure that each use of the Money type in different entities has a unique configuration or naming to avoid conflicts.
+
+        builder.OwnsOne(t => t.PaidAmount);
+        builder.OwnsOne(t => t.RefundedAmount);
+        builder.OwnsOne(t => t.Fee);
+        builder.OwnsOne(t => t.NetAmount);
+        
+        //  delete if Giving is deleted
+        builder
+            .HasOne(p => p.Giving)
+            .WithMany()
+            .HasForeignKey(p => p.GivingId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        // Delete if Church is deleted
+        builder
+            .HasOne(p => p.Church)
+            .WithMany()
+            .HasForeignKey(p => p.ChurchId)
+            .OnDelete(DeleteBehavior.SetNull);
+    }
+
+    public class FundConfiguration : IEntityTypeConfiguration<Fund>
+    {
+        public void Configure(EntityTypeBuilder<Fund> builder)
+        {
+            builder.ToTable(nameof(Fund), "Finances");
+            
+            builder.HasIndex(x => x.FundType);
+            
+            builder
+                .Property(e => e.FundType)
+                .HasEnumerationConversion<FundType>();
+        }
+    }
+}

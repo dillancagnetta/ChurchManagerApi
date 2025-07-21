@@ -26,7 +26,7 @@ public class UserLogin : Entity<int>, IAggregateRoot<int>
 
     [Required]
     [MaxLength(50)]
-    [DefaultValue("Tenant1")]
+    [DefaultValue("tenant1")]
     public required string Tenant { get; set; }
 
     #region Navigation Properties

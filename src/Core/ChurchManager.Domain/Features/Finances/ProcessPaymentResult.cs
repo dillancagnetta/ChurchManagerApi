@@ -3,7 +3,7 @@ using Codeboss.Results;
 
 namespace ChurchManager.Domain.Features.Finances;
 
-public class ProcessPaymentResult : OperationResult<ProcessPaymentState>;
+public class ProcessPaymentResult(ProcessPaymentState result) : OperationResult<ProcessPaymentState>(result);
 public class RefundPaymentResult : OperationResult<ProcessPaymentState>;
 public class VoidPaymentResult : OperationResult<ProcessPaymentState>;
 

@@ -11,48 +11,42 @@ public interface ISettingsService: ICrudServiceAsync<Setting, SettingViewModel, 
     /// <typeparam name="T">Type</typeparam>
     /// <param name="key">Key</param>
     /// <param name="value">Value</param>
-    /// <param name="churchGroupId">church Group identifier</param>
-    /// <param name="churchId"></param>
-    /// <param name="personId"></param>
-    Task SetSettingAsync<T>(string key, T value, 
-        int? churchGroupId = null, int? churchId = null , int? personId = null,
-        CancellationToken ct = default);
+    /// <param name="tenantName">the tenant Name</param>
+    /// <param name="ct">CancellationToken</param>
+    Task SetSettingAsync<T>(string key, T value, string tenantName = "", CancellationToken ct = default);
     
     /// <summary>
     ///     Save settings object
     /// </summary>
-    Task SaveSettingAsync<T>(string key, T value, 
-        int? churchGroupId = null, int? churchId = null , int? personId = null,
-        CancellationToken ct = default) where T : ISettings, new();
+    Task SaveSettingAsync<T>(string key, T value, string tenantName = "", CancellationToken ct = default) where T : ISettings, new();
     
-    Task SaveSettingAsync<T>(T value, 
-        int? churchGroupId = null, int? churchId = null , int? personId = null,
-        CancellationToken ct = default) where T : ISettings, new();
+    Task SaveSettingAsync<T>(T value, string tenantName = "", CancellationToken ct = default) where T : ISettings, new();
     
-    ISettings LoadSetting(Type type, int? churchGroupId = null, int? churchId = null , int? personId = null);
+    ISettings? LoadSetting(Type type, string tenantName = "");
     
     Task<ISettings?> LoadSettingAsync(Type type, string? tenantName, CancellationToken ct = default);
     
-    Task<T> LoadSettingAsync<T>(int? churchGroupId = null, int? churchId = null, int? personId = null,
-        CancellationToken ct = default) where T : ISettings, new();
-    
+    Task<T> LoadSettingAsync<T>(string tenantName = "", CancellationToken ct = default) where T : ISettings, new();
+
     /// <summary>
     ///     Get setting value by key
     /// </summary>
     /// <typeparam name="T">Type</typeparam>
     /// <param name="key">Key</param>
-    /// <param name="churchGroupId">church Group identifier</param>
-    /// <param name="churchId"></param>
-    /// <param name="personId"></param>
-    /// <param name="defaultValue">Default value</param>
+    /// <param name="defaultValue">defaultValue</param>
+    /// <param name="tenantName">tenantName</param>
     /// <returns>Setting value</returns>
-    Task<T> GetSettingByKeyAsync<T>(string key, T defaultValue = default, 
-        int? churchGroupId = null, int? churchId = null , int? personId = null,
-        CancellationToken ct = default);
+    Task<T?> GetSettingByKeyAsync<T>(string key, T defaultValue = default, string tenantName = "", CancellationToken ct = default);
     
     /// <summary>
     ///     Delete all settings
     /// </summary>
     /// <typeparam name="T">Type</typeparam>
     Task DeleteSetting<T>(CancellationToken ct = default) where T : ISettings, new();
+    
+    /// <summary>
+    ///     Delete all settings for a tenant
+    /// </summary>
+    /// <typeparam name="T">Type</typeparam>
+    Task DeleteSetting<T>(string tenantName = "", CancellationToken ct = default) where T : ISettings, new();
 }

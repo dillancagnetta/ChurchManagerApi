@@ -1,5 +1,7 @@
 ﻿using ChurchManager.Domain.Common;
+using ChurchManager.Infrastructure.Abstractions.MultiTenancy;
 using ChurchManager.TenantManager.Data;
+using ChurchManager.TenantManager.Services;
 using CodeBoss.AspNetCore.DependencyInjection;
 using CodeBoss.MultiTenant;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +21,7 @@ namespace ChurchManager.Infrastructure.Shared._DependencyInjection
             
             // Injected into db context to provide UserLoginId info
             services.AddScoped<ITenantCurrentUser, SimpleCurrentUser>();
+            services.AddScoped<ITenantUrlResolver, TenantUrlResolver>();
         }
     }
 }

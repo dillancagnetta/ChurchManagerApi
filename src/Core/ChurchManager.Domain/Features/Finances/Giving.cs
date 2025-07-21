@@ -124,4 +124,21 @@ public class Giving: AuditableEntity<int>, IAggregateRoot<int>
             Notes = notes,
         };
     }
+    
+    public static Giving Create(Money money, PaymentMethod paymentMethod, GivingReference reference, Fund fund, Benefactor benefactor, string? notes = null)
+    {
+        return new Giving
+        {
+            GivingAmount = new Money(money!.Currency!, money.Amount),
+            Date = DateTime.UtcNow,
+            PaymentMethod = paymentMethod,
+            GivingType = reference.GivingType,
+            FundId = fund.Id,
+            BenefactorId = benefactor.Id,
+            ParsedReference = reference.OriginalReference,
+            ChurchId = reference.Church?.Id, // Should be resolved from payment reference
+            Notes = notes,
+        };
+    }
+    
 }

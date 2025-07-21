@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Application.Abstractions.Services;
+using ChurchManager.Domain.Features.Finances;
 using ChurchManager.Domain.Features.Finances.Services;
 using Microsoft.Extensions.Logging;
 
@@ -8,13 +9,24 @@ public class PaymentService(
     IEnumerable<IPaymentProvider> paymentProviders,
     ILogger<PaymentService> logger) : IPaymentService
 {
-    public Task<IList<IPaymentProvider>> LoadAllPaymentMethodsAsync(CancellationToken ct)
+    public Task<IEnumerable<IPaymentProvider>> LoadAllPaymentMethodsAsync(CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return Task.FromResult(paymentProviders);
     }
 
-    public IPaymentProvider LoadPaymentMethodBySystemName(string systemName)
+    public IPaymentProvider? LoadPaymentMethodBySystemName(string systemName)
     {
-        throw new NotImplementedException();
+        return paymentProviders?.Where(x => x.SystemName == systemName).FirstOrDefault();;
+    }
+
+    public async Task<string?> PostRedirectPaymentAsync(PaymentTransaction payment, CancellationToken ct)
+    {
+        ArgumentNullException.ThrowIfNull(payment);
+        
+        if (payment.Status == PaymentStatus.Completed) return string.Empty;
+        var paymentMethod = LoadPaymentMethodBySystemName(payment.PaymentMethodSystemName);
+        if (paymentMethod == null) throw new Exception("Payment method couldn't be loaded");
+        
+        return await paymentMethod.PostRedirectPaymentAsync(payment, ct);
     }
 }

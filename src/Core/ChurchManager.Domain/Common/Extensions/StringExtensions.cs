@@ -73,9 +73,23 @@ public static class StringExtensions
         return str;
     }
     
+    public static string? AddLeadingZero( this string str )
+    {
+        if (str is {Length: > 0} && !str.StartsWith( "0" )) return "0" + str;
+      
+        return str;
+    }
+    
     public static string? CleanPhoneNumber( this string str )
     {
         var trimmed = str.Trim().TrimLeadingZero();
+      
+        return trimmed;
+    }
+    
+    public static string? FixZeroPhoneNumber( this string str )
+    {
+        var trimmed = str.Trim().AddLeadingZero();
       
         return trimmed;
     }

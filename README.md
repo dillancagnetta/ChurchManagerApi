@@ -70,36 +70,6 @@ dotnet ef database update --project src\Infrastructure\ChurchManager.Infrastruct
 
 Most settings for production e.g. database connection will come from `AWS Parameter store`.
 
-## Configurations
-
-AWS Cognito IDP
-> https://cognito-idp.us-east-1.amazonaws.com/us-east-1_i6pWJxu8q/.well-known/openid-configuration
-
-
-### Manual Deploy
-
-> set AWS_DEFAULT_PROFILE=personal
-
-```
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 977844596384.dkr.ecr.us-east-1.amazonaws.com
-```
-
-1. Create ECR Respository
-
-```
-aws ecr create-repository --repository-name frontend-angular --image-scanning-configuration scanOnPush=true --image-tag-mutability IMMUTABLE  --region us-east-1 --profile personal
-```
-
-2. Build the docker image
-3. Tag the docker image
-
-```
-docker tag church-manager-ui:latest 977844596384.dkr.ecr.us-east-1.amazonaws.com/frontend-angular:local
-```
-
-4. Push the image
-
-`docker push 977844596384.dkr.ecr.us-east-1.amazonaws.com/frontend-angular:local`
 
 ## Updating
 
@@ -121,9 +91,26 @@ https://postgresblog.blogspot.com/
 Connection String
 ```Driver={PostgreSQL UNICODE};Server=localhost;Port=5432;Database=churchmanager_db;Schema=public;Uid=postgres;Pwd=*****;```
 
+## Payments
 
+Start reverse proxy locally
 
+> ngrok http 5001
 
-## Xero
-test  callback endpoint
-> https://login.xero.com/identity/connect/authorize?client_id=4229830C5DAC43CBA69B08FA05A31D9E&response_type=code&scope=accounting.transactions accounting.contacts accounting.settings offline_access&redirect_uri=http://localhost:5001/api/v1/xero/callback
+Update in `churchmanager_master_db` Tenants record : `ApiUrl` to ngrok address e.g. `82c40fcd5b90.ngrok-free.app`
+
+Generate a payment request with `TestMode=true`
+
+### Workflow
+
+Phase 1: Payment Processing Only
+
+- Create PaymentTransaction when payment is initiated (Status = Pending)
+- Update to Completed/Failed based on PayFast notifications
+- Do NOT create Giving records yet
+
+Phase 2: Giving Creation via Batch Process
+
+- Run a scheduled job (similar to bank import) to convert completed PaymentTransaction records to Giving
+- This prevents duplicates when bank statements are imported later
+- Maintains consistency with your existing reconciliation process

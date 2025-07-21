@@ -12,6 +12,7 @@ public class Benefactor: AuditableEntity<int>, IAggregateRoot<int>
 {
     [Required] public BenefactorType Type { get; set; }
     [Required, MaxLength(255)] public required string Name { get; set; }
+    [Required, MaxLength(10)] public string? PhoneNumber { get; set; }
     public string? TaxId { get; private set; }
         
     // Reference IDs to original entities
@@ -68,6 +69,18 @@ public class Benefactor: AuditableEntity<int>, IAggregateRoot<int>
             Type = BenefactorType.Church,
             Name = church.Name,
             ChurchId = church.Id,
+            // Other mappings
+        };
+    }
+    
+    public static Benefactor CreateTest()
+    {
+        return new Benefactor
+        {
+            Type = BenefactorType.Individual,
+            Name =  "Test Benefactor",
+            PersonId = 1,
+            PhoneNumber = "0712345678",
             // Other mappings
         };
     }

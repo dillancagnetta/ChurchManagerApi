@@ -1,12 +1,11 @@
-﻿using System.Security.Cryptography;
-using System.Web;
-using ChurchManager.Domain.Common;
+﻿using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Finances;
 using ChurchManager.Domain.Features.Finances.Services;
+using Payments.PayFast.Services;
 
 namespace Payments.PayFast;
 
-public class PayFastPaymentProvider(PayFastSettings settings) : IPaymentProvider
+public class PayFastPaymentProvider(IPayFastService service) : IPaymentProvider
 {
     #region IPaymentProvider Members
 
@@ -24,17 +23,24 @@ public class PayFastPaymentProvider(PayFastSettings settings) : IPaymentProvider
 
     public Task<ProcessPaymentResult> ProcessPaymentAsync(PaymentTransaction payment, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        // Not used
+        var result = new ProcessPaymentResult(new ProcessPaymentState
+        {
+            NewPaymentPaymentStatus = PaymentStatus.Pending,
+        });
+        
+        return Task.FromResult(result);
     }
 
     public Task PostProcessPaymentAsync(PaymentTransaction payment, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        //nothing
+        return Task.CompletedTask;
     }
 
     public Task<string> PostRedirectPaymentAsync(PaymentTransaction payment, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        return service.InitiatePaymentAsync(payment, ct);
     }
 
     public Task<RefundPaymentResult> RefundAsync(PaymentTransaction payment, Money amountToRefund, bool isPartialRefund = false,
@@ -51,25 +57,6 @@ public class PayFastPaymentProvider(PayFastSettings settings) : IPaymentProvider
     public Task CancelPaymentAsync(PaymentTransaction payment, CancellationToken ct = default)
     {
         throw new NotImplementedException();
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private string GenerateSignature(Dictionary<string, string> data, string passphrase = "")
-    {
-        var sortedData = data.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
-        var queryString = string.Join("&", sortedData.Select(kvp => $"{kvp.Key}={HttpUtility.UrlEncode(kvp.Value)}"));
-            
-        if (!string.IsNullOrEmpty(passphrase))
-        {
-            queryString += $"&passphrase={HttpUtility.UrlEncode(passphrase)}";
-        }
-            
-        using var md5 = MD5.Create();
-        var hash = md5.ComputeHash(Encoding.UTF8.GetBytes(queryString));
-        return Convert.ToHexString(hash).ToLower();
     }
 
     #endregion

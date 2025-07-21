@@ -1836,6 +1836,11 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<int?>("PersonId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
                     b.Property<string>("RecordStatus")
                         .IsRequired()
                         .HasMaxLength(25)
@@ -2023,6 +2028,100 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.HasIndex("PaymentMethod");
 
                     b.ToTable("Giving", "Finances");
+                });
+
+            modelBuilder.Entity("ChurchManager.Domain.Features.Finances.PaymentTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("ChurchId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("CompletedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("ConvertedToGiving")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("Error")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("ExternalReferenceId")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("FirstName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int?>("GivingId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("InactiveDateTime")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("InitiatedDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("LastName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("PaymentId")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("PaymentMethodSystemName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("PaymentReference")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<int?>("PersonId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RecordStatus")
+                        .IsRequired()
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChurchId");
+
+                    b.HasIndex("GivingId");
+
+                    b.HasIndex("PaymentId");
+
+                    b.HasIndex("PaymentMethod");
+
+                    b.HasIndex("PaymentMethodSystemName");
+
+                    b.ToTable("Payments", "Finances");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Groups.Group", b =>
@@ -3165,21 +3264,12 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ChurchGroupId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ChurchId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("CreatedBy")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<int?>("FamilyId")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("InactiveDateTime")
                         .HasColumnType("timestamp without time zone");
@@ -3199,26 +3289,17 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("PersonId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("RecordStatus")
                         .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("character varying(25)");
 
-                    b.Property<int?>("TenantId")
-                        .HasColumnType("integer");
+                    b.Property<string>("TenantName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ChurchGroupId");
-
-                    b.HasIndex("ChurchId");
-
-                    b.HasIndex("FamilyId");
-
-                    b.HasIndex("PersonId");
 
                     b.ToTable("Setting", "Common");
                 });
@@ -3984,6 +4065,115 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Navigation("Import");
                 });
 
+            modelBuilder.Entity("ChurchManager.Domain.Features.Finances.PaymentTransaction", b =>
+                {
+                    b.HasOne("ChurchManager.Domain.Features.Churches.Church", "Church")
+                        .WithMany()
+                        .HasForeignKey("ChurchId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("ChurchManager.Domain.Features.Finances.Giving", "Giving")
+                        .WithMany()
+                        .HasForeignKey("GivingId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.OwnsOne("ChurchManager.Domain.Common.Money", "Fee", b1 =>
+                        {
+                            b1.Property<int>("PaymentTransactionId")
+                                .HasColumnType("integer");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)");
+
+                            b1.Property<string>("Currency")
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)");
+
+                            b1.HasKey("PaymentTransactionId");
+
+                            b1.ToTable("Payments", "Finances");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PaymentTransactionId");
+                        });
+
+                    b.OwnsOne("ChurchManager.Domain.Common.Money", "NetAmount", b1 =>
+                        {
+                            b1.Property<int>("PaymentTransactionId")
+                                .HasColumnType("integer");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)");
+
+                            b1.Property<string>("Currency")
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)");
+
+                            b1.HasKey("PaymentTransactionId");
+
+                            b1.ToTable("Payments", "Finances");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PaymentTransactionId");
+                        });
+
+                    b.OwnsOne("ChurchManager.Domain.Common.Money", "PaidAmount", b1 =>
+                        {
+                            b1.Property<int>("PaymentTransactionId")
+                                .HasColumnType("integer");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)");
+
+                            b1.Property<string>("Currency")
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)");
+
+                            b1.HasKey("PaymentTransactionId");
+
+                            b1.ToTable("Payments", "Finances");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PaymentTransactionId");
+                        });
+
+                    b.OwnsOne("ChurchManager.Domain.Common.Money", "RefundedAmount", b1 =>
+                        {
+                            b1.Property<int>("PaymentTransactionId")
+                                .HasColumnType("integer");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 2)
+                                .HasColumnType("numeric(18,2)");
+
+                            b1.Property<string>("Currency")
+                                .HasMaxLength(3)
+                                .HasColumnType("character varying(3)");
+
+                            b1.HasKey("PaymentTransactionId");
+
+                            b1.ToTable("Payments", "Finances");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PaymentTransactionId");
+                        });
+
+                    b.Navigation("Church");
+
+                    b.Navigation("Fee");
+
+                    b.Navigation("Giving");
+
+                    b.Navigation("NetAmount");
+
+                    b.Navigation("PaidAmount");
+
+                    b.Navigation("RefundedAmount");
+                });
+
             modelBuilder.Entity("ChurchManager.Domain.Features.Groups.Group", b =>
                 {
                     b.HasOne("ChurchManager.Domain.Features.Churches.Church", "Church")
@@ -4482,33 +4672,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ChurchManager.Domain.Features.Settings.Setting", b =>
-                {
-                    b.HasOne("ChurchManager.Domain.Features.Churches.ChurchGroup", "ChurchGroup")
-                        .WithMany()
-                        .HasForeignKey("ChurchGroupId");
-
-                    b.HasOne("ChurchManager.Domain.Features.Churches.Church", "Church")
-                        .WithMany()
-                        .HasForeignKey("ChurchId");
-
-                    b.HasOne("ChurchManager.Domain.Features.People.Family", "Family")
-                        .WithMany()
-                        .HasForeignKey("FamilyId");
-
-                    b.HasOne("ChurchManager.Domain.Features.People.Person", "Person")
-                        .WithMany()
-                        .HasForeignKey("PersonId");
-
-                    b.Navigation("Church");
-
-                    b.Navigation("ChurchGroup");
-
-                    b.Navigation("Family");
-
-                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("CodeBoss.Jobs.Model.ServiceJobHistory", b =>

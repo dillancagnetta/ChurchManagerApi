@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\Core\ChurchManager.Domain\ChurchManager.Domain.csproj" />
       <ProjectReference Include="..\..\Infrastructure\ChurchManager.Infrastructure\ChurchManager.Infrastructure.csproj" />
     </ItemGroup>

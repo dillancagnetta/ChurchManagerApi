@@ -11,6 +11,11 @@ namespace ChurchManager.Infrastructure.Abstractions.Configuration
         }
 
         /// <summary>
+        /// The base domain for the application
+        /// </summary>
+        public string BaseDomain { get; set; } = "codeboss.co.za";
+
+        /// <summary>
         /// A value indicating whether to ignore ACL rules (side-wide). It can significantly improve performance when enabled.
         /// </summary>
         public bool IgnoreAcl { get; set; }
@@ -83,8 +88,8 @@ namespace ChurchManager.Infrastructure.Abstractions.Configuration
         public IList<string> SupportedCultures { get; set; }
         
         /// <summary>
-        /// Enable the Xero Integration to manage finances
+        /// Enable whether we are testing the application using ngrok.io for public URL.
         /// </summary>
-        public bool XeroIntegrationEnabled { get; set; }
+        public bool NgrokTestingModeEnabled { get; set; }
     }
 }

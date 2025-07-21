@@ -12,6 +12,7 @@ public class BenefactorType : Enumeration<BenefactorType, string>
     public static BenefactorType Family = new("Family");
     public static BenefactorType Group = new("Group");
     public static BenefactorType Church = new("Church");
+    public static BenefactorType External = new("External");
     public static BenefactorType Unknown = new("Unknown");
     // Implicit conversion from string
     public static implicit operator BenefactorType(string value) => new(value);

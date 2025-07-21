@@ -12,5 +12,6 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts
         public DbSet<Benefactor> Benefactor { get; set; }
         public DbSet<Giving> Giving { get; set; }
         public DbSet<Fund> Fund { get; set; }
+        public DbSet<PaymentTransaction> Payment { get; set; }
     }
 }

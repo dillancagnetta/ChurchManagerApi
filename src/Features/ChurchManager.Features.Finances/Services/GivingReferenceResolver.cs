@@ -1,11 +1,12 @@
-﻿using System.Text.RegularExpressions;
-using ChurchManager.Domain.Common.Extensions;
+﻿using ChurchManager.Domain.Common;
 using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.Finances;
 using ChurchManager.Domain.Features.Finances.Banking;
+using ChurchManager.Domain.Features.Finances.Extensions;
 using ChurchManager.Domain.Features.Finances.Services;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.People.Repositories;
+using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using CodeBoss.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -20,13 +21,7 @@ public class GivingReferenceResolver(
     IQueryCache cache
 ) : IGivingReferenceResolver
 {
-    /// <summary>
-    /// Format: 3 letters - 10-digit number starting with 0 - at least one letter
-    /// If the first letter after the number is P, there must be another letter segment (e.g., -P-HS)
-    /// Final optional -F
-    /// Example: CHU-0821234567-T
-    /// </summary>
-    const string ReferencePattern = @"^[A-Za-z]{3}-0\d{9}-(?!P$)(?:[A-Za-z]+(?:-[A-Za-z]+)*)(?:-F)?$";
+   
 
     /// <summary>
     ///Example formats:
@@ -48,19 +43,20 @@ public class GivingReferenceResolver(
                     
                     var reference = transaction.OriginalReference;
 
-                    if (!IsValidReference(reference))
+                    if (!FinancesExtensions.IsValidReference(reference))
                     {
                         transaction.SetAsUnProcessed("Invalid reference format");
                         continue;
                     }
 
                     // Its safe to continue processing the reference
-                    var parsed = Parse(reference);
+                    var parsed = FinancesExtensions.ParsePaymentReference(reference);
 
                     var resolvedReference = new GivingReference
                     {
                         GivingType = parsed.Type,
                         BenefactorType = parsed.IsFamily ? BenefactorType.Family : BenefactorType.Individual,
+                        OriginalReference = reference,
                     };
 
                     // Try to resolve the church and the person
@@ -146,7 +142,7 @@ public class GivingReferenceResolver(
     /// </summary>
     public async Task<GivingReference> TryResolveChurchAsync(string reference, GivingReference resolvedReference)
     {
-        var (churchCode, _, _, _, _) = Parse(reference);
+        var (churchCode, _, _, _, _) = FinancesExtensions.ParsePaymentReference(reference);
 
         var churches = await cache.GetOrSetAsync("churches", () => churchesDb.Queryable().AsNoTracking().Select(x => new
         {
@@ -169,7 +165,7 @@ public class GivingReferenceResolver(
     public Task<GivingReference> TryResolvePersonAsync(string reference, GivingReference resolvedReference,
         Dictionary<string, Person?> map)
     {
-        var (_, phoneNumber, _, _, isFamily) = Parse(reference);
+        var (_, phoneNumber, _, _, isFamily) = FinancesExtensions.ParsePaymentReference(reference);
         var person = map.GetValueOrDefault(phoneNumber);
 
         var foundPerson = person is not null;
@@ -182,37 +178,23 @@ public class GivingReferenceResolver(
         return Task.FromResult(resolvedReference);
     }
 
+    public async Task<PersonViewModelBasic?> TryResolvePersonAsync(string reference, CancellationToken ct)
+    {
+        var (_, phoneNumber, _, _, isFamily) = FinancesExtensions.ParsePaymentReference(reference);
+        var person = await peopleDb.FindBasicPersonByPhoneNumberAsync(phoneNumber!, ct);
+        return person;
+    }
+
     public IList<string> ParsePhoneNumbers(IList<string> references)
     {
         return references
-            .Where(x => IsValidReference(x))
-            .Select(Parse)
+            .Where(x => FinancesExtensions.IsValidReference(x))
+            .Select(x => FinancesExtensions.ParsePaymentReference(x))
             .Select(x => x.PhoneNumber)
             .Where(x => !x.IsNullOrEmpty())
             .ToList();
     }
-
-    public static (string ChurchCode, string? PhoneNumber, GivingType Type, string? PartnershipFund, bool IsFamily) Parse(string reference)
-    {
-        reference = reference.Trim().ToUpperInvariant();
-
-        var parts = reference.Split('-');
-        var churchShortCode = parts[0];
-        var phoneNumber = parts[1].CleanPhoneNumber();
-        var givingType = GivingType.FromInitials(parts[2]);
-        var isFamily = reference.EndsWith("F");
-
-        string? partnershipFund = null;
-        if (givingType == GivingType.Partnership)
-        {
-            partnershipFund = parts[3];
-        }
-
-        return (churchShortCode, phoneNumber, givingType, partnershipFund, isFamily);
-    }
-
-    public static bool IsValidReference(string? reference) => !reference.IsNullOrEmpty() && Regex.IsMatch(reference!, ReferencePattern);
-
+    
     public async Task<Fund> ResolveFundAsync(GivingType fundCode, string partnershipFund)
     {
         Fund fund;
@@ -235,4 +217,66 @@ public class GivingReferenceResolver(
 
         return fund;
     }
+
+    #region Private Methods
+
+    /// <summary>
+    /// Processes a single reference and returns the resolved giving reference with matching status.
+    /// </summary>
+    /// <param name="reference">The payment reference string to process</param>
+    /// <param name="money"></param>
+    /// <param name="paymentMethod"></param>
+    /// <param name="ct">CancellationToken</param>
+    /// <returns>A tuple containing the resolved reference and whether it was successfully matched</returns>
+    public async Task<(Giving? giving, bool IsMatched, string? ErrorMessage)> ResolveToGivingAsync(
+        string reference, 
+        Money money, 
+        PaymentMethod paymentMethod,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var peoplePhoneMap =
+                await peopleDb.FindPhoneNumberForPeople(ParsePhoneNumbers([reference]), ct);
+
+            if (!FinancesExtensions.IsValidReference(reference))
+            {
+                return (null, false, "Invalid reference format");
+            }
+
+            // Its safe to continue processing the reference
+            var parsed = FinancesExtensions.ParsePaymentReference(reference);
+
+            var resolvedReference = new GivingReference
+            {
+                GivingType = parsed.Type,
+                BenefactorType = parsed.IsFamily ? BenefactorType.Family : BenefactorType.Individual,
+                OriginalReference = reference,
+            };
+
+            // Try to resolve the church and the person
+            resolvedReference = await TryResolveChurchAsync(reference, resolvedReference);
+            resolvedReference = await TryResolvePersonAsync(reference, resolvedReference, peoplePhoneMap);
+
+            var isMatched = resolvedReference.IsPersonMatched && resolvedReference.IsChurchMatched;
+
+            if (!resolvedReference.IsPersonMatched)
+            {
+                resolvedReference.BenefactorType = BenefactorType.Unknown;
+            }
+
+            var fund = await ResolveFundAsync(resolvedReference.GivingType, parsed.PartnershipFund!);
+            var benefactor = await ResolveBenefactorAsync(resolvedReference);
+            
+            // Create associated giving record
+            var giving = Giving.Create(money, paymentMethod, resolvedReference, fund, benefactor);
+            return (giving, isMatched, null);
+        }
+        catch (Exception e)
+        {
+            return (null, false, e.Message);
+        }
+    }
+
+    #endregion
 }

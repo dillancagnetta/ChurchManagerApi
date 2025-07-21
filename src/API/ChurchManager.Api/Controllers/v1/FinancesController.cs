@@ -59,4 +59,15 @@ public class FinancesController : BaseApiController
             
         return Ok(response);  
     }
+    
+    [HttpPost("initiate-payment")]
+    [AllowAnonymous]
+    [AllowedDomains]
+    [EnableRateLimiting("public-endpoint")]
+    public async Task<IActionResult> InitiatePayment(InitiatePaymentCommand command, CancellationToken token)
+    {
+        var response = await Mediator.Send(command, token);
+            
+        return Ok(response);  
+    }
 }

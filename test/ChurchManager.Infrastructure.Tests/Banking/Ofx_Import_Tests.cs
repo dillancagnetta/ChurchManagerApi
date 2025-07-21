@@ -1,5 +1,5 @@
 ﻿using ChurchManager.Domain.Features.Finances;
-using ChurchManager.Features.Finances.Services;
+using ChurchManager.Domain.Features.Finances.Extensions;
 using ChurchManager.Infrastructure.Shared.BankImport;
 using Xunit;
 
@@ -25,12 +25,14 @@ public class Ofx_Import_Tests()
     {
         /*var peopleDb = new Mock<IPersonDbRepository>().Object;
         var churchesDb = new Mock<IReadDbRepository<Church>>().Object;
-        var cache = new Mock<IQueryCache>().Object;
-        var sut = GivingReferenceResolver(churchesDb, peopleDb, cache);*/
-        var result = GivingReferenceResolver.Parse("CHU-0821234000-P-HS-F");
+        var fundsDb = new Mock<IReadDbRepository<Fund>>().Object;
+        var benefactorsDb = new Mock<IReadDbRepository<Benefactor>>().Object;
+        var cache = new Mock<IQueryCache>().Object;*/
+        //var sut = new GivingReferenceResolver(churchesDb, peopleDb, fundsDb, benefactorsDb, cache);
+        var result = FinancesExtensions.ParsePaymentReference("CHU-0821234000-P-HS-F");
         
         Assert.Equal("CHU", result.ChurchCode);
-        Assert.Equal("0821234000", result.PhoneNumber);
+        Assert.Equal("821234000", result.PhoneNumber); // Leading zeroes are trimmed
         Assert.True(result.Type.Value == GivingType.Partnership.Value);
         Assert.True(result.IsFamily);
     }
@@ -54,7 +56,7 @@ public class Ofx_Import_Tests()
     [InlineData("", false)]                          // Empty string
     public void should_validate_reference_format(string reference, bool expectedResult)
     {
-        var result = GivingReferenceResolver.IsValidReference(reference);
+        var result = FinancesExtensions.IsValidReference(reference);
     
         Assert.Equal(expectedResult, result);
     }

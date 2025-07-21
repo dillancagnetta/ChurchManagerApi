@@ -60,21 +60,34 @@ public class ContextMiddleware
         return host;
     }
 
+    /// <summary>
+    /// Extracts the tenant name from the HTTP request using multiple fallback strategies.
+    /// First checks the query string parameter "tenant", then authenticated user claims,
+    /// and finally the "X-Tenant" HTTP header.
+    /// </summary>
     private string? GetTenant(HttpContext context)
     {
+        // Check query string for tenant name
         var tenantName = context.Request.Query["tenant"].ToString();
 
         if(string.IsNullOrWhiteSpace(tenantName))
         {
             if(context.User.Identity is not null && context.User.Identity.IsAuthenticated)
             {
+                // Check JWT token for tenant name
                 tenantName = context.User.Claims.FirstOrDefault(c => c.Type == "Tenant")?.Value;
             }
         }
-        
+
+        if (string.IsNullOrWhiteSpace(tenantName))
+        {
+            // Check X-Tenant header
+            tenantName = context.Request.Headers["X-Tenant"].ToString();
+        }
+
         if(!tenantName.IsNullOrEmpty())
         {
-            _logger.LogInformation($"Tenant found in query string: {tenantName}");
+            _logger.LogInformation($"Tenant found: [{tenantName}]");
         }
         
         return tenantName;

@@ -13,6 +13,9 @@ public class LocalTenantProvider : ITenantsProvider<TenantConfiguration>
             new TenantConfiguration
             {
                 Name = "Tenant1",
+                Email = "tenant1@example.com",
+                ApiUrl = "https://localhost:5001",
+                Subdomain = "tenant1",
                 ConnectionString =
                     "Server=localhost;Port=5432;Database=churchmanager_db;User Id=admin;password=P455word1;"
             }
