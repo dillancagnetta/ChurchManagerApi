@@ -12,7 +12,7 @@ public class Benefactor: AuditableEntity<int>, IAggregateRoot<int>
 {
     [Required] public BenefactorType Type { get; set; }
     [Required, MaxLength(255)] public required string Name { get; set; }
-    [Required, MaxLength(10)] public string? PhoneNumber { get; set; }
+    [MaxLength(10)] public string? PhoneNumber { get; set; }
     public string? TaxId { get; private set; }
         
     // Reference IDs to original entities

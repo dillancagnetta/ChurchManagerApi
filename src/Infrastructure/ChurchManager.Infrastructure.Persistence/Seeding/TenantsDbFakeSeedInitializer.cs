@@ -2,6 +2,7 @@
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.AspNetCore.Startup;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ChurchManager.Infrastructure.Persistence.Seeding;
@@ -14,16 +15,20 @@ public class TenantsDbFakeSeedInitializer(IServiceScopeFactory scopeFactory) : I
     {
         using var scope = scopeFactory.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<MasterDbContext>();
+        var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
         
         if (!await dbContext.Tenants.AnyAsync())
         {
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "";
+            var isDevelopment = environment.Equals("Development", StringComparison.OrdinalIgnoreCase);
+            
             var tenant1 = new TenantConfiguration
             {
                 Name = SeedingConstants.TestTenantName,
-                ConnectionString = "Server=localhost;Database=churchmanager_db;Port=5432;User Id=admin;password=P455word1",
+                ConnectionString = configuration.GetConnectionString("DefaultConnection")!,
                 Email = "tenant1@example.com",
-                Subdomain = "localhost:4200",
-                ApiUrl = "http://localhost:5001",
+                Subdomain = isDevelopment ? "localhost:4200" : "test",
+                ApiUrl =  isDevelopment ?"http://localhost:5001" : "https://cm-test.codeboss.co.za",
             };
 
             await dbContext.Tenants.AddRangeAsync(tenant1);

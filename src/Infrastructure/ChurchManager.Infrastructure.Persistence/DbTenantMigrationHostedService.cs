@@ -45,7 +45,7 @@ public class DbTenantMigrationHostedService :  IHostedService
         var tenants = tenantsProvider.Tenants();
         IEnumerable<Task> tasks = tenants.Select(tenant => MigrateTenantDatabase(tenant, tenantsProvider, ct));
 
-        Console.WriteLine("> Starting parallel execution of pending migrations...");
+        Console.WriteLine(">>> Starting parallel execution of pending migrations...");
         await Task.WhenAll(tasks);
     }
         
