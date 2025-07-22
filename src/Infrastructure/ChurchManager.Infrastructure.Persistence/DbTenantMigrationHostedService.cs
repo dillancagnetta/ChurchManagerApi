@@ -47,6 +47,7 @@ public class DbTenantMigrationHostedService :  IHostedService
 
         Console.WriteLine(">>> Starting parallel execution of pending migrations...");
         await Task.WhenAll(tasks);
+        Console.WriteLine("[✔️]  Parallel migrations complete.");
     }
         
 
