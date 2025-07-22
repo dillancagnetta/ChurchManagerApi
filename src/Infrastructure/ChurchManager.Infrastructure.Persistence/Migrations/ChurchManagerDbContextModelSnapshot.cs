@@ -1714,7 +1714,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("BankStatementImportId")
+                    b.Property<int>("BankStatementImportId")
                         .HasColumnType("integer");
 
                     b.Property<string>("BankTransactionId")
@@ -1732,9 +1732,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.Property<string>("Error")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
-
-                    b.Property<int>("ImportId")
-                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("InactiveDateTime")
                         .HasColumnType("timestamp without time zone");
@@ -1784,8 +1781,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BankStatementImportId");
-
-                    b.HasIndex("ImportId");
 
                     b.HasIndex("OriginalReference");
 
@@ -2124,7 +2119,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PaymentMethodSystemName");
 
-                    b.ToTable("Payments", "Finances");
+                    b.ToTable("Payment", "Finances");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Groups.Group", b =>
@@ -3934,13 +3929,9 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Finances.Banking.Transaction", b =>
                 {
-                    b.HasOne("ChurchManager.Domain.Features.Finances.Banking.BankStatementImport", null)
+                    b.HasOne("ChurchManager.Domain.Features.Finances.Banking.BankStatementImport", "BankStatementImport")
                         .WithMany("Transactions")
-                        .HasForeignKey("BankStatementImportId");
-
-                    b.HasOne("ChurchManager.Domain.Features.Finances.Banking.BankStatementImport", "Import")
-                        .WithMany()
-                        .HasForeignKey("ImportId")
+                        .HasForeignKey("BankStatementImportId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -3965,7 +3956,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("TransactionId");
                         });
 
-                    b.Navigation("Import");
+                    b.Navigation("BankStatementImport");
 
                     b.Navigation("TransactionAmount")
                         .IsRequired();
@@ -4013,7 +4004,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Finances.Giving", b =>
                 {
-                    b.HasOne("ChurchManager.Domain.Features.Finances.Banking.BankStatementImport", "Import")
+                    b.HasOne("ChurchManager.Domain.Features.Finances.Banking.BankStatementImport", "BankStatementImport")
                         .WithMany("Givings")
                         .HasForeignKey("BankStatementImportId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -4056,6 +4047,8 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("GivingId");
                         });
 
+                    b.Navigation("BankStatementImport");
+
                     b.Navigation("Benefactor");
 
                     b.Navigation("Church");
@@ -4064,8 +4057,6 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                     b.Navigation("GivingAmount")
                         .IsRequired();
-
-                    b.Navigation("Import");
                 });
 
             modelBuilder.Entity("ChurchManager.Domain.Features.Finances.PaymentTransaction", b =>
@@ -4095,7 +4086,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("PaymentTransactionId");
 
-                            b1.ToTable("Payments", "Finances");
+                            b1.ToTable("Payment", "Finances");
 
                             b1.WithOwner()
                                 .HasForeignKey("PaymentTransactionId");
@@ -4116,7 +4107,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("PaymentTransactionId");
 
-                            b1.ToTable("Payments", "Finances");
+                            b1.ToTable("Payment", "Finances");
 
                             b1.WithOwner()
                                 .HasForeignKey("PaymentTransactionId");
@@ -4137,7 +4128,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("PaymentTransactionId");
 
-                            b1.ToTable("Payments", "Finances");
+                            b1.ToTable("Payment", "Finances");
 
                             b1.WithOwner()
                                 .HasForeignKey("PaymentTransactionId");
@@ -4158,7 +4149,7 @@ namespace ChurchManager.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("PaymentTransactionId");
 
-                            b1.ToTable("Payments", "Finances");
+                            b1.ToTable("Payment", "Finances");
 
                             b1.WithOwner()
                                 .HasForeignKey("PaymentTransactionId");

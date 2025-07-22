@@ -36,7 +36,7 @@ public static class FinanceModelExtensions
         return new TransactionViewModel
         {
             Id = model.Id,
-            ImportId = model.ImportId,
+            ImportId = model.BankStatementImportId,
             OriginalReference = model.OriginalReference,
             Amount = model.TransactionAmount.ToModel()!,
             TransactionDate = model.TransactionDate,

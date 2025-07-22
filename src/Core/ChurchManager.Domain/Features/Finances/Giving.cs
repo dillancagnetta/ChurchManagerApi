@@ -101,7 +101,7 @@ public class Giving: AuditableEntity<int>, IAggregateRoot<int>
     /// <summary>
     /// Gets or sets the import batch entity this giving came from
     /// </summary>
-    public virtual BankStatementImport? Import { get; set; }
+    public virtual BankStatementImport? BankStatementImport { get; set; }
     
     public virtual Church? Church { get; set; }
 

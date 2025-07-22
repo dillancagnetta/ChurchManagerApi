@@ -46,7 +46,7 @@ public class GivingReferenceResolver(
             {
                 try
                 {
-                    transaction.Import = import;
+                    transaction.BankStatementImport = import;
                     
                     var reference = transaction.OriginalReference;
 

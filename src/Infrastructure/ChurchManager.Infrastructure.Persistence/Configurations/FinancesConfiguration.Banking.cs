@@ -33,9 +33,9 @@ public class ImportedTransactionConfiguration : IEntityTypeConfiguration<Transac
         
         // Delete if import deleted
         builder
-            .HasOne(p => p.Import)
-            .WithMany()
-            .HasForeignKey(p => p.ImportId)
+            .HasOne(p => p.BankStatementImport)
+            .WithMany(b => b.Transactions) // Specify the collection property if it exists
+            .HasForeignKey(p => p.BankStatementImportId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

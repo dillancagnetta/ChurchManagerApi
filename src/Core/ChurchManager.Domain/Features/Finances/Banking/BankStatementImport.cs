@@ -53,7 +53,7 @@ public class BankStatementImport: AuditableEntity<int>, IAggregateRoot<int>
 
 public class Transaction : AuditableEntity<int>
 {
-    public int ImportId { get; set; }
+    public int BankStatementImportId { get; set; }
     [Required, MaxLength(50)] public required string OriginalReference { get; set; }
     [Required] public required Money TransactionAmount { get; set; }
     [Required] public DateTime TransactionDate { get; set; }
@@ -71,7 +71,7 @@ public class Transaction : AuditableEntity<int>
     [MaxLength(250)] public string? Error { get; set; }
     
     #region Navigation
-    public virtual BankStatementImport? Import { get; set; }
+    public virtual BankStatementImport? BankStatementImport { get; set; }
     #endregion
 
     public void SetAsUnProcessed(string? error)
