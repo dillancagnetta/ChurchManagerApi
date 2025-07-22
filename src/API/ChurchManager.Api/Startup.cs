@@ -1,3 +1,4 @@
+using ChurchManager.Api.Authorization.AllowTesting;
 using ChurchManager.Api.Extensions;
 using ChurchManager.Api.Middlewares;
 using ChurchManager.Infrastructure.Persistence;
@@ -54,6 +55,9 @@ namespace ChurchManager.Api
 
             app.UseRouting();
 
+#if DEBUG
+            app.UseMiddleware<AllowTestingMiddleware>();
+#endif
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -33,7 +33,7 @@ namespace ChurchManager.Infrastructure.Plugins
         /// <summary>
         /// The assembly that has been shadow copied that is active in the application
         /// </summary>
-        public virtual Assembly ReferencedAssembly { get; internal set; }
+        public virtual Assembly? ReferencedAssembly { get; internal set; }
 
         /// <summary>
         /// The original assembly file that a shadow copy was made from it

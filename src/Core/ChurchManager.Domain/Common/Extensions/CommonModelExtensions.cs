@@ -21,4 +21,15 @@ public static class CommonModelExtensions
             Frequency = model.Frequency,
         };
     }
+    
+    public static MoneyViewModel? ToModel(this Money? model)
+    {
+        if (model == null) return null;
+
+        return new MoneyViewModel
+        {
+            Currency = model.Currency,
+            Amount = model.Amount,     
+        };
+    }
 }

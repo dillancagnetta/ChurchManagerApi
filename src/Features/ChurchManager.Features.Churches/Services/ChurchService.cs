@@ -7,12 +7,11 @@ using ChurchManager.Domain.Features.Churches.Specifications;
 using ChurchManager.Domain.Features.Security;
 using ChurchManager.Domain.Features.Security.Services;
 using ChurchManager.Domain.Parameters;
+using ChurchManager.Domain.Shared;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using CodeBoss.MultiTenant;
-using Convey.CQRS.Queries;
-using ChurchManager.Domain.Shared;
-using ChurchManager.SharedKernel.Wrappers;
 using Codeboss.Results;
+using Convey.CQRS.Queries;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Features.Churches.Services;
@@ -25,9 +24,14 @@ public class ChurchService(
     IReadDbRepository<ChurchAttendanceType> attendanceTypeDb,
     IMapper mapper) : CrudServiceAsync<Church, ChurchViewModel, EditChurchModel>(dbRepository, mapper), IChurchService
 {
-    public async Task<IReadOnlyList<ChurchViewModel>> ChurchListAsync(string searchTerm, int? churchGroupId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<ChurchViewModel>> ChurchListAsync(string? searchTerm, int? churchGroupId, CancellationToken ct = default)
     {
-        var allowedIds = await permissions.GetAllowedIdsAsync<Church>(Guid.Parse(currentUser.Id), PermissionAction.View.Value, ct);
+        // This endpoint is public for now, so anyone can access it
+        var allowedIds = currentUser?.Id == null // If user is not authenticated, return empty list
+            ? null // all allowed
+            : await permissions.GetAllowedIdsAsync<Church>(userLoginId:Guid.Parse(currentUser.Id), PermissionAction.View,   ct);
+        
+        // var allowedIds = await permissions.GetAllowedIdsAsync<Church>(Guid.Parse(currentUser.Id), PermissionAction.View.Value, ct);
         
         var spec = new ChurchesListSpecification(allowedIds, searchTerm, churchGroupId);
         

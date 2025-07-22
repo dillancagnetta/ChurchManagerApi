@@ -9,7 +9,7 @@ namespace ChurchManager.Application.Abstractions.Services;
 public interface IChurchService : ICrudServiceAsync<Church, ChurchViewModel, EditChurchModel>
 {
     Task<IReadOnlyList<ChurchViewModel>> ChurchListAsync(
-        string searchTerm,
+        string? searchTerm,
         int? churchGroupId,
         CancellationToken ct = default);
     

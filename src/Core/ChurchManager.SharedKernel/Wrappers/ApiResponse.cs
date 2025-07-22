@@ -26,7 +26,8 @@ namespace ChurchManager.SharedKernel.Wrappers
         public List<string> Errors { get; set; } = [];
         public dynamic? Data { get; set; }
         
-        public static ApiResponse Success() => new() {Succeeded = true };
+        public static ApiResponse Success() => new() {Succeeded = true};
+        public static ApiResponse Failed(string error) => new(error);
         public static ApiResponse FromOperation(OperationResult op) => new()
         {
             Succeeded = op.IsSuccess,

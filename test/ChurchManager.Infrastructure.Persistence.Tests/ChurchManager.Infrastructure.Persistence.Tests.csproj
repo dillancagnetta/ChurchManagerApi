@@ -22,6 +22,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Features\ChurchManager.Features.Auth\ChurchManager.Features.Auth.csproj" />
+    <ProjectReference Include="..\..\src\Features\ChurchManager.Features.Finances\ChurchManager.Features.Finances.csproj" />
     <ProjectReference Include="..\..\src\Features\ChurchManager.Features.Groups\ChurchManager.Features.Groups.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Files\sample.ofx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

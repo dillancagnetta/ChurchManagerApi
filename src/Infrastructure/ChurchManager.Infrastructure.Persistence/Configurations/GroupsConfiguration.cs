@@ -13,6 +13,8 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Group> builder)
         {
+            builder.ToTable(nameof(Group), "Groups");
+            
             builder
                 .Property(e => e.RecordStatus)
                 .HasConversion(
@@ -23,7 +25,7 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
             builder
                 .HasMany(p => p.Features)
                 .WithMany(p => p.Groups)
-                .UsingEntity(j => j.ToTable("GroupsFeatures"));
+                .UsingEntity(j => j.ToTable("GroupsFeatures", schema: "Groups"));
 
             // Indexes
             builder.HasIndex(x => x.Name);

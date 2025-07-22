@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Domain.Features.Missions
 {
-    [Table("Mission")]
+    [Table("Mission", Schema = "Missions")]
     public class Mission : AuditableEntity<int>, IAggregateRoot<int>
     {
         [Required, MaxLength(50)]

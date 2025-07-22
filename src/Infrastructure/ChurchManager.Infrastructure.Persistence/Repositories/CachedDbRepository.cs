@@ -33,13 +33,13 @@ public class CachedDbRepository<T> : IReadDbRepository<T> where T : class, IAggr
         DbContext = dbRepository.DbContext;
     }
 
-    public Task<T> GetByIdAsync<TId>(TId id, CancellationToken cancellationToken = new CancellationToken()) where TId : notnull
+    public Task<T?> GetByIdAsync<TId>(TId id, CancellationToken cancellationToken = new CancellationToken()) where TId : notnull
     {
         return _sourceRepository.GetByIdAsync(id, cancellationToken);
     }
 
     [Obsolete("Use FirstOrDefaultAsync<T> or SingleOrDefaultAsync<T> instead. The SingleOrDefaultAsync<T> can be applied only to SingleResultSpecification<T> specifications.")]
-    public Task<T> GetBySpecAsync(ISpecification<T> specification, CancellationToken cancellationToken = new CancellationToken())
+    public Task<T?> GetBySpecAsync(ISpecification<T> specification, CancellationToken cancellationToken = new CancellationToken())
     {
         if(specification.CacheEnabled)
         {
@@ -55,7 +55,7 @@ public class CachedDbRepository<T> : IReadDbRepository<T> where T : class, IAggr
     }
 
     [Obsolete("Use FirstOrDefaultAsync<T> or SingleOrDefaultAsync<T> instead. The SingleOrDefaultAsync<T> can be applied only to SingleResultSpecification<T> specifications.")]
-    public Task<TResult> GetBySpecAsync<TResult>(ISpecification<T, TResult> specification,
+    public Task<TResult?> GetBySpecAsync<TResult>(ISpecification<T, TResult> specification,
         CancellationToken cancellationToken = new CancellationToken())
     {
         if(specification.CacheEnabled)
@@ -71,7 +71,7 @@ public class CachedDbRepository<T> : IReadDbRepository<T> where T : class, IAggr
         return _sourceRepository.FirstOrDefaultAsync(specification, cancellationToken);
     }
 
-    public Task<T> FirstOrDefaultAsync(ISpecification<T> specification, CancellationToken cancellationToken = new CancellationToken())
+    public Task<T?> FirstOrDefaultAsync(ISpecification<T> specification, CancellationToken cancellationToken = new CancellationToken())
     {
         if (specification.CacheEnabled)
         {
@@ -87,7 +87,7 @@ public class CachedDbRepository<T> : IReadDbRepository<T> where T : class, IAggr
         
     }
 
-    public Task<TResult> FirstOrDefaultAsync<TResult>(ISpecification<T, TResult> specification,
+    public Task<TResult?> FirstOrDefaultAsync<TResult>(ISpecification<T, TResult> specification,
         CancellationToken cancellationToken = new CancellationToken())
     {
         if (specification.CacheEnabled)
@@ -104,7 +104,7 @@ public class CachedDbRepository<T> : IReadDbRepository<T> where T : class, IAggr
         
     }
 
-    public Task<T> SingleOrDefaultAsync(ISingleResultSpecification<T> specification,
+    public Task<T?> SingleOrDefaultAsync(ISingleResultSpecification<T> specification,
         CancellationToken cancellationToken = new CancellationToken())
     {
         if (specification.CacheEnabled)
@@ -121,7 +121,7 @@ public class CachedDbRepository<T> : IReadDbRepository<T> where T : class, IAggr
         
     }
 
-    public Task<TResult> SingleOrDefaultAsync<TResult>(ISingleResultSpecification<T, TResult> specification,
+    public Task<TResult?> SingleOrDefaultAsync<TResult>(ISingleResultSpecification<T, TResult> specification,
         CancellationToken cancellationToken = new CancellationToken())
     {
         if (specification.CacheEnabled)

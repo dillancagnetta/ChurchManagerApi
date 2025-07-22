@@ -11,6 +11,11 @@ namespace ChurchManager.Infrastructure.Abstractions.Configuration
         }
 
         /// <summary>
+        /// The base domain for the application
+        /// </summary>
+        public string BaseDomain { get; set; } = "codeboss.co.za";
+
+        /// <summary>
         /// A value indicating whether to ignore ACL rules (side-wide). It can significantly improve performance when enabled.
         /// </summary>
         public bool IgnoreAcl { get; set; }

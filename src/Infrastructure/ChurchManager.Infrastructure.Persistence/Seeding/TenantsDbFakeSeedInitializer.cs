@@ -19,10 +19,11 @@ public class TenantsDbFakeSeedInitializer(IServiceScopeFactory scopeFactory) : I
         {
             var tenant1 = new TenantConfiguration
             {
-                Name = "tenant1",
+                Name = SeedingConstants.TestTenantName,
                 ConnectionString = "Server=localhost;Database=churchmanager_db;Port=5432;User Id=admin;password=P455word1",
                 Email = "tenant1@example.com",
-                Subdomain = "localhost",
+                Subdomain = "localhost:4200",
+                ApiUrl = "http://localhost:5001",
             };
 
             await dbContext.Tenants.AddRangeAsync(tenant1);

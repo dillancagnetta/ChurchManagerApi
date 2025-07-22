@@ -1,6 +1,7 @@
 ﻿#region
 
 using ChurchManager.Domain.Features.History;
+using ChurchManager.Domain.Features.Settings;
 using CodeBoss.Jobs.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,5 +13,6 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts
     {
         public DbSet<History> History { get; set; }
         public DbSet<ServiceJob> ServiceJobs { get; set; }
+        public DbSet<Setting> Settings { get; set; }
     }
 }

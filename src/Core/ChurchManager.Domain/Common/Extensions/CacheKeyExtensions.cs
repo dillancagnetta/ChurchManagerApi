@@ -26,7 +26,7 @@ public static class CacheKeyExtensions
     public static string ToCacheKey(this DateTime dt) => dt.ToString("yyyy-MM-dd");
     public static string ToCacheKey(this DateTime? dt) => dt.HasValue ? ToCacheKey(dt.Value) : string.Empty;
     
-    public static string GenerateCacheKey(params object[] parameters)
+    public static string GenerateCacheKey(params object[]? parameters)
     {
         if (parameters == null || parameters.Length == 0) return string.Empty;
 
@@ -34,7 +34,7 @@ public static class CacheKeyExtensions
 
         foreach (var param in parameters)
         {
-            if (param == null) continue;
+            if (param is null) continue;
             
             // Handle nullable DateTime explicitly before the switch
             if (param is DateTime?)

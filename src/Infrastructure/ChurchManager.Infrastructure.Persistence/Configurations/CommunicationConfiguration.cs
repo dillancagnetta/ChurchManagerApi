@@ -10,6 +10,8 @@ public class CommunicationConfiguration : IEntityTypeConfiguration<Communication
 {
     public void Configure(EntityTypeBuilder<Communication> builder)
     {
+        builder.ToTable(nameof(Communication), "Communications");
+        
         builder
             .Property(e => e.CommunicationType)
             .HasEnumerationConversion<CommunicationType>();
@@ -80,6 +82,8 @@ public class CommunicationTemplateConfiguration : IEntityTypeConfiguration<Commu
 {
     public void Configure(EntityTypeBuilder<CommunicationTemplate> builder)
     {
+        builder.ToTable(nameof(CommunicationTemplate), "Communications");
+
         builder
             .Property(e => e.RecordStatus)
             .HasRecordStatus();
@@ -100,6 +104,8 @@ public class CommunicationRecipientConfiguration : IEntityTypeConfiguration<Comm
 {
     public void Configure(EntityTypeBuilder<CommunicationRecipient> builder)
     {
+        builder.ToTable(nameof(CommunicationRecipient), "Communications");
+        
         builder
             .Property(e => e.RecordStatus)
             .HasRecordStatus();
@@ -124,6 +130,8 @@ public class CommunicationAttachmentConfiguration : IEntityTypeConfiguration<Com
 {
     public void Configure(EntityTypeBuilder<CommunicationAttachment> builder)
     {
+        builder.ToTable(nameof(CommunicationAttachment), "Communications");
+        
         builder
             .Property(e => e.RecordStatus)
             .HasRecordStatus();

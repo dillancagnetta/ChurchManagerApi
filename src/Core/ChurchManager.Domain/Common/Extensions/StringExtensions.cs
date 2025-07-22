@@ -73,10 +73,45 @@ public static class StringExtensions
         return str;
     }
     
+    public static string? AddLeadingZero( this string str )
+    {
+        if (str is {Length: > 0} && !str.StartsWith( "0" )) return "0" + str;
+      
+        return str;
+    }
+    
     public static string? CleanPhoneNumber( this string str )
     {
         var trimmed = str.Trim().TrimLeadingZero();
       
         return trimmed;
+    }
+    
+    public static string? FixZeroPhoneNumber( this string str )
+    {
+        var trimmed = str.Trim().AddLeadingZero();
+      
+        return trimmed;
+    }
+    
+    /// <summary>
+    /// Returns the initials of a string, capitalizing the first letter of each word.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
+    public static string ToInitials(this string input)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return string.Empty;
+
+        return string.Concat(input
+            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+            .Select(word => char.ToUpperInvariant(word[0])));
+    }
+    
+    public static string ToShortCode(this string input, int chars = 3)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return string.Empty;
+
+        return input.Substring(0, chars).ToUpperInvariant();
     }
 }

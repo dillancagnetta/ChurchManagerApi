@@ -3,6 +3,7 @@
 using Bogus;
 using Bogus.DataSets;
 using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.Churches;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.Security;
@@ -106,7 +107,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 BirthDate = new BirthDate {BirthDay = 6, BirthMonth = 11, BirthYear = 1981},
                 ReceivedHolySpirit = true,
                 Occupation = "Pastor",
-                PhoneNumbers = new List<PhoneNumber>(1) { PhoneNumbersFaker(isMessagingEnabled:true)},
+                PhoneNumbers = new List<PhoneNumber>(1) { new () {CountryCode = "+27", Number = "737378631"}},
                 ConnectionStatusHistory = new List<ConnectionStatusHistory>
                 {
                     new ()
@@ -143,7 +144,7 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Development
                 BirthDate = new BirthDate { BirthDay = 13, BirthMonth = 03, BirthYear = 1980 },
                 ReceivedHolySpirit = true,
                 Occupation = "Church Staff",
-                PhoneNumbers = new List<PhoneNumber>(1) { PhoneNumbersFaker() }
+                PhoneNumbers = new List<PhoneNumber>(1) { new () {CountryCode = "+27", Number = SeedingConstants.TestPhoneNumber.CleanPhoneNumber()}},
             };
 
             var david = new Person

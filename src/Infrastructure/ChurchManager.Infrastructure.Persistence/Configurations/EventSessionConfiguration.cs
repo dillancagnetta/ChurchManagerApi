@@ -8,6 +8,8 @@ public class SessionRegistrationConfiguration : IEntityTypeConfiguration<EventSe
 {
     public void Configure(EntityTypeBuilder<EventSessionRegistration> builder)
     {
+        builder.ToTable(nameof(EventSessionRegistration), "Events");
+
         // Relationships
         builder.HasOne(x => x.EventRegistration)
             .WithMany(x => x.SessionRegistrations)

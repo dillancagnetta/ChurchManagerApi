@@ -5,6 +5,7 @@ using ChurchManager.Domain.Features.Communications.Repositories;
 using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Domain.Features.Discipleship.Repositories;
 using ChurchManager.Domain.Features.Events.Repositories;
+using ChurchManager.Domain.Features.Finances.Repositories;
 using ChurchManager.Domain.Features.Groups.Repositories;
 using ChurchManager.Domain.Features.History;
 using ChurchManager.Domain.Features.People.Repositories;
@@ -86,6 +87,7 @@ namespace ChurchManager.Infrastructure.Persistence
                 services.AddInitializer<DiscipleshipDbSeedInitializer>();
                 services.AddInitializer<CommunicationTemplatesDbSeedInitializer>();
                 services.AddInitializer<CommunicationPreferenceDbSeedInitializer>();
+                services.AddInitializer<FinancesDbSeedInitialize>();
 
                 if(environment.IsProduction())
                 {
@@ -123,6 +125,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<MissionsFakeDbSeedInitializer>();
                     services.AddInitializer<MessagesFakeDbSeedInitializer>();
                     services.AddInitializer<EventsFakeDbSeedInitializer>();
+                    services.AddInitializer<GivingsFakeDbSeedInitializer>();
                 }
                 
                 // Jobs
@@ -158,6 +161,7 @@ namespace ChurchManager.Infrastructure.Persistence
             services.AddScoped<IPushSubscriptionsService, PushSubscriptionsService>();
             services.AddScoped<ISqlQueryHandler, SqlQueryHandler>();
             services.AddScoped<ITemplateDbRepository, TemplateDbRepository>();
+            services.AddScoped<IFundsDbRepository, FundsDbRepository>();
             
             // Register the query cache service
             services.AddScoped<IQueryCache, QueryCache>();

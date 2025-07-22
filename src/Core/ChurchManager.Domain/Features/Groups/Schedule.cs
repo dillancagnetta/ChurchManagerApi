@@ -5,12 +5,10 @@ using ChurchManager.Persistence.Shared;
 using CodeBoss.Extensions;
 using Ical.Net;
 using Ical.Net.CalendarComponents;
-using Ical.Net.DataTypes;
-using Ical.Net.Serialization;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ChurchManager.Domain.Features.Groups
 {
+    [Table("Schedule", Schema = "Common")]
     public class Schedule : Entity<int>
     {
         [MaxLength(50)]

@@ -31,6 +31,7 @@ public class PublicLoginHandler(
                 new(ClaimTypes.Name, family.Name),
                 new("FamilyId", family.Id.ToString()),
                 new(ClaimTypes.Role, "Public Access"),
+                new("PersonId", family.FamilyMembers.First().PersonId.ToString()),
                 new("Tenant", command.TenantName),
             };
 

@@ -1,12 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using ChurchManager.Domain.Common;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using ChurchManager.Persistence.Shared;
 using Codeboss.Types;
 
 namespace ChurchManager.Domain.Features.Churches
 {
-    [Table("ChurchAttendance")]
+    [Table("ChurchAttendance", Schema = "Churches")]
 
     public class ChurchAttendance : Entity<int>, IAggregateRoot<int>
     {

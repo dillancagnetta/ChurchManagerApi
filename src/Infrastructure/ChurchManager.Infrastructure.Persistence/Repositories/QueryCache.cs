@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
+using CodeBoss.Extensions;
 using CodeBoss.MultiTenant;
 using Microsoft.Extensions.Caching.Distributed;
 
@@ -28,7 +29,7 @@ public class QueryCache: IQueryCache
         var key = $"{_currentUser?.Tenant}_{cacheKey}";
         var cachedData = await _cache.GetStringAsync(key,  ct);
         
-        if (cachedData != null)  return JsonSerializer.Deserialize<T>(cachedData);
+        if (!cachedData.IsNullOrEmpty()) return JsonSerializer.Deserialize<T>(cachedData);
         
         var data = await dataRetriever();
         
@@ -42,7 +43,7 @@ public class QueryCache: IQueryCache
         var key = $"{_currentUser?.Tenant}_{cacheKey}";
         var cachedData = await _cache.GetStringAsync(key,  ct);
         
-        return cachedData != null? JsonSerializer.Deserialize<T>(cachedData) : default;
+        return !cachedData.IsNullOrEmpty() ? JsonSerializer.Deserialize<T>(cachedData) : default;
     }
 
     public async Task SetAsync<T>(string cacheKey, T data, DistributedCacheEntryOptions options = null, CancellationToken ct = default)

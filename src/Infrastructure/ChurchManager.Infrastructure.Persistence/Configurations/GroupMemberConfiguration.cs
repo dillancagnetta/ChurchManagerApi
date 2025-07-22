@@ -14,6 +14,8 @@ namespace ChurchManager.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<GroupMember> builder)
         {
+            builder.ToTable(nameof(GroupMember), "Groups");
+            
             builder
                 .Property(e => e.RecordStatus)
                 .HasConversion(

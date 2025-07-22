@@ -2,6 +2,7 @@
 using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Shared;
+using CodeBoss.Extensions;
 using Convey.CQRS.Queries;
 
 namespace ChurchManager.Domain.Features.Groups.Specifications
@@ -33,13 +34,13 @@ namespace ChurchManager.Domain.Features.Groups.Specifications
             }
 
             // Type Filter
-            if (types is not null && types.Any())
+            if (!types.IsNullOrEmpty())
             {
                 Query.Where(g => types.Contains(g.Type));
             }
 
             // Severity Filter
-            if(severity is not null && severity.Any())
+            if(!severity.IsNullOrEmpty())
             {
                 Query.Where(g => severity.Contains(g.Severity));
             }
@@ -64,7 +65,7 @@ namespace ChurchManager.Domain.Features.Groups.Specifications
                 Query.Where(g => g.AssignedDate <= to.Value);
             }
 
-            Query.OrderBy(x => x.AssignedDate);
+            Query.OrderByDescending(x => x.AssignedDate);
 
             Query
                 .Skip(paging.CalculateSkip())

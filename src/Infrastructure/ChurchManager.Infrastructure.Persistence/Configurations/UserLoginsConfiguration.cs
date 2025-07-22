@@ -14,6 +14,8 @@ public class UserLoginsConfiguration : IEntityTypeConfiguration<UserLogin>
 {
     public void Configure(EntityTypeBuilder<UserLogin> builder)
     {
+        builder.ToTable(nameof(UserLogin), "Auth");
+
         builder
             .Property(e => e.RecordStatus)
             .HasRecordStatus();
@@ -38,6 +40,7 @@ public class UserLoginRoleConfiguration : IEntityTypeConfiguration<UserLoginRole
 {
     public void Configure(EntityTypeBuilder<UserLoginRole> builder)
     {
+        builder.ToTable(nameof(UserLoginRole), "Auth");
         // Indexes
         builder.HasIndex(x => x.Name);  // Role name lookups
         builder.HasIndex(x => new { x.Name, x.RecordStatus });  // Active role lookups by name
@@ -50,6 +53,8 @@ public class EntityPermissionConfiguration : IEntityTypeConfiguration<EntityPerm
 {
     public void Configure(EntityTypeBuilder<EntityPermission> builder)
     {
+        builder.ToTable(nameof(EntityPermission), "Auth");
+
         // Indexes
         builder.HasIndex(x => x.EntityType);  // Entity type lookups
         builder.HasIndex(x => new { x.EntityType, x.RecordStatus });  // Active permissions by entity type
@@ -65,6 +70,8 @@ public class UserRoleAssignmentConfiguration : IEntityTypeConfiguration<UserRole
 {
     public void Configure(EntityTypeBuilder<UserRoleAssignment> builder)
     {
+        builder.ToTable(nameof(UserRoleAssignment), "Auth");
+
         // Unique constraint/index
         builder.HasIndex(x => new { x.UserLoginId, x.UserLoginRoleId })
             .IsUnique();
@@ -80,6 +87,8 @@ public class RolePermissionAssignmentConfiguration : IEntityTypeConfiguration<Ro
 {
     public void Configure(EntityTypeBuilder<RolePermissionAssignment> builder)
     {
+        builder.ToTable(nameof(RolePermissionAssignment), "Auth");
+
         // Unique constraint/index
         builder.HasIndex(x => new { x.RoleId, x.EntityPermissionId })
             .IsUnique();

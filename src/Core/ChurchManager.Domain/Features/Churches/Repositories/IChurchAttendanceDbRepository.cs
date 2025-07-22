@@ -13,5 +13,6 @@ namespace ChurchManager.Domain.Features.Churches.Repositories
         */
         Task<AttendanceMetricsComparisonViewModel> AttendanceMetricsComparisonAsync(int? churchGroupId, int? churchId, ReportPeriodType queryPeriodType, CancellationToken ct);
         Task<YearlyConversionComparison> YearlyConversionComparisonAsync(int? churchGroupId, int? churchId = null, bool includeMonthlyBreakdown = false, CancellationToken ct = default);
+        
     }
 }

@@ -54,7 +54,7 @@ public class FamilyDbRepository : GenericRepositoryBase<Family>, IFamilyDbReposi
                 {
                     Id = x.Id,
                     Name = x.Name!,
-                    // FamilyMembers = x.FamilyMembers.Select(y => y.ToBasicPersonViewModel()!)
+                    FamilyMembers = x.FamilyMembers.Where(f => f.Email != null && f.Email.Address == emailAddress).Select(y => y.ToBasicPersonViewModel()!)
                 })
                 .SingleOrDefaultAsync(ct);
 
@@ -64,5 +64,17 @@ public class FamilyDbRepository : GenericRepositoryBase<Family>, IFamilyDbReposi
         {
             return OperationResult<FamilyViewModel>.Fail(e.Message);
         }
+    }
+
+    public async Task<IList<int>> PersonIdsOfFamilyMembersAsync(int familyId, CancellationToken ct = default)
+    {
+        var familyMembersPersonIds = await Queryable()
+            .Include(x => x.FamilyMembers)
+            .AsNoTracking()
+            .Where(f => f.Id == familyId)
+            .SelectMany(f => f.FamilyMembers.Select(x => x.Id))
+            .ToListAsync(ct);
+        
+        return familyMembersPersonIds;
     }
 }

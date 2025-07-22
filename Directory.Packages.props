@@ -3,7 +3,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
     <NoWarn>$(NoWarn);NU1507</NoWarn>
-    <CodeBossVersion>9.0.21</CodeBossVersion>
+    <CodeBossVersion>9.0.22</CodeBossVersion>
     <EFCoreVersion>9.0.4</EFCoreVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -32,6 +32,7 @@
     <PackageVersion Include="EntityFrameworkCore.Triggered" Version="3.2.2" />
     <PackageVersion Include="Flagsmith" Version="7.1.1" />
     <PackageVersion Include="Ical.Net" Version="4.2.0" />
+    <PackageVersion Include="jcoliz.OfxSharp.NetStandard" Version="3.1.0" />
     <PackageVersion Include="LinqKit.Microsoft.EntityFrameworkCore" Version="9.0.8" />
     <PackageVersion Include="MediatR" Version="12.4.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.4" />

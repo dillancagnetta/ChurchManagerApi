@@ -8,7 +8,8 @@ namespace ChurchManager.SharedKernel.Common
     // Marker for easy reference
     public interface IAppCurrentUser : ICognitoCurrentUser<PersonViewModel>
     {
-        public string Username { get; }
+        public string? Username { get; }
         public int PersonId { get; }
+        public int? FamilyId { get; }
     }
 }
