@@ -26,7 +26,7 @@ public class AllowTestingMiddleware
             {
                 new Claim(ClaimTypes.NameIdentifier, SeedingConstants.MainUserLogin),
                 new Claim(ClaimTypes.Name, "testuser"),
-                new Claim("Tenant", SeedingConstants.DemoTenantName),
+                new Claim("Tenant", SeedingConstants.TestTenantName),
                 new Claim("FamilyId", "1"),
                 new Claim("PersonId", "1")
             };

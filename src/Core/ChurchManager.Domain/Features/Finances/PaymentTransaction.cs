@@ -60,6 +60,8 @@ public class PaymentTransaction: Entity<int>, IAggregateRoot<int>
     /// </summary>
     public bool ConvertedToGiving { get; set; } = false;
     
+    public bool IsTest { get; set; } = false;
+    
     /// <summary>
     /// Reference to the Giving record created from this payment (if any)
     /// </summary>
@@ -77,5 +79,4 @@ public class PaymentTransaction: Entity<int>, IAggregateRoot<int>
     
     public virtual Giving? Giving { get; set; }
     public virtual Church? Church { get; set; }
-
 }

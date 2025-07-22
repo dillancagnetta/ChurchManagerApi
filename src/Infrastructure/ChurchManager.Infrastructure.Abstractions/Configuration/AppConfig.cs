@@ -86,10 +86,5 @@ namespace ChurchManager.Infrastructure.Abstractions.Configuration
         public bool UseResponseCompression { get; set; }
         
         public IList<string> SupportedCultures { get; set; }
-        
-        /// <summary>
-        /// Enable whether we are testing the application using ngrok.io for public URL.
-        /// </summary>
-        public bool NgrokTestingModeEnabled { get; set; }
     }
 }

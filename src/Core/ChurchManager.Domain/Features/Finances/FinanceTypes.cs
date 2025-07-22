@@ -26,7 +26,9 @@ public class PaymentMethod : Enumeration<PaymentMethod, string>
 
     public static PaymentMethod  EFT = new("EFT");
     public static PaymentMethod  Cash = new("Cash");
-    public static PaymentMethod  Digital = new("Digital");
+    public static PaymentMethod  DebitCard = new("Debit Card");
+    public static PaymentMethod  CreditCard = new("Credit Card");
+    public static PaymentMethod  MobilePhone = new("Mobile Phone"); // Apple , Samsung, Google Pay etc.
     public static PaymentMethod  Unknown = new("Unknown");
     // Implicit conversion from string
     public static implicit operator PaymentMethod (string value) => new(value);

@@ -97,7 +97,7 @@ Start reverse proxy locally
 
 > ngrok http 5001
 
-Update in `churchmanager_master_db` Tenants record : `ApiUrl` to ngrok address e.g. `82c40fcd5b90.ngrok-free.app`
+Update in `churchmanager_master_db` Tenants record : `ApiUrl` to ngrok address e.g. `https://82c40fcd5b90.ngrok-free.app`
 
 Generate a payment request with `TestMode=true`
 

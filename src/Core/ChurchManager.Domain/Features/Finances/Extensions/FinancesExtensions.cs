@@ -33,5 +33,5 @@ public static class FinancesExtensions
         return (churchShortCode, phoneNumber, givingType, partnershipFund, isFamily);
     }
     
-    public static bool IsValidReference(this string? reference) => !reference.IsNullOrEmpty() && Regex.IsMatch(reference!, ReferencePattern);
+    public static bool IsValidPaymentReference(this string? reference) => !reference.IsNullOrEmpty() && Regex.IsMatch(reference!, ReferencePattern);
 }

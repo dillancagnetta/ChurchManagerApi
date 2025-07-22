@@ -21,18 +21,25 @@ public class GivingReferenceResolver(
     IQueryCache cache
 ) : IGivingReferenceResolver
 {
-   
-
     /// <summary>
+    /// This will process transactions in the imported bank statement and resolve the giving references
+    /// So it will try to match to the giving church and person or family (via phone number)
+    /// If fully matched: (to church and phone number) it will process the transaction and create matching giving record
+    /// If not fully matched: the transaction will be marked as unprocessed
+    /// 
+    /// *** for now we only support Person and Family giving ***
+    /// 
     ///Example formats:
-    ///  Person: CHU-082xxxxxxx-T
-    ///  Family: CHU-082xxxxxxx-P-HS-F
+    ///     Person: CHU-082xxxxxxx-T
+    ///     Family: CHU-082xxxxxxx-P-HS-F
     /// </summary>
-    public async Task<BankStatementProcessResult> ResolveAsync(BankStatementImport import)
+    public async Task<BankStatementProcessResult> ResolveAsync(BankStatementImport import, CancellationToken ct =  default)
     {
+        // People map for faster lookups
         var peoplePhoneMap =
-            await peopleDb.FindPhoneNumberForPeople(ParsePhoneNumbers(import.OriginalTransactionReferences()));
+            await peopleDb.FindPhoneNumberForPeople(ParsePhoneNumbers(import.OriginalTransactionReferences()), ct);
 
+        // TODO: Create other reference matchers e.g. for Churches that give
         try
         {
             foreach (var transaction in import.Transactions)
@@ -43,7 +50,7 @@ public class GivingReferenceResolver(
                     
                     var reference = transaction.OriginalReference;
 
-                    if (!FinancesExtensions.IsValidReference(reference))
+                    if (!FinancesExtensions.IsValidPaymentReference(reference))
                     {
                         transaction.SetAsUnProcessed("Invalid reference format");
                         continue;
@@ -60,15 +67,15 @@ public class GivingReferenceResolver(
                     };
 
                     // Try to resolve the church and the person
-                    resolvedReference = await TryResolveChurchAsync(reference, resolvedReference);
-                    resolvedReference = await TryResolvePersonAsync(reference, resolvedReference, peoplePhoneMap);
+                    resolvedReference = await TryResolveChurchAsync(reference, resolvedReference, ct);
+                    resolvedReference = await TryResolvePersonAsync(reference, resolvedReference, peoplePhoneMap, ct);
 
                     transaction.IsMatched = resolvedReference.IsPersonMatched && resolvedReference.IsChurchMatched;
-
+                    
                     if (transaction.IsMatched)
                     {
-                        var fund = await ResolveFundAsync(resolvedReference.GivingType, parsed.PartnershipFund!);
-                        var benefactor = await ResolveBenefactorAsync(resolvedReference);
+                        var fund = await ResolveFundAsync(resolvedReference.GivingType, parsed.PartnershipFund!, ct);
+                        var benefactor = await ResolveBenefactorAsync(resolvedReference, ct);
 
                         // Create associated giving record
                         import.AddGiving(Giving.Create(transaction, resolvedReference, fund, benefactor, transaction.Memo));
@@ -95,42 +102,53 @@ public class GivingReferenceResolver(
         }
     }
 
-    private async Task<Benefactor> ResolveBenefactorAsync(GivingReference reference)
+    private async Task<Benefactor> ResolveBenefactorAsync(GivingReference reference, CancellationToken ct =  default)
     {
-        //var benefactor = Benefactor.FromGivingReference(reference);
-
         Benefactor benefactor;
-
+        var (_, phoneNumber, _, _, _) = FinancesExtensions.ParsePaymentReference(reference.OriginalReference!);
         switch (reference.BenefactorType.Value)
         {
             case "Individual":
                 benefactor = await benefactorsDb.Queryable()
-                                 .FirstOrDefaultAsync(x => x.PersonId == reference.Person!.Id)
+                                 .FirstOrDefaultAsync(x => x.PersonId == reference.Person!.Id, ct)
                              ?? new Benefactor
                              {
                                  Name = reference.Person!.Name, PersonId = reference.Person!.Id,
-                                 Type = BenefactorType.Individual
+                                 Type = BenefactorType.Individual,
+                                 PhoneNumber = phoneNumber
                              };
 
                 return benefactor;
             case "Family":
                 benefactor = await benefactorsDb.Queryable()
-                                 .FirstOrDefaultAsync(x => x.FamilyId == reference.Family!.Id)
+                                 .FirstOrDefaultAsync(x => x.FamilyId == reference.Family!.Id, ct)
                              ?? new Benefactor
                              {
-                                 Name = reference.Family!.Name, PersonId = reference.Family!.Id,
-                                 Type = BenefactorType.Family
+                                 Name = reference.Family!.Name, FamilyId = reference.Family!.Id,
+                                 Type = BenefactorType.Family,
+                                 PhoneNumber = phoneNumber
                              };
                 return benefactor;
+            // Not used for now
             case "Church":
                 benefactor = await benefactorsDb.Queryable()
-                                 .FirstOrDefaultAsync(x => x.ChurchId == reference.Church!.Id)
+                                 .FirstOrDefaultAsync(x => x.ChurchId == reference.Church!.Id, ct)
                              ?? new Benefactor
                              {
-                                 Name = reference.Church!.Name, PersonId = reference.Church!.Id,
-                                 Type = BenefactorType.Church
+                                 Name = reference.Church!.Name, ChurchId = reference.Church!.Id,
+                                 Type = BenefactorType.Church,
+                                 PhoneNumber = phoneNumber
                              };
                 return benefactor;
+            // Not used for now
+            case "External":
+               
+                return new Benefactor
+                {
+                    Name = BenefactorType.External.Value,
+                    Type = BenefactorType.External,
+                    PhoneNumber = phoneNumber
+                };
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(reference.BenefactorType), reference.BenefactorType, "Invalid benefactor type");
@@ -140,7 +158,7 @@ public class GivingReferenceResolver(
     /// <summary>
     /// Resolve the church using the church short code.
     /// </summary>
-    public async Task<GivingReference> TryResolveChurchAsync(string reference, GivingReference resolvedReference)
+    public async Task<GivingReference> TryResolveChurchAsync(string reference, GivingReference resolvedReference, CancellationToken ct =  default)
     {
         var (churchCode, _, _, _, _) = FinancesExtensions.ParsePaymentReference(reference);
 
@@ -158,12 +176,12 @@ public class GivingReferenceResolver(
 
         return resolvedReference;
     }
-
+    
     /// <summary>
     /// Resolve the person using the phone number.
     /// </summary>
     public Task<GivingReference> TryResolvePersonAsync(string reference, GivingReference resolvedReference,
-        Dictionary<string, Person?> map)
+        Dictionary<string, Person?> map, CancellationToken ct =  default)
     {
         var (_, phoneNumber, _, _, isFamily) = FinancesExtensions.ParsePaymentReference(reference);
         var person = map.GetValueOrDefault(phoneNumber);
@@ -178,24 +196,34 @@ public class GivingReferenceResolver(
         return Task.FromResult(resolvedReference);
     }
 
-    public async Task<PersonViewModelBasic?> TryResolvePersonAsync(string reference, CancellationToken ct)
+    public async Task<GivingReference> TryResolvePersonAsync(string reference, CancellationToken ct)
     {
         var (_, phoneNumber, _, _, isFamily) = FinancesExtensions.ParsePaymentReference(reference);
         var person = await peopleDb.FindBasicPersonByPhoneNumberAsync(phoneNumber!, ct);
-        return person;
+
+        var givingReference = new GivingReference();
+        if (person is not null)
+        {
+            givingReference.IsPersonMatched = true;
+            givingReference.Person = new BeneficiaryInfo(person.PersonId, $"{person.FirstName} {person.LastName}");
+        }
+        
+        return givingReference;
     }
+
+   
 
     public IList<string> ParsePhoneNumbers(IList<string> references)
     {
         return references
-            .Where(x => FinancesExtensions.IsValidReference(x))
+            .Where(x => FinancesExtensions.IsValidPaymentReference(x))
             .Select(x => FinancesExtensions.ParsePaymentReference(x))
             .Select(x => x.PhoneNumber)
             .Where(x => !x.IsNullOrEmpty())
             .ToList();
     }
     
-    public async Task<Fund> ResolveFundAsync(GivingType fundCode, string partnershipFund)
+    public async Task<Fund> ResolveFundAsync(GivingType fundCode, string partnershipFund, CancellationToken ct =  default)
     {
         Fund fund;
         var funds = await cache.GetOrSetAsync("funds", () => fundsDb.Queryable().AsNoTracking().ToListAsync());
@@ -239,7 +267,7 @@ public class GivingReferenceResolver(
             var peoplePhoneMap =
                 await peopleDb.FindPhoneNumberForPeople(ParsePhoneNumbers([reference]), ct);
 
-            if (!FinancesExtensions.IsValidReference(reference))
+            if (!FinancesExtensions.IsValidPaymentReference(reference))
             {
                 return (null, false, "Invalid reference format");
             }

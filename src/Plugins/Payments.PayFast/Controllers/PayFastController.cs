@@ -47,7 +47,7 @@ public class PayFastController(
                 "CANCELLED" => PaymentStatus.Cancelled,
                 _ => PaymentStatus.Processing
             };
-
+            
             payment.ExternalReferenceId = postData.GetValueOrDefault("pf_payment_id");
             //payment.PaymentMethod = postData.GetValueOrDefault("payment_method");
 

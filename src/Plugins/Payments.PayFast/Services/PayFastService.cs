@@ -67,6 +67,14 @@ public class PayFastService(
         return responseContent.Contains("VALID");
     }
 
+    /// <summary>
+    /// Concatenation of the name value pairs of all the non-blank variables with ‘&’ used as a separator
+    /// The pairs must be listed in the order in which they appear in the attributes description.
+    /// The passphrase is an extra security feature
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="passphrase"></param>
+    /// <returns></returns>
     public string GenerateSignature(Dictionary<string, string> data, string? passphrase)
     {
         var queryString = string.Join("&", data.Select(kvp => $"{kvp.Key}={HttpUtility.UrlEncode(kvp.Value)}"));

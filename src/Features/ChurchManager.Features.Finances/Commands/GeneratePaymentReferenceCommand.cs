@@ -35,7 +35,7 @@ public class GeneratePaymentReferenceHandler(
             $"{CacheKeyHelper.CacheKey<GeneratePaymentReferenceCommand>("churches")}-{command.ChurchReference.ChurchGroupId}";
         var churches = await cache.GetOrSetAsync(churchCacheKey,
             () =>  churchDb.Queryable().AsNoTracking()
-                .Where(x => x.ChurchGroupId == command.ChurchReference.ChurchId)
+                .Where(x => x.ChurchGroupId == command.ChurchReference.ChurchGroupId)
                 .Select(x => new { x.Id, x.ShortCode }).ToListAsync(ct), ct: ct);
         
         var funds = await cache.GetOrSetAsync(CacheKeyHelper.CacheKey<GeneratePaymentReferenceCommand>("funds"),
@@ -49,7 +49,7 @@ public class GeneratePaymentReferenceHandler(
         var reference = $"{churchShortCode}-{command.PhoneNumber}";
 
         // Add Partnership suffix
-        if (fund.FundType == FundType.Partnership)
+        if (fund.FundType == FundType.Partnership.Value)
         {
             reference += $"-P-{fundsShortCode}";
         }

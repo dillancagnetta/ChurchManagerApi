@@ -56,7 +56,7 @@ public class Ofx_Import_Tests()
     [InlineData("", false)]                          // Empty string
     public void should_validate_reference_format(string reference, bool expectedResult)
     {
-        var result = FinancesExtensions.IsValidReference(reference);
+        var result = FinancesExtensions.IsValidPaymentReference(reference);
     
         Assert.Equal(expectedResult, result);
     }

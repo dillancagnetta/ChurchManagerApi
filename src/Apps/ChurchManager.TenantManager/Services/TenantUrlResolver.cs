@@ -56,17 +56,12 @@ public class TenantUrlResolver(
         {
             scheme = "http";
         }
-
-        if (appConfig.NgrokTestingModeEnabled)
-        {
-            scheme = "https";
-        }
         
         var tenantName = contextAccessor.AppContext.CurrentTenant.Name;
         var tenant = tenantProvider.Get(tenantName);
 
         var hostUrl = $"{scheme}://{tenant.Subdomain}";
-        // Ensure webhookPath starts with /
+        // Ensure path starts with /
         if (!path.StartsWith("/"))
         {
             path = "/" + path;
@@ -78,18 +73,6 @@ public class TenantUrlResolver(
 
     private string GetTenantApiUrl(TenantConfiguration tenant)
     {
-        string scheme = "https";
-        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "";
-        if (environment.Equals("Development", StringComparison.OrdinalIgnoreCase))
-        {
-            scheme = "http";
-        }
-        
-        if (appConfig.NgrokTestingModeEnabled)
-        {
-            scheme = "https";
-        }
-        
         var baseDomain = appConfig.BaseDomain;
         
         if (string.IsNullOrEmpty(tenant.ApiUrl))
@@ -97,12 +80,10 @@ public class TenantUrlResolver(
             logger.LogWarning("Tenant {TenantName} has no subdomain configured", tenant.Name);
             throw new InvalidOperationException($"Tenant '{tenant.Name}' has no subdomain configured");
         }
-
-        var hostUrl = $"{scheme}://{tenant.ApiUrl}";
         
-        logger.LogDebug("Generated host URL {HostUrl} for tenant {TenantName}", hostUrl, tenant.Name);
+        logger.LogDebug("Found Api URL {HostUrl} for tenant {TenantName}", tenant.ApiUrl, tenant.Name);
         
-        return hostUrl;
+        return tenant.ApiUrl;
     }
 
     private string GetWebhookUrl(TenantConfiguration tenant, string webhookPath)
