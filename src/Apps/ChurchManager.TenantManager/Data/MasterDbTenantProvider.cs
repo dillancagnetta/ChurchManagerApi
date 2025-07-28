@@ -1,5 +1,6 @@
 ﻿using ChurchManager.Domain.Common;
 using ChurchManager.Infrastructure.Abstractions.AppContext;
+using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.MultiTenant;
@@ -12,10 +13,11 @@ namespace ChurchManager.TenantManager.Data;
 public class MasterDbTenantProvider(
     MasterDbContext dbContext,
     IAppContextAccessor contextAccessor,
+    IEnvironmentConfig envConfig,
     IQueryCache cache,
     ILogger<MasterDbTenantProvider> logger) : ITenantsProvider<TenantConfiguration>
 {
-    private DistributedCacheEntryOptions _cacheOptions = new()
+    private readonly DistributedCacheEntryOptions _cacheOptions = new()
     {
         AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
     };
@@ -38,7 +40,7 @@ public class MasterDbTenantProvider(
             _cacheOptions
         ).Result;
         
-        logger.LogInformation("Retrieved {TenantCount} tenants for subdomain {Subdomain} with cache key {CacheKey}", 
+        logger.LogInformation("Retrieved {TenantCount} tenants for subdomain: [{Subdomain}] with cache key: [{CacheKey}]", 
             tenants?.Count ?? 0, 
             subdomain ?? "", 
             cacheKey);
@@ -64,7 +66,11 @@ public class MasterDbTenantProvider(
         return tenant;
     }
 
-    private string? CurrentSubdomain => contextAccessor.AppContext?.CurrentSubdomain;
+    private string? CurrentSubdomain => contextAccessor.AppContext?.CurrentSubdomain ?? envConfig.SubdomainKey;
  
     public bool Enabled => true;
+    ITenant[] ISimpleTenantsProvider.Tenants()
+    {
+        return Tenants();
+    }
 }

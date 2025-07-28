@@ -1,16 +1,19 @@
 ﻿using ChurchManager.Domain.Common;
 using ChurchManager.Infrastructure.Abstractions.AppContext;
+using ChurchManager.Infrastructure.Abstractions.Configuration;
 using CodeBoss.MultiTenant;
 
 namespace ChurchManager.Infrastructure.Shared.AppContext;
 
-public class AppContextSetter(ITenantsProvider<TenantConfiguration> tenantsProvider) : IAppContextSetter
+public class AppContextSetter(
+    ITenantsProvider<TenantConfiguration> tenantsProvider,
+    IEnvironmentConfig envConfig) : IAppContextSetter
 {
-    public async Task<IAppContext> InitializeAppContext(string subdomain, string? tenantName = null)
+    public async Task<IAppContext> InitializeAppContext(string? tenantName = null)
     {
        var tenant = CurrentTenant(tenantName);
        
-       var context = new CurrentAppContext(tenant, subdomain);
+       var context = new CurrentAppContext(tenant, envConfig.SubdomainKey);
        
        return await Task.FromResult(context);
     }

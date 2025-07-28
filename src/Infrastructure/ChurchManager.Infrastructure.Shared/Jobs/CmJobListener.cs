@@ -1,17 +1,21 @@
-﻿using ChurchManager.Infrastructure.Persistence.Contexts;
+﻿using System.Globalization;
+using ChurchManager.Infrastructure.Abstractions.MultiTenancy;
 using CodeBoss.Extensions;
+using CodeBoss.Jobs;
 using CodeBoss.Jobs.Abstractions;
 using CodeBoss.Jobs.Jobs;
 using CodeBoss.Jobs.Model;
 using Codeboss.Types;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Quartz;
 
 namespace ChurchManager.Infrastructure.Shared.Jobs;
 
-public class CmJobListener(IServiceProvider serviceProvider, IDateTimeProvider dateTime, ILogger<CmJobListener> logger) : ICodeBossJobListener
+public class CmJobListener(
+    IDateTimeProvider dateTime, 
+    ITenantDbContextFactory tenantDbContextFactory,
+    ILogger<CmJobListener> logger) : ICodeBossJobListener
 {
     public string Name => nameof(CmJobListener);
     
@@ -19,10 +23,20 @@ public class CmJobListener(IServiceProvider serviceProvider, IDateTimeProvider d
     {
         // get job type id
         int serviceJobId = context.JobDetail.Description.AsInteger();
-    
-        using var scope = serviceProvider.CreateScope();
-        await using var dbContext = scope.ServiceProvider.GetRequiredService<ChurchManagerDbContext>();
-        // load ServiceJob from database
+        string jobGroup = context.JobDetail.Key.Group;
+        var tenantId = context.GetTenantIdFromQuartz();
+        
+        // Skip Job Pulse
+        if (!tenantId.HasValue || jobGroup == "System")
+        {
+            logger.LogInformation("Skipping...No tenant ID or System Job {ServiceJobId}", serviceJobId);
+            return;
+        }
+        
+        // Use tenant-specific database context
+        await using var dbContext = tenantDbContextFactory.CreateDbContext(tenantId.Value);
+       
+        // load ServiceJob from tenants database
         var job = await dbContext.Set<ServiceJob>()
             .FirstOrDefaultAsync(x => x.Id == serviceJobId, cancellationToken: ct);
 
@@ -30,7 +44,7 @@ public class CmJobListener(IServiceProvider serviceProvider, IDateTimeProvider d
         {
             var now = dateTime.Now;
             job.LastStatus = "Running";
-            job.LastStatusMessage = "Started at " + now.ToString();
+            job.LastStatusMessage = "Started at " + now.ToString(CultureInfo.InvariantCulture);
 
             if (job.EnableHistory)
             {
@@ -44,14 +58,20 @@ public class CmJobListener(IServiceProvider serviceProvider, IDateTimeProvider d
                 };
                 job.ServiceJobHistory.Add(history);
             }
-            logger.LogInformation($"Job '{job.Name}' to be executed at {now}");
+            logger.LogInformation("Job '{JobName}' for tenant {TenantId} to be executed at {ExecutionTime}", 
+                job.Name, tenantId, now);
             await dbContext.SaveChangesAsync(ct);
         }
     }
 
     public Task JobExecutionVetoed(IJobExecutionContext context, CancellationToken ct = default)
     {
-        logger.LogDebug("Job ID: {jobId}, Job Key: {jobKey}, Job was vetoed.", context.JobDetail?.Description.AsIntegerOrNull(), context.JobDetail?.Key );
+        var tenantId = context.GetTenantIdFromQuartz();
+        var tenantInfo = tenantId.HasValue ? $", Tenant: {tenantId}" : "";
+        
+        logger.LogDebug("Job ID: {JobId}, Job Key: {JobKey}{TenantInfo}, Job was vetoed.", 
+            context.JobDetail?.Description.AsIntegerOrNull(), context.JobDetail?.Key, tenantInfo);
+        
         return Task.CompletedTask;
     }
 
@@ -59,17 +79,28 @@ public class CmJobListener(IServiceProvider serviceProvider, IDateTimeProvider d
         CancellationToken ct = default)
     {
         int serviceJobId = context.JobDetail.Description.AsInteger();
+        var tenantId = context.GetTenantIdFromQuartz();
+        string jobGroup = context.JobDetail.Key.Group;
         var codeBossJobInstance = context.JobInstance as CodeBossJob;
-
-        using var scope = serviceProvider.CreateScope();
-        await using var dbContext = scope.ServiceProvider.GetRequiredService<ChurchManagerDbContext>();
-        // load ServiceJob from database
+        
+        // Skip Job Pulse
+        if (!tenantId.HasValue || jobGroup == "System")
+        {
+            logger.LogInformation("Skipping...No tenant ID or System Job {ServiceJobId}", serviceJobId);
+            return;
+        }
+        
+        // Use tenant-specific database context
+        await using var dbContext = tenantDbContextFactory.CreateDbContext(tenantId.Value);
+        
+        // load ServiceJob from tenants database
         var job = await dbContext.Set<ServiceJob>()
             .FirstOrDefaultAsync(x => x.Id == serviceJobId, cancellationToken: ct);
 
         if (job == null)
         {
-            logger.LogDebug( "Job ID: {jobId}, Job Key: {jobKey}, Job was not found.", serviceJobId, context.JobDetail?.Key );
+            logger.LogDebug("Job ID: {JobId}, Job Key: {JobKey}, Tenant: {TenantId}, Job was not found.", 
+                serviceJobId, context.JobDetail?.Key, tenantId);
             return;
         }
             
@@ -97,7 +128,8 @@ public class CmJobListener(IServiceProvider serviceProvider, IDateTimeProvider d
                 sendMessage = true;
             }
 
-            logger.LogDebug( "Job ID: {jobId}, Job Key: {jobKey}, Job was executed.", serviceJobId, context.JobDetail?.Key );
+            logger.LogDebug("Job ID: {JobId}, Job Key: {JobKey}, Tenant: {TenantId}, Job was executed.", 
+                serviceJobId, context.JobDetail?.Key, tenantId);
         }
         else
         {
@@ -124,7 +156,8 @@ public class CmJobListener(IServiceProvider serviceProvider, IDateTimeProvider d
                 sendMessage = true;
             }
                 
-            logger.LogDebug( exceptionToLog, "Job ID: {jobId}, Job Key: {jobKey}, Job was executed with an exception.", serviceJobId, context.JobDetail?.Key );
+            logger.LogDebug(exceptionToLog, "Job ID: {JobId}, Job Key: {JobKey}, Tenant: {TenantId}, Job was executed with an exception.", 
+                serviceJobId, context.JobDetail?.Key, tenantId);
         }
             
         await dbContext.SaveChangesAsync(ct);
@@ -148,12 +181,14 @@ public class CmJobListener(IServiceProvider serviceProvider, IDateTimeProvider d
         // send notification
         if ( sendMessage )
         {
-            SendNotificationMessage( jobException, job );
+            SendNotificationMessage( jobException, job, tenantId.Value );
         }
     }
 
-    private void SendNotificationMessage(JobExecutionException jobException, ServiceJob job)
+    private void SendNotificationMessage(JobExecutionException jobException, ServiceJob job, int tenantId)
     {
+        // TODO: Implement tenant-aware notification logic
+        logger.LogInformation("Notification needed for job {JobName} in tenant {TenantId}", job.Name, tenantId);
     }
 
     private Exception GetExceptionToLog( JobExecutionException jobException )

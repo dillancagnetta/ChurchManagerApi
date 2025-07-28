@@ -114,7 +114,7 @@ public class DbTenantMigrationHostedService :  IHostedService
     {
         MigrateMasterDatabase(scope, ct).Wait(ct);
         
-        var tenantSeeder = scope.ServiceProvider.GetService<TenantsDbFakeSeedInitializer>();
+        var tenantSeeder = scope.ServiceProvider.GetService<TenantsDbSeedInitializer>();
         tenantSeeder?.InitializeAsync().Wait(ct);
         Console.WriteLine("Attempting to Seed Tenants... " + (tenantSeeder == null ? "[No Seeder Registered]" : "[Succeeded]"));
     }

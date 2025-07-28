@@ -22,5 +22,5 @@ public interface IAppContextSetter
     ///    Initialize the app context
     /// </summary>
     /// <returns></returns>
-    Task<IAppContext> InitializeAppContext(string subdomain, string tenantName = null);
+    Task<IAppContext> InitializeAppContext(string? tenantName = null);
 }

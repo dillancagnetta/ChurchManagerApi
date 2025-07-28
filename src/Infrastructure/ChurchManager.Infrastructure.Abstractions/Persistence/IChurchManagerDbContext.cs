@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace ChurchManager.Infrastructure.Abstractions.Persistence
 {
-    public interface IChurchManagerDbContext
+    public interface IChurchManagerDbContext : IDisposable, IAsyncDisposable
     {
         DatabaseFacade Database { get; }
         DbSet<TEntity> Set<TEntity>() where TEntity : class;

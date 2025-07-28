@@ -76,11 +76,12 @@ namespace ChurchManager.Api
                                   $"AWS_ACCESS_KEY_ID : [{Environment.GetEnvironmentVariable(AWS_ACCESS_KEY_ID)}]  " +
                                   $"AWS_REGION  : [{Environment.GetEnvironmentVariable(AWS_REGION)}]  "
                 );
-
+                Console.WriteLine($"SUBDOMAIN_KEY  : [{Environment.GetEnvironmentVariable(SUBDOMAIN_KEY)}] ");
                 _ = Environment.GetEnvironmentVariable(ASPNETCORE_ENVIRONMENT) ?? throw new ArgumentNullException(ASPNETCORE_ENVIRONMENT);
                 _ = Environment.GetEnvironmentVariable(AWS_ACCESS_KEY_ID) ?? throw new ArgumentNullException(AWS_ACCESS_KEY_ID);
                 _ = Environment.GetEnvironmentVariable(AWS_SECRET_ACCESS_KEY) ?? throw new ArgumentNullException(AWS_SECRET_ACCESS_KEY);
                 _ = Environment.GetEnvironmentVariable(AWS_REGION) ?? throw new ArgumentNullException(AWS_REGION);
+                _ = Environment.GetEnvironmentVariable(SUBDOMAIN_KEY) ?? throw new ArgumentNullException(SUBDOMAIN_KEY);
             }
         }
 
@@ -132,5 +133,6 @@ namespace ChurchManager.Api
         private const string AWS_ACCESS_KEY_ID = "AWS_ACCESS_KEY_ID";
         private const string AWS_SECRET_ACCESS_KEY = "AWS_SECRET_ACCESS_KEY";
         private const string AWS_REGION = "AWS_REGION";
+        private const string SUBDOMAIN_KEY = "SUBDOMAIN_KEY";
     }
 }

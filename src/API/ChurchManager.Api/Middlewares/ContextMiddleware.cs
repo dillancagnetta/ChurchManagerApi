@@ -37,11 +37,11 @@ public class ContextMiddleware
             }
         }
         
-        var subdomain = GetSubdomain(context);
+        //var subdomain = GetSubdomain(context);
         var tenantName = GetTenant(context);
         
         var appContext = context.RequestServices.GetRequiredService<IAppContextSetter>();
-        _contextAccessor.AppContext = await appContext.InitializeAppContext(subdomain, tenantName);
+        _contextAccessor.AppContext = await appContext.InitializeAppContext(tenantName);
       
         await _next(context);
     }

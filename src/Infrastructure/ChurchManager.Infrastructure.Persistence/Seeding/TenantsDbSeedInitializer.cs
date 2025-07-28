@@ -1,4 +1,5 @@
 ﻿using ChurchManager.Domain.Common;
+using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.Infrastructure.Persistence.Contexts;
 using CodeBoss.AspNetCore.Startup;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ChurchManager.Infrastructure.Persistence.Seeding;
 
-public class TenantsDbFakeSeedInitializer(IServiceScopeFactory scopeFactory) : IInitializer
+public class TenantsDbSeedInitializer(IServiceScopeFactory scopeFactory) : IInitializer
 {
     public int OrderNumber { get; } = -1;
     
@@ -16,11 +17,11 @@ public class TenantsDbFakeSeedInitializer(IServiceScopeFactory scopeFactory) : I
         using var scope = scopeFactory.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<MasterDbContext>();
         var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+        var envConfig = scope.ServiceProvider.GetRequiredService<IEnvironmentConfig>();
         
         if (!await dbContext.Tenants.AnyAsync())
         {
-            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "";
-            var isDevelopment = environment.Equals("Development", StringComparison.OrdinalIgnoreCase);
+            var isDevelopment = envConfig.IsDevelopment;
             
             var tenant1 = new TenantConfiguration
             {

@@ -11,8 +11,10 @@ using ChurchManager.Domain.Features.History;
 using ChurchManager.Domain.Features.People.Repositories;
 using ChurchManager.Domain.Features.Security.Repositories;
 using ChurchManager.Infrastructure.Abstractions.Configuration;
+using ChurchManager.Infrastructure.Abstractions.MultiTenancy;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using ChurchManager.Infrastructure.Persistence.Contexts;
+using ChurchManager.Infrastructure.Persistence.Contexts.Factory;
 using ChurchManager.Infrastructure.Persistence.Repositories;
 using ChurchManager.Infrastructure.Persistence.Seeding;
 using ChurchManager.Infrastructure.Persistence.Seeding.Development;
@@ -61,7 +63,8 @@ namespace ChurchManager.Infrastructure.Persistence
             
             // Used in the CodeBoss Jobs
             services.AddDbContextFactory<ChurchManagerDbContext>(options => {}, ServiceLifetime.Scoped);
-            
+            services.AddSingleton<ITenantDbContextFactory, TenantDbContextFactory>();
+
             // Database Health Check 
             services
                 .AddHealthChecks()
@@ -97,7 +100,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     services.AddInitializer<GroupsDbSeedInitializer>();*/
 
                     // FAKE DATA
-                    services.AddScoped<TenantsDbFakeSeedInitializer>();
+                    services.AddScoped<TenantsDbSeedInitializer>();
                     services.AddInitializer<ChurchesFakeDbSeedInitializer>();
                     services.AddInitializer<PeopleFakeDbSeedInitializer>();
                     services.AddInitializer<GroupsFakeDbSeedInitializer>();
@@ -114,7 +117,7 @@ namespace ChurchManager.Infrastructure.Persistence
                     /*services.AddInitializer<ChurchesDbSeedInitializer>();
                     services.AddInitializer<PeopleDbSeedInitializer>();
                     services.AddInitializer<GroupsDbSeedInitializer>();*/
-                    services.AddScoped<TenantsDbFakeSeedInitializer>();
+                    services.AddScoped<TenantsDbSeedInitializer>();
                     services.AddInitializer<ChurchesFakeDbSeedInitializer>();
                     services.AddInitializer<PeopleFakeDbSeedInitializer>();
                     services.AddInitializer<GroupsFakeDbSeedInitializer>();

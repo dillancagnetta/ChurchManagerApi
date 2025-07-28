@@ -1,18 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <Import Project="..\..\Build\ChurchManager.Common.props" />
 
-    <!--Sets the build output directory to a custom folder-->
-    <PropertyGroup>
+    <!--Sets the build output directory to a custom folder when in development-->
+    <!--the docker build will build these separately and copy to the correct place-->
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <OutputPath>..\..\API\ChurchManager.Api\Plugins\Example.Plugin\</OutputPath>
         <OutDir>$(OutputPath)</OutDir>
     </PropertyGroup>
-
-    <Target Name="CleanOutputPath" BeforeTargets="Build">
-        <ItemGroup>
-            <FilesToDelete Include="$(OutputPath)**\*" />
-        </ItemGroup>
-        <Delete Files="@(FilesToDelete)" />
-    </Target>
 
     <ItemGroup>
       <Folder Include="Model\" />

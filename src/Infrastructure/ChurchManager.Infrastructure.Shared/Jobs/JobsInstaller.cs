@@ -21,7 +21,12 @@ public class JobsInstaller : IDependencyInstaller
         if (options.Enabled)
         {
             services.AddSingleton<ICodeBossJobListener, CmJobListener>();
-            services.AddCodeBossJobs(configuration, typeof(CmServiceJobRepository), !environment.IsDevelopment(), registeredJobListener:true);
+            services.AddCodeBossJobs(configuration, 
+                typeof(CmServiceJobRepository), 
+                productionMode: !environment.IsDevelopment(), 
+                registeredJobListener:true,
+                isMultiTenantMode:true
+            );
         }
     }
 }

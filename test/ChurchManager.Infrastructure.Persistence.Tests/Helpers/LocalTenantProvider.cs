@@ -29,6 +29,11 @@ public class LocalTenantProvider : ITenantsProvider<TenantConfiguration>
         get => Get("Tenant1");
         set => throw new NotImplementedException();
     }
+
+    ITenant[] ISimpleTenantsProvider.Tenants()
+    {
+        return Tenants();
+    }
 }
 
 public class NoneTenantProvider: ITenantsProvider<TenantConfiguration>
@@ -45,4 +50,8 @@ public class NoneTenantProvider: ITenantsProvider<TenantConfiguration>
 
     public bool Enabled { get; } = false;
     public ITenant CurrentTenant { get; set; }
+    ITenant[] ISimpleTenantsProvider.Tenants()
+    {
+        return Tenants();
+    }
 }

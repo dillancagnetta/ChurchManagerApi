@@ -31,5 +31,10 @@ namespace ChurchManager.Application.Tests.Common
             get => Get("Tenant1");
             set => throw new NotImplementedException();
         }
+
+        ITenant[] ISimpleTenantsProvider.Tenants()
+        {
+            return Tenants();
+        }
     }
 }

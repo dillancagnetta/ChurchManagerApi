@@ -1,9 +1,11 @@
 ﻿using ChurchManager.Domain.Features.Communications.Services;
 using ChurchManager.Infrastructure.Abstractions;
 using ChurchManager.Infrastructure.Abstractions.AppContext;
+using ChurchManager.Infrastructure.Abstractions.Configuration;
 using ChurchManager.Infrastructure.Abstractions.Security;
 using ChurchManager.Infrastructure.Shared.AppContext;
 using ChurchManager.Infrastructure.Shared.Communications;
+using ChurchManager.Infrastructure.Shared.Configuration;
 using ChurchManager.Infrastructure.Shared.DomainEvents;
 using CodeBoss.AspNetCore.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
@@ -40,6 +42,10 @@ namespace ChurchManager.Infrastructure.Shared
             // Application Context
             services.AddSingleton<IAppContextAccessor, AppContextAccessor>();
             services.AddScoped<IAppContextSetter, AppContextSetter>();
+            
+            // Environment Settings
+            services.AddSingleton<IEnvironmentConfig, EnvironmentConfig>();
+
         }
     }
 }
