@@ -3,7 +3,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
     <NoWarn>$(NoWarn);NU1507</NoWarn>
-    <CodeBossVersion>9.0.24</CodeBossVersion>
+    <CodeBossVersion>9.0.25</CodeBossVersion>
     <EFCoreVersion>9.0.4</EFCoreVersion>
   </PropertyGroup>
   <ItemGroup>
