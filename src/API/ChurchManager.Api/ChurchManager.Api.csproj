@@ -41,6 +41,7 @@
     <ProjectReference Include="..\..\Features\ChurchManager.Features.Profile\ChurchManager.Features.Profile.csproj" />
     <ProjectReference Include="..\..\Features\ChurchManager.Features.UserLogins\ChurchManager.Features.UserLogins.csproj" />
     <ProjectReference Include="..\..\Features\ChurchManager.Features.Settings\ChurchManager.Features.Settings.csproj" />
+    <ProjectReference Include="..\..\Features\ChurchManager.Features.Jobs\ChurchManager.Features.Jobs.csproj" />
     <ProjectReference Include="..\..\Core\ChurchManager.Application\ChurchManager.Application.csproj" />
     <ProjectReference Include="..\..\Infrastructure\ChurchManager.Infrastructure.Persistence\ChurchManager.Infrastructure.Persistence.csproj" />
   </ItemGroup>

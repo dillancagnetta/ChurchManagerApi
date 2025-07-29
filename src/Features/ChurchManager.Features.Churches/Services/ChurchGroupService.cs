@@ -14,15 +14,15 @@ public class ChurchGroupService(
     ILogger<ChurchGroupService> logger,
     IMapper mapper) : CrudServiceAsync<ChurchGroup, ChurchGroupViewModel, EditChurchGroupModel>(dbRepository, mapper), IChurchGroupService
 {
-    public async Task<OperationResult> AddChurchGroupAsync(string Name, string Description, int? LeaderPersonId, CancellationToken ct = default)
+    public async Task<OperationResult> AddChurchGroupAsync(string name, string description, int? leaderPersonId, CancellationToken ct = default)
     {
         try
         {
             await Repository.AddAsync(new ChurchGroup
             {
-                Name = Name,
-                Description = Description,
-                LeaderPersonId = LeaderPersonId
+                Name = name,
+                Description = description,
+                LeaderPersonId = leaderPersonId
             }, ct);
 
             return new OperationResult(true);
