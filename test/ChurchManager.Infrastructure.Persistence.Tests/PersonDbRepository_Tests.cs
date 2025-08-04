@@ -32,7 +32,7 @@ namespace ChurchManager.Infrastructure.Persistence.Tests
             {
                 var dbRepository = new PersonDbRepository(dbContext, new Mock<IQueryCache>().Object);
 
-                var query = new PersonMatchQuery("Dillan", "Cagnetta", "dillancagnetta@yahoo.com", null);
+                var query = new PersonMatchQuery("Bruce", "Wayne", "batman@yahoo.com", null);
 
                 var results = await dbRepository.FindPersons(query).ToListAsync();
 

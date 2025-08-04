@@ -24,7 +24,7 @@ namespace ChurchManager.Api.Middlewares
             }
             else
             {
-                _allowedDomains = new List<string>{ "codeboss.co.za" }; // Default allowed domains
+                _allowedDomains = new List<string>{ "codeboss.co.za", "churchmanager.io" }; // Default allowed domains
             }
             
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "";

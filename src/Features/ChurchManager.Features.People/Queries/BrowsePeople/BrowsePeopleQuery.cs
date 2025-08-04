@@ -28,9 +28,9 @@ namespace ChurchManager.Features.People.Queries.BrowsePeople
         {
             var pagedResult = await _service.BrowseAsync(query, ct);
 
-            var vm = _mapper.Map<PagedResult<PersonViewModel>>(pagedResult);
+            //var vm = _mapper.Map<PagedResult<PersonViewModel>>(pagedResult);
 
-            return new PagedResponse<PersonViewModel>(vm);
+            return new PagedResponse<PersonViewModel>(pagedResult);
         }
     }
 }

@@ -1,14 +1,16 @@
 ﻿using System.Linq.Expressions;
 using Ardalis.Specification;
 using ChurchManager.Domain.Common.Extensions;
+using ChurchManager.Domain.Features.People.Extensions;
 using ChurchManager.Domain.Features.People.Queries;
+using ChurchManager.Domain.Shared;
 using CodeBoss.Extensions;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChurchManager.Domain.Features.People.Specifications
 {
-    public class BrowsePeopleSpecification : Specification<Person>
+    public class BrowsePeopleSpecification : Specification<Person, PersonViewModel>
     {
         public BrowsePeopleSpecification(PeopleAdvancedSearchQuery query)
         {
@@ -192,6 +194,8 @@ namespace ChurchManager.Domain.Features.People.Specifications
             Query
                 .Skip(skip)
                 .Take(query.Results);
+            
+            Query.Select(p => p.ToViewModel(false)); // not condensed
         }
     }
 

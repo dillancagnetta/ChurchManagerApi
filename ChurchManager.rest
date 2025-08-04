@@ -12,7 +12,7 @@ POST {{api}}/v1/auth/login
 Content-Type: application/json
 
 {
-    "username": "dillan", "password": "pancake"
+    "username": "admin", "password": "pancake"
 }
 
 # ============== UTILITY / TESTS ==================== #
@@ -86,22 +86,22 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-	"familyName": "Cagnetta",
+	"familyName": "Wayne",
 	"members": [{
 		"churchId": 1,
 		"connectionStatus": "New Convert",
 		"source": "Outreach",
 		"person": {
-			"firstName": "Dillan",
-			"middleName": "Dillan",
-			"lastName": "Cagnetta",
+			"firstName": "Bruce",
+			"middleName": "Arthur",
+			"lastName": "Wayne",
 			"gender": "Male",
 			"ageClassification": "Adult",
-			"occupation": "Software",
+			"occupation": "Superhero",
 			"birthDate": {
 			  	"day" : 6,
 				"month" : 11,
-				"year" : 1908
+				"year" : 1985
 			},
 			"receivedHolySpirit": false
 		}

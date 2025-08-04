@@ -17,7 +17,7 @@ namespace ChurchManager.Api.Extensions
                 {
                     Version = "v1",
                     Title = "ChurchManager.Api",
-                    Contact = new OpenApiContact { Name = "Dillan Cagnetta", Email = "connect@codeboss.co.za"}
+                    Contact = new OpenApiContact { Name = "Church Manager", Email = "contact@churchmanager.io"}
                 });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -94,8 +94,8 @@ namespace ChurchManager.Api.Extensions
                             "https://codeboss.co.za", // TOP LEVEL DOMAIN
                             "http://*.codeboss.tech.s3-website-us-east-1.amazonaws.com", // S3 buckets
                             "https://*.netlify.app", // NETLIFY
-                            "http://dxoazadshajgs.cloudfront.net", // Test Cloud front
-                            "https://dxoazadshajgs.cloudfront.net" // Test Cloud front
+                            "http://*.churchmanager.io", // TOP LEVEL DOMAIN
+                            "https://*.churchmanager.io" // TOP LEVEL DOMAIN
                             )
                         .SetIsOriginAllowedToAllowWildcardSubdomains()
                         .AllowAnyMethod()

@@ -62,20 +62,20 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding
             DiscipleshipStepDefinition baptismClass
             )
         {
-            var dillan = await dbContext.Person.FirstOrDefaultAsync(x => x.Id == 1);
+            var mainPerson = await dbContext.Person.FirstOrDefaultAsync(x => x.Id == 1);
             var personFoundationSchoolStep = new DiscipleshipStep
             {
                 Definition = foundationSchool,
                 CompletionDate = DateTime.Today.AddYears(-15),
                 Status = "Completed",
-                Person = dillan
+                Person = mainPerson
             };
             var baptismClassStep = new DiscipleshipStep
             {
                 Definition = baptismClass,
                 StartDateTime = DateTime.Today.AddYears(-15),
                 Status = "In Progress",
-                Person = dillan
+                Person = mainPerson
             };
             
             await dbContext.AddAsync(personFoundationSchoolStep);

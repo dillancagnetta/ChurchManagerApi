@@ -39,14 +39,14 @@ namespace ChurchManager.Features.Settings.Startup
                     var type = item.GetType();
                     var tenantName = "";
                     var settingService = x.GetRequiredService<ISettingsService>();
-                    var contextAccessor = x.GetRequiredService<IAppContextAccessor>();
+                    /*var contextAccessor = x.GetRequiredService<IAppContextAccessor>();
                     if (contextAccessor.AppContext != null)
                     {
                         // Which means we could have the tenant context available
                         tenantName = contextAccessor.AppContext.CurrentTenant.Name;
-                    }
+                    }*/
                     // Which means tenant specific settings are loaded first
-                    return settingService.LoadSettingAsync(type, tenantName).Result;
+                    return settingService.LoadSettingAsync(type).Result;
                 });
             }
         }

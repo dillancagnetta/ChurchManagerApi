@@ -5,14 +5,14 @@ namespace ChurchManager.Domain.Features.Settings;
 public static class SettingExtensions
 {
     public static Setting CreateSetting<T>(
-        T settings, 
-        string tenantName = ""
+        this T settings, 
+        string? key = null
         ) where T : ISettings, new()
     {
+        key ??= typeof(T).Name;
         var setting = new Setting {
-            Name = typeof(T).Name.ToLowerInvariant(),
+            Name = key.Trim().ToLowerInvariant(),
             Metadata = JsonSerializer.Serialize(settings),
-            TenantName = tenantName.ToLower()
         };
         return setting;
     }

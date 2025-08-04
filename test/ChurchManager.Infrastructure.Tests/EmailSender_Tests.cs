@@ -11,7 +11,7 @@ namespace ChurchManager.Infrastructure.Tests
     {
         private string _awsAccessKeyId = "[INSERT ACCESS KEY]";
         private string _awsSecretAccessKey = "[INSERT SECRET KEY]";
-        private string _toEmailAddress = "dillancagnetta@yahoo.com";
+        private string _toEmailAddress = ""; // "REQUIRED";
 
         private string _templateFilePath = "./Templates/ExampleTemplate.liquid";
         private string _templateExampleData = "./Templates/ExampleData.json";
@@ -39,7 +39,7 @@ namespace ChurchManager.Infrastructure.Tests
             var parser = new DotLiquidTemplateParser();
             var result = parser.Render(template, model);
 
-            Assert.Contains("Mr Dillan Cagnetta", result);
+            Assert.Contains("Mr Bruce Wayne", result);
         }
 
         [Fact]

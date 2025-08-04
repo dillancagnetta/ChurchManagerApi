@@ -16,87 +16,46 @@ public class SettingsService(
     )
     : CrudServiceAsync<Setting, SettingViewModel, EditSettingViewModel>(repository, mapper), ISettingsService
 {
-    public virtual async Task SetSettingAsync<T>(string key, T value, string tenantName = "",
-        CancellationToken ct = default)
+    public async Task SaveSettingAsync<T>(T value, string? key = null, CancellationToken ct = default)
+        where T : ISettings, new()
     {
-        ArgumentException.ThrowIfNullOrEmpty(key);
-        
-        key = key.Trim().ToLowerInvariant();
-        var query =  SettingsByNameQuery(key);
-        query = SettingsByTenantQuery(query, tenantName);
-        
+        key ??= typeof(T).Name;
+
+        var query = SettingsByNameQuery(key);
         var setting = await query.FirstOrDefaultAsync(ct);
-        
+
+        var metadata = JsonSerializer.Serialize(value);
+
         if (setting != null)
         {
-            //update
-            setting.Metadata = JsonSerializer.Serialize(value);
+            setting.Metadata = metadata;
             await repository.UpdateAsync(setting, ct);
         }
         else
         {
-            //insert
-            var metadata = JsonSerializer.Serialize(value);
-            setting = new Setting {
-                Name = key.ToLowerInvariant(),
-                Metadata = metadata,
-                TenantName = tenantName.ToLower()
-            };
+            setting = value.CreateSetting(key);
             await repository.AddAsync(setting, ct);
         }
-        
+
         await repository.SaveChangesAsync(ct);
     }
 
-    public Task SaveSettingAsync<T>(string key, T value, string tenantName = "", CancellationToken ct = default) where T : ISettings, new()
-    {
-        return Task.CompletedTask;
-    }
     
-    public async Task SaveSettingAsync<T>(T value, string tenantName = "", CancellationToken ct = default) where T : ISettings, new()
-    {
-        var query = SettingsByNameQuery(typeof(T).Name);
-        query = SettingsByTenantQuery(query, tenantName);
-        
-        var setting = await query.FirstOrDefaultAsync(ct);
-        
-        if (setting != null)
-        {
-            //update
-            setting.Metadata = JsonSerializer.Serialize(value);
-            await repository.UpdateAsync(setting, ct);
-        }
-        else
-        {
-            //insert
-            var metadata = JsonSerializer.Serialize(value);
-            setting = new Setting {
-                Name = typeof(T).Name.ToLowerInvariant(),
-                Metadata = metadata,
-                TenantName = tenantName.ToLower()
-            };
-            await repository.AddAsync(setting, ct);
-        }
-
-        await repository.SaveChangesAsync(ct);
-    }
-
-    public virtual ISettings? LoadSetting(Type type,string tenantName = "")
+    public virtual ISettings? LoadSetting(Type type)
     {
         var query =  SettingsByNameQuery(type.Name);
-        query = SettingsByTenantQuery(query, tenantName);
         var setting = query.FirstOrDefault();
 
         return TrySerializeSettings(type, setting);
     }
 
-    public async Task<ISettings?> LoadSettingAsync(Type type, string? tenantName = "", CancellationToken ct = default)
+    public async Task<ISettings?> LoadSettingAsync(Type type, string? key = null, CancellationToken ct = default)
     {
+        key ??= type.Name;
+        
         IQueryable<Setting> query = Repository.Queryable().AsNoTracking();
         
-        query = SettingsByTenantQuery(query, tenantName);
-      
-        var name = type.Name.ToLowerInvariant();
+        var name = key.ToLowerInvariant();
         query = query.Where(x => x.Name == name);
         
         var setting = await query.FirstOrDefaultAsync(ct);
@@ -104,17 +63,16 @@ public class SettingsService(
         return TrySerializeSettings(type, setting);
     }
 
-    public virtual Task<T?> LoadSettingAsync<T>(string tenantName = "", CancellationToken ct = default) where T : ISettings, new()
+    public virtual Task<T?> LoadSettingAsync<T>(CancellationToken ct = default) where T : ISettings, new()
     {
-         return Task.FromResult((T)LoadSetting(typeof(T), tenantName));
+         return Task.FromResult((T)LoadSetting(typeof(T)));
     }
 
-    public virtual async Task<T?> GetSettingByKeyAsync<T>(string key, T? defaultValue = default, string tenantName = "", CancellationToken ct = default)
+    public virtual async Task<T?> GetSettingByKeyAsync<T>(string key, T? defaultValue = default, CancellationToken ct = default)
     {
         if (key.IsNullOrEmpty()) return defaultValue;
         
         var query =  SettingsByNameQuery(key);
-        query = SettingsByTenantQuery(query, tenantName);
         
         var setting = await query.FirstOrDefaultAsync(ct);
     
@@ -133,37 +91,12 @@ public class SettingsService(
         await repository.SaveChangesAsync(ct);
     }
 
-    public async Task DeleteSetting<T>(string tenantName = "", CancellationToken ct = default) where T : ISettings, new()
-    {
-        var query = SettingsByNameQuery(typeof(T).Name);
-        query = SettingsByTenantQuery(query, tenantName);
-
-        var settings = await query.ToListAsync(ct);
-
-        foreach (var setting in settings)
-        {
-            await repository.DeleteAsync(setting, ct);
-        }
-        await repository.SaveChangesAsync(ct);
-    }
-
     private IQueryable<Setting> SettingsByNameQuery(string name)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
         
-        name = name.ToLowerInvariant();
+        name = name.Trim().ToLowerInvariant();
         return Repository.Queryable().Where(x => x.Name == name);
-    }
-    
-    private IQueryable<Setting> SettingsByTenantQuery(IQueryable<Setting> query, string tenantName = "")
-    {
-        if (!tenantName.IsNullOrEmpty())
-        {
-            tenantName = tenantName.ToLower();
-            query = query.Where(x => x.TenantName == tenantName);
-        }
-        
-        return query;
     }
     
     /*private IQueryable<Setting> SettingsFilterQuery(IQueryable<Setting> query, 

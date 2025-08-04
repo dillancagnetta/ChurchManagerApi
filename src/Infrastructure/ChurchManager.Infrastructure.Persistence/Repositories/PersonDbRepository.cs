@@ -69,21 +69,21 @@ namespace ChurchManager.Infrastructure.Persistence.Repositories
 
         public async Task<StatisticsViewModel> DashboardChurchConnectionStatusBreakdown(int? churchGroupId = null, int? churchId = null, CancellationToken cancellationToken = default)
         {
-            var cacheKey = CacheKeyHelper.CacheKey("DashboardChurchConnectionStatusBreakdown_".ToLower() + (churchGroupId ??= 0) + (churchId ??= 0));
+            var cacheKey = CacheKeyHelper.CacheKey("DashboardChurchConnectionStatusBreakdown_".ToLower() + (churchGroupId ?? 0) + (churchId ?? 0));
             
             return await _cache.GetOrSetAsync<StatisticsViewModel>(cacheKey, async () =>
             {
                 var query = Queryable(false).AsNoTracking();
                 
-                if (churchGroupId.HasValue)
+                if (churchGroupId is not 0)
                 {
                     query.Include(x => x.Church).ThenInclude(x => x.ChurchGroup);
                     query = query.Where(x => x.Church.ChurchGroupId == churchGroupId.Value);
                 }
             
-                if (churchId.HasValue && churchId.Value > 0)
+                if (churchId is not 0)
                 {
-                    query = query.Where(x => x.ChurchId == churchId.Value);
+                    query = query.Where(x => x.ChurchId == churchId!.Value);
                 }
             
                 /*var connectionStatus = await query.GroupBy(p => p.ConnectionStatus)

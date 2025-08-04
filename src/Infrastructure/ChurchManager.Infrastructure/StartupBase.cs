@@ -243,6 +243,7 @@ namespace ChurchManager.Infrastructure
             Console.WriteLine($"[AppConfig] RabbitMqEnabled: {config.RabbitMqEnabled}");
             Console.WriteLine($"[AppConfig] EmailSendingEnabled: {config.EmailSendingEnabled}");
             Console.WriteLine($"[AppConfig] SMSSendingEnabled: {config.SMSSendingEnabled}");
+            Console.WriteLine($"[AppConfig] AWSParameterStoreEnabled: {config.AWSParameterStoreEnabled}");
             
             //find startup configurations provided by other assemblies
             var typeSearcher = new AppTypeSearcher();

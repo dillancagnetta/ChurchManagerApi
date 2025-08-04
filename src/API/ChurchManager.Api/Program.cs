@@ -62,11 +62,14 @@ namespace ChurchManager.Api
                 //awsOptions.Credentials = new BasicAWSCredentials(accessKey, secretKey);
                 awsOptions.Credentials = new EnvironmentVariablesAWSCredentials();
 
-                // AWS Parameter Store
-                configurationBuilder.AddSystemsManager(
-                    path: $"/{AppName}/{environment}",
-                    awsOptions: awsOptions,
-                    reloadAfter: TimeSpan.FromMinutes(5));
+                if (configuration["Application:AWSParameterStoreEnabled"] == "true")
+                {
+                    // AWS Parameter Store
+                    configurationBuilder.AddSystemsManager(
+                        path: $"/{AppName}/{environment}",
+                        awsOptions: awsOptions,
+                        reloadAfter: TimeSpan.FromMinutes(5));
+                }
             }
 
             void ValidateEnvironmentVariables(string environment)

@@ -13,7 +13,7 @@ namespace ChurchManager.Infrastructure.Abstractions.Configuration
         /// <summary>
         /// The base domain for the application
         /// </summary>
-        public string BaseDomain { get; set; } = "codeboss.co.za";
+        public string BaseDomain { get; set; } = "churchmanager.io";
 
         /// <summary>
         /// A value indicating whether to ignore ACL rules (side-wide). It can significantly improve performance when enabled.
@@ -59,6 +59,11 @@ namespace ChurchManager.Infrastructure.Abstractions.Configuration
         /// A value indicating whether to send sms's 
         /// </summary>
         public bool SMSSendingEnabled { get; set; }
+        
+        /// <summary>
+        /// A value indicating whether to use AWS Parameter Store for configuration settings.
+        /// </summary>
+        public bool AWSParameterStoreEnabled { get; set; }
 
         /// <summary>
         /// A list of plugins to be ignored during start application - pattern

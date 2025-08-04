@@ -43,10 +43,10 @@ public class InitiatePaymentHandler(
             return ApiResponse.Failed("Invalid payment reference format");
         }
         
-        var amount = command.TestMode ? 1045.45m : command.Amount.Amount;
+        //var amount = command.TestMode ? 1045.45m : command.Amount.Amount;
         var payment = new PaymentTransaction
         {
-            PaidAmount = new Money(command.Amount.Currency ?? Currency.ZAR, amount),
+            PaidAmount = new Money(command.Amount.Currency ?? Currency.ZAR, command.Amount.Amount),
             PaymentMethod = command.PaymentMethod,
             PaymentMethodSystemName = command.PaymentSystem,
             PaymentReference = command.PaymentReference,

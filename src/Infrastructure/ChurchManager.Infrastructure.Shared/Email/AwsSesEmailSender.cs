@@ -28,7 +28,7 @@ namespace ChurchManager.Infrastructure.Shared.Email
             try
             {
                 // Change to your from email
-                string senderAddress = "connect@codeboss.co.za";
+                string senderAddress = "contaxt@churchmanager.io";
                 // Change to your region
                 using var client = new AmazonSimpleEmailServiceV2Client(_awsAccessKeyId, _awsSecretAccessKey, RegionEndpoint.USEast1);
                 var sendRequest = new SendEmailRequest

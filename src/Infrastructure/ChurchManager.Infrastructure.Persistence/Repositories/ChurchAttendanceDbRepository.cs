@@ -29,22 +29,22 @@ public class ChurchAttendanceDbRepository : GenericRepositoryBase<ChurchAttendan
     {
         var cacheKey = CacheKeyHelper.CacheKey("DashboardChurchAttendance_".ToLower() 
                                                + from.ToShortDateString() + to.ToShortDateString() +
-                                               (churchGroupId ??= 0) + (churchId ??= 0));
+                                               (churchGroupId ?? 0) + (churchId ?? 0));
         
         return await _cache.GetOrSetAsync<IEnumerable<ChurchAttendanceAnnualBreakdownVm>>(cacheKey, async () =>
         {
             var query = Queryable().AsNoTracking();
 
-            if (churchGroupId.HasValue)
+            if (churchGroupId is not 0)
             {
                 query.Include(x => x.Church)
                     .ThenInclude(y => y.ChurchGroup);
                 query = query.Where(x => x.Church.ChurchGroup.Id == churchGroupId);
             }
             
-            if (churchId is > 0)
+            if (churchId is not 0)
             {
-                query = query.Where(x => x.ChurchId == churchId.Value);
+                query = query.Where(x => x.ChurchId == churchId!.Value);
             }
 
             var raw = await query
@@ -132,19 +132,19 @@ public class ChurchAttendanceDbRepository : GenericRepositoryBase<ChurchAttendan
         var periodStart = period.GetReportPeriodStartDateFrom(now);
         var previousPeriodStart = period.GetReportPeriodStartDateFrom(periodStart);
         
-        var cacheKey = CacheKeyHelper.CacheKey("AttendanceMetricsComparison_".ToLower() + period + (churchGroupId ??= 0) + (churchId ??= 0));
+        var cacheKey = CacheKeyHelper.CacheKey("AttendanceMetricsComparison_".ToLower() + period + (churchGroupId ?? 0) + (churchId ?? 0));
         
         return await _cache.GetOrSetAsync<AttendanceMetricsComparisonViewModel>(cacheKey, async () =>
         {
             var queryable = Queryable().AsNoTracking();
         
-            if (churchGroupId.HasValue)
+            if (churchGroupId is not 0)
             {
                 queryable.Include(x => x.Church).ThenInclude(y => y.ChurchGroup);
                 queryable = queryable.Where(x => x.Church.ChurchGroup.Id == churchGroupId);
             }
 
-            if (churchId is > 0)
+            if (churchId is not 0)
             {
                 queryable = queryable.Where(x => x.ChurchId == churchId.Value);
             }
@@ -191,13 +191,13 @@ public class ChurchAttendanceDbRepository : GenericRepositoryBase<ChurchAttendan
         var currentYear = DateTime.UtcNow.Year;
         var startOfPreviousYear = new DateTime(currentYear - 1, 1, 1);
 
-        var cacheKey = CacheKeyHelper.CacheKey("YearlyConversionComparison_".ToLower() + includeMonthlyBreakdown + (churchGroupId ??= 0) + (churchId ??= 0));
+        var cacheKey = CacheKeyHelper.CacheKey("YearlyConversionComparison_".ToLower() + includeMonthlyBreakdown + (churchGroupId ?? 0) + (churchId ?? 0));
         
         return await _cache.GetOrSetAsync<YearlyConversionComparison>(cacheKey, async () =>
         {
             var queryable = Queryable().AsNoTracking();
             
-            if (churchGroupId.HasValue)
+            if (churchGroupId is not 0)
             {
                 queryable.Include(x => x.Church).ThenInclude(y => y.ChurchGroup);
                 queryable = queryable.Where(x => x.Church.ChurchGroup.Id == churchGroupId);

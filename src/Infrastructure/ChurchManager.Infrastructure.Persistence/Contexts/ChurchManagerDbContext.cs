@@ -23,7 +23,7 @@ namespace ChurchManager.Infrastructure.Persistence.Contexts
 
         public ChurchManagerDbContext(
             DbContextOptions<ChurchManagerDbContext> options,
-            [NotNull] ITenantsProvider<TenantConfiguration> tenantsProvider,
+            ITenantsProvider<TenantConfiguration> tenantsProvider,
             IAppContextAccessor? appContext = null,
             IDomainEventPublisher? events = null,
             ITenantCurrentUser? currentUser = null) : base(options)

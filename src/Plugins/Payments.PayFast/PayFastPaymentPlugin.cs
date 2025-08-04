@@ -1,12 +1,10 @@
 ﻿using ChurchManager.Application.Abstractions.Services;
-using ChurchManager.Infrastructure.Abstractions.AppContext;
 using ChurchManager.Infrastructure.Plugins;
 
 namespace Payments.PayFast;
 
 public class PayFastPaymentPlugin(
-    ISettingsService settingService,
-    IAppContextAccessor contextAccessor) : BasePlugin
+    ISettingsService settingService) : BasePlugin
 {
     /*public override string ConfigurationUrl()
     {
@@ -16,6 +14,7 @@ public class PayFastPaymentPlugin(
     public override async Task InstallAsync(CancellationToken ct = default)
     {
         //settings
+        // these are just sandbox test settings, replace with your own by calling the PayFast API
         var settings = new PayFastSettings {
           MerchantId  = "10003473",
           MerchantKey  = "gj108nu63wd7t",
@@ -25,10 +24,7 @@ public class PayFastPaymentPlugin(
           NotifyUrl = $"payments/payfast/notify",
           TestMode = true
         };
-        await settingService.SaveSettingAsync(
-            settings,
-            tenantName:contextAccessor.AppContext.CurrentTenant.Name,
-            ct: ct);
+        await settingService.SaveSettingAsync(settings, ct: ct);
         
         await base.InstallAsync(ct);
     }
@@ -36,8 +32,7 @@ public class PayFastPaymentPlugin(
     public override async Task UninstallAsync(CancellationToken ct = default)
     {
         //settings
-        await settingService.DeleteSetting<PayFastSettings>(
-            tenantName:contextAccessor.AppContext.CurrentTenant.Name, ct);
+        await settingService.DeleteSetting<PayFastSettings>(ct);
         
         await base.UninstallAsync(ct);
     }

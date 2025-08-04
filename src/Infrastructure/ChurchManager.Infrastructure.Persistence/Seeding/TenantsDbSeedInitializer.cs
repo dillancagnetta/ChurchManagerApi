@@ -28,8 +28,8 @@ public class TenantsDbSeedInitializer(IServiceScopeFactory scopeFactory) : IInit
                 Name = SeedingConstants.TestTenantName,
                 ConnectionString = configuration.GetConnectionString("DefaultConnection")!,
                 Email = "tenant1@example.com",
-                Subdomain = isDevelopment ? "localhost:4200" : "test",
-                ApiUrl =  isDevelopment ?"http://localhost:5001" : "https://cm-test.codeboss.co.za",
+                Subdomain = isDevelopment ? "localhost:4200" : "demo",
+                ApiUrl =  isDevelopment ?"http://localhost:5001" : "https://demo.churchmanager.io",
             };
 
             await dbContext.Tenants.AddRangeAsync(tenant1);

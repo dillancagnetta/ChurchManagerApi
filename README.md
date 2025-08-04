@@ -19,6 +19,8 @@
 
 > set AWS_REGION=us-east-1
 
+> set SUBDOMAIN_KEY=localhost
+
 **Powershell Commands**
 ```Powershell
 dotnet tool update --global dotnet-ef --version 6.0.1
@@ -26,6 +28,7 @@ dotnet tool update --global dotnet-ef --version 6.0.1
 $Env:AWS_ACCESS_KEY_ID = "hello"
 $Env:AWS_SECRET_ACCESS_KEY = "hello"
 $Env:AWS_REGION = "us-east-1"
+$Env:SUBDOMAIN_KEY = "localhost"
 
 dotnet ef database update --project src\Infrastructure\ChurchManager.Infrastructure.Persistence\ChurchManager.Infrastructure.Persistence.csproj --startup-project src\API\ChurchManager.Api\ChurchManager.Api.csproj --context ChurchManager.Infrastructure.Persistence.Contexts.ChurchManagerDbContext
 ```
@@ -114,3 +117,26 @@ Phase 2: Giving Creation via Batch Process
 - Run a scheduled job (similar to bank import) to convert completed PaymentTransaction records to Giving
 - This prevents duplicates when bank statements are imported later
 - Maintains consistency with your existing reconciliation process
+
+## Plugins
+
+### Development
+Plugins get copied and files dont get cleaned , so we need to run before `build`
+
+` .\clear-plugins.ps1 ` then  do  a `build` to copy the new files
+
+### Installation
+ - need to logged in as user
+ - Install plugins first via `PluginsController/install-all` - this will install the plugin for the tenant
+
+## Jobs
+
+## MultiTenancy
+ - a subdomain e.g `test.churchmanager.io` will contain multiple tenants
+ - tenants are defined in `MasterDbTenant` database and are grouped by the subdomain name e.g. `test`
+ - migrations will be done for all tenants in a subdomain
+ - subdomain is defined with environment variable: `SUBDOMAIN_KEY`
+ - Tenants resolving process:
+   - `Tenant` claim e.g. `tenant1` (admin authenticated users)
+   - `tenant` querystring (login mostly)
+   - `X-Tenant` header (public access urls translate tenant in url to the header)

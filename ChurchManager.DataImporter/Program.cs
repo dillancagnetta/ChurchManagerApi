@@ -36,7 +36,7 @@ namespace ChurchManager.DataImporter
 
         private static void Main(string[] args)
         {
-            // "C:\Users\dilla\Downloads\churchmanager_db_data_import_updated_pstDillan.xlsx"
+            // "C:\Users\dilla\Downloads\churchmanager_db_data_import_updated_.xlsx"
             var path = args != null && args.Any() ? args[0] : "./churchmanager_db_data_import_updated.xlsx";
             Process(path);
         }
@@ -316,15 +316,15 @@ namespace ChurchManager.DataImporter
                         
                         if (!string.IsNullOrEmpty(import.UserLoginId))
                         {
-                            if (import.FullName.FirstName.Equals("Dillan") &&
-                                import.FullName.LastName.Equals("Cagnetta"))
+                            if (import.FullName.FirstName.Equals("Bruce") &&
+                                import.FullName.LastName.Equals("Wayne"))
                             {
                                 var _userLogin = new UserLogin
                                 {
                                     Id = Guid.Parse(import.UserLoginId),
                                     PersonId = person.Id,
-                                    Username = "dillan",
-                                    Password = BCrypt.Net.BCrypt.HashPassword("81118599"),
+                                    Username = "admin",
+                                    Password = BCrypt.Net.BCrypt.HashPassword("pancake"),
                                     Tenant = "tenant1",
                                 };
                                 _userLogin.AddUserLoginRole(systemAdminRole);

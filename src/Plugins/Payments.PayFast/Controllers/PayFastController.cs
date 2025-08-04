@@ -4,6 +4,7 @@ using ChurchManager.Domain.Features.Finances;
 using ChurchManager.Infrastructure.Abstractions.Persistence;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Payments.PayFast.Services;
 
 namespace Payments.PayFast.Controllers;
@@ -13,7 +14,7 @@ namespace Payments.PayFast.Controllers;
 public class PayFastController(
     IPayFastService service, 
     IGenericDbRepository<PaymentTransaction> paymentsDb,
-    PayFastSettings settings) : ControllerBase
+    ILogger<PayFastController> logger) : ControllerBase
 {
     [HttpGet]
     public IActionResult HealthCheck()
@@ -24,6 +25,7 @@ public class PayFastController(
     [HttpPost("notify")]
     public async Task<IActionResult> PaymentNotify(CancellationToken ct)
     {
+        logger.LogInformation("Received payment notification from PayFast");
         var postData = new Dictionary<string, string>();
 
         foreach (var key in Request.Form.Keys)
@@ -36,7 +38,7 @@ public class PayFastController(
         if (isValid)
         {
             var paymentId = postData.GetValueOrDefault("m_payment_id");
-
+            logger.LogInformation("Payment with ID {paymentId} validated", paymentId);
             var payment = await paymentsDb.Queryable().FirstOrDefaultAsync(p => p.PaymentId == paymentId, ct)
                           ?? throw new InvalidOperationException($"Payment not found: {paymentId}");
 
@@ -67,7 +69,7 @@ public class PayFastController(
             }
 
             await paymentsDb.SaveChangesAsync(ct);
-            
+            logger.LogInformation("Payment with ID {paymentId} saved", paymentId);
             return Ok();
         }
 

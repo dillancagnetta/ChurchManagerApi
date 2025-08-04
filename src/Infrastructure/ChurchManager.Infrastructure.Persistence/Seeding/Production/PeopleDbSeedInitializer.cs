@@ -1,6 +1,7 @@
 ﻿#region
 
 using ChurchManager.Domain.Common;
+using ChurchManager.Domain.Common.Extensions;
 using ChurchManager.Domain.Features.People;
 using ChurchManager.Domain.Features.Security;
 using ChurchManager.Infrastructure.Persistence.Contexts;
@@ -40,79 +41,31 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Production
 
         private async Task SeedMyDetails()
        {
-            var cagnettaFamily = new Family {Name = "Cagnetta Family", Language = "English"};
+            var mainFamily = new Family {Name = "Main Family", Language = "English"};
             await _dbContext.SaveChangesAsync();
 
             // Add me as the first Person i.e. with Id 1
-            var dillan = new Person
+            var mainPerson = new Person
             {
-                Family = cagnettaFamily,
+                Family = mainFamily,
                 AgeClassification = AgeClassification.Adult,
                 RecordStatus = RecordStatus.Active,
-                Gender = Gender.Male,
-                PhotoUrl = "https://secure.gravatar.com/avatar/6fdc48b6ec4d95f2fd682fc2982eb01b",
+                Gender = Gender.Unknown,
+                PhotoUrl = null,
                 ConnectionStatus = ConnectionStatus.Member,
                 BaptismStatus = new Baptism {IsBaptised = true},
                 ChurchId = 1,
-                Email = new Email {Address = "dillancagnetta@yahoo.com", IsActive = true},
-                FullName = new FullName {FirstName = "Dillan", LastName = "Cagnetta"},
-                MaritalStatus = "Married",
-                AnniversaryDate = new DateTime(2013, 01, 22),
-                UserLoginId = "08925ade-9249-476b-8787-b3dd8f5dbc13",
-                BirthDate = new BirthDate {BirthDay = 6, BirthMonth = 11, BirthYear = 1981},
+                Email = new Email {Address = "admin@yahoo.com", IsActive = true},
+                FullName = new FullName {FirstName = "Admin", LastName = "Admin"},
+                //MaritalStatus = "Married",
+                //AnniversaryDate = new DateTime(2013, 01, 22),
+                UserLoginId = SeedingConstants.MainUserLogin,
+                //BirthDate = new BirthDate {BirthDay = 6, BirthMonth = 11, BirthYear = 1981},
                 ReceivedHolySpirit = true,
-                Occupation = "Software developer",
-                PhoneNumbers = new List<PhoneNumber>(1) {new(){CountryCode = "+27", Number = "0737378631"}}
+                Occupation = "Administrator",
+                PhoneNumbers = new List<PhoneNumber>(1) {new(){CountryCode = "+27", Number = SeedingConstants.TestPhoneNumber.CleanPhoneNumber()}}
             };
-
-            var danielle = new Person
-            {
-                Family = cagnettaFamily,
-                AgeClassification = AgeClassification.Adult,
-                RecordStatus = RecordStatus.Active,
-                Gender = Gender.Female,
-                PhotoUrl = null,
-                ConnectionStatus = ConnectionStatus.Member,
-                BaptismStatus = new Baptism { IsBaptised = true },
-                ChurchId = 1,
-                Email = new Email { Address = "danielle@yahoo.com", IsActive = true },
-                FullName = new FullName { FirstName = "Danielle", LastName = "Cagnetta" },
-                MaritalStatus = "Married",
-                AnniversaryDate = new DateTime(2013, 01, 22),
-                BirthDate = new BirthDate { BirthDay = 13, BirthMonth = 03, BirthYear = 1980 },
-                ReceivedHolySpirit = true,
-                Occupation = "Church Right hand",
-                PhoneNumbers = new List<PhoneNumber>()
-            };
-            var david = new Person
-            {
-                Family = cagnettaFamily,
-                AgeClassification = AgeClassification.Child,
-                RecordStatus = RecordStatus.Active,
-                Gender = Gender.Male,
-                PhotoUrl = null,
-                ConnectionStatus = ConnectionStatus.Member,
-                BaptismStatus = new Baptism { IsBaptised = false },
-                ChurchId = 1,
-                FullName = new FullName { FirstName = "David", LastName = "Cagnetta" },
-                BirthDate = new BirthDate { BirthDay = 06, BirthMonth = 07, BirthYear = 2017 },
-                ReceivedHolySpirit = false,
-            };
-
-            var daniel = new Person
-            {
-                Family = cagnettaFamily,
-                AgeClassification = AgeClassification.Child,
-                RecordStatus = RecordStatus.Active,
-                Gender = Gender.Male,
-                PhotoUrl = null,
-                ConnectionStatus = ConnectionStatus.Member,
-                BaptismStatus = new Baptism { IsBaptised = true },
-                ChurchId = 1,
-                FullName = new FullName { FirstName = "Daniel", LastName = "Cagnetta" },
-                BirthDate = new BirthDate { BirthDay = 28, BirthMonth = 06, BirthYear = 2013 },
-                ReceivedHolySpirit = true,
-            };
+            
 
             // Church Group Admin gets dynamic access to all churches in their group
             var permission = new EntityPermission
@@ -127,23 +80,19 @@ namespace ChurchManager.Infrastructure.Persistence.Seeding.Production
                 IsSystem = true
             };
             var systemAdminRole = UserLoginRole.SystemAdminRole;
-            var dillanUserLogin = new UserLogin
+            var mainPersonUserLogin = new UserLogin
             {
-                Id = Guid.Parse("08925ade-9249-476b-8787-b3dd8f5dbc13"),
-                Person = dillan,
-                Username = "dillan",
-                Password = BCrypt.Net.BCrypt.HashPassword("81118599"),
+                Id = Guid.Parse(SeedingConstants.MainUserLogin),
+                Person = mainPerson,
+                Username = "admin",
+                Password = BCrypt.Net.BCrypt.HashPassword("pancake"),
                 Tenant = _tenant.Name
             };
-            dillanUserLogin.AddUserLoginRole(new UserRoleAssignment { UserLogin = dillanUserLogin, Role = systemAdminRole}); // System Admin
+            mainPersonUserLogin.AddUserLoginRole(new UserRoleAssignment { UserLogin = mainPersonUserLogin, Role = systemAdminRole}); // System Admin
 
-            await _dbContext.Person.AddAsync(dillan);
-            await _dbContext.Person.AddAsync(danielle);
-            await _dbContext.Person.AddAsync(david);
-            await _dbContext.Person.AddAsync(daniel);
-            
+            await _dbContext.Person.AddAsync(mainPerson);
             await _dbContext.UserLoginRole.AddAsync(systemAdminRole);
-            await _dbContext.UserLogin.AddAsync(dillanUserLogin);
+            await _dbContext.UserLogin.AddAsync(mainPersonUserLogin);
 
             await _dbContext.SaveChangesAsync();
         }

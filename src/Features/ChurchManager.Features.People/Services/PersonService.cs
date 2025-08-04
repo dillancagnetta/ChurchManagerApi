@@ -27,9 +27,9 @@ namespace ChurchManager.Features.People.Services
 
             var pagedResult = await dbRepository.BrowseAsync(query, spec, ct);
 
-            var vm = mapper.Map<PagedResult<PersonViewModel>>(pagedResult);
+            //var vm = mapper.Map<PagedResult<PersonViewModel>>(pagedResult);
 
-            return vm;
+            return pagedResult;
         }
 
         public async Task<IReadOnlyList<PeopleAutocompleteViewModel>> PeopleAutocompleteAsync(string searchTerm, CancellationToken ct = default)
@@ -53,9 +53,9 @@ namespace ChurchManager.Features.People.Services
             
             var list = await dbRepository.ListAsync(spec, ct);
             
-            var vm = mapper.Map<IList<PersonViewModel>>(list);
+            //var vm = mapper.Map<IList<PersonViewModel>>(list);
             
-            return vm.AsReadOnly();
+            return list.AsReadOnly();
         }
     }
 }

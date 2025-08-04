@@ -23,9 +23,8 @@ public class MasterDbTenantProvider(
     };
     
     /// <summary>
-    /// When this is called on startup CurrentSubdomain is not set from the request context,
-    /// So this will migrate all tenants irrespective of the current subdomain
-    /// When in a request context however, it will use the current subdomain if available
+    /// CurrentSubdomain is now set from the EnvironmentConfig,
+    /// So this will migrate all tenants of the current subdomain
     /// </summary>
     public TenantConfiguration[]? Tenants()
     {
